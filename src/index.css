@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primario: #1e40af;     
+  --color-secundario: #f59e0b;   
+  --color-fondo: #f9fafb; 
+
+  --fuente-inter: 'Inter', sans-serif;
+  --fuente-instrument: 'Instrument Serif', serif;
+}
+
+
+.cursiva {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.titulo {
+  font-family: var(--fuente-inter);
+  font-weight: 500;
+}
+
