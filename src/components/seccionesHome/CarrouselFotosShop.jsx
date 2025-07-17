@@ -21,15 +21,15 @@ export default function CarrouselFotosShop({ images }) {
         coverflowEffect={{
           rotate: 0,
           stretch: 0,
-          depth: 100,
+          depth: 200,
           modifier: 2.5,
-          slideShadows: false,
+          slideShadows: true,
         }}
         modules={[EffectCoverflow, Pagination, Autoplay]}
-        className="w-full h-[500px]"
+        className="w-full h-full"
       >
         {images.map((src, idx) => (
-          <SwiperSlide key={idx} className="w-[220px] h-[400px] rounded-[3.3rem] overflow-hidden">
+          <SwiperSlide key={idx} className="w-[220px] h-auto rounded-[3.3rem] overflow-hidden">
             <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
           </SwiperSlide>
         ))}

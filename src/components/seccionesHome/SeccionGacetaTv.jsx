@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { TextDiv } from '../ui/AnimatedSection'
 
 
 export default function SeccionGacetaTv() {
@@ -21,17 +22,17 @@ export default function SeccionGacetaTv() {
 
   return (
     <section className='flex flex-col gap-8'>
-        <div>
-            <span className="font-medium ml-14 text-orange-500 text-lg">#GaceTv</span> 
-            <h2 className="text-6xl text-white font-semibold titulo ml-14 mb-6">crear. <br /> <span className="font-instrument italic">escuchar.</span> <br />compartir.</h2>
-        </div>
+        <TextDiv>
+            <span className="font-medium ml-14 text-orange-500 text-lg subtitulo">#GaceTv</span> 
+            <h2 className="titulo ml-14">crear. <br /> <span className="font-instrument italic">escuchar.</span> <br />compartir.</h2>
+        </TextDiv>
         <div className="aspect-video w-full max-w-3xl">
             {videoId && (
             <iframe 
                 className="w-full min-h-96 rounded-3xl"
                 src={`https://www.youtube.com/embed/${videoId}?rel=0`}
                 title="GaceTv" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 referrerPolicy="strict-origin-when-cross-origin" 
                 allowFullScreen
                 loading="lazy"

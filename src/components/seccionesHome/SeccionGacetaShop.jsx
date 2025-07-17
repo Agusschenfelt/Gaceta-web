@@ -1,5 +1,5 @@
-import BotonGaceta from "../BotonGaceta";
 import CarrouselFotosShop from "./CarrouselFotosShop";
+import { TextDiv } from '../ui/AnimatedSection'
 
 const images = [
     '/assets/ramma-merch.jpg',
@@ -12,15 +12,19 @@ const images = [
 
 export default function SeccionGacetaShop() {
     return (
-        <section className="flex flex-col gap-6 ">
+        <section className="flex flex-col gap-12 ">
+            <TextDiv>
+                <span className="font-medium ml-14 text-orange-500 text-lg subtitulo">#GacetaShop</span> 
+                <h2 className="titulo ml-14">gaceta <br /> <span className="font-instrument italic">shop</span></h2>
+            </TextDiv>
             <div>
-                <span className="font-medium ml-14 text-orange-500 text-lg">#GacetaShop</span> 
-                <h2 className="text-6xl text-white font-semibold titulo ml-14 mb-6">gaceta <br /> <span className="font-instrument italic">shop</span></h2>
-            </div>
                 <CarrouselFotosShop images={images} />
-            <div className="flex justify-content-center mb-20 mt-10">
-                <a href="https://gaceta.shop/" className="mx-auto"><BotonGaceta size="md">Visitar Shop</BotonGaceta></a>
-            </div >
+                <div className="flex justify-content-center mb-20 mt-10">
+                    <button className="rounded-full font-medium text-base leading-tight transition mx-auto h-9 w-[160px] subtitulo bg-orange-500 text-white border border-orange-500 hover:bg-white hover:text-orange-500">
+                        Visitar Shop 
+                    </button>
+                </div >
+            </div>
         </section>
     )
 }

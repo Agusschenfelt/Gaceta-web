@@ -4,6 +4,7 @@ import ArtistasPage from './pages/ArtistasPage';
 import SobreNosotrosPage from './pages/SobreNosotrosPage';
 import './index.css';
 
+
 export default function App() {
   return (
     <Routes>

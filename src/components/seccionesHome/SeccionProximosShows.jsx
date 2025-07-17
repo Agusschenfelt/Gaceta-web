@@ -4,8 +4,8 @@ import TablaShowsDesktop from './TablaShowsDesktop';
 export default function SeccionProximosShows() {
   return (
     <section className="bg-black text-white py-10 flex flex-col mx-14">
-      <span className="text-orange-500 text-lg font-medium mb-2">#Live</span> 
-      <h2 className="text-6xl">
+      <span className="text-orange-500 text-lg font-medium subtitulo">#Live</span> 
+      <h2 className="titulo">
         <span className='font-semibold titulo'>próximos</span> 
         <br />
         <span className='font-instrument italic'>shows</span>
