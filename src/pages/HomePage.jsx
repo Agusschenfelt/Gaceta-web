@@ -7,6 +7,7 @@ import SeccionSobreNosotros from "../components/seccionesHome/SeccionSobreNosotr
 import SeccionHeaderHome from "../components/seccionesHome/SeccionHeaderHome";
 import NavBar from "../components/NavBar";
 
+
 export default function HomePage() {
 
   return (

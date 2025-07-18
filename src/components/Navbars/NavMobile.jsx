@@ -4,7 +4,6 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid'
 export default function NavMobile() {
   const [isOpen, setIsOpen] = useState(false)
 
-  // Bloquear scroll de fondo
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : ''
   }, [isOpen])
@@ -18,18 +17,18 @@ export default function NavMobile() {
 
   return (
     <>
-      <header className="h-[80px] flex items-center justify-between px-4 fixed w-full bg-[#000000d1] text-white md:hidden z-50">
+      <header className="h-[80px]  sm:h-[90px] flex items-center justify-between px-9 sm:px-14 fixed w-full bg-[#000000d1] text-white lg:hidden z-50">
         <img
           src="src/assets/logo-gaceta-blanco.png"
           alt="Logo"
-          className="w-[112px] h-auto"
+          className="w-[112px] sm:w-[120px] h-auto"
         />
         <button onClick={() => setIsOpen(true)} aria-label="Abrir menú">
-          <Bars3Icon className="h-8 w-8 text-white " />
+          <Bars3Icon className="h-8 w-8 text-white sm:h-10 sm:w-10" />
         </button>
       </header>
 
-      <div className="fixed inset-0 z-50 flex pointer-events-none md:hidden">
+      <div className="fixed inset-0 z-50 flex pointer-events-none lg:hidden">
         <div
           className={`
             flex-1

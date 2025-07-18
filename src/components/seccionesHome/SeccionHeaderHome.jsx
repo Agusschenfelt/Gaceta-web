@@ -11,7 +11,7 @@ const allSlides = [images, images, images]
 
 export default function SeccionHeaderHome() {
     return (
-        <div className="h-[80vh] mt-28">
+        <div className="h-[80vh] mt-28 lg:mt-48 lg:h-[70vh]">
             <CarrouselNewsHome images={images} />
         </div>
     )

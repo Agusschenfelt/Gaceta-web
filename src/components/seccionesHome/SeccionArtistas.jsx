@@ -1,5 +1,6 @@
 import SlideArtista from "./SliderArtista";
 import { MediaSection } from '../ui/AnimatedSection'
+import { CgArrowTopRight } from "react-icons/cg";
 
 
 const artistas = [
@@ -27,20 +28,21 @@ const artistas = [
 
 export default function SeccionArtistas() {
     return (
-        <MediaSection className="flex flex-col gap-14 relative">
-          <div className="ml-14">
-            <span className="subtitulo font-medium text-orange-500 text-lg">#Artistas</span> 
-            <h2 className="titulo">en primera <br /><span className="font-instrument italic">persona</span></h2>
+        <MediaSection className="flex flex-col md:flex-row md:justify-between md:mr-[10%] xl:ml-[11.5rem] gap-14 relative ">
+          <div className="ml-14 xl:ml-0">
+            <span className="subtitulo font-medium text-orange-500 text-lg xl:text-xl">#Artistas</span> 
+            <h2 className="titulo">en <br className="hidden lg:block"/> primera <br /><span className="font-instrument italic">persona</span></h2>
           </div>
-          <div className="flex flex-col gap-7">
-            <div className="flex gap-4 overflow-x-auto ml-14">
+          <div className="flex flex-col gap-7 ">
+            <div className="flex gap-4 overflow-x-auto sm:gap-8 md:gap-4 ml-14 lg:gap-9">
               {artistas.map((artista, index) => (
                     <SlideArtista key={index} {...artista} />
               ))}
             </div>
             <div className="w-full flex justify-end mt-4">
-              <button className="rounded-full font-medium text-base leading-none transition mr-[11%] py-2 px-5 w-[130px] bg-orange-500 text-white border border-orange-500 hover:bg-white hover:text-orange-500">
+              <button className="rounded-full inline-flex items-center justify-center font-normal text-base leading-none inter transition mr-[11%] sm:mr-[17%] md:mr-[11%] lg:mr-[0] py-2 px-5 lg:px-3 w-[130px] lg:w-[240px] lg:h-10 lg:text-lg lg:py-5 bg-orange-500 text-white border border-orange-500 hover:bg-white hover:text-orange-500">
                 Todos los artistas
+                <CgArrowTopRight className="size-5" />
               </button>
             </div>
           </div>

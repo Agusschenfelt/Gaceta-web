@@ -1,22 +1,82 @@
 import ListaShowsMobile from './ListaShowsMobile';
 import TablaShowsDesktop from './TablaShowsDesktop';
 
-export default function SeccionProximosShows() {
-  return (
-    <section className="bg-black text-white py-10 flex flex-col mx-14">
-      <span className="text-orange-500 text-lg font-medium subtitulo">#Live</span> 
-      <h2 className="titulo">
-        <span className='font-semibold titulo'>próximos</span> 
-        <br />
-        <span className='font-instrument italic'>shows</span>
-      </h2>
 
-      <div className="block md:hidden">
-        <ListaShowsMobile />
+
+export default function SeccionProximosShows() {
+
+  const shows = [
+    {
+      artista: 'Ramma',
+      fecha: '31 de Marzo',
+      lugar: 'Sala El Sol',
+      ciudad: 'Madrid',
+      pais: '🇪🇸',
+      soldOut: true,
+    },
+    {
+      artista: 'Ramma',
+      fecha: '06 de Abril',
+      lugar: 'Sauvage',
+      ciudad: 'Barcelona',
+      pais: '🇪🇸',
+      soldOut: true,
+    },
+    {
+      artista: 'Ramma',
+      fecha: '11 de Abril',
+      lugar: 'C Art Media',
+      ciudad: 'Buenos Aires',
+      pais: '🇦🇷',
+      soldOut: false,
+      link: 'https://entradas.example.com',
+    },
+    {
+      artista: 'Ramma',
+      fecha: '27 de Mayo',
+      lugar: 'Groove',
+      ciudad: 'Buenos Aires',
+      pais: '🇦🇷',
+      soldOut: false,
+      link: 'https://entradas.example.com',
+    },
+    {
+      artista: 'Valuto',
+      fecha: '7 de Agosto',
+      lugar: 'Magnolio Sala',
+      ciudad: 'Montevideo',
+      pais: '🇺🇾',
+      soldOut: false,
+      link: 'https://entradas.example.com',
+    },
+    {
+      artista: 'Valuto',
+      fecha: '28 de Agosto',
+      lugar: 'La Tangente',
+      ciudad: 'Buenos Aires',
+      pais: '🇦🇷',
+      soldOut: false,
+      link: 'https://entradas.example.com',
+    },
+  ];
+  
+  return (
+    <section className="text-white py-10 flex flex-col mx-14">
+      <div className='lg:ml-32'>
+        <span className="text-orange-500 text-lg font-medium xl:text-xl subtitulo">#Live</span> 
+        <h2 className="titulo">
+          <span className='font-semibold titulo'>próximos</span> 
+          <br />
+          <span className='font-instrument italic'>shows</span>
+        </h2>
       </div>
 
-      <div className="hidden md:block">
-        <TablaShowsDesktop />
+      <div className="block lg:hidden">
+        <ListaShowsMobile shows={shows} />
+      </div>
+
+      <div className="hidden lg:block">
+        <TablaShowsDesktop shows={shows} />
       </div>
     </section>
   );

@@ -16,7 +16,7 @@ export default function CarrouselNewsHome( {images} ) {
     return (
         
         <div className="relative w-full h-full">
-            <div className="custom-pagination" />
+            <div className="custom-pagination lg:hidden" />
             <Swiper
                 effect="coverflow"
                 grabCursor={true}

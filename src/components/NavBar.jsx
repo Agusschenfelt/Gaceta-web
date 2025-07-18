@@ -4,12 +4,11 @@ import NavMobile  from './Navbars/NavMobile'
 export default function NavBar() {
   return (
     <nav className="w-full">
-      {/* Desktop: oculto en md+ */}
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
         <NavDesktop />
       </div>
-      {/* Mobile: sólo visible <md */}
-      <div className="block md:hidden">
+      
+      <div className="block lg:hidden">
         <NavMobile />
       </div>
     </nav>

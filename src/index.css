@@ -38,6 +38,10 @@
   font-weight: 500;
 }
 
+.inter {
+  font-family: var(--fuente-inter);
+}
+
 .swiper-pagination-bullet {
   width: 14px;
   height: 14px;
@@ -65,5 +69,26 @@
   pointer-events: none; 
 }
 
+@media (min-width: 768px) {
+  .titulo {
+    font-size: 4rem;
+  }
+
+  .subtitulo {
+    font-size: 1.2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .titulo {
+    font-size: 4.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .titulo {
+    font-size: 5rem;
+  }
+}
 
 

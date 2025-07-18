@@ -21,15 +21,15 @@ export default function SeccionGacetaTv() {
   }, []);
 
   return (
-    <section className='flex flex-col gap-8'>
-        <TextDiv>
-            <span className="font-medium ml-14 text-orange-500 text-lg subtitulo">#GaceTv</span> 
-            <h2 className="titulo ml-14">crear. <br /> <span className="font-instrument italic">escuchar.</span> <br />compartir.</h2>
+    <section className='flex flex-col gap-10 lg:gap-14'>
+        <TextDiv className='ml-14 lg:ml-[11.5rem]'>
+            <span className="font-medium text-orange-500 text-lg xl:text-xl subtitulo">#GaceTv</span> 
+            <h2 className="titulo">crear. <br /> <span className="font-instrument italic">escuchar.</span> <br />compartir.</h2>
         </TextDiv>
-        <div className="aspect-video w-full max-w-3xl">
+        <div className="aspect-video w-full lg:max-w-[75%] lg:m-auto">
             {videoId && (
             <iframe 
-                className="w-full min-h-96 rounded-3xl"
+                className="w-full min-h-96 rounded-3xl lg:h-full "
                 src={`https://www.youtube.com/embed/${videoId}?rel=0`}
                 title="GaceTv" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 

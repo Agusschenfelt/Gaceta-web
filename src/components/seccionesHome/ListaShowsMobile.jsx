@@ -1,63 +1,9 @@
 import { MediaSectionShows } from '../ui/AnimatedSection'
 
-export default function ListaShowsMobile() {
-  const shows = [
-    {
-      artista: 'Ramma',
-      fecha: '31 de Marzo',
-      lugar: 'Sala El Sol',
-      ciudad: 'Madrid',
-      pais: '🇪🇸',
-      soldOut: true,
-    },
-    {
-      artista: 'Ramma',
-      fecha: '06 de Abril',
-      lugar: 'Sauvage',
-      ciudad: 'Barcelona',
-      pais: '🇪🇸',
-      soldOut: true,
-    },
-    {
-      artista: 'Ramma',
-      fecha: '11 de Abril',
-      lugar: 'C Art Media',
-      ciudad: 'Buenos Aires',
-      pais: '🇦🇷',
-      soldOut: false,
-      link: 'https://entradas.example.com',
-    },
-    {
-      artista: 'Ramma',
-      fecha: '27 de Mayo',
-      lugar: 'Groove',
-      ciudad: 'Buenos Aires',
-      pais: '🇦🇷',
-      soldOut: false,
-      link: 'https://entradas.example.com',
-    },
-    {
-      artista: 'Valuto',
-      fecha: '7 de Agosto',
-      lugar: 'Magnolio Sala',
-      ciudad: 'Montevideo',
-      pais: '🇺🇾',
-      soldOut: false,
-      link: 'https://entradas.example.com',
-    },
-    {
-      artista: 'Valuto',
-      fecha: '28 de Agosto',
-      lugar: 'La Tangente',
-      ciudad: 'Buenos Aires',
-      pais: '🇦🇷',
-      soldOut: false,
-      link: 'https://entradas.example.com',
-    },
-  ];
+export default function ListaShowsMobile({ shows }) {
 
   return (
-    <div className="flex flex-col gap-4 mt-20  w-">
+    <div className="flex flex-col gap-4 mt-20 ">
       {shows.map((show, idx) => (
         <MediaSectionShows
           key={idx}
