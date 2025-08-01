@@ -2,7 +2,7 @@ export default function NavDesktop() {
   return (
     <div className="flex items-center justify-between px-12 py-9 bg-[#000000d1] text-white fixed w-full z-50">
       <img src="src/assets/logo-gaceta-blanco.png" alt="Logo" className='h-auto w-[11%]' />
-      <ul className="flex gap-16 inter text-[1.15rem]">
+      <ul className="flex gap-16 inter text-[1.15rem] font-light">
         {['#SobreNosotros','#Artistas','#GacetaTV','#Live'].map(link => (
           <li key={link}><a href={link}>{link}</a></li>
         ))}

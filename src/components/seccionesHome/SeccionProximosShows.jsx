@@ -1,8 +1,6 @@
 import ListaShowsMobile from './ListaShowsMobile';
 import TablaShowsDesktop from './TablaShowsDesktop';
 
-
-
 export default function SeccionProximosShows() {
 
   const shows = [
@@ -58,16 +56,26 @@ export default function SeccionProximosShows() {
       soldOut: false,
       link: 'https://entradas.example.com',
     },
+    {
+      artista: 'Ramma',
+      fecha: '21 de Julio',
+      lugar: 'Sala Uni',
+      ciudad: 'Madrid',
+      pais: '🇪🇸',
+      soldOut: false,
+      link: 'https://entradas.example.com',
+    },
+
   ];
   
   return (
-    <section className="text-white py-10 flex flex-col mx-14">
-      <div className='lg:ml-32'>
+    <section className="text-white py-10 flex flex-col m-14 lg:m-0">
+      <div className='lg:ml-[11.5rem] '>
         <span className="text-orange-500 text-lg font-medium xl:text-xl subtitulo">#Live</span> 
-        <h2 className="titulo">
-          <span className='font-semibold titulo'>próximos</span> 
+        <h2 className="titulo text-lg">
+          próximos 
           <br />
-          <span className='font-instrument italic'>shows</span>
+          shows
         </h2>
       </div>
 

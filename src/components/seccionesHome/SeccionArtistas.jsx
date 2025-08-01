@@ -28,8 +28,8 @@ const artistas = [
 
 export default function SeccionArtistas() {
     return (
-        <MediaSection className="flex flex-col md:flex-row md:justify-between md:mr-[10%] xl:ml-[11.5rem] gap-14 relative ">
-          <div className="ml-14 xl:ml-0">
+        <MediaSection className="flex flex-col md:flex-row md:justify-between md:mr-[10%]  gap-14 relative ">
+          <div className="ml-14 lg:ml-[11.5rem]">
             <span className="subtitulo font-medium text-orange-500 text-lg xl:text-xl">#Artistas</span> 
             <h2 className="titulo">en <br className="hidden lg:block"/> primera <br /><span className="font-instrument italic">persona</span></h2>
           </div>

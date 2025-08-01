@@ -2,7 +2,7 @@ import { FaInstagram, FaTwitter, FaTiktok, FaYoutube } from 'react-icons/fa';
 
 export default function FooterGaceta() {
   return (
-    <footer className="bg-orange-600 text-white">
+    <footer className="bg-orange-600 text-white relative">
       <div className="max-w-4xl mx-auto px-6 py-6 grid grid-cols-2 gap-4 md:grid-cols-3 md:py-10">
         {/* Brand: ocupa 2 cols en móvil */}
         <div className="col-span-2 md:col-span-1 flex flex-col items-center md:items-start">
