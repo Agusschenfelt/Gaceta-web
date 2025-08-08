@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid'
+import { Link } from 'react-router-dom'
 
 export default function NavMobile() {
   const [isOpen, setIsOpen] = useState(false)
@@ -9,9 +10,9 @@ export default function NavMobile() {
   }, [isOpen])
 
   const navItems = [
-    { label: '#SobreNosotros', href: '/#SobreNosotros' },
-    { label: '#Artistas',       href: '/#Artistas'       },
-    { label: '#GacetaTV',       href: '/#GacetaTV'       },
+    { label: '#SobreNosotros', href: '/sobre-nosotros' },
+    { label: '#Artistas',       href: '/artistas'       },
+    { label: '#GaceTV',       href: '/#GacetaTV'       },
     { label: '#Live',           href: '/#Live'           },
   ]
 
@@ -56,13 +57,13 @@ export default function NavMobile() {
           </div>
           <nav className="flex flex-col space-y-6 pl-10 mt-10">
             {navItems.map(item => (
-              <a
+              <Link
                 key={item.href}
-                href={item.href}
+                to={item.href}
                 className="text-xl hover:underline"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
           </nav>
           <div className="mt-5 px-10 py-6">

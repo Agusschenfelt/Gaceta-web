@@ -21,7 +21,7 @@ export default function SeccionGacetaTv() {
   }, []);
 
   return (
-    <section className='flex flex-col gap-10 lg:gap-14'>
+    <section className='flex flex-col gap-10 lg:gap-14' id='gacetv'>
         <TextDiv className='ml-14 lg:ml-[11.5rem]'>
             <span className="font-medium text-orange-500 text-lg xl:text-xl subtitulo">#GaceTv</span> 
             <h2 className="titulo">crear. <br /> <span className="font-instrument italic">escuchar.</span> <br />compartir.</h2>
