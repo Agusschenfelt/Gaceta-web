@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import BioSection from '../components/seccionesArtistas/BioSection';
 import ProjectsSection from '../components/seccionesArtistas/ProjectsSection';
-import LivesetSection from '../components/seccionesArtistas/LiveSetSection';
+import LivesetSection from '../components/seccionesArtistas/LivesetSection';
 
 
 export default function ArtistPage({ artists }) {
