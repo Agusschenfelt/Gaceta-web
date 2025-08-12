@@ -10,7 +10,7 @@ import 'swiper/css/autoplay';
 export default function CarrouselFotosShop({ images }) {
 
   return (
-    <div className="w-full h-auto lg:hidden">
+    <div className="w-full h-auto min-h-80 lg:hidden">
       <Swiper
         effect="coverflow"
         grabCursor={true}

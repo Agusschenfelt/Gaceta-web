@@ -9,7 +9,7 @@ import SeccionHeaderHome from "../components/seccionesHome/SeccionHeaderHome";
 export default function HomePage() {
 
   return (
-    <div className="bg-black flex flex-col min-h-screen gap-48">
+    <div className="bg-black flex flex-col min-h-screen gap-40">
         <SeccionHeaderHome />
         <SeccionSobreNosotros />
         <SeccionArtistas />

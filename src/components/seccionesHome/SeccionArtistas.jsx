@@ -1,6 +1,7 @@
 import SlideArtista from "./SliderArtista";
 import { MediaSection } from '../ui/AnimatedSection'
 import { CgArrowTopRight } from "react-icons/cg";
+import { Link } from "react-router-dom";
 
 
 const artistas = [
@@ -40,10 +41,12 @@ export default function SeccionArtistas() {
               ))}
             </div>
             <div className="w-full flex justify-end mt-4">
-              <button className="rounded-full inline-flex items-center justify-center font-normal text-base leading-none inter transition mr-[11%] sm:mr-[17%] md:mr-[11%] lg:mr-[0] py-2 px-5 lg:px-3 w-[130px] lg:w-[240px] lg:h-10 lg:text-lg lg:py-5 bg-orange-500 text-white border border-orange-500 hover:bg-white hover:text-orange-500">
-                Todos los artistas
-                <CgArrowTopRight className="size-5" />
-              </button>
+              <Link to="/artistas">
+                <button className="rounded-full inline-flex items-center justify-center font-normal text-base leading-none inter transition mr-[11%] sm:mr-[17%] md:mr-[11%] lg:mr-[0] py-2 px-5 lg:px-3 w-[130px] lg:w-[240px] lg:h-10 lg:text-lg lg:py-5 bg-orange-500 text-white border border-orange-500 hover:bg-white hover:text-orange-500">
+                  Todos los artistas
+                  <CgArrowTopRight className="size-5" />
+                </button>
+              </Link>
             </div>
           </div>
         </MediaSection>

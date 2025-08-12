@@ -69,7 +69,7 @@ export default function SeccionProximosShows() {
   ];
   
   return (
-    <section className="text-white py-10 flex flex-col m-14 lg:m-0">
+    <section className="text-white py-10 flex flex-col m-14 mb-0 lg:m-0">
       <div className='lg:ml-[11.5rem] '>
         <span className="text-orange-500 text-lg font-medium xl:text-xl subtitulo">#Live</span> 
         <h2 className="titulo text-lg">

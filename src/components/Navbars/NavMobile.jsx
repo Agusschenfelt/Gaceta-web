@@ -10,20 +10,22 @@ export default function NavMobile() {
   }, [isOpen])
 
   const navItems = [
-    { label: '#SobreNosotros', href: '/sobre-nosotros' },
-    { label: '#Artistas',       href: '/artistas'       },
-    { label: '#GaceTV',       href: '/#GacetaTV'       },
-    { label: '#Live',           href: '/#Live'           },
+    { label: 'SobreNosotros', href: '/sobre-nosotros' },
+    { label: 'Artistas',       href: '/artistas'       },
+    { label: 'GaceTV',       href: '#gacetv'       },
+    { label: 'Live',           href: '#live'           },
   ]
 
   return (
     <>
       <header className="h-[80px]  sm:h-[90px] flex items-center justify-between px-9 sm:px-14 fixed w-full bg-[#000000d1] text-white lg:hidden z-50">
-        <img
-          src="src/assets/logo-gaceta-blanco.png"
-          alt="Logo"
-          className="w-[112px] sm:w-[120px] h-auto"
-        />
+        <Link to='/'>
+          <img
+            src="/assets/logo-gaceta-blanco.png"
+            alt="Logo"
+            className="w-[112px] sm:w-[120px] h-auto"
+          />
+        </Link>
         <button onClick={() => setIsOpen(true)} aria-label="Abrir menú">
           <Bars3Icon className="h-8 w-8 text-white sm:h-10 sm:w-10" />
         </button>
@@ -68,8 +70,9 @@ export default function NavMobile() {
           </nav>
           <div className="mt-5 px-10 py-6">
             <a
-              href="/shop"
+              href="https://gaceta.shop/"
               className="block text-center bg-white text-red-600 py-2 rounded-full font-medium"
+              target='_blank'
             >
               Shop
             </a>

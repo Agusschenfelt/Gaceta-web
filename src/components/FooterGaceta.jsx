@@ -6,7 +6,7 @@ export default function FooterGaceta() {
       <div className="max-w-4xl mx-auto px-6 py-6 grid grid-cols-2 gap-4 md:grid-cols-3 md:py-10">
         {/* Brand: ocupa 2 cols en móvil */}
         <div className="col-span-2 md:col-span-1 flex flex-col items-center md:items-start">
-          <img src="src/assets/logo-gaceta-blanco.png" alt="Gaceta Logo" className="h-8 mb-2" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />
+          <img src="/assets/logo-gaceta-blanco.png" alt="Gaceta Logo" className="h-8 mb-2" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />
           <p className="text-xs hidden md:block">Creando experiencias únicas</p>
         </div>
 
@@ -24,10 +24,10 @@ export default function FooterGaceta() {
       <div className="flex flex-col items-center md:items-end">
         <h3 className="font-semibold mb-2 text-sm">Seguinos</h3>
         <div className="flex space-x-3 text-xl">
-          <a href="#" aria-label="Instagram"><FaInstagram /></a>
-          <a href="#" aria-label="Twitter"><FaTwitter /></a>
-          <a href="#" aria-label="TikTok"><FaTiktok /></a>
-          <a href="#" aria-label="YouTube"><FaYoutube /></a>
+          <a href="https://www.instagram.com/gacetaplay/" target='_blank' aria-label="Instagram"><FaInstagram /></a>
+          <a href="https://x.com/gacetaplay" target='_blank' aria-label="Twitter"><FaTwitter /></a>
+          <a href="https://www.tiktok.com/@gaceta.play" target='_blank' aria-label="TikTok"><FaTiktok /></a>
+          <a href="https://www.youtube.com/@gacetaplay" target='_blank' aria-label="YouTube"><FaYoutube /></a>
         </div>
       </div>
     </div>
