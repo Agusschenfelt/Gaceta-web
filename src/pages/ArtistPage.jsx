@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import BioSection from '../components/seccionesArtistas/BioSection';
 import ProjectsSection from '../components/seccionesArtistas/ProjectsSection';
-import LiveSetSection from '../components/seccionesArtistas/LiveSetSection';
+import LivesetSection from '../components/seccionesArtistas/LiveSetSection';
 
 
 export default function ArtistPage({ artists }) {
@@ -56,7 +56,7 @@ export default function ArtistPage({ artists }) {
       )}
 
       {tab === 'liveset' && (
-        <LiveSetSection />
+        <LivesetSection />
       )}
       
     </div>
