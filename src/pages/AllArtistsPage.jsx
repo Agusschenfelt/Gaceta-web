@@ -1,9 +1,10 @@
-import ArtistsGrid from "../components/seccionesArtistas/ArtistsGrid";
+import ArtistScroller from "../components/Pagina-Artistas/ArtistScroller.jsx";
 
-export default function AllArtistsPage({artists}) {
+
+export default function AllArtistsPage() {
   return (
-    <div className="bg-black flex flex-col min-h-screen">
-        <ArtistsGrid artists={artists}/>
-    </div>
+    <section className="bg-black min-h-dvh">
+      <ArtistScroller />
+    </section>
   );
 }

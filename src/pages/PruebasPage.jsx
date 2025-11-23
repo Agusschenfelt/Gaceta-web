@@ -3,6 +3,10 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
+import MusicPlayer from "../components/MusicPlayer.jsx";
+import IntroLogoToVideo from "../components/IntroToLogo.jsx";
+import ArtistScroller from "../components/ArtistScroller.jsx";
+
 gsap.registerPlugin(ScrollTrigger, useGSAP, SplitText);
 
 export default function PruebasPage() {
@@ -58,6 +62,7 @@ export default function PruebasPage() {
                 start: "-60 top", 
                 end: "bottom top",
                 scrub: true,
+                markers: true
             }
         });
 
@@ -127,6 +132,7 @@ export default function PruebasPage() {
 
   return (
     <section className="bg-black h-[800vh]">
+        <IntroLogoToVideo />
         <div className="h-auto flex flex-col align-center justify-start pt-32 gap-10">
             <img src="src/assets/logo-gaceta-blanco.png" alt="" className="w-1/5 mx-auto" />
             <p
@@ -169,6 +175,11 @@ export default function PruebasPage() {
                 </p>
             </div>
         </div>
+        <div>
+            <MusicPlayer />
+        </div>
+
+        <ArtistScroller />
       
     </section>
   );

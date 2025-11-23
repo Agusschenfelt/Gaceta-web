@@ -1,129 +1,76 @@
+// App.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
-import Layout from "./components/Layout";
-import HomePage from './pages/HomePage';
-import AllArtistsPage from './pages/AllArtistsPage';
+import Layout from "./components/Layout/Layout";
+import HomePage from "./pages/HomePage";
 import ArtistPage from "./pages/ArtistPage";
-import SobreNosotrosPage from './pages/SobreNosotrosPage';
-import ScrollToTop from "./components/ScrollToTop";
-import './index.css';
+import SobreNosotrosPage from "./pages/SobreNosotrosPage";
+import PruebasPage from "./components/Pruebas/PruebasPage";
+import GalleryPage from "./pages/GalleryPage";
+import MenuProvider from "./components/Layout/MenuStore";
+import ScrollToTopOnRouteChange from "./ScrollToTopOnRouteChange";
+import MusicPlayer from "./components/Layout/MusicPlayer";
+import ResetBgOnRoute from "./components/ResetBgOnRoute";
 
+import "./index.css";
+import "swiper/css";
+import "swiper/css/navigation";
 
 export default function App() {
-    const artists = [
+  const artists = [
     {
-      id: "ramma",
-      name: "Ramma",
-      photo: "/assets/ramma-perfil.jpg",
-      fondo: "/assets/ramma-fondo.jpg",
-      bio: "Ramma comenzó su carrera musical en 2020, explorando géneros como el rap, trap y reggaetón. En 2022 lanzó Incrédulo, su primer álbum, seguido por Intrépido en 2023, mostrando una evolución artística clara. En 2024 participó en Bichigyal Rmx, tema viral que lo posicionó como una promesa fuerte del trap argentino. En 2025 lanzó Inmortal, sellando su identidad en la escena.G",
-      tag : "/assets/ramma-tag.mp3",
-      projects: [
+      nombre: "ARA",
+      rol: "Cantante / Productor",
+      videoFondo: "/assets/ara-perfil.mp4",
+      redes: {
+        instagram: "https://instagram.com/ramma",
+        spotify: "https://open.spotify.com/artist/...",
+        youtube: "https://youtube.com/...",
+        x: "https://x.com/ramma",
+      },
+      biografia: `Ramiro Valentín Domínguez nacido en Buenos Aires, Argentina. Es músico y compositor. Creció en una casa con piano, donde su padre y su hermana tocaban. Ahí dio sus primeros pasos hasta convertir esa curiosidad en un vínculo profundo con la música. Su acercamiento se consolidó entre el piano y la iglesia, donde la práctica musical era parte de la vida familiar. A los 6 años descubrió el rock nacional y, con su primer MP3, empezó a devorar discos; más tarde llegó el folklore y el rock internacional con bandas como Oasis o The Beatles y, ya de adolescente, el hip-hop.
+Estudia piano desde los 6 años, descubrió Ableton a los 12 y, desde los 14, lo usa de forma regular. A lo largo de su adolescencia grabó canciones a raperos de Trelew, mientras comenzaba a hacer su propia música, un hábito que mantiene hasta hoy. Su proyecto se distingue por la versatilidad: en el equipo “Ramma” cada integrante asume más de un rol cuando hace falta, y esa flexibilidad también se refleja en la música, capaz de ir de un tema acústico a un trap con naturalidad.
+Ramiro entiende la música como su forma más honesta de expresión: allí dice lo que no puede en palabras. En su catálogo conviven lanzamientos con millones de reproducciones como “MVP” o “Nostalgia”, y un hito que marcó su recorrido: “Bichigyal Remix”.
+Como solista, editó tres álbumes: Incrédulo (2022), Intrépido (2023) y INMORTAL (2025). Este último marcó un hito en su recorrido: debutó en el Top 8 global, consolidando el crecimiento de su obra y el alcance de su propuesta. En su catálogo conviven lanzamientos con millones de reproducciones como “MVP” o “Nostalgia”, además de “Bichigyal Remix”, que expandieron su audiencia y su escena. Ahora prepara RV, su proyecto más íntimo hasta la fecha.`,
+      fotos: [
+        "/assets/ramma-perfil.jpg",
+        "/assets/ramma-perfil.jpg",
+        "/assets/ramma-perfil.jpg",
+        "/assets/ramma-perfil.jpg",
+        "/assets/ramma-perfil.jpg",
+        "/assets/ramma-perfil.jpg",
+      ],
+      proyectos: [
         {
-          id: "trip2",
-          title: "Trip 2 – EP",
-          cover: "/assets/projects-ramma/trip2-front.jpg",
-          date: "15 Marzo 2023",
-          label: "Independiente",
-          producer: "The Beats Co.",
-          spotify : "https://open.spotify.com/intl-es/album/7DkEdrof8yEWH1ofkLHWDT?si=2mr_vYVaSdmEJaTutZdDzw",
-          bio: "Segundo EP de Ramma, continuando su exploración del trap con un sonido más maduro y letras introspectivas."
+          nombre: "Delirio",
+          imagen: "/assets/ramma-perfil.jpg",
+          spotify: "https://open.spotify.com/album/...",
         },
         {
-          id: "etlm",
-          title: "EL TRAP LO MERECE – EP",
-          cover: "/assets/projects-ramma/etlm-front.jpg",
-          date: "10 Julio 2023",
-          label: "Sky Records",
-          producer: "DJ Flow",
-          spotify : "https://open.spotify.com/intl-es/album/7DkEdrof8yEWH1ofkLHWDT?si=2mr_vYVaSdmEJaTutZdDzw",
-          bio : "EP que consolidó a Ramma en la escena del trap, con colaboraciones destacadas y un sonido innovador."
-        },
-        {
-          id: "immortal",
-          title: "IMMORTAL – Album",
-          cover: "/assets/projects-ramma/inmortal-front.jpg",
-          date: "02 Enero 2025",
-          label: "Universal Music",
-          producer: "Mastermind",
-          spotify : "https://open.spotify.com/intl-es/album/7DkEdrof8yEWH1ofkLHWDT?si=2mr_vYVaSdmEJaTutZdDzw",
-          bio : "Álbum debut que marcó un hito en la carrera de Ramma, mostrando su versatilidad y profundidad lírica."
-        },
-        {
-          id: "incredulo",
-          title: "INCREDULO – Album",
-          cover: "/assets/projects-ramma/incredulo-front.jpg",
-          date: "02 Enero 2025",
-          label: "Universal Music",
-          producer: "Mastermind",
-          spotify : "https://open.spotify.com/intl-es/album/7DkEdrof8yEWH1ofkLHWDT?si=2mr_vYVaSdmEJaTutZdDzw",
-          bio : "Primer álbum de Ramma, que lo estableció como una voz única en el panorama del trap argentino."
-        },
-        {
-          id: "intrepido",
-          title: "INTREPIDO – Album",
-          cover: "/assets/projects-ramma/intrepido-front.jpg",
-          date: "02 Enero 2025",
-          label: "Universal Music",
-          producer: "Mastermind",
-          spotify : "https://open.spotify.com/intl-es/album/7DkEdrof8yEWH1ofkLHWDT?si=2mr_vYVaSdmEJaTutZdDzw",
-          bio : "Álbum que refleja la evolución artística de Ramma, con un enfoque más experimental y colaboraciones internacionales."
+          nombre: "Constelacion",
+          imagen: "/assets/ramma-perfil.jpg",
+          spotify: "https://open.spotify.com/album/...",
         },
       ],
-      spotifyEmbed: "https://open.spotify.com/embed/album/1A2B3C4D5E6F",
     },
-    {
-      id: "ara",
-      name: "ARA",
-      photo: "/assets/ara-photo.jpg",
-      fondo: "/assets/ara-fondo.jpg",
-      bio: "ARA es una artista emergente que ha capturado la atención de la escena musical con su estilo único y su voz poderosa. Desde sus inicios, ha demostrado una gran versatilidad, explorando diversos géneros y colaborando con otros artistas destacados. Su música se caracteriza por letras profundas y una producción innovadora que resuena con una amplia audiencia.",
-      projects: [
-        {
-          id: "#4u",
-          title: "#4u - EP",
-          cover: "/assets/ara-#4u.jpg",
-          date: "25 Junio 2025",
-          label: "Independiente",
-          producer: "ARA",
-          spotify : "https://open.spotify.com/intl-es/album/1UN6gHFKHxueuhdY4DRegP?si=xvT8n6yHRT-_5qPVJIQPiw",
-          bio : "Primer EP de ARA, que muestra su capacidad para fusionar géneros y crear un sonido fresco y contemporáneo."
-        }
-      ],
-      spotifyEmbed: "https://open.spotify.com/embed/album/1A2B3C4D5E6F",
-    },
-    {
-      id: "valuto",
-      name: "Valuto",
-      photo: "/assets/valuto-photo.webp",
-      fondo: "/assets/valuto-fondo.webp",
-      bio: "Valuto es una artista emergente que ha capturado la atención de la escena musical con su estilo único y su voz poderosa. Desde sus inicios, ha demostrado una gran versatilidad, explorando diversos géneros y colaborando con otros artistas destacados. Su música se caracteriza por letras profundas y una producción innovadora que resuena con una amplia audiencia.",
-      projects: [
-        {
-          id: "ceup",
-          title: "CON EL UNIFORME PUESTO - Album",
-          cover: "/assets/ceup.webp",
-          date: "18 Junio 2025",
-          label: "Independiente",
-          producer: "Valuto",
-          spotify : "https://open.spotify.com/intl-es/album/0NSIPu4gynlpDew19wIGGQ?si=eQZ3DImaQmO9CQBm9zsdaQ",
-          bio : "Primer álbum de Valuto, que muestra su capacidad para fusionar géneros y crear un sonido fresco y contemporáneo."
-        }
-      ],
-      spotifyEmbed: "https://open.spotify.com/embed/album/1A2B3C4D5E6F",
-    }
   ];
+
   return (
-    <>
-      <ScrollToTop />
+    <MenuProvider>
+      <ScrollToTopOnRouteChange />
+      <ResetBgOnRoute />
+
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
-          <Route path="artistas" element={<AllArtistsPage artists={artists}/>} />
-          <Route path="artistas/:id" element={<ArtistPage artists={artists}/>} />
-          <Route path="sobre-nosotros" element={<SobreNosotrosPage/>} /> 
+          <Route path=":id" element={<ArtistPage artistsData={artists} />} />
+          <Route path="sobre-nosotros" element={<SobreNosotrosPage />} />
+          <Route path="gallery" element={<GalleryPage />} />
+          <Route path="pruebas" element={<PruebasPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
-    </>
+
+      <MusicPlayer />
+    </MenuProvider>
   );
 }
