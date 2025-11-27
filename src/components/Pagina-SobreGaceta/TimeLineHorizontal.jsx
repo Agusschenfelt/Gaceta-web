@@ -5,8 +5,7 @@ import { GACETA_TIMELINE } from "./data";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// AJUSTE 1: Volvemos a un punto medio (30%) para que no baje tanto
-const LINE_TOP_PCT = 30; 
+const LINE_TOP_PCT = 22; 
 const CARD_W = 320;
 const CARD_GAP = 80;
 const YEAR_GAP = 400;
@@ -63,7 +62,7 @@ export default function TimeLineHorizontal({ data = GACETA_TIMELINE }) {
           scrollTrigger: { 
             trigger: section, 
             start: "top 60%", 
-            end: "top 30%", // Ajustado al nuevo pct
+            end: "top 30%", 
             scrub: true 
           } 
         }
@@ -142,9 +141,6 @@ export default function TimeLineHorizontal({ data = GACETA_TIMELINE }) {
           
           {data.map((block) => (
             <div key={block.year} className="relative shrink-0 flex" style={{ width: widthForYear(block.events) }}>
-                {/* AJUSTE 2: '-top-[180px]' en lugar de 220px. 
-                   Subimos el año para que quede centrado respecto a la línea y no se corte abajo.
-                */}
                 <span className="absolute -top-[180px] left-10 text-[20rem] font-black text-white/[0.08] select-none pointer-events-none leading-none font-inter z-0 blur-sm">
                     {block.year}
                 </span>
@@ -182,13 +178,16 @@ function EventCard({ ev }) {
 
       <article className="w-full transition-transform duration-500 group-hover:-translate-y-2">
         <p className="text-[10px] uppercase tracking-[0.2em] text-[#dee5a0] mb-3 font-mono opacity-80 group-hover:opacity-100 transition-opacity">{fmt(ev.date)}</p>
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-white/5 ring-1 ring-white/10 mb-5 transition-all duration-500 group-hover:ring-[#dee5a0]/40 group-hover:shadow-[0_10px_40px_-10px_rgba(222,229,160,0.15)]">
+        
+        {/* CAMBIO AQUÍ: aspect-square (1:1) para portadas cuadradas */}
+        <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-white/5 ring-1 ring-white/10 mb-5 transition-all duration-500 group-hover:ring-[#dee5a0]/40 group-hover:shadow-[0_10px_40px_-10px_rgba(222,229,160,0.15)]">
             {ev.media?.type === "video" ? (
                 <video className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" src={ev.media.src} muted loop autoPlay playsInline />
             ) : (
                 <img src={ev.media.src} alt={ev.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity group-hover:scale-105 transition-transform duration-700" loading="lazy" />
             )}
         </div>
+        
         <h3 className="text-2xl font-serif italic leading-none mb-2 text-white/90 group-hover:text-white transition-colors">{ev.title}</h3>
         {ev.desc && <p className="text-sm text-white/60 leading-relaxed font-light text-pretty group-hover:text-white/80 transition-colors">{ev.desc}</p>}
       </article>

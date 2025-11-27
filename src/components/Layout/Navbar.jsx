@@ -51,6 +51,7 @@ export default function Navbar() {
           src="/assets/logo-blanco.png" 
           alt="Gaceta"
           className="block w-[120px] md:w-[150px] transition-opacity group-hover:opacity-80"
+          data-logo="navbar-logo"
         />
       </Link>
 
