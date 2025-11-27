@@ -1,15 +1,15 @@
-// FooterGaceta.jsx
 import { useEffect, useRef, useState } from "react";
 import { FaInstagram, FaTwitter, FaTiktok, FaYoutube } from "react-icons/fa";
 
+// Componente de Letras Saltarinas
 function AnimatedWord({ word, lift = "14vh", className = "" }) {
   return (
     <div className={`flex gap-[0.02em] pointer-events-auto ${className}`}>
       {word.split("").map((ch, i) => (
         <span
           key={i}
-          className="inline-block will-change-transform transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-[var(--lift)]"
-          style={{ ["--lift"]: lift }}
+          className="inline-block will-change-transform transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-[var(--lift)] cursor-default"
+          style={{ "--lift": lift }}
         >
           {ch === " " ? "\u00A0" : ch}
         </span>
@@ -38,156 +38,95 @@ export default function FooterGaceta() {
   return (
     <footer
       ref={rootRef}
-      className="
-        relative bg-neutral-950 text-white overflow-hidden
-        pt-10 pb-32 md:pt-12 md:pb-28
-      "
+      className="relative bg-[#0a0a0a] text-white overflow-hidden pt-20 pb-32 md:pt-32 md:pb-40 border-t border-white/5"
     >
-      {/* Glow */}
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(80%_60%_at_50%_85%,rgba(255,255,255,0.12),rgba(255,255,255,0.06)_40%,transparent_80%)]" />
+      {/* Glow Sutil de Fondo */}
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_bottom_center,rgba(145,30,30,0.15),transparent_70%)]" />
 
-      {/* Línea arriba */}
-      <div className="hidden md:block relative z-20 border-t border-white/10" />
-
-      {/* Cuerpo */}
-      <div
-        className="
-          relative z-20 max-w-6xl mx-auto w-full
-          px-6 pt-10 md:pt-12
-          grid gap-10
-          md:grid-cols-12
-        "
-      >
-        {/* Izquierda: frase grande */}
-        <div className="md:col-span-6 lg:col-span-7 self-start text-left">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-light leading-tight font-inter text-white/90">
-            {/* siempre legible, sin trucos raros */}
-            Creando experiencias
-            <br />
-            <span className="cursiva">únicas</span>
+      <div className="relative z-20 max-w-[1400px] mx-auto w-full px-6 md:px-10 grid gap-16 lg:grid-cols-12">
+        
+        {/* 1. FRASE GIGANTE (Izquierda) */}
+        <div className="lg:col-span-7 self-start">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light leading-[0.95] tracking-tight text-white/90">
+            Creando <br />
+            experiencias <br />
+            <span className="font-serif italic text-[#dee5a0]">únicas.</span>
           </h2>
         </div>
 
-        {/* Derecha: enlaces / contacto / redes */}
-        <div
-          className="
-            md:col-span-6 lg:col-span-5 self-start
-            md:border-l md:border-white/10 md:pl-8
-          "
-        >
-          <div
-            className="
-              grid gap-8
-              md:grid-rows-[auto_auto_auto_1fr_auto]
-              text-left md:text-right
-              justify-items-start md:justify-items-end
-              h-full
-            "
-          >
-            {/* Enlaces */}
-            <nav className="w-full">
-              <h3 className="text-sm font-semibold mb-2">Enlaces</h3>
-              <ul className="space-y-2 text-[0.95rem]">
-                <li>
-                  <a className="hover:underline" href="/sobre-nosotros">
-                    Sobre Nosotros
-                  </a>
-                </li>
-                <li>
-                  <a className="hover:underline" href="/contacto">
-                    Contacto
-                  </a>
-                </li>
-                <li>
-                  <a className="hover:underline" href="/terminos">
-                    Términos y privacidad
-                  </a>
-                </li>
-              </ul>
+        {/* 2. COLUMNAS DE ENLACES (Derecha) */}
+        <div className="lg:col-span-5 flex flex-col md:flex-row gap-12 md:gap-20 lg:justify-end">
+          
+          {/* Navegación */}
+          <div className="flex flex-col gap-6">
+            <h3 className="text-xs font-mono uppercase tracking-widest text-white/40">Explorar</h3>
+            <nav className="flex flex-col gap-3">
+              {['Sobre Nosotros', 'Artistas', 'Contacto', 'Términos y Privacidad'].map((item) => (
+                <a key={item} href="#" className="group relative w-fit text-lg font-light text-white/80 hover:text-white transition-colors">
+                  {item}
+                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#dee5a0] transition-all duration-300 group-hover:w-full" />
+                </a>
+              ))}
             </nav>
+          </div>
 
-            {/* Contacto */}
-            <address className="not-italic w-full">
-              <h3 className="text-sm font-semibold mb-2">Contacto</h3>
-              <div className="text-[0.95rem]">
-                  Buenos Aires, AR
-                <br />
+          {/* Contacto & Redes */}
+          <div className="flex flex-col gap-8">
+            
+            <div className="flex flex-col gap-6">
+                <h3 className="text-xs font-mono uppercase tracking-widest text-white/40">Contacto</h3>
+                <address className="not-italic text-lg font-light text-white/80 leading-relaxed">
+                  Buenos Aires, AR <br />
                   Montevideo, UY <br />
-                <a className="hover:underline" href="mailto:contacto@gacetaplay.com">
-                  contacto@gacetaplay.com
-                </a>
-                <br />
-              </div>
-            </address>
-
-            {/* Seguinos */}
-            <div className="w-full">
-              <h3 className="text-sm font-semibold mb-2">Seguinos</h3>
-              <div className="flex justify-start md:justify-end items-center gap-4 text-xl">
-                <a
-                  href="https://www.instagram.com/gacetaplay/"
-                  target="_blank"
-                  aria-label="Instagram"
-                  className="hover:scale-110 transition"
-                >
-                  <FaInstagram />
-                </a>
-                <a
-                  href="https://x.com/gacetaplay"
-                  target="_blank"
-                  aria-label="Twitter"
-                  className="hover:scale-110 transition"
-                >
-                  <FaTwitter />
-                </a>
-                <a
-                  href="https://www.tiktok.com/@gaceta.play"
-                  target="_blank"
-                  aria-label="TikTok"
-                  className="hover:scale-110 transition"
-                >
-                  <FaTiktok />
-                </a>
-                <a
-                  href="https://www.youtube.com/@gacetaplay"
-                  target="_blank"
-                  aria-label="YouTube"
-                  className="hover:scale-110 transition"
-                >
-                  <FaYoutube />
-                </a>
-              </div>
+                  <a href="mailto:contacto@gacetaplay.com" className="hover:text-[#dee5a0] transition-colors mt-2 block">
+                    contacto@gacetaplay.com
+                  </a>
+                </address>
             </div>
 
-            {/* Espaciador desktop */}
-            <div className="hidden md:block" />
-
-            {/* Créditos */}
-            <div className="text-xs uppercase tracking-wider text-white/50 flex-col flex gap-1">
-              <div className="font-semibold">@GACETA2025</div>
-              <div className="opacity-70">Made by gaceta</div>
+            <div className="flex gap-4 text-xl text-white/60">
+                {[FaInstagram, FaTwitter, FaTiktok, FaYoutube].map((Icon, i) => (
+                    <a key={i} href="#" className="hover:text-white hover:scale-110 transition-all duration-300">
+                        <Icon />
+                    </a>
+                ))}
             </div>
+
           </div>
         </div>
       </div>
 
-      {/* GIGANTE GACETA */}
+      {/* 3. FOOTER BOTTOM (Créditos + Made By) */}
+      <div className="relative z-20 max-w-[1400px] mx-auto px-6 md:px-10 mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/30 uppercase tracking-widest font-mono">
+          <div className="flex gap-6">
+            <p>© 2025 Gaceta Music.</p>
+            <p className="hidden sm:block">All rights reserved.</p>
+          </div>
+          
+          {/* AGREGADO: Made By */}
+          <p className="hover:text-white/60 transition-colors cursor-default">
+            Made by Gaceta
+          </p>
+      </div>
+
+      {/* 4. GACETA GIGANTE (Fondo Fantasma) */}
       <div
         aria-hidden
         className={`
-          absolute inset-x-0 bottom-[-3.5rem] md:bottom-[-5rem] z-30
-          flex justify-center px-4
-          transition-all duration-700 ease-out will-change-transform
-          ${showBig ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
+          absolute left-0 right-0 bottom-[-2vw] z-10
+          flex justify-center pointer-events-auto select-none
+          transition-opacity duration-1000 ease-out
+          ${showBig ? "opacity-100" : "opacity-0"}
         `}
       >
         <AnimatedWord
           word="GACETA"
-          lift="12vh"
+          lift="20vh"
           className="
-            uppercase font-black tracking-[-0.03em]
-            text-[32vw] md:text-[20vw] lg:text-[18vw]
-            leading-[0.8] opacity-[0.07]
+            font-black tracking-[-0.05em] 
+            text-[28vw] leading-[0.7]
+            text-white/5  
+            select-none
           "
         />
       </div>

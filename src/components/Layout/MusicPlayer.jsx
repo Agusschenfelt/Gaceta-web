@@ -1,427 +1,243 @@
-// MusicPlayer.jsx
-import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  SkipBack,
-  Play,
-  Pause,
-  SkipForward,
-  Volume,
-  Volume1,
-  Volume2,
-  VolumeX,
-} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { SkipBack, Play, Pause, SkipForward, Volume2, VolumeX } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMenu } from "./MenuStore";
 
+// --- TUS CANCIONES REALES ---
+const tracks = [
+  {
+    title: "Delirio",
+    artist: "Ramma",
+    src: "/assets/Trip/delirio_audio.mp3", // Asegúrate que esta ruta exista
+    cover: "/assets/constelacion.jpeg",     // Asegúrate que esta ruta exista
+  },
+  {
+    title: "Donde quiero estar",
+    artist: "ARA",
+    src: "/assets/media/ara-dondequieroestar.mp3",
+    cover: "/assets/youngboy.jpg",
+  },
+  {
+    title: "Inmortal",
+    artist: "Ramma",
+    src: "/assets/media/ramma-inmortal.mp3",
+    cover: "/assets/inmortal.jpg",
+  },
+  {
+    title: "Flashes",
+    artist: "Valuto",
+    src: "/assets/media/valuto-flashes.mp3",
+    cover: "/assets/flashes.jpg",
+  },
+];
+
 export default function MusicPlayer() {
   const { open: menuOpen } = useMenu();
+  const [isDesktop, setIsDesktop] = useState(false);
 
-  // 👉 Solo desktop (min-width: 768px)
-  const [isDesktop, setIsDesktop] = useState(
-    typeof window !== "undefined"
-      ? window.matchMedia("(min-width: 768px)").matches
-      : false
-  );
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const mql = window.matchMedia("(min-width: 768px)");
-
-    const handleChange = (e) => {
-      setIsDesktop(e.matches);
-    };
-
-    setIsDesktop(mql.matches);
-    mql.addEventListener("change", handleChange);
-
-    return () => {
-      mql.removeEventListener("change", handleChange);
-    };
-  }, []);
-
-  // Si no es desktop, el reproductor NO existe
-  if (!isDesktop) return null;
-
-  const tracks = [
-    {
-      id: "t1",
-      title: "Delirio",
-      artist: "Ramma",
-      src: "...s/Trip/delirio_audio.mp3",
-      cover: "/assets/constelacion.jpeg",
-    },
-    {
-      id: "t2",
-      title: "Lejos",
-      artist: "Royalty Free",
-      src: "...s/Trip/lejos_audio.mp3",
-      cover: "/assets/constelacion.jpeg",
-    },
-    {
-      id: "t3",
-      title: "Viernes",
-      artist: "Royalty Free",
-      src: "...s/Trip/viernes_audio.mp3",
-      cover: "/assets/constelacion.jpeg",
-    },
-    {
-      id: "t4",
-      title: "Delirio",
-      artist: "Ramma",
-      src: "...s/Trip/delirio_audio.mp3",
-      cover: "/assets/constelacion.jpeg",
-    },
-    {
-      id: "t5",
-      title: "Lejos",
-      artist: "Royalty Free",
-      src: "...s/Trip/lejos_audio.mp3",
-      cover: "/assets/constelacion.jpeg",
-    },
-    {
-      id: "t6",
-      title: "Viernes",
-      artist: "Royalty Free",
-      src: "...s/Trip/viernes_audio.mp3",
-      cover: "/assets/constelacion.jpeg",
-    },
-  ];
-
+  // Estados del reproductor
   const audioRef = useRef(null);
-
-  const [index, setIndex] = useState(0);
+  const [trackIndex, setTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
-  const [current, setCurrent] = useState(0);
-  const [volume, setVolume] = useState(0.9);
-  const [durMap, setDurMap] = useState({});
+  const [currentTime, setCurrentTime] = useState(0);
+  const [volume, setVolume] = useState(0.5); // Volumen inicial 50%
 
-  const userInteractedRef = useRef(false);
-  const switchingRef = useRef(false);
-  const pendingAutoplayRef = useRef(false);
+  const currentTrack = tracks[trackIndex];
 
-  const currentTrack = tracks[index];
-
+  // Solo mostrar en desktop
   useEffect(() => {
-    let cancel = false;
-    (async () => {
-      const entries = await Promise.all(
-        tracks.map(
-          (t) =>
-            new Promise((resolve) => {
-              const a = new Audio();
-              a.src = t.src;
-              a.preload = "metadata";
-              a.addEventListener(
-                "loadedmetadata",
-                () => {
-                  resolve([t.id, Number.isFinite(a.duration) ? a.duration : 0]);
-                },
-                { once: true }
-              );
-              a.addEventListener("error", () => resolve([t.id, 0]), {
-                once: true,
-              });
-            })
-        )
-      );
-      if (!cancel) setDurMap(Object.fromEntries(entries));
-    })();
-    return () => {
-      cancel = true;
-    };
+    const check = () => setIsDesktop(window.matchMedia("(min-width: 768px)").matches);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
   }, []);
 
+  // Control de Play/Pause
   useEffect(() => {
-    const mark = () => {
-      userInteractedRef.current = true;
-    };
-    window.addEventListener("pointerdown", mark, { once: true });
-    window.addEventListener("keydown", mark, { once: true });
-    window.addEventListener("touchstart", mark, { once: true });
-    return () => {
-      window.removeEventListener("pointerdown", mark);
-      window.removeEventListener("keydown", mark);
-      window.removeEventListener("touchstart", mark);
-    };
-  }, []);
-
-  useEffect(() => {
-    const a = audioRef.current;
-    if (!a) return;
-
-    switchingRef.current = true;
-    pendingAutoplayRef.current = userInteractedRef.current;
-
-    a.pause();
-    a.src = currentTrack.src;
-    a.load();
-    setCurrent(0);
-    setDuration(0);
-  }, [index, currentTrack.src]);
-
-  useEffect(() => {
-    if (audioRef.current) audioRef.current.volume = volume;
-  }, [volume]);
-
-  useEffect(() => {
-    const a = audioRef.current;
-    if (!a) return;
-    if (switchingRef.current) return;
+    if (!audioRef.current) return;
     if (isPlaying) {
-      a.play().catch(() => setIsPlaying(false));
+      audioRef.current.play().catch(() => setIsPlaying(false));
     } else {
-      a.pause();
+      audioRef.current.pause();
     }
-  }, [isPlaying]);
+  }, [isPlaying, trackIndex]); // trackIndex aquí reinicia el play al cambiar canción
 
-  const togglePlay = () => setIsPlaying((p) => !p);
-  const handleNext = () => setIndex((i) => (i + 1) % tracks.length);
-  const handlePrev = () =>
-    setIndex((i) => (i - 1 + tracks.length) % tracks.length);
-  const handleSeek = (v) => {
-    if (audioRef.current) audioRef.current.currentTime = v;
-    setCurrent(v);
+  // Manejadores
+  const togglePlay = () => setIsPlaying(!isPlaying);
+  
+  const handleNext = () => {
+    setTrackIndex((prev) => (prev + 1) % tracks.length);
+    setIsPlaying(true); // Auto-play al cambiar
   };
 
-  const fmt = (s) => {
-    const secs = Number.isFinite(s) ? Math.max(0, s) : 0;
-    const m = Math.floor(secs / 60);
-    const ss = Math.floor(secs % 60);
-    return `${m}:${String(ss).padStart(2, "0")}`;
+  const handlePrev = () => {
+    setTrackIndex((prev) => (prev - 1 + tracks.length) % tracks.length);
+    setIsPlaying(true);
   };
 
-  const queue = useMemo(
-    () => tracks.filter((_, i) => i !== index),
-    [tracks, index]
-  );
+  const handleTimeUpdate = () => {
+    if (audioRef.current) setCurrentTime(audioRef.current.currentTime);
+  };
+
+  const handleLoadedMetadata = () => {
+    if (audioRef.current) setDuration(audioRef.current.duration);
+  };
+
+  const handleSeek = (val) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = val;
+      setCurrentTime(val);
+    }
+  };
+
+  const handleEnded = () => handleNext(); // Auto-next
+
+  // Formato de tiempo (mm:ss)
+  const fmt = (time) => {
+    if (!time || isNaN(time)) return "0:00";
+    const min = Math.floor(time / 60);
+    const sec = Math.floor(time % 60);
+    return `${min}:${sec < 10 ? "0" + sec : sec}`;
+  };
+
+  if (!isDesktop) return null;
 
   return (
     <>
+      {/* ELEMENTO DE AUDIO INVISIBLE */}
       <audio
         ref={audioRef}
-        preload="metadata"
-        onLoadedMetadata={(e) => {
-          const a = e.currentTarget;
-          const d = a.duration;
-          setDuration(Number.isFinite(d) ? d : 0);
-
-          if (pendingAutoplayRef.current) {
-            a.play()
-              .then(() => setIsPlaying(true))
-              .catch(() => setIsPlaying(false));
-          } else {
-            a.pause();
-            setIsPlaying(false);
-          }
-
-          pendingAutoplayRef.current = false;
-          switchingRef.current = false;
-        }}
-        onTimeUpdate={(e) => {
-          const t = e.currentTarget.currentTime;
-          setCurrent(Number.isFinite(t) ? t : 0);
-        }}
-        onEnded={handleNext}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
+        src={currentTrack.src}
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleLoadedMetadata}
+        onEnded={handleEnded}
+        volume={volume} // Nota: React audio tag no soporta volume prop directo a veces, se controla mejor con ref
       />
 
-      {/* ---- Card compacta (menú cerrado) ---- */}
-      <AnimatePresence initial={false}>
+      {/* ---- MINI PLAYER (Flotante) ---- */}
+      <AnimatePresence>
         {!menuOpen && (
           <motion.div
             key="compact"
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="fixed bottom-6 right-6 z-50
-                       w-[300px] rounded-2xl bg-zinc-900/30 backdrop-blur-sm
-                       border border-zinc-800/60 shadow-xl overflow-hidden text-white"
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.4 }}
+            className="fixed bottom-6 right-6 z-[90]
+                       w-[280px] rounded-full bg-[#0a0a0a] 
+                       border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)] 
+                       overflow-hidden group hover:border-[#dee5a0]/40 transition-colors duration-500"
           >
-            <div className="relative min-h-[64px]">
-              <div className="flex items-center gap-3 px-3 py-3 pr-[116px]">
-                <div className="size-10 rounded-lg overflow-hidden border border-zinc-800 shrink-0">
-                  <img
-                    src={currentTrack.cover}
-                    alt={currentTrack.title}
-                    className="w-full h-full object-cover"
-                  />
+            {/* Barra de progreso inferior */}
+            <div 
+                className="absolute bottom-0 left-0 h-[2px] bg-[#dee5a0] transition-all duration-100 ease-linear" 
+                style={{ width: `${(currentTime / duration) * 100}%` }} 
+            />
+
+            <div className="relative flex items-center justify-between p-2 pl-3 h-14">
+              
+              {/* Info + Cover */}
+              <div className="flex items-center gap-3 overflow-hidden">
+                {/* Disco Giratorio */}
+                <div className={`w-9 h-9 rounded-full border border-white/10 overflow-hidden shrink-0 ${isPlaying ? 'animate-[spin_4s_linear_infinite]' : ''}`}>
+                   <img src={currentTrack.cover} alt="Cover" className="w-full h-full object-cover opacity-90" />
                 </div>
-                <div className="min-w-0 leading-tight">
-                  <h3 className="text-white text-sm font-medium truncate">
-                    {currentTrack.title}
-                  </h3>
-                  <p className="text-zinc-400 text-xs truncate">
-                    {currentTrack.artist}
-                  </p>
+                
+                <div className="flex flex-col min-w-0 pr-2">
+                   <span className="font-serif italic text-white text-lg leading-none truncate">
+                      {currentTrack.title}
+                   </span>
+                   <span className="font-mono text-[9px] uppercase tracking-widest text-[#dee5a0] truncate">
+                      {currentTrack.artist}
+                   </span>
                 </div>
               </div>
 
-              <div
-                className="absolute right-3 top-1/2 -translate-y-1/2
-                              w-[116px] flex items-center justify-between"
-              >
-                <button
-                  onClick={handlePrev}
-                  aria-label="Anterior"
-                  className="grid place-items-center w-8 h-8 rounded-full hover:bg-white/10 transition"
-                >
-                  <SkipBack className="block w-4 h-4" />
-                </button>
-
-                <button
-                  onClick={togglePlay}
-                  aria-label={isPlaying ? "Pausar" : "Reproducir"}
-                  className="grid place-items-center w-8 h-8 rounded-full hover:bg-white/10 transition"
-                >
-                  {isPlaying ? (
-                    <Pause className="block w-4 h-4" />
-                  ) : (
-                    <Play className="block w-4 h-4" />
-                  )}
-                </button>
-
-                <button
-                  onClick={handleNext}
-                  aria-label="Siguiente"
-                  className="grid place-items-center w-8 h-8 rounded-full hover:bg-white/10 transition"
-                >
-                  <SkipForward className="block w-4 h-4" />
-                </button>
+              {/* Controles Compactos */}
+              <div className="flex items-center gap-1 pr-2">
+                 <button onClick={handlePrev} className="p-2 text-white/50 hover:text-white transition-colors"><SkipBack size={14}/></button>
+                 <button onClick={togglePlay} className="p-2 text-white hover:text-[#dee5a0] transition-colors">
+                    {isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
+                 </button>
+                 <button onClick={handleNext} className="p-2 text-white/50 hover:text-white transition-colors"><SkipForward size={14}/></button>
               </div>
+
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ---- Panel expandido (menú abierto) ---- */}
-      <AnimatePresence initial={false}>
+      {/* ---- MAXI PLAYER (Expandido) ---- */}
+      <AnimatePresence>
         {menuOpen && (
           <motion.aside
             key="expanded"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
             className="
-              fixed z-[60]
-              bottom-3 right-3
-              w-[min(65vw,260px)] max-h[85vh]
-              md:bottom-6 md:right-6 md:w-[min(85vw,320px)]
-              rounded-[28px] bg-zinc-900/50 border border-white/10
-              backdrop-blur-2xl shadow-2xl overflow-hidden text-white
-              flex flex-col
+              fixed z-[110] bottom-6 right-6
+              w-[min(90vw,340px)] 
+              bg-[#0a0a0a] border border-white/10
+              rounded-xl shadow-2xl overflow-hidden
             "
           >
-            <div className="p-5">
-              <div className="relative w-full aspect-square overflow-hidden rounded-2xl border border-white/10">
-                <img
-                  src={currentTrack.cover}
-                  alt={currentTrack.title}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              </div>
+            {/* Ruido de fondo */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay bg-noise" />
 
-              <div className="mt-4">
-                <h3 className="text-xl font-semibold truncate">
-                  {currentTrack.title}
-                </h3>
-                <p className="text-sm text-white/70 truncate">
-                  {currentTrack.artist}
-                </p>
-              </div>
+            <div className="relative p-6 flex flex-col gap-6">
+               
+               {/* Cover Art */}
+               <div className="w-full aspect-square rounded-lg border border-white/5 overflow-hidden relative group shadow-2xl">
+                  <img src={currentTrack.cover} alt="Cover Grande" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-700" />
+                  {/* Brillo vinilo */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/5 pointer-events-none" />
+               </div>
 
-              <div className="mt-4">
-                <input
-                  type="range"
-                  min={0}
-                  max={Math.max(1, duration)}
-                  step={0.1}
-                  value={current}
-                  onChange={(e) => handleSeek(Number(e.target.value))}
-                  className="w-full accent-white"
-                />
-                <div className="mt-1 flex justify-between text-xs text-white/60">
-                  <span>{fmt(current)}</span>
-                  <span>-{fmt(Math.max(0, duration - current))}</span>
-                </div>
-              </div>
+               {/* Track Info */}
+               <div className="text-center">
+                  <h3 className="text-2xl font-serif italic text-white mb-1 truncate">{currentTrack.title}</h3>
+                  <p className="text-xs font-mono uppercase tracking-[0.2em] text-[#dee5a0]">{currentTrack.artist}</p>
+               </div>
 
-              <div className="mt-4">
-                <label htmlFor="volume" className="sr-only">
-                  Volumen
-                </label>
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    aria-label={volume === 0 ? "Activar volumen" : "Silenciar"}
-                    onClick={() => setVolume((v) => (v === 0 ? 0.9 : 0))}
-                    className="p-2 rounded-full hover:bg-white/10 transition grid place-items-center w-9 h-9"
-                  >
-                    <VolumeIcon v={volume} />
-                  </button>
-
-                  <input
-                    id="volume"
-                    type="range"
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    value={volume}
-                    onChange={(e) => setVolume(Number(e.target.value))}
-                    className="flex-1 accent-white"
-                    aria-valuemin={0}
-                    aria-valuemax={1}
-                    aria-valuenow={Number(volume.toFixed(2))}
+               {/* Scrubber */}
+               <div className="w-full">
+                  <div className="flex justify-between text-[10px] font-mono text-white/30 mb-2">
+                     <span>{fmt(currentTime)}</span>
+                     <span>{fmt(duration)}</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min={0} 
+                    max={duration || 100} 
+                    value={currentTime} 
+                    onChange={(e) => handleSeek(Number(e.target.value))}
+                    className="w-full h-[2px] bg-white/10 appearance-none cursor-pointer rounded-full
+                               [&::-webkit-slider-thumb]:appearance-none 
+                               [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 
+                               [&::-webkit-slider-thumb]:bg-[#dee5a0] [&::-webkit-slider-thumb]:rounded-full 
+                               [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-125"
                   />
-                </div>
-              </div>
+               </div>
 
-              <div className="mt-5 flex items-center justify-center gap-6">
-                <IconButton label="Prev" onClick={handlePrev}>
-                  <SkipBack className="w-6 h-6" />
-                </IconButton>
-                <IconButton
-                  label={isPlaying ? "Pause" : "Play"}
-                  onClick={togglePlay}
-                  big
-                >
-                  {isPlaying ? (
-                    <Pause className="w-7 h-7" />
-                  ) : (
-                    <Play className="w-7 h-7" />
-                  )}
-                </IconButton>
-                <IconButton label="Next" onClick={handleNext}>
-                  <SkipForward className="w-6 h-6" />
-                </IconButton>
-              </div>
+               {/* Controles Grandes */}
+               <div className="flex items-center justify-between px-4 pb-2">
+                  <button onClick={handlePrev} className="text-white/40 hover:text-white transition-colors hover:scale-110"><SkipBack size={28} /></button>
+                  <button 
+                    onClick={togglePlay} 
+                    className="w-16 h-16 rounded-full border border-white/20 flex items-center justify-center text-white hover:border-[#dee5a0] hover:text-[#dee5a0] hover:scale-105 transition-all duration-300 bg-white/5"
+                  >
+                     {isPlaying ? <Pause size={32} fill="currentColor"/> : <Play size={32} fill="currentColor" className="ml-1" />}
+                  </button>
+                  <button onClick={handleNext} className="text-white/40 hover:text-white transition-colors hover:scale-110"><SkipForward size={28} /></button>
+               </div>
+
             </div>
           </motion.aside>
         )}
       </AnimatePresence>
     </>
   );
-}
-
-function IconButton({ label, onClick, big, children }) {
-  return (
-    <button
-      onClick={onClick}
-      aria-label={label}
-      className={`p-2 rounded-full hover:bg-white/10 transition grid place-items-center ${
-        big ? "w-11 h-11" : "w-9 h-9"
-      }`}
-    >
-      {children}
-    </button>
-  );
-}
-
-function VolumeIcon({ v }) {
-  if (v === 0) return <VolumeX className="w-5 h-5" />;
-  if (v < 0.34) return <Volume className="w-5 h-5" />;
-  if (v < 0.67) return <Volume1 className="w-5 h-5" />;
-  return <Volume2 className="w-5 h-5" />;
 }

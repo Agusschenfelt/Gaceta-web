@@ -1,21 +1,40 @@
-// App.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
+// 1. Importamos lazy y Suspense para dividir el código
+import { lazy, Suspense } from "react";
+
+// Los componentes "Shell" (que se ven siempre) se importan normal
 import Layout from "./components/Layout/Layout";
-import HomePage from "./pages/HomePage";
-import ArtistPage from "./pages/ArtistPage";
-import SobreNosotrosPage from "./pages/SobreNosotrosPage";
-import PruebasPage from "./components/Pruebas/PruebasPage";
-import GalleryPage from "./pages/GalleryPage";
 import MenuProvider from "./components/Layout/MenuStore";
 import ScrollToTopOnRouteChange from "./ScrollToTopOnRouteChange";
 import MusicPlayer from "./components/Layout/MusicPlayer";
 import ResetBgOnRoute from "./components/ResetBgOnRoute";
 
+// 2. Las PÁGINAS se importan con lazy() para que bajen solo cuando se necesitan
+const HomePage = lazy(() => import("./pages/HomePage"));
+const ArtistPage = lazy(() => import("./pages/ArtistPage"));
+const SobreNosotrosPage = lazy(() => import("./pages/SobreNosotrosPage"));
+const GalleryPage = lazy(() => import("./pages/GalleryPage"));
+// const PruebasPage = lazy(() => import("./components/Pruebas/PruebasPage"));
+
 import "./index.css";
 import "swiper/css";
 import "swiper/css/navigation";
 
+// 3. Pantalla de Carga Minimalista (Se muestra mientras baja el JS de la nueva página)
+const LoadingScreen = () => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0a0a0a]">
+    <div className="flex flex-col items-center gap-4">
+      {/* Círculo pulsante con tu color de marca */}
+      <div className="w-3 h-3 bg-[#dee5a0] rounded-full animate-ping" />
+      <span className="text-[10px] font-mono text-white/30 uppercase tracking-[0.2em] animate-pulse">
+        Cargando
+      </span>
+    </div>
+  </div>
+);
+
 export default function App() {
+  // TU DATA DE ARTISTAS
   const artists = [
     {
       nombre: "ARA",
@@ -59,16 +78,20 @@ Como solista, editó tres álbumes: Incrédulo (2022), Intrépido (2023) y INMOR
       <ScrollToTopOnRouteChange />
       <ResetBgOnRoute />
 
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path=":id" element={<ArtistPage artistsData={artists} />} />
-          <Route path="sobre-nosotros" element={<SobreNosotrosPage />} />
-          <Route path="gallery" element={<GalleryPage />} />
-          <Route path="pruebas" element={<PruebasPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Route>
-      </Routes>
+      {/* 4. Envolvemos las rutas en Suspense para manejar la carga asíncrona */}
+      <Suspense fallback={<LoadingScreen />}>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<HomePage />} />
+            {/* Pasamos la data de artistas a la página dinámica */}
+            <Route path=":id" element={<ArtistPage artistsData={artists} />} />
+            <Route path="sobre-nosotros" element={<SobreNosotrosPage />} />
+            <Route path="gallery" element={<GalleryPage />} />
+            {/* <Route path="pruebas" element={<PruebasPage />} /> */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Routes>
+      </Suspense>
 
       <MusicPlayer />
     </MenuProvider>

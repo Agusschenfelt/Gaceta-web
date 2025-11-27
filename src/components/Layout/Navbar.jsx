@@ -1,5 +1,4 @@
-// Navbar.jsx
-import { useEffect, useRef, forwardRef } from "react";
+import { useEffect, useRef, useState, forwardRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { FaInstagram, FaTwitter, FaTiktok, FaYoutube } from "react-icons/fa";
@@ -11,209 +10,134 @@ const navLinks = [
   { name: "Artistas", to: "/#artistas" },
   { name: "Gallery", to: "/gallery" },
   { name: "Shows", to: "/#shows" },
-  { name: "Shop", to: "https://gaceta.shop/" },
+  { name: "Shop", to: "https://tutienda.tiendanube.com/" }, 
 ];
+
+function LinkOrA({ to, children, ...props }) {
+  const isExt = typeof to === "string" && to.startsWith("http");
+  if (isExt) {
+    return <a href={to} target="_blank" rel="noreferrer" {...props}>{children}</a>;
+  }
+  return <Link to={to} {...props}>{children}</Link>;
+}
 
 export default function Navbar() {
   const { open, setOpen } = useMenu();
   const btnRef = useRef(null);
   const location = useLocation();
 
-  // Cerrar menú al cambiar de ruta
-  useEffect(() => {
-    setOpen(false);
-  }, [location.pathname, setOpen]);
+  useEffect(() => { setOpen(false); }, [location.pathname, setOpen]);
 
-  // Bloquear scroll cuando el menú está abierto
   useEffect(() => {
     const html = document.documentElement;
     if (open) html.classList.add("overflow-hidden");
     else html.classList.remove("overflow-hidden");
-
     return () => html.classList.remove("overflow-hidden");
   }, [open]);
 
-  // Escape para cerrar
   useEffect(() => {
-    const handleKey = (e) => {
-      if (e.key === "Escape") setOpen(false);
-    };
+    const handleKey = (e) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [setOpen]);
 
   return (
-    <header
-      className="fixed inset-x-0 top-0 z-40 flex items-center justify-between
-                 px-4 sm:px-6 text-white h-16 md:h-20"
-    >
-      {/* Logo */}
-      <Link to="/" className="relative z-50 flex items-center">
+    // CORRECCIÓN: 'w-full' asegura que ocupe todo el ancho
+    <header className="fixed inset-x-0 top-0 z-[80] w-full flex items-center justify-between px-6 md:px-10 h-20 pointer-events-none">
+      
+      {/* LOGO */}
+      <Link to="/" className="relative z-[90] flex items-center group mix-blend-difference pointer-events-auto">
         <img
-          src="assets/logo-blanco.png"
+          src="/assets/logo-blanco.png" 
           alt="Gaceta"
-          className="block w-[120px] sm:w-[150px] md:w-[170px]"
+          className="block w-[120px] md:w-[150px] transition-opacity group-hover:opacity-80"
         />
       </Link>
 
-      {/* Botón MENU */}
+      {/* BOTÓN MENU */}
       <button
         ref={btnRef}
-        aria-controls="site-menu"
-        aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
-        className={`uppercase text-xs sm:text-sm tracking-[0.25em]
-                    hover:opacity-80 focus:outline-none
-                    focus-visible:ring-2 focus-visible:ring-white/60
-                    font-inter transition-opacity
-                    ${open ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+        onClick={() => setOpen(!open)}
+        className="relative z-[90] uppercase text-xs font-mono tracking-[0.25em] 
+                   hover:text-[#dee5a0] transition-colors focus:outline-none 
+                   mix-blend-difference text-white pointer-events-auto"
       >
-        Menu
+        {open ? "Cerrar" : "Menu"}
       </button>
 
-      <MenuOverlay
-        open={open}
-        onClose={() => setOpen(false)}
-        initialFocusRef={btnRef}
-      />
+      {/* El overlay se renderiza aquí pero vive "fuera" visualmente */}
+      <MenuOverlay open={open} onClose={() => setOpen(false)} />
     </header>
   );
 }
 
-function MenuOverlay({ open, onClose, initialFocusRef }) {
-  const firstLinkRef = useRef(null);
-
-  useEffect(() => {
-    if (open) firstLinkRef.current?.focus();
-  }, [open]);
+function MenuOverlay({ open, onClose }) {
+  const [hoveredIndex, setHoveredIndex] = useState(null);
 
   return (
     <AnimatePresence>
       {open && (
         <motion.div
-          id="site-menu"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Main navigation"
+          key="menu-overlay"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] text-white font-inter overflow-y-auto"
+          transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }} // Curva de animación suave
+          // CORRECCIÓN FONDO: Negro al 90% + Blur fuerte + Saturación baja
+          // Esto crea el efecto "Dark Glass" elegante
+          className="fixed inset-0 z-[80] bg-black/90 backdrop-blur-2xl backdrop-saturate-150 flex flex-col pointer-events-auto"
         >
-          {/* Fondo blur */}
-          <motion.div
-            onClick={onClose}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ type: "spring", stiffness: 130, damping: 20 }}
-            className="absolute inset-0 bg-black/40 backdrop-blur-xl"
-          />
-
-          {/* Contenido menú */}
-          <div className="relative z-10 max-h-full flex flex-col">
-            {/* Botón CERRAR arriba */}
-            <div className="sticky top-0 flex justify-end px-4 sm:px-6 pt-6 pb-4 bg-gradient-to-b from-black/80 to-transparent">
-              <button
-                onClick={onClose}
-                className="uppercase text-xs sm:text-sm tracking-[0.25em] hover:opacity-80 font-inter"
+          <div className="flex-1 flex flex-col justify-center px-6 md:px-20 max-w-[1400px] mx-auto w-full">
+            <nav>
+              <ul 
+                className="flex flex-col gap-1 md:gap-2"
+                onMouseLeave={() => setHoveredIndex(null)} 
               >
-                Cerrar
-              </button>
-            </div>
+                {navLinks.map((link, i) => (
+                  <MenuItem
+                    key={link.name}
+                    link={link}
+                    index={i}
+                    hoveredIndex={hoveredIndex}
+                    setHoveredIndex={setHoveredIndex}
+                    onClose={onClose}
+                  />
+                ))}
+              </ul>
+            </nav>
 
-            <div className="container mx-auto px-4 sm:px-6 pb-10 flex-1">
-              <div className="grid md:h-[calc(100vh-80px)] md:grid-cols-12 md:grid-rows-[1fr_auto]">
-                <motion.nav
-                  initial="hidden"
-                  animate="show"
-                  exit="hidden"
-                  variants={{
-                    hidden: {
-                      transition: {
-                        staggerChildren: 0.05,
-                        staggerDirection: -1,
-                      },
-                    },
-                    show: {
-                      transition: {
-                        staggerChildren: 0.08,
-                      },
-                    },
-                  }}
-                  className="md:row-start-1 md:col-span-6 flex flex-col justify-center
-                             pt-4 md:pt-0 pb-8 md:pb-12 md:items-start"
-                >
-                  {/* Links grandes */}
-                  <ul className="space-y-6 sm:space-y-8 md:space-y-10 text-left">
-                    {navLinks.map((link, i) => (
-                      <MenuItem
-                        key={link.name}
-                        link={link}
-                        ref={i === 0 ? firstLinkRef : undefined}
-                      />
-                    ))}
-                  </ul>
+            {/* Footer del Menú */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-12 md:mt-16 pt-8 border-t border-white/10"
+            >
+                <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
+                    
+                    {/* 1. Redes Sociales */}
+                    <div className="flex gap-6 text-xl text-white/50">
+                        <a href="https://instagram.com" target="_blank" className="hover:text-white transition-colors"><FaInstagram/></a>
+                        <a href="https://twitter.com" target="_blank" className="hover:text-white transition-colors"><FaTwitter/></a>
+                        <a href="https://tiktok.com" target="_blank" className="hover:text-white transition-colors"><FaTiktok/></a>
+                        <a href="https://youtube.com" target="_blank" className="hover:text-white transition-colors"><FaYoutube/></a>
+                    </div>
 
-                  {/* Redes */}
-                  <div className="mt-8 flex items-center justify-start gap-5 text-white/90 text-lg">
-                    <a
-                      href="https://www.instagram.com/gacetaplay/"
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label="Instagram"
-                    >
-                      <FaInstagram />
-                    </a>
-                    <a
-                      href="https://x.com/gacetaplay"
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label="Twitter / X"
-                    >
-                      <FaTwitter />
-                    </a>
-                    <a
-                      href="https://www.tiktok.com/@gaceta.play"
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label="TikTok"
-                    >
-                      <FaTiktok />
-                    </a>
-                    <a
-                      href="https://www.youtube.com/@gacetaplay"
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label="YouTube"
-                    >
-                      <FaYoutube />
-                    </a>
-                  </div>
+                    {/* Separador visual (Línea vertical sutil) */}
+                    <div className="hidden md:block w-px h-8 bg-white/10" />
 
-                  {/* Línea + crédito */}
-                  <div className="mt-8 h-px w-32 sm:w-40 bg-gradient-to-r from-white/20 to-transparent" />
+                    {/* 2. Créditos (Movidos a la izquierda para que el Player no los tape) */}
+                    <div className="text-left">
+                        <p className="text-white font-bold tracking-wide text-sm leading-tight">
+                            @GACETA 2025
+                        </p>
+                        <p className="text-white/40 font-mono uppercase tracking-[0.15em] text-[10px] mt-1">
+                            MADE BY GACETA
+                        </p>
+                    </div>
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 8 }}
-                    transition={{ duration: 0.28 }}
-                    className="mt-4 text-[10px] sm:text-xs uppercase tracking-wider text-white/60"
-                  >
-                    <a
-                      href="https://www.instagram.com/gacetaplay/"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="block font-semibold hover:text-white/80"
-                    >
-                      @GACETA 2025
-                    </a>
-                    <span className="block opacity-70">Made by Gaceta</span>
-                  </motion.div>
-                </motion.nav>
-              </div>
-            </div>
+                </div>
+            </motion.div>
           </div>
         </motion.div>
       )}
@@ -221,52 +145,34 @@ function MenuOverlay({ open, onClose, initialFocusRef }) {
   );
 }
 
-const itemVariants = {
-  hidden: { opacity: 0, x: 20 },
-  show: { opacity: 1, x: 0 },
-};
-
-const MenuItem = forwardRef(function MenuItem({ link }, ref) {
-  const { setOpen } = useMenu();
-
-  const isExternal =
-    typeof link.to === "string" && /^https?:\/\//.test(link.to);
-
-  const commonClasses =
-    "group inline-flex items-center gap-3 " +
-    "text-5xl sm:text-6xl md:text-7xl " + // GRANDE como antes
-    "font-semibold tracking-tight outline-none " +
-    "focus-visible:ring-2 focus-visible:ring-white/60 text-white";
-
-  const handleClick = () => {
-    setOpen(false);
-  };
+function MenuItem({ link, index, hoveredIndex, setHoveredIndex, onClose }) {
+  const isDimmed = hoveredIndex !== null && hoveredIndex !== index;
 
   return (
-    <motion.li variants={itemVariants}>
-      {isExternal ? (
-        <a
-          ref={ref}
-          href={link.to}
-          target="_blank"
-          rel="noreferrer"
-          onClick={handleClick}
-          className={commonClasses}
-        >
-          <span>{link.name}</span>
-          <ArrowUpRight className="size-8 translate-y-1 opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0 group-hover:rotate-0 -translate-x-1 rotate-12" />
-        </a>
-      ) : (
-        <Link
-          ref={ref}
-          to={link.to}
-          onClick={handleClick}
-          className={commonClasses}
-        >
-          <span>{link.name}</span>
-          <ArrowUpRight className="size-8 translate-y-1 opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0 group-hover:rotate-0 -translate-x-1 rotate-12" />
-        </Link>
-      )}
+    <motion.li
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 40 }}
+      transition={{ delay: index * 0.05, duration: 0.5, ease: [0.33, 1, 0.68, 1] }}
+      onMouseEnter={() => setHoveredIndex(index)}
+      className="relative overflow-hidden"
+    >
+      <LinkOrA
+        to={link.to}
+        onClick={onClose}
+        className={`group block text-5xl md:text-8xl font-bold tracking-tighter leading-[1.1] transition-all duration-500 ease-out outline-none text-white
+          ${isDimmed ? "opacity-30 blur-[2px] scale-[0.98]" : "opacity-100 blur-0 scale-100"}`}
+      >
+        <div className="relative overflow-hidden py-1">
+            <span className="block transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:-translate-y-full">
+                {link.name}
+            </span>
+            <span className="absolute top-0 left-0 block font-serif italic text-[#dee5a0] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0">
+                {link.name}
+            </span>
+            <ArrowUpRight className="absolute top-1/2 -right-12 -translate-y-1/2 text-[#dee5a0] w-8 h-8 md:w-12 md:h-12 opacity-0 -translate-x-4 transition-all duration-300 group-hover:opacity-100 group-hover:-translate-x-0" />
+        </div>
+      </LinkOrA>
     </motion.li>
   );
-});
+}

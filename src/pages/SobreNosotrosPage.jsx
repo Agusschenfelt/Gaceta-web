@@ -5,6 +5,7 @@ import SeccionSumate from '../components/Pagina-SobreGaceta/SeccionSumate';
 import SeccionEquipos from '../components/Pagina-SobreGaceta/SeccionEquipos';
 import TimelineHorizontal from '../components/Pagina-SobreGaceta/TimeLineHorizontal';
 import TimelineMobile from '../components/Pagina-SobreGaceta/TimelineMobile';
+import SEO from "../SEO.jsx";
 
 function useIsMobile(breakpoint = 768) {
   const [isMobile, setIsMobile] = useState(
@@ -24,11 +25,18 @@ export default function SobreNosotrosPage() {
   const isMobile = useIsMobile();
 
   return (
-    <div className="bg-black flex flex-col min-h-screen gap-40">
-      <SeccionNosotros />
-      {isMobile ? <TimelineMobile /> : <TimelineHorizontal />}
-      <SeccionEquipos />
-      <SeccionSumate />
-    </div>
+    <>
+      <SEO 
+        title="Sobre Nosotros"
+        description="De la esperanza al primer paso. Conoce la historia de Gaceta, nuestra filosofía de trabajo y el equipo detrás de los artistas."
+        url="/sobre-nosotros"
+      />
+      <div className="bg-[#0a0a0a] min-h-screen">
+        <SeccionNosotros />
+        {isMobile ? <TimelineMobile /> : <TimelineHorizontal />}
+        <SeccionEquipos />
+        <SeccionSumate />
+      </div>
+    </>
   );
 }

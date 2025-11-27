@@ -1,82 +1,90 @@
-import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { useRef, useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import gsap from 'gsap';
 
-export default function ArtistCardHover({ slug, nombre, rol, imgSrc, videoSrc }) {
+export default function ArtistCardHover({ artist }) {
   const videoRef = useRef(null);
-  const [hover, setHover] = useState(false);
+  const contentRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(true); // Empezamos asumiendo móvil por seguridad
 
-  const handleEnter = () => {
-    setHover(true);
-    const v = videoRef.current;
-    if (v) {
-      v.currentTime = 0;
-      v.play().catch(() => {});
-    }
+  const norm = (s) => s?.toLowerCase().trim().replace(/\s+/g, '-') || 'artista';
+  const slug = artist.slug ?? norm(artist.nombre);
+
+  // Detección de dispositivo para optimización
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.matchMedia("(max-width: 768px)").matches);
+    checkMobile(); // Chequeo inicial
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const handleMouseEnter = () => {
+    if (isMobile) return;
+    // En desktop, reproducimos video y mostramos texto
+    videoRef.current?.play().catch(() => {});
+    gsap.to(contentRef.current, { y: 0, opacity: 1, duration: 0.4, ease: 'power2.out' });
   };
-  const handleLeave = () => {
-    setHover(false);
+
+  const handleMouseLeave = () => {
+    if (isMobile) return;
+    // En desktop, pausamos video y ocultamos texto
     videoRef.current?.pause();
+    gsap.to(contentRef.current, { y: 20, opacity: 0, duration: 0.4, ease: 'power2.in' });
   };
 
   return (
-    <article
-      data-artist-card
-      className="
-        relative shrink-0 snap-start
-        w-[48vw] sm:w-[36vw] md:w-[25vw] lg:w-[20vw] xl:w-[17.5vw]
-        h-[68vw] sm:h-[48vw] md:h-[33vw] lg:h-[27vw] xl:h-[23vw]
-        rounded-2xl overflow-hidden transition-transform duration-400
-        hover:scale-[1.04]
-        [contain:content]
-      "
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
-      onTouchStart={handleEnter}
-      onTouchEnd={handleLeave}
+    <Link
+      to={`/${slug}`}
+      className="group relative block w-full aspect-[3/4] overflow-hidden rounded-xl bg-neutral-900 ring-1 ring-white/5 transition-all duration-500 hover:ring-[#dee5a0]/30 hover:shadow-2xl hover:-translate-y-2"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      <Link to={`/${slug}`} className="block w-full h-full relative">
+      {/* 1. IMAGEN BASE (B&N -> Color) */}
+      <img
+        src={artist.foto}
+        alt={artist.nombre}
+        className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter grayscale group-hover:grayscale-0 opacity-90 group-hover:opacity-100"
+        loading="lazy"
+        decoding="async"
+      />
+
+      {/* 2. VIDEO (Solo Desktop, carga al hover) */}
+      {!isMobile && artist.video && (
         <video
           ref={videoRef}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-250 ${
-            hover ? "opacity-100" : "opacity-0"
-          }`}
-          src={videoSrc}
-          muted
+          src={artist.video}
           loop
+          muted
           playsInline
-          preload="none"
+          preload="none" // CLAVE PARA PERFORMANCE: No carga hasta que pasas el mouse
+          className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
         />
-        <img
-          src={imgSrc}
-          alt={`Preview de ${nombre}`}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-250 ${
-            hover ? "opacity-0" : "opacity-100"
-          }`}
-          loading="lazy"
-          decoding="async"
-          draggable="false"
-          fetchpriority="low"
-        />
+      )}
 
-        <div
-          className={`pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent md:to-black/70 to-black/80 transition-opacity duration-250 ${
-            hover ? "opacity-100" : "opacity-0"
-          }`}
-        />
+      {/* 3. GRADIENTE PARA LEER TEXTO */}
+      <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent transition-opacity duration-500 ${isMobile ? 'opacity-80' : 'opacity-60 group-hover:opacity-90'}`} />
 
-        <div
-          className={`absolute bottom-4 left-4 right-4 z-10 text-white transition-opacity duration-250 ${
-            hover ? "opacity-100" : "opacity-0"
-          }`}
+      {/* 4. CONTENIDO (Nombre) */}
+      <div className="absolute inset-0 flex flex-col justify-end p-6 z-20">
+        {/* En móvil siempre visible, en desktop aparece al hover */}
+        <div 
+            ref={contentRef}
+            className={`transition-all duration-200 ${isMobile ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100'}`}
         >
-          <span className="block text-[11px] font-medium uppercase opacity-80">
-            {rol}
-          </span>
-          <h3 className="text-xl md:text-2xl font-semibold tracking-tight">
-            {nombre}
-          </h3>
+            {/* Línea decorativa */}
+            <div className={`h-1 w-8 bg-[#dee5a0] mb-3 transition-all duration-500 ${!isMobile && 'w-0 group-hover:w-16'}`} />
+            
+            <h3 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-wider leading-none">
+            {artist.nombre}
+            </h3>
+            
+            {!isMobile && (
+                <span className="inline-block mt-3 text-xs text-[#dee5a0] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity delay-100">
+                    Ver Perfil →
+                </span>
+            )}
         </div>
-      </Link>
-    </article>
+      </div>
+    </Link>
   );
 }

@@ -1,15 +1,17 @@
-// Layout.jsx
+// Layout.jsx Recomendado
 import { Outlet } from "react-router-dom";
 import NavbarDemo from "./Navbar";
 import FooterGaceta from "./FooterGaceta";
+import NoiseOverlay from "./NoiseOverlay";
 
 export default function Layout() {
   return (
     <>
+      <NoiseOverlay />
       <NavbarDemo />
-      <main className="flex-1 flex flex-col gap-40 min-h-screen">
+      {/* bg-[#0a0a0a] asegura fondo negro si el contenido es corto */}
+      <main className="flex-1 flex flex-col min-h-screen bg-[#0a0a0a]"> 
         <Outlet />
-        {/* ❌ <MusicPlayer />  // eliminar, ya lo rendereamos en App.jsx */}
       </main>
       <FooterGaceta />
     </>

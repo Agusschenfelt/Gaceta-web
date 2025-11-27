@@ -37,70 +37,70 @@ export default function PitchTitles() {
       });
 
       // ===========================
-      //  CONECTORES PARA TODAS LAS RESOLUCIONES (VERSION A)
+      // CONECTORES: LIGHT BEAMS (HACES DE LUZ)
       // ===========================
       mm.add("(min-width: 0px)", () => {
-        const connectors = []; // ⬅️ VERSIÓN JS VÁLIDA
+        const connectors = [];
 
         const buildConnector = (fromEl, toEl) => {
-          const GAP = 40;
+          const GAP = 25; // Espacio ajustado
           const isMobile = window.innerWidth < 768;
 
           const startY = fromEl.offsetTop + fromEl.offsetHeight + GAP;
           const endY = toEl.offsetTop - GAP;
           const height = Math.max(0, endY - startY);
 
-          // base gris
+          // 1. GUÍA BASE (Casi invisible)
           const base = document.createElement("div");
-          base.className =
-            "absolute left-1/2 -translate-x-1/2 w-[2px] bg-white/15 rounded-full";
+          base.className = "absolute left-1/2 -translate-x-1/2 w-[1px] bg-white/5";
           Object.assign(base.style, {
             top: `${startY}px`,
             height: `${height}px`,
           });
           root.appendChild(base);
 
-          // linea blanca
+          // 2. LUZ PRINCIPAL (Dorado Gaceta)
           const prog = document.createElement("div");
-          prog.className =
-            "absolute left-1/2 -translate-x-1/2 w-[3px] md:w-[4px] rounded-full origin-top";
+          prog.className = "absolute left-1/2 -translate-x-1/2 w-[1px] origin-top";
           Object.assign(prog.style, {
             top: `${startY}px`,
             height: `${height}px`,
-            background:
-              "linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0.7) 40%, rgba(255,255,255,0.15) 100%)",
-            filter: "drop-shadow(0 0 6px rgba(255,255,255,0.25))",
+            // Degradado sutil: Dorado intenso -> Dorado suave -> Transparente
+            background: "linear-gradient(to bottom, #dee5a0 0%, rgba(222, 229, 160, 0.4) 60%, transparent 100%)",
+            // Glow para efecto de luz
+            boxShadow: "0 0 10px rgba(222, 229, 160, 0.5)",
+            zIndex: 10
           });
           root.appendChild(prog);
 
-          // dot final
+          // 3. PUNTO DE LUZ (Partícula líder)
           const dot = document.createElement("div");
           dot.className = "absolute left-1/2 -translate-x-1/2 rounded-full";
           Object.assign(dot.style, {
-            top: `${startY + height - 7}px`,
-            width: "14px",
-            height: "14px",
-            background:
-              "radial-gradient(circle, white 0%, rgba(255,255,255,0.7) 40%, transparent 70%)",
-            boxShadow: "0 0 14px rgba(255,255,255,0.35)",
+            top: `${startY + height - 3}px`,
+            width: "4px",   // Más fino y elegante
+            height: "4px",
+            background: "#dee5a0",
+            boxShadow: "0 0 8px #dee5a0, 0 0 15px #dee5a0", // Doble glow
             opacity: "0",
+            zIndex: 20
           });
           root.appendChild(dot);
 
           gsap.set(prog, { scaleY: 0, transformOrigin: "top" });
 
-          // progreso linea
+          // Animación de la línea (Se dibuja al scrollear)
           const st1 = ScrollTrigger.create({
             trigger: fromEl,
-            start: "bottom 80%",
+            start: "bottom 60%",
             endTrigger: toEl,
-            end: "top 45%",
-            scrub: 0.7,
+            end: "top 50%",
+            scrub: 0.5,
             onUpdate: (self) =>
               gsap.set(prog, { scaleY: self.progress || 0.0001 }),
           });
 
-          // dot appearing
+          // Animación del punto (Aparece al final)
           const st2 = ScrollTrigger.create({
             trigger: toEl,
             start: "top 85%",
@@ -109,15 +109,16 @@ export default function PitchTitles() {
             onUpdate: (self) => gsap.set(dot, { opacity: self.progress }),
           });
 
-          // pulso (solo desktop)
+          // Pulso "vivo" (Solo desktop)
           let pulse = null;
           if (!isMobile) {
             pulse = gsap.to(dot, {
-              scale: 1.06,
+              scale: 1.8,
+              opacity: 0.8,
               repeat: -1,
               yoyo: true,
               ease: "sine.inOut",
-              duration: 1.2,
+              duration: 1.5,
               paused: true,
             });
 
@@ -135,7 +136,6 @@ export default function PitchTitles() {
           connectors.push({ base, prog, dot, triggers: [st1, st2], pulse });
         };
 
-        // reconstrucción dinámica
         const wireAll = () => {
           connectors.forEach(({ base, prog, dot, triggers, pulse }) => {
             triggers.forEach((t) => t.kill());
@@ -184,30 +184,21 @@ export default function PitchTitles() {
   return (
     <div
       ref={rootRef}
-      className="relative flex flex-col items-center gap-[30vh] md:gap-[48vh] py-24 md:py-10"
+      className="relative flex flex-col items-center gap-[30vh] md:gap-[40vh] py-24 md:py-10"
     >
-      <h3
-        className="pitch-title font-medium tracking-tight text-white titulo font-inter 
-text-[clamp(2.3rem,5vw,4rem)] max-w-4xl text-center leading-[1.04]"
-      >
+      <h3 className="pitch-title font-medium tracking-tight text-white titulo font-inter text-[clamp(2rem,4.5vw,3.5rem)] max-w-4xl text-center leading-[1.1]">
         Hecho por y para <br />
-        <span className="cursiva">artistas</span>
+        <span className="cursiva text-[#dee5a0]">artistas</span>
       </h3>
 
-      <h3
-        className="pitch-title font-medium tracking-tight text-white titulo font-inter 
-text-[clamp(2.3rem,5vw,4rem)] max-w-4xl text-center leading-[1.04]"
-      >
+      <h3 className="pitch-title font-medium tracking-tight text-white titulo font-inter text-[clamp(2rem,4.5vw,3.5rem)] max-w-4xl text-center leading-[1.1]">
         Fundado en 2021 <br />
-        en el <span className="cursiva">Río de la Plata</span> <br />
+        en el <span className="cursiva text-[#dee5a0]">Río de la Plata</span> <br />
         con una visión
       </h3>
 
-      <h3
-        className="pitch-title font-medium tracking-tight text-white titulo font-inter 
-text-[clamp(2.3rem,5vw,4rem)] max-w-4xl text-center leading-[1.04]"
-      >
-        Desarrollar y dar a conocer <span className="cursiva">talentos</span>
+      <h3 className="pitch-title font-medium tracking-tight text-white titulo font-inter text-[clamp(2rem,4.5vw,3.5rem)] max-w-4xl text-center leading-[1.1]">
+        Desarrollar y dar a conocer <span className="cursiva text-[#dee5a0]">talentos</span>
       </h3>
     </div>
   );
