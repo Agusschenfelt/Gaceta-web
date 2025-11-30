@@ -173,7 +173,7 @@ export default function IntroToLogo() {
 
       {/* === SECCIÓN 3: ARTISTAS === */}
       <section ref={artistasRef} className="relative z-10">
-        <SeccionArtistas artistsData={ARTISTS_DATA} />
+        <SeccionArtistas artistsData={ARTISTS_DATA} showAll={false} />
       </section>
     </div>
   );

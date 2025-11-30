@@ -1,252 +1,288 @@
-import { useRef, useLayoutEffect, useMemo, useState } from "react";
+import { useRef, useLayoutEffect, useMemo, useState, useEffect } from "react";
 import { useParams, Navigate, Link } from "react-router-dom";
-// Borramos la importación directa de Helmet porque ya la maneja el componente SEO
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
-// IMPORTANTE: Asegúrate de que la ruta sea correcta según tu estructura
-import SEO from "../SEO"; 
+import SEO from "../SEO";
+
+
+// ICONOS
+import { 
+  FaInstagram, 
+  FaSpotify, 
+  FaYoutube, 
+  FaTiktok, 
+  FaTwitter, 
+  FaSoundcloud, 
+  FaApple, 
+  FaLink 
+} from "react-icons/fa";
+
+
+// MAPA DE REDES
+const SOCIAL_ICONS = {
+  instagram: FaInstagram,
+  spotify: FaSpotify,
+  youtube: FaYoutube,
+  tiktok: FaTiktok,
+  twitter: FaTwitter,
+  x: FaTwitter,
+  soundcloud: FaSoundcloud,
+  applemusic: FaApple,
+  default: FaLink
+};
 
 gsap.registerPlugin(ScrollTrigger);
+
+const SafeImage = ({ src, className }) => {
+  const [error, setError] = useState(false);
+  if (error || !src) return null; 
+  return <img src={src} className={className} alt="" onError={() => setError(true)} loading="lazy" />;
+};
 
 export default function ArtistPage({ artistsData = [] }) {
   const { id } = useParams();
   const norm = (s) => s?.toLowerCase().trim().replace(/\s+/g, "-");
 
-  // ===== 1. LOGICA DE ARTISTA =====
   const currentIndex = useMemo(
     () => artistsData.findIndex((a) => (a.slug ?? norm(a.nombre)) === id),
     [artistsData, id]
   );
 
   const artist = artistsData[currentIndex];
-  
-  // Siguiente artista (Loop infinito)
-  const nextArtist = artistsData[(currentIndex + 1) % artistsData.length];
+  const nextArtist = artistsData.length > 0 
+    ? artistsData[(currentIndex + 1) % artistsData.length] 
+    : null;
 
-  if (!artist) return <Navigate to="/" replace />;
+  const [videoReady, setVideoReady] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(null);
 
-  // ===== REFS =====
-  const overlayRef = useRef(null);
+  const containerRef = useRef(null);
   const titleRef = useRef(null);
   const heroRef = useRef(null);
-  const bioContainerRef = useRef(null); 
-  const fotosRef = useRef(null);
-  
-  const [activeIndex, setActiveIndex] = useState(null);
-  const [videoReady, setVideoReady] = useState(false);
+  const bioRef = useRef(null); 
+  const lineRef = useRef(null); 
+  const videoRef = useRef(null);
+
+  // FORCE PLAY VIDEO
+  useEffect(() => {
+    if (videoRef.current) {
+        videoRef.current.muted = true;
+        videoRef.current.defaultMuted = true;
+        videoRef.current.play().catch(e => console.log("Autoplay prevented", e));
+    }
+  }, [id, artist]);
 
   useLayoutEffect(() => {
+    if (!artist) return;
+    
+    let splitTitle;
     const ctx = gsap.context(() => {
-      // ... (Toda tu lógica de animación GSAP se mantiene IGUAL) ...
-      // Para ahorrar espacio en la respuesta, asumo que el código de animación
-      // sigue aquí intacto tal cual me lo pasaste.
       
-      const BASE = 0.5;
-      const PEAK = 0.85;
-      const QUICK = 100;
-
-      gsap.fromTo(overlayRef.current, { opacity: 0 }, {
-          opacity: BASE, ease: "none",
-          scrollTrigger: { trigger: document.documentElement, start: "top top", end: `+=${QUICK}`, scrub: true }
-      });
-      gsap.to(overlayRef.current, {
-        opacity: PEAK, ease: "none",
-        scrollTrigger: { trigger: document.documentElement, start: `+=${QUICK}`, end: "60%", scrub: true }
-      });
-
-      const splitTitle = new SplitType(titleRef.current, { types: "lines" });
-      gsap.from(splitTitle.lines, {
-        yPercent: 120, opacity: 0, duration: 0.8, ease: "power3.out", stagger: 0.1,
-      });
-
-      if (heroRef.current) {
-        gsap.fromTo(heroRef.current.querySelectorAll("[data-hero-anim]"),
-          { y: 18, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.06, delay: 0.2 }
-        );
+      if (titleRef.current) {
+        splitTitle = new SplitType(titleRef.current, { types: "chars" });
+        gsap.from(splitTitle.chars, {
+          yPercent: 120, opacity: 0, duration: 1.2, ease: "power4.out", stagger: 0.03
+        });
       }
 
-      const paragraphs = bioContainerRef.current?.querySelectorAll("p");
-      if (paragraphs) {
-        gsap.fromTo(paragraphs,
-            { y: 30, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", stagger: 0.1,
-              scrollTrigger: { trigger: bioContainerRef.current, start: "top 85%", toggleActions: "play none none reverse" }
+      gsap.fromTo("[data-hero-anim]",
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", stagger: 0.1, delay: 0.5 }
+      );
+
+      if (lineRef.current) {
+        gsap.fromTo(lineRef.current, 
+            { height: "0%" },
+            { 
+              height: "100%", 
+              ease: "none", 
+              scrollTrigger: {
+                trigger: bioRef.current,
+                start: "top center",
+                end: "bottom center",
+                scrub: true
+              }
             }
         );
       }
 
-      const fotos = fotosRef.current?.querySelectorAll("[data-foto]");
-      gsap.fromTo(fotos,
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out", stagger: 0.12,
-          scrollTrigger: { trigger: fotosRef.current, start: "top 80%" }
-        }
-      );
-      
-      fotos?.forEach((f, i) =>
-        gsap.to(f, {
-          yPercent: i % 2 ? -8 : -12, ease: "none",
-          scrollTrigger: { trigger: f, start: "top bottom", end: "bottom top", scrub: true }
-        })
-      );
+      const fadeElements = gsap.utils.toArray(".fade-in-up");
+      fadeElements.forEach((el) => {
+        gsap.fromTo(el, 
+          { y: 50, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", scrollTrigger: { trigger: el, start: "top 85%" } }
+        );
+      });
 
-    }, heroRef);
+    }, containerRef);
 
-    return () => ctx.revert();
-  }, [id]);
+    return () => { ctx.revert(); splitTitle?.revert(); };
+  }, [artist, id]);
 
-  // Video Background logic
+  if (!artist) return <Navigate to="/" replace />;
+
   const video = artist.videoFondo;
-  const sources = Array.isArray(video)
-    ? video
-    : [{ src: video, type: video?.endsWith(".webm") ? "video/webm" : "video/mp4" }];
-
-  const temas = (artist.temas ?? artist.proyectos ?? []).slice(0, 5);
-
-  // --- PREPARAR DATOS SEO ---
-  // Cortamos la bio para que no sea infinita en Google (160 caracteres es el estándar)
-  const bioExcerpt = artist.biografia 
-    ? artist.biografia.split(".")[0] + "." // Primera oración o...
-    : `Perfil oficial de ${artist.nombre} en Gaceta.`;
+  const poster = artist.poster ?? (artist.fotos?.[0] || "/assets/placeholder.jpg");
+  const sources = Array.isArray(video) ? video : [{ src: video, type: "video/mp4" }];
+  const temas = (artist.proyectos ?? []).slice(0, 6);
+  const paragraphs = artist.biografia ? artist.biografia.split('\n').filter(Boolean) : [];
+  
+  const sidePhotos = artist.fotos ? artist.fotos.slice(1, 4) : [];
+  if(sidePhotos.length === 0 && artist.fotos?.[0]) sidePhotos.push(artist.fotos[0]);
 
   return (
-    <main className="relative w-full min-h-screen overflow-x-hidden text-white bg-transparent selection:bg-white/20 selection:text-white">
+    <main ref={containerRef} className="relative w-full min-h-screen bg-transparent text-white selection:bg-[#dee5a0] selection:text-black overflow-hidden">
       
-      {/* 2. SEO IMPLEMENTADO CORRECTAMENTE */}
-      <SEO 
-        title={artist.nombre}
-        description={bioExcerpt}
-        image={artist.fotos?.[0]} // La primera foto será la que salga en WhatsApp/Twitter
-        url={`/${id}`} // Link canónico
-        keywords={`Gaceta, ${artist.nombre}, Música Urbana, Trap, ${artist.rol || "Artista"}`}
-      />
+      <SEO title={artist.nombre} description={paragraphs[0]} image={artist.fotos?.[0]} url={`/${id}`} />
 
-      <style>{`
-        html, body, main { background: transparent !important; }
-        video.bg-video {
-          position: fixed; inset: 0; z-index: -10;
-          width: 100%; height: 100%; object-fit: cover; display:block;
-        }
-      `}</style>
+      {/* 1. FONDO FIXED */}
+      <div className="fixed inset-0 z-0">
+        
+        {artist.videoFondo && (
+            <video
+                ref={videoRef}
+                className="absolute inset-0 w-full h-full object-cover opacity-100 mix-blend-lighten"
+                autoPlay muted loop playsInline
+                key={artist.videoFondo}
+            >
+                {sources.map((s, i) => <source key={i} src={s.src} type={s.type} />)}
+            </video>
+        )}
 
-      {/* === VIDEO DE FONDO === */}
-      <div className="fixed inset-0 -z-10">
-        <video
-          className={`bg-video transition-opacity duration-700 ${
-            videoReady ? "opacity-100" : "opacity-0"
-          }`}
-          autoPlay muted loop playsInline preload="auto"
-          poster={artist.poster ?? artist.fotos?.[0]}
-          onCanPlay={() => setVideoReady(true)}
-          key={artist.videoFondo} 
-        >
-          {sources.map((s, i) => (
-            <source key={i} src={s.src} type={s.type ?? "video/mp4"} />
-          ))}
-        </video>
-        <div ref={overlayRef} className="absolute inset-0 bg-black opacity-0 pointer-events-none" />
+        {/* Gradientes de Lectura */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
+        <div className="absolute inset-0 opacity-[0.06] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-10" />
       </div>
 
-      {/* === HERO === */}
-      <section ref={heroRef} className="relative min-h-[100vh] flex flex-col items-center justify-center text-center px-6 pt-10">
-        <h1 ref={titleRef} className="text-[14vw] leading-[0.85] md:text-[9rem] font-bold tracking-tighter drop-shadow-[0_4px_15px_rgba(0,0,0,0.5)]">
-          {artist.nombre}
-        </h1>
-        <p data-hero-anim className="uppercase text-xs md:text-sm tracking-[0.25em] font-medium opacity-90 mt-6">
-          {artist.rol}
-        </p>
-        <div data-hero-anim className="flex gap-6 mt-10 text-sm md:text-base font-light">
-          {Object.entries(artist.redes || {}).map(([network, url]) => (
-             url && (
-                <a key={network} className="hover:text-[#dee5a0] transition-colors duration-300 capitalize" href={url} target="_blank" rel="noreferrer">
-                  {network} ↗
-                </a>
-             )
-          ))}
-        </div>
-      </section>
-
-      {/* === BIO + FOTOS === */}
-      <section className="relative z-10 max-w-[1300px] mx-auto px-6 md:px-12 py-24 md:py-32">
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[120%] h-[80%] bg-black/40 blur-[80px] -z-10 rounded-full pointer-events-none" />
-
-        <div className="relative mb-24 md:mb-32">
-            <div ref={bioContainerRef} className="md:columns-2 gap-12 lg:gap-20 text-[1.1rem] md:text-[1.25rem] leading-[1.6] text-neutral-200/90 font-light text-pretty">
-                {artist.biografia.split('\n').filter(Boolean).map((paragraph, i) => (
-                    <p key={i} className={`mb-6 break-inside-avoid ${i===0 ? "first-letter:float-left first-letter:text-6xl first-letter:pr-3 first-letter:font-serif first-letter:text-white first-letter:leading-[0.8]" : ""}`}>
-                        {paragraph}
-                    </p>
-                ))}
-            </div>
-        </div>
-
-        <div ref={fotosRef} className="relative grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 justify-center">
-          {artist.fotos?.slice(0, 6).map((f, i) => (
-            <figure data-foto key={i} className={`relative overflow-hidden rounded-xl shadow-2xl aspect-[3/4] bg-white/5 ${i % 5 === 0 ? "col-span-2 row-span-2 aspect-[3/3.5]" : ""}`}>
-              <img src={f} alt={`Foto ${i + 1} de ${artist.nombre}`} className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity duration-500" loading="lazy" decoding="async" />
-            </figure>
-          ))}
-        </div>
-      </section>
-
-      {/* === CATÁLOGO === */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 py-24 md:py-32">
-        <h2 className="text-sm md:text-base uppercase tracking-[0.2em] text-neutral-400 mb-12 border-b border-white/10 pb-4">
-          Catálogo Selecto
-        </h2>
-        <div className="flex flex-col md:flex-row gap-12 lg:gap-24 items-start md:items-center relative">
-          <ul className="flex-1 w-full space-y-0 relative z-20">
-            {temas.map((t, i) => (
-              <li key={i} className="group border-b border-white/10 last:border-none" onMouseEnter={() => setActiveIndex(i)} onMouseLeave={() => setActiveIndex(null)}>
-                <a href={t.spotify || "#"} target={t.spotify ? "_blank" : undefined} rel="noopener noreferrer" className={`block py-6 md:py-8 transition-all duration-300 ${t.spotify ? "cursor-pointer" : "cursor-default"}`}>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl md:text-4xl lg:text-5xl font-serif italic text-neutral-400 group-hover:text-white group-hover:translate-x-4 transition-all duration-300">
-                      {t.nombre}
-                    </span>
-                    <span className="opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-300 text-xs tracking-widest uppercase">
-                      {t.spotify ? "Spotify ↗" : "Próximamente"}
-                    </span>
-                  </div>
-                </a>
-              </li>
-            ))}
-          </ul>
-          <div className="hidden md:block w-[400px] h-[400px] relative pointer-events-none perspective-[1000px]">
-             {temas.map((t, i) => (
-                <div key={i} className={`absolute inset-0 transition-all duration-500 ease-out will-change-transform ${activeIndex === i ? "opacity-100 translate-y-0 rotate-0 scale-100" : "opacity-0 translate-y-12 rotate-2 scale-95"}`}>
-                    <img src={t.imagen || artist.fotos?.[0]} alt={t.nombre} className="w-full h-full object-cover rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)]" />
-                </div>
-             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* === NEXT ARTIST === */}
-      {nextArtist && (
-          <section className="relative w-full h-[60vh] md:h-[80vh] flex items-center justify-center overflow-hidden group border-t border-white/5">
-            <Link to={`/${nextArtist.slug ?? norm(nextArtist.nombre)}`} className="absolute inset-0 z-20 block cursor-pointer" aria-label={`Ir al siguiente artista: ${nextArtist.nombre}`} />
-            <div className="absolute inset-0 -z-10 overflow-hidden">
-                <img src={nextArtist.fotos?.[0] || "/assets/placeholder.jpg"} alt="" className="w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-all duration-1000 group-hover:scale-[1.03] grayscale group-hover:grayscale-0" />
-                <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors duration-700" />
-            </div>
-            <div className="text-center z-10 text-white pointer-events-none mix-blend-screen">
-                <span className="block text-xs md:text-sm tracking-[0.4em] uppercase mb-6 text-neutral-400 group-hover:text-white transition-colors">
-                    Siguiente Artista
+      <div className="relative z-20">
+        
+        {/* 2. HERO */}
+        <section ref={heroRef} className="min-h-screen flex flex-col items-center justify-center text-center px-6">
+            <h1 ref={titleRef} key={id} className="text-[18vw] md:text-[13rem] leading-[0.8] font-bold tracking-tighter text-white mix-blend-overlay opacity-90">
+                {artist.nombre}
+            </h1>
+            
+            <div className="fade-in-up mt-12 flex flex-col items-center gap-8">
+                {/* ETIQUETA DE ROL MEJORADA (Pill Premium) */}
+                <span className="
+                    px-6 py-2 rounded-full 
+                    bg-white/5 border border-white/10 backdrop-blur-md 
+                    text-xs font-mono uppercase tracking-[0.3em] text-[#dee5a0] 
+                    shadow-[0_0_20px_rgba(222,229,160,0.1)]
+                    hover:bg-white/10 hover:scale-105 transition-all duration-300
+                ">
+                    {artist.rol}
                 </span>
-                <h2 className="text-[12vw] md:text-[8rem] leading-[0.8] font-serif italic tracking-tighter group-hover:-translate-y-2 transition-transform duration-700">
-                    {nextArtist.nombre}
-                </h2>
-                <div className="mt-8 opacity-0 translate-y-6 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-700 delay-100">
-                    <span className="inline-flex items-center gap-2 border-b border-white/50 pb-1 text-xs md:text-sm tracking-widest uppercase">
-                        Ver Perfil
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </span>
+
+                {/* === SOCIAL DOCK (Íconos) === */}
+                <div className="flex flex-wrap justify-center mt-4 gap-4">
+                {Object.entries(artist.redes || {}).map(([network, url]) => {
+                    if (!url) return null;
+                    // Normalizamos nombre para buscar el ícono
+                    const key = network.toLowerCase().replace(/\s/g, "");
+                    const Icon = SOCIAL_ICONS[key] || SOCIAL_ICONS.default;
+
+                    return (
+                        <a 
+                            key={network} 
+                            href={url} 
+                            target="_blank" 
+                            className="group relative flex items-center justify-center w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:bg-[#dee5a0] hover:border-[#dee5a0] hover:scale-110 transition-all duration-300"
+                            aria-label={network}
+                        >
+                            <Icon className="text-xl text-white group-hover:text-black transition-colors" />
+                            {/* Tooltip */}
+                            <span className="absolute -top-8 text-[10px] font-mono uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity text-[#dee5a0]">
+                                {network}
+                            </span>
+                        </a>
+                    );
+                })}
                 </div>
+            </div>
+        </section>
+
+        {/* 3. BIOGRAFÍA (TEXTO LEGILE + FOTOS) */}
+        <section ref={bioRef} className="relative max-w-[1400px] mx-auto px-6 md:px-12 py-20 md:py-32">
+            
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 relative">
+                
+                {/* LÍNEA DIVISORIA */}
+                <div className="hidden lg:block absolute top-0 bottom-0 left-[66%] w-px bg-white/5">
+                    <div ref={lineRef} className="w-[1px] bg-[#dee5a0] shadow-[0_0_10px_#dee5a0]" style={{ height: '0%' }} />
+                </div>
+
+                {/* TEXTO (Con sombra y peso visual) */}
+                <div className="lg:col-span-8 flex flex-col gap-10 lg:pr-16">
+                    {paragraphs.map((text, i) => (
+                        <div key={i} className="fade-in-up">
+                            <p className={`text-xl md:text-2xl leading-relaxed font-normal text-white text-pretty drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]
+                                ${i===0 ? "first-letter:text-7xl first-letter:font-serif first-letter:text-[#dee5a0] first-letter:float-left first-letter:pr-4 first-letter:mt-[-8px] first-letter:leading-none first-letter:drop-shadow-none" : ""}`}>
+                                {text}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+
+                {/* FOTOS LATERALES */}
+                <div className="lg:col-span-4 fade-in-up pl-8 border-l border-white/5 lg:border-none">
+                    <div className="flex flex-col gap-12 lg:sticky lg:top-32">
+                        {sidePhotos.map((photo, i) => (
+                            <div key={i} className={`rounded-sm overflow-hidden border border-white/20 shadow-2xl bg-black ${i % 2 === 0 ? 'aspect-[3/4]' : 'aspect-square'}`}>
+                                <SafeImage src={photo} className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity duration-700" />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        {/* 4. CATÁLOGO */}
+        <section className="max-w-6xl mx-auto px-6 md:px-12 pb-40 pt-20">
+            <div className="flex items-end justify-between mb-16 border-b border-white/20 pb-6 fade-in-up">
+                <h2 className="text-xs font-mono uppercase tracking-[0.3em] text-[#dee5a0]">Catálogo Selecto</h2>
+                <span className="text-xs font-mono text-white/30">[{temas.length}] RELEASES</span>
+            </div>
+            
+            <ul className="space-y-4">
+                {temas.map((t, i) => (
+                    <li key={i} className="fade-in-up group relative border-b border-white/10 last:border-none" onMouseEnter={() => setActiveIndex(i)} onMouseLeave={() => setActiveIndex(null)}>
+                        <a href={t.spotify || "#"} target="_blank" className="block py-8 transition-all duration-300 group-hover:pl-8">
+                            <div className="flex items-center justify-between relative z-20">
+                                <div className="flex items-baseline gap-8">
+                                    <span className="font-mono text-xs text-[#dee5a0]/50">{(i + 1).toString().padStart(2, '0')}</span>
+                                    <span className="text-4xl md:text-6xl font-serif italic text-white/90 group-hover:text-white transition-colors duration-300 drop-shadow-md">{t.nombre}</span>
+                                </div>
+                                <span className="text-[10px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all text-[#dee5a0]">Play</span>
+                            </div>
+                            <div className={`hidden md:block absolute top-1/2 right-[20%] -translate-y-1/2 w-56 aspect-square rounded shadow-2xl pointer-events-none transition-all duration-300 ${activeIndex === i ? "opacity-100 scale-100 rotate-6" : "opacity-0 scale-90 rotate-0"}`}>
+                                <SafeImage src={t.imagen || artist.fotos?.[0]} className="w-full h-full object-cover" />
+                            </div>
+                        </a>
+                    </li>
+                ))}
+            </ul>
+        </section>
+
+        {/* 5. NEXT ARTIST */}
+        {nextArtist && (
+          <section className="relative w-full h-[60vh] md:h-[80vh] flex items-center justify-center overflow-hidden group border-t border-white/10 bg-[#050505] z-20">
+            <Link to={`/${nextArtist.slug ?? norm(nextArtist.nombre)}`} className="absolute inset-0 z-30 block cursor-pointer" />
+            <div className="absolute inset-0 -z-10">
+                <SafeImage src={nextArtist.fotos?.[0] || "/assets/placeholder.jpg"} className="w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-all duration-1000 group-hover:scale-[1.03] grayscale" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+            </div>
+            <div className="text-center z-20 relative mix-blend-screen px-4">
+                <p className="text-xs font-mono tracking-[0.3em] uppercase text-[#dee5a0] mb-6 opacity-70 group-hover:opacity-100 transition-opacity">Siguiente Artista</p>
+                <h2 className="text-7xl md:text-[12rem] font-serif italic text-white leading-none tracking-tighter group-hover:scale-105 transition-transform duration-700">{nextArtist.nombre}</h2>
             </div>
           </section>
-      )}
+        )}
+
+      </div>
     </main>
   );
 }

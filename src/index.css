@@ -18,9 +18,7 @@
   --pageBg: #0e0e10; /* color inicial (oscuro tipo #0a0a0a) */
 }
 
-main {
-  background-color: #000;
-}
+
 
 /* 🧩 CLASES TIPOGRÁFICAS Y GENERALES */
 .cursiva {
@@ -170,3 +168,35 @@ main {
   transform: translateY(calc(var(--scroll) * 0.03));
   will-change: transform;
 }
+
+
+/* Scrollbar Personalizada */
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: #0a0a0a;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 4px;
+  border: 2px solid #0a0a0a; /* Crea un margen visual */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #dee5a0; /* Color de acento al hacer hover */
+}
+
+/* Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #333 #0a0a0a;
+}
+
+
+
+
+

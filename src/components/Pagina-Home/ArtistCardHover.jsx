@@ -34,7 +34,7 @@ export default function ArtistCardHover({ artist }) {
 
   return (
     <Link
-      to={`/${slug}`}
+      to={`artistas/${slug}`}
       className="group relative block w-full aspect-[3/4] overflow-hidden rounded-xl bg-neutral-900 ring-1 ring-white/5 transition-all duration-500 hover:ring-[#dee5a0]/30 hover:shadow-2xl hover:-translate-y-2"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

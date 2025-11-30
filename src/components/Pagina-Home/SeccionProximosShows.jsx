@@ -70,7 +70,7 @@ export default function SeccionProximosShows() {
       {/* VIDEO FONDO */}
       <div className="absolute inset-0 z-0">
         <video 
-            src="/assets/ara-perfil.mp4" 
+            src="/assets/video-shows.mp4" 
             autoPlay muted loop playsInline 
             className="w-full h-full object-cover opacity-40 grayscale" 
         />

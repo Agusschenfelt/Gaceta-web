@@ -1,0 +1,136 @@
+export const TRACKS_DATA = [
+    {
+      title: "algún día",
+      artist: "Ramma",
+      // Ruta exacta al archivo MP3 en public/assets/media
+      src: "/assets/musica/algun-dia.mp3", 
+      // Ruta exacta a la portada en public/assets
+      cover: "/assets/musica/portadas/algundia.webp", 
+    },
+    {
+      title: "Antes de las 12",
+      artist: "Valuto",
+      src: "/assets/musica/antesdelas12.mp3",
+      cover: "/assets/musica/portadas/antesdelas12.webp",
+    },
+    {
+      title: "DONDE QUIERO ESTAR",
+      artist: "ARA",
+      src: "/assets/musica/dondequieroestar.mp3",
+      cover: "/assets/musica/portadas/youngboy.webp",
+    },
+    {
+      title: "Constelacion",
+      artist: "Ramma",
+      src: "/assets/musica/constelacion.mp3",
+      cover: "/assets/musica/portadas/antesdelas12.webp",
+    },
+    {
+      title: "CRY4ME",
+      artist: "R Flakkkk, Valuto",
+      src: "/assets/musica/cry4me.mp3",
+      cover: "/assets/musica/portadas/cry4me.webp",
+    },
+    {
+      title: "INMORTAL",
+      artist: "Ramma",
+      src: "/assets/musica/4k_audio.mp3",
+      cover: "/assets/musica/portadas/INMORTAL.webp",
+    },
+    {
+      title: "LUCES EN LA NOCHE",
+      artist: "Tadu, Ramma & Zeballos",
+      src: "/assets/musica/lucesenlanoche.mp3",
+      cover: "/assets/musica/portadas/lucesenlanoche.webp",
+    },
+    {
+      title: "MVD",
+      artist: "ARA",
+      src: "/assets/musica/mvd.mp3",
+      cover: "/assets/musica/portadas/mvd.webp",
+    },
+    {
+      title: "No soy yo",
+      artist: "Valuto",
+      src: "/assets/musica/nosoyyo.mp3",
+      cover: "/assets/musica/portadas/nosoyyo.webp",
+    },
+    {
+      title: "Sexto sentido",
+      artist: "Ramma",
+      src: "/assets/musica/sextosentido.mp3",
+      cover: "/assets/musica/portadas/sextosentido.webp",
+    },
+    {
+      title: "STICKY",
+      artist: "ARA",
+      src: "/assets/musica/sticky.mp3",
+      cover: "/assets/musica/portadas/sticky.webp",
+    },
+    {
+      title: "Te queria",
+      artist: "Fosse",
+      src: "/assets/musica/tequeria.mp3",
+      cover: "/assets/musica/portadas/tequeria.webp",
+    },
+    {
+      title: "Te quedaste con mi hoddie",
+      artist: "Fosse",
+      src: "/assets/musica/tequedasteconmihoddie.mp3",
+      cover: "/assets/musica/portadas/todoxvos.webp",
+    },
+    {
+      title: "ACÉRCATE",
+      artist: "Ramma",
+      src: "/assets/musica/acercate.mp3",
+      cover: "/assets/musica/portadas/trip2.webp",
+    },
+    {
+      title: "Cosas claras",
+      artist: "ARA",
+      src: "/assets/musica/cosasclaras.mp3",
+      cover: "/assets/musica/portadas/youngboy.webp",
+    },
+    {
+      title: "bby no t puedo ver",
+      artist: "ARA",
+      src: "/assets/musica/bbaynotepuedover.mp3",
+      cover: "/assets/musica/portadas/youngboy.webp",
+    },
+    {
+      title: "no me busques xq re estoy",
+      artist: "Fosse, Luk-s",
+      src: "/assets/musica/nomebusques.mp3",
+      cover: "/assets/musica/portadas/todoxvos.webp",
+    },
+    {
+      title: "Back to 17",
+      artist: "Valuto",
+      src: "/assets/musica/backto17.mp3",
+      cover: "/assets/musica/portadas/ceup.webp",
+    },
+    {
+      title: "SOÑANDO DESPIERTO",
+      artist: "Ramma",
+      src: "/assets/musica/sonandodespierto.mp3",
+      cover: "/assets/musica/portadas/trip2.webp",
+    },
+    {
+      title: "CON EL UNIFORME PUESTO",
+      artist: "Valuto",
+      src: "/assets/musica/ceup.mp3",
+      cover: "/assets/musica/portadas/ceup.webp",
+    },
+    {
+      title: "Ya no soy asi",
+      artist: "Valuto",
+      src: "/assets/musica/yanosoyasi.mp3",
+      cover: "/assets/musica/portadas/ceup.webp",
+    },
+    {
+      title: "ME PIERDO",
+      artist: "TADU",
+      src: "/assets/musica/mepierdo.mp3",
+      cover: "/assets/musica/portadas/disfrutandoelnosaber.webp",
+    },
+  ];

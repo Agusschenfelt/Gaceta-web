@@ -7,7 +7,7 @@ import { useMenu } from "./MenuStore";
 
 const navLinks = [
   { name: "Nosotros", to: "/sobre-nosotros" },
-  { name: "Artistas", to: "/#artistas" },
+  { name: "Artistas", to: "/artistas" },
   { name: "Gallery", to: "/gallery" },
   { name: "Shows", to: "/#shows" },
   { name: "Shop", to: "https://tutienda.tiendanube.com/" }, 
@@ -118,10 +118,10 @@ function MenuOverlay({ open, onClose }) {
                     
                     {/* 1. Redes Sociales */}
                     <div className="flex gap-6 text-xl text-white/50">
-                        <a href="https://instagram.com" target="_blank" className="hover:text-white transition-colors"><FaInstagram/></a>
-                        <a href="https://twitter.com" target="_blank" className="hover:text-white transition-colors"><FaTwitter/></a>
-                        <a href="https://tiktok.com" target="_blank" className="hover:text-white transition-colors"><FaTiktok/></a>
-                        <a href="https://youtube.com" target="_blank" className="hover:text-white transition-colors"><FaYoutube/></a>
+                        <a href="https://www.instagram.com/gacetaplay/" target="_blank" className="hover:text-white transition-colors"><FaInstagram/></a>
+                        <a href="https://x.com/gacetaplay" target="_blank" className="hover:text-white transition-colors"><FaTwitter/></a>
+                        <a href="https://www.tiktok.com/@gaceta.play" target="_blank" className="hover:text-white transition-colors"><FaTiktok/></a>
+                        <a href="https://www.youtube.com/@gacetaplay" target="_blank" className="hover:text-white transition-colors"><FaYoutube/></a>
                     </div>
 
                     {/* Separador visual (Línea vertical sutil) */}
@@ -161,16 +161,22 @@ function MenuItem({ link, index, hoveredIndex, setHoveredIndex, onClose }) {
       <LinkOrA
         to={link.to}
         onClick={onClose}
-        className={`group block text-5xl md:text-8xl font-bold tracking-tighter leading-[1.1] transition-all duration-500 ease-out outline-none text-white
+        className={`group block text-5xl md:text-8xl font-bold tracking-tighter leading-[1.0] transition-all duration-500 ease-out outline-none text-white
           ${isDimmed ? "opacity-30 blur-[2px] scale-[0.98]" : "opacity-100 blur-0 scale-100"}`}
       >
-        <div className="relative overflow-hidden py-1">
-            <span className="block transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:-translate-y-full">
+        {/* AGREGADO: pb-2 para dar margen abajo y evitar cortes */}
+        <div className="relative overflow-hidden pb-2">
+            
+            {/* 1. TEXTO ORIGINAL (Sube al 120% para desaparecer bien) */}
+            <span className="block transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:-translate-y-[120%]">
                 {link.name}
             </span>
-            <span className="absolute top-0 left-0 block font-serif italic text-[#dee5a0] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0">
+
+            {/* 2. TEXTO HOVER (Viene del 120% abajo) */}
+            <span className="absolute top-0 left-0 block font-serif italic text-[#dee5a0] translate-y-[120%] transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0">
                 {link.name}
             </span>
+            
             <ArrowUpRight className="absolute top-1/2 -right-12 -translate-y-1/2 text-[#dee5a0] w-8 h-8 md:w-12 md:h-12 opacity-0 -translate-x-4 transition-all duration-300 group-hover:opacity-100 group-hover:-translate-x-0" />
         </div>
       </LinkOrA>

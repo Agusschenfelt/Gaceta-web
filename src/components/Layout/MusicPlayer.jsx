@@ -2,39 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { SkipBack, Play, Pause, SkipForward, Volume2, VolumeX } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMenu } from "./MenuStore";
-
-// --- TUS CANCIONES REALES ---
-const tracks = [
-  {
-    title: "Delirio",
-    artist: "Ramma",
-    src: "/assets/Trip/delirio_audio.mp3", // Asegúrate que esta ruta exista
-    cover: "/assets/constelacion.jpeg",     // Asegúrate que esta ruta exista
-  },
-  {
-    title: "Donde quiero estar",
-    artist: "ARA",
-    src: "/assets/media/ara-dondequieroestar.mp3",
-    cover: "/assets/youngboy.jpg",
-  },
-  {
-    title: "Inmortal",
-    artist: "Ramma",
-    src: "/assets/media/ramma-inmortal.mp3",
-    cover: "/assets/inmortal.jpg",
-  },
-  {
-    title: "Flashes",
-    artist: "Valuto",
-    src: "/assets/media/valuto-flashes.mp3",
-    cover: "/assets/flashes.jpg",
-  },
-];
+import { TRACKS_DATA } from "../../data/tracks";
 
 export default function MusicPlayer() {
   const { open: menuOpen } = useMenu();
   const [isDesktop, setIsDesktop] = useState(false);
 
+  const tracks = TRACKS_DATA;
+  
   // Estados del reproductor
   const audioRef = useRef(null);
   const [trackIndex, setTrackIndex] = useState(0);

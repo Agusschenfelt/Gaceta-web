@@ -1,24 +1,37 @@
 import { useRef } from 'react';
+import { Link } from 'react-router-dom'; // Importante para el botón
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import ArtistCardHover from './ArtistCardHover';
+import { ArrowUpRight } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-export default function SeccionArtistas({ artistsData }) {
+// Nombres exactos de los Headliners (debe coincidir con tu data)
+const HEADLINERS = ["ARA", "RAMMA", "VALUTO"];
+
+export default function SeccionArtistas({ artistsData, showAll = false }) {
   const containerRef = useRef(null);
 
+  // Lógica de Filtrado:
+  // Si showAll es true, muestra todos.
+  // Si no, muestra solo los que están en la lista HEADLINERS.
+  const displayArtists = showAll 
+    ? artistsData 
+    : artistsData.filter(a => HEADLINERS.includes(a.nombre.toUpperCase()));
+
   useGSAP(() => {
-    gsap.from(".artist-grid-card", {
-      y: 60,
+    // Animación de entrada escalonada
+    gsap.from(".artist-card-anim", {
+      y: 100,
       opacity: 0,
-      duration: 0.8,
-      stagger: 0.1,
+      duration: 1,
+      stagger: 0.15,
       ease: "power3.out",
       scrollTrigger: {
-        trigger: ".artist-grid",
-        start: "top 85%",
+        trigger: containerRef.current,
+        start: "top 75%", // Empieza cuando el top de la sección está al 75% del viewport
       }
     });
   }, { scope: containerRef });
@@ -26,19 +39,61 @@ export default function SeccionArtistas({ artistsData }) {
   return (
     <section 
       ref={containerRef} 
-      // pt-0: Eliminamos el padding top para que la sección se pegue a la línea conectora
-      className="relative w-full bg-black pt-0 pb-72 px-4 md:px-10 z-30"
+      className="relative w-full bg-black py-32 px-6 md:px-10 z-30"
     >
-       {/* GRADIENTE SUPERIOR: Recibe la línea de luz suavemente */}
-       <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-black via-black/90 to-transparent z-10 -mt-20 pointer-events-none" />
+       <div className="max-w-[1400px] mx-auto">
+         
+         {/* HEADER SUTIL (Opcional, para dar contexto) */}
+         {!showAll && (
+            <div className="mb-16 flex items-end justify-between border-b border-white/10 pb-6 artist-card-anim">
+                <div>
+                    <span className="block text-xs font-mono text-[#dee5a0] tracking-widest mb-2 uppercase">
+                        Roster
+                    </span>
+                    <h2 className="text-5xl md:text-7xl font-serif italic text-white leading-none">
+                        Selección
+                    </h2>
+                </div>
+            </div>
+         )}
 
-       {/* GRID LIMPIO */}
-       <div className="artist-grid max-w-[1400px] mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 relative z-20">
-         {artistsData.map((artist, index) => (
-           <div key={artist.id || index} className="artist-grid-card will-change-transform">
-              <ArtistCardHover artist={artist} />
-           </div>
-         ))}
+         {/* GRID DE ARTISTAS */}
+         <div className={`grid gap-6 md:gap-10 relative 
+            ${showAll 
+                ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4" // Grid denso para "Todos"
+                : "grid-cols-1 md:grid-cols-3" // Grid amplio para "Destacados"
+            }`}
+         >
+           {displayArtists.map((artist, index) => (
+             <div key={artist.id || index} className="artist-card-anim w-full">
+                {/* Si son destacados, forzamos un aspect ratio más vertical (poster) 
+                    para que se vean más imponentes.
+                */}
+                <div className={`${!showAll ? "aspect-[3/4.5]" : ""}`}>
+                    <ArtistCardHover artist={artist} />
+                </div>
+             </div>
+           ))}
+         </div>
+
+         {/* BOTÓN "VER TODOS" (Solo si no estamos mostrando todos) */}
+         {!showAll && (
+            <div className="mt-20 flex justify-center artist-card-anim">
+                <Link 
+                    to="/artistas" // Asegúrate de crear esta ruta o usar "/#roster"
+                    className="group relative inline-flex items-center gap-3 px-8 py-4 overflow-hidden rounded-full bg-white/5 border border-white/10 hover:border-[#dee5a0]/50 transition-all duration-500"
+                >
+                    <span className="relative z-10 font-mono text-xs uppercase tracking-[0.2em] text-white group-hover:text-[#dee5a0] transition-colors">
+                        Ver Roster Completo
+                    </span>
+                    <ArrowUpRight className="relative z-10 w-4 h-4 text-white group-hover:text-[#dee5a0] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                    
+                    {/* Hover Fill Effect */}
+                    <div className="absolute inset-0 bg-white/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
+                </Link>
+            </div>
+         )}
+
        </div>
     </section>
   );
