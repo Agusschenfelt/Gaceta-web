@@ -88,7 +88,7 @@ export default function RosterPage() {
 
                     {/* Botones de Filtro (Estilo Pill) */}
                     <div className="flex gap-2 p-1 bg-white/5 rounded-full border border-white/5 backdrop-blur-sm">
-                        {['all', 'cantante', 'productor'].map((f) => (
+                        {['all', 'artista', 'productor'].map((f) => (
                             <button
                                 key={f}
                                 onClick={() => setFilter(f)}

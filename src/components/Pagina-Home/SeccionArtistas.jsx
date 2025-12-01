@@ -47,11 +47,8 @@ export default function SeccionArtistas({ artistsData, showAll = false }) {
          {!showAll && (
             <div className="mb-16 flex items-end justify-between border-b border-white/10 pb-6 artist-card-anim">
                 <div>
-                    <span className="block text-xs font-mono text-[#dee5a0] tracking-widest mb-2 uppercase">
-                        Roster
-                    </span>
                     <h2 className="text-5xl md:text-7xl font-serif italic text-white leading-none">
-                        Selección
+                        Roster
                     </h2>
                 </div>
             </div>
