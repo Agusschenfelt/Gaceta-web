@@ -1,6 +1,10 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 
+// --- 1. IMPORTA DESDE /react (No /next) ---
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
+
 // Componentes Shell
 import Layout from "./components/Layout/Layout";
 import MenuProvider from "./components/Layout/MenuStore";
@@ -8,35 +12,18 @@ import ScrollToTopOnRouteChange from "./ScrollToTopOnRouteChange";
 import MusicPlayer from "./components/Layout/MusicPlayer";
 import ResetBgOnRoute from "./components/ResetBgOnRoute";
 import PageTransitionProvider from "./components/PageTransitionProvider";
-// Páginas (Lazy)
-const HomePage = lazy(() => import("./pages/HomePage"));
-const ArtistPage = lazy(() => import("./pages/ArtistPage"));
-const SobreNosotrosPage = lazy(() => import("./pages/SobreNosotrosPage"));
-const GalleryPage = lazy(() => import("./pages/GalleryPage"));
-const RosterPage = lazy(() => import("./pages/RosterPage")); // Asegúrate de tener este import si creaste la página
 
-// IMPORTANTE: Importamos la data con llaves {} porque es un export nombrado
-import { ARTISTS_DATA } from "./data/artistsData";
-
-import "./index.css";
-import "swiper/css";
-import "swiper/css/navigation";
-
-const LoadingScreen = () => (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0a0a0a]">
-    <div className="flex flex-col items-center gap-4">
-      <div className="w-3 h-3 bg-[#dee5a0] rounded-full animate-ping" />
-      <span className="text-[10px] font-mono text-white/30 uppercase tracking-[0.2em] animate-pulse">
-        Cargando
-      </span>
-    </div>
-  </div>
-);
+// ... (Resto de tus imports lazy y componentes de carga) ...
+// ... (LoadingScreen y ARTISTS_DATA) ...
 
 export default function App() {
   return (
     <MenuProvider>
-      {/* 1. EL PROVIDER DEBE ENVOLVER TODO EL CONTENIDO NAVEGABLE */}
+      {/* --- 2. COLÓCALOS AQUÍ (Nivel superior) --- */}
+      {/* Así capturan datos sin importar en qué ruta estés o si hay transiciones */}
+      <Analytics />
+      <SpeedInsights />
+
       <PageTransitionProvider> 
         
         <ScrollToTopOnRouteChange />
@@ -55,8 +42,6 @@ export default function App() {
           </Routes>
         </Suspense>
 
-        {/* El MusicPlayer puede ir dentro o fuera, pero dentro es mejor 
-            si alguna vez quieres que la transición interactúe con él. */}
         <MusicPlayer />
 
       </PageTransitionProvider> 
