@@ -4,7 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// IMPORTACIÓN LAZY DEL LIGHTBOX (Clave para Performance)
+// IMPORTACIÓN LAZY DEL LIGHTBOX
 const FocusLightbox = lazy(() => import("./FocusLightbox"));
 
 const clsx = (...xs) => xs.filter(Boolean).join(" ");
@@ -87,7 +87,7 @@ function MediaCard({
   cardHClass = "max-h-[46vh]",
   rowSpanClass = "",
   randomOffset = "",
-  priority = false, // <--- Nueva prop para optimizar LCP
+  priority = false,
 }) {
   const mediaRef = useRef(null);
 
@@ -110,7 +110,7 @@ function MediaCard({
           <div
             className={clsx(
               "card-inner",
-              // ESTILO CARDS: Bordes sutiles + Fondo oscuro
+              // ESTILO CARDS
               "relative rounded-sm overflow-hidden border border-white/5 bg-[#0a0a0a]", 
               "transform transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]",
               "group-hover:scale-[1.02] group-hover:border-[#911e1e]/50 group-hover:shadow-[0_20px_40px_-10px_rgba(145,30,30,0.15)]",
@@ -147,7 +147,6 @@ function MediaCard({
                 fallbackSrc={item.src}
                 alt={item.alt || `Galería Gaceta ${i}`}
                 className="block w-full h-full object-cover mx-auto"
-                // Prioridad de carga para las primeras imágenes
                 fetchPriority={priority ? "high" : "auto"}
                 loading={priority ? "eager" : "lazy"}
               />
@@ -160,7 +159,7 @@ function MediaCard({
 }
 
 /* =========================
-   Componente Principal GacetaGallery
+   Componente Principal
    ========================= */
 
 export default function GacetaGallery({
@@ -181,7 +180,7 @@ export default function GacetaGallery({
     const ctx = gsap.context(() => {
       ScrollTrigger.getAll().forEach((st) => st.kill());
 
-      // 1. TÍTULO WATERMARK (Fijo y sutil)
+      // 1. TÍTULO WATERMARK
       if (titleRef.current) {
         gsap.to(titleRef.current, {
            opacity: 0.05,  
@@ -197,29 +196,31 @@ export default function GacetaGallery({
         });
       }
 
-      // 2. EFECTO CARDS (Scroll Reveal)
+      // 2. EFECTO CARDS (CORREGIDO: Parallax sutil sin desaparecer)
       const cards = gsap.utils.toArray("[data-card]");
       cards.forEach((el) => {
         const inner = el.querySelector(".card-inner");
         if (!inner) return;
 
-        gsap.set(inner, { opacity: 1, scale: 1, y: 0 });
+        // Estado inicial limpio
+        gsap.set(inner, { y: 0, scale: 1, opacity: 1 });
 
+        // Animación continua durante el scroll
         gsap.to(inner, {
-          scale: 0.8,
-          opacity: 0,
-          y: -50,
-          ease: "power2.in",
+          y: -30,         // Se mueve ligeramente hacia arriba (flota)
+          scale: 0.98,    // Se aleja un poco para dar profundidad
+          // opacity: 1,  // Mantenemos la opacidad al 100%
+          ease: "none",
           scrollTrigger: {
             trigger: el,
-            start: "top 10%", 
-            end: "top -20%",  
-            scrub: true,
+            start: "top bottom", // Empieza cuando entra por abajo
+            end: "bottom top",   // Termina cuando sale por arriba
+            scrub: 0.5,          // Suavizado para sensación de peso
           }
         });
       });
 
-      // 3. VIDEOS (Auto Play en viewport)
+      // 3. VIDEOS AUTOPLAY
       const vids = gsap.utils.toArray("video[data-gridvideo]");
       vids.forEach((vid) => {
         vid.muted = true; vid.playsInline = true; vid.loop = true;
@@ -239,17 +240,8 @@ export default function GacetaGallery({
 
     }, galleryRef);
 
-    // --- CORRECCIÓN PARPADEO MÓVIL ---
-    // Eliminamos el ResizeObserver manual. ScrollTrigger ya maneja el resize de ventana.
-    // El 'ro.observe' estaba forzando updates innecesarios al ocultarse la barra de direcciones.
-    /*
-    const ro = new ResizeObserver(() => { ScrollTrigger.refresh(); });
-    if (gridRef.current) ro.observe(gridRef.current);
-    */
-
     return () => {
       ctx.revert();
-      // ro.disconnect();
       ScrollTrigger.getAll().forEach((st) => st.kill());
     };
   }, [items]);
@@ -260,16 +252,16 @@ export default function GacetaGallery({
   })), [items]);
 
   return (
-    // CAMBIO: min-h-[100svh] para estabilidad vertical en móviles
+    // min-h-[100svh] para estabilidad en móviles
     <section ref={galleryRef} className="relative w-full min-h-[100svh] bg-[#0a0a0a] text-white overflow-hidden">
       
-      {/* 1. LUZ ROJA SUTIL (Spotlight) */}
+      {/* 1. LUZ ROJA SUTIL */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[120vh] bg-[radial-gradient(circle_at_center,rgba(145,30,30,0.12)_0%,transparent_60%)] pointer-events-none z-0" />
       
       {/* 2. VIÑETA OSCURA */}
       <div className="fixed inset-0 pointer-events-none z-[5] bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_90%)]" />
 
-      {/* HEADER TÍTULO (Watermark fijo) */}
+      {/* HEADER TÍTULO */}
       <div
         ref={titleRef}
         className={clsx(
@@ -284,7 +276,7 @@ export default function GacetaGallery({
         </h2>
       </div>
 
-      {/* GRID DE FOTOS */}
+      {/* GRID */}
       <div
         ref={gridRef}
         className={clsx(
@@ -298,7 +290,6 @@ export default function GacetaGallery({
             const above = i % 2 === 0 || i % 3 === 0;
             const zClass = above ? "z-[30]" : "z-[10]";
             const randomOffset = i % 2 === 0 ? "md:-translate-y-8" : "md:translate-y-8";
-            // OPTIMIZACIÓN: Las primeras 4 fotos cargan con prioridad alta
             const isPriority = i < 4; 
 
             return (
@@ -320,8 +311,7 @@ export default function GacetaGallery({
         </div>
       </div>
 
-      {/* LIGHTBOX (Lazy Loaded) */}
-      {/* Solo se descarga y renderiza si 'open' es true */}
+      {/* LIGHTBOX */}
       {open && (
         <Suspense fallback={<div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center text-white">Cargando...</div>}>
           <FocusLightbox
