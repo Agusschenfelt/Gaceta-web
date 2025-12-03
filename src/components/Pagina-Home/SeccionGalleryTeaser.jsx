@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import TransitionLink from "../TransitionLink";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -90,11 +91,11 @@ export default function SeccionGalleryTeaser({
 
       {/* CTA */}
       <div ref={btnRef} className="relative z-30 mt-4">
-        <a href={ctaHref} className="group relative inline-flex items-center justify-center gap-3 px-10 py-4 bg-white text-[#911e1e] rounded-full overflow-hidden transition-transform duration-300 hover:scale-105 shadow-xl">
+        <TransitionLink to={ctaHref} className="group relative inline-flex items-center justify-center gap-3 px-10 py-4 bg-white text-[#911e1e] rounded-full overflow-hidden transition-transform duration-300 hover:scale-105 shadow-xl">
           <span className="relative z-10 font-bold tracking-[0.2em] uppercase text-xs md:text-sm group-hover:text-white transition-colors duration-300">{ctaText}</span>
           <svg className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform duration-300 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
           <div className="absolute inset-0 bg-black translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-        </a>
+        </TransitionLink>
       </div>
 
     </section>

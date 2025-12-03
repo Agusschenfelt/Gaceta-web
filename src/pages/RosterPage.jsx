@@ -18,14 +18,20 @@ const InfiniteMarquee = () => (
   </div>
 );
 
+// DEFINIMOS LOS FILTROS MANUALMENTE PARA CONTROLAR EL TEXTO
+const FILTER_OPTIONS = [
+  { key: 'all', label: 'TODOS' },
+  { key: 'artista', label: 'ARTISTAS' },
+  { key: 'productor', label: 'PRODUCTORES' } // <--- Aquí corregimos el texto
+];
+
 export default function RosterPage() {
   const container = useRef(null);
-  const [filter, setFilter] = useState("all"); // 'all', 'cantante', 'productor'
+  const [filter, setFilter] = useState("all"); 
 
   // Lógica de Filtrado
   const filteredArtists = useMemo(() => {
     if (filter === "all") return ARTISTS_DATA;
-    // Filtro simple buscando la palabra clave en el rol (ej: "Cantante / Productor")
     return ARTISTS_DATA.filter((artist) => 
         artist.rol.toLowerCase().includes(filter)
     );
@@ -33,7 +39,6 @@ export default function RosterPage() {
 
   useGSAP(() => {
     const tl = gsap.timeline();
-    
     tl.from(".roster-anim", {
       y: 30, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power3.out"
     });
@@ -47,7 +52,6 @@ export default function RosterPage() {
         url="/artistas"
       />
 
-      {/* Agregamos esto en tu CSS global o aquí mismo para el Marquee */}
       <style>{`
         @keyframes marquee {
           0% { transform: translateX(0); }
@@ -61,15 +65,12 @@ export default function RosterPage() {
 
       <main ref={container} className="min-h-screen bg-[#0a0a0a] pt-32 pb-20 relative overflow-hidden">
         
-        {/* 1. MARQUEE DE FONDO (Da textura y movimiento) */}
         <InfiniteMarquee />
 
-        {/* 2. HEADER INTERACTIVO */}
         <div className="relative z-10 px-6 md:px-10 mb-16 max-w-[1400px] mx-auto">
             
             <div className="flex flex-col md:flex-row justify-between items-end gap-8 border-b border-white/10 pb-8">
                 
-                {/* Título */}
                 <div className="roster-anim">
                     <span className="block text-xs font-mono text-[#dee5a0] tracking-[0.2em] mb-2 uppercase">
                         Archivo Gaceta
@@ -79,27 +80,25 @@ export default function RosterPage() {
                     </h1>
                 </div>
 
-                {/* Filtros y Contador */}
                 <div className="roster-anim flex flex-col items-end gap-4">
-                    {/* Contador Técnico */}
                     <span className="font-mono text-xs text-white/30 tracking-widest">
                         [{filteredArtists.length.toString().padStart(2, '0')}] TALENTOS
                     </span>
 
-                    {/* Botones de Filtro (Estilo Pill) */}
+                    {/* BOTONES DE FILTRO CORREGIDOS */}
                     <div className="flex gap-2 p-1 bg-white/5 rounded-full border border-white/5 backdrop-blur-sm">
-                        {['all', 'artista', 'productor'].map((f) => (
+                        {FILTER_OPTIONS.map((opt) => (
                             <button
-                                key={f}
-                                onClick={() => setFilter(f)}
+                                key={opt.key}
+                                onClick={() => setFilter(opt.key)}
                                 className={`
                                     px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300
-                                    ${filter === f 
+                                    ${filter === opt.key 
                                         ? "bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.3)]" 
                                         : "text-white/50 hover:text-white hover:bg-white/5"}
                                 `}
                             >
-                                {f === 'all' ? 'Todos' : f + 's'}
+                                {opt.label}
                             </button>
                         ))}
                     </div>
@@ -108,8 +107,6 @@ export default function RosterPage() {
             </div>
         </div>
 
-        {/* 3. GRID (Usamos key para que React re-renderice la animación al filtrar) */}
-        {/* Usamos un div con key para forzar la re-entrada suave al cambiar filtros */}
         <div key={filter} className="animate-in fade-in slide-in-from-bottom-4 duration-700">
             <SeccionArtistas artistsData={filteredArtists} showAll={true} />
         </div>

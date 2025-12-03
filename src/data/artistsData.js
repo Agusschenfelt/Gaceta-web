@@ -3,7 +3,7 @@ export const ARTISTS_DATA = [
     id: "ramma",
     slug: "ramma",
     nombre: "Ramma",
-    rol: "Cantante",
+    rol: "Artista",
     foto: "/assets/ramma-perfil.jpg", // Foto principal para grid
     video: "/assets/ramma.webm", // Video hover grid (opcional)
 
@@ -79,7 +79,7 @@ export const ARTISTS_DATA = [
     id: "valuto",
     slug: "valuto",
     nombre: "Valuto",
-    rol: "Cantante",
+    rol: "Artista",
     foto: "/assets/valuto-perfil.jpg",
     video: "/assets/valuto-video.webm",
 
@@ -141,7 +141,7 @@ Lanzó su primera canción el 15 de enero de 2023, titulada “Drama”, y desde
     id: "ara",
     slug: "ara",
     nombre: "ARA",
-    rol: "Cantante / Productor",
+    rol: "Artista / Productor",
     foto: "/assets/ara-perfil.jpg",
     video: "/assets/ara-perfil.mp4",
 
@@ -203,7 +203,7 @@ Hoy ARA continúa publicando música y afianzando su propuesta entre estudio y e
     id: "tadu",
     slug: "tadu_vazquez",
     nombre: "Tadu Vazquez",
-    rol: "Productor / Cantante",
+    rol: "Productor / Artista",
     foto: "/assets/tadu-perfil.jpg",
     video: "/assets/ara-saltando.mov", // Placeholder
 
@@ -235,7 +235,7 @@ Actualmente, Tadeo sigue expandiendo su catálogo y su rol en estudio, con la vi
     id: "fosse",
     slug: "fosse",
     nombre: "Fosse",
-    rol: "Productor / Cantante",
+    rol: "Productor / Artista",
     foto: "/assets/artistas/fosse/perfil/foto-perfil.jpg",
     video: "/assets/artistas/fosse/perfil/video-perfil.mp4",
 

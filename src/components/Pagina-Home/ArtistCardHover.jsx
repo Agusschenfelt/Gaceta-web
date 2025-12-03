@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
+import TransitionLink from '../TransitionLink';
 
 export default function ArtistCardHover({ artist }) {
   const videoRef = useRef(null);
@@ -33,7 +34,7 @@ export default function ArtistCardHover({ artist }) {
   };
 
   return (
-    <Link
+    <TransitionLink
       to={`artistas/${slug}`}
       className="group relative block w-full aspect-[3/4] overflow-hidden rounded-xl bg-neutral-900 ring-1 ring-white/5 transition-all duration-500 hover:ring-[#dee5a0]/30 hover:shadow-2xl hover:-translate-y-2"
       onMouseEnter={handleMouseEnter}
@@ -85,6 +86,6 @@ export default function ArtistCardHover({ artist }) {
             )}
         </div>
       </div>
-    </Link>
+    </TransitionLink>
   );
 }

@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import ArtistCardHover from './ArtistCardHover';
+import TransitionLink from '../TransitionLink';
 import { ArrowUpRight } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -76,7 +77,7 @@ export default function SeccionArtistas({ artistsData, showAll = false }) {
          {/* BOTÓN "VER TODOS" (Solo si no estamos mostrando todos) */}
          {!showAll && (
             <div className="mt-20 flex justify-center artist-card-anim">
-                <Link 
+                <TransitionLink
                     to="/artistas" // Asegúrate de crear esta ruta o usar "/#roster"
                     className="group relative inline-flex items-center gap-3 px-8 py-4 overflow-hidden rounded-full bg-white/5 border border-white/10 hover:border-[#dee5a0]/50 transition-all duration-500"
                 >
@@ -87,7 +88,7 @@ export default function SeccionArtistas({ artistsData, showAll = false }) {
                     
                     {/* Hover Fill Effect */}
                     <div className="absolute inset-0 bg-white/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
-                </Link>
+                </TransitionLink>
             </div>
          )}
 

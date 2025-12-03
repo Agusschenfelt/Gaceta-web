@@ -7,7 +7,7 @@ import MenuProvider from "./components/Layout/MenuStore";
 import ScrollToTopOnRouteChange from "./ScrollToTopOnRouteChange";
 import MusicPlayer from "./components/Layout/MusicPlayer";
 import ResetBgOnRoute from "./components/ResetBgOnRoute";
-
+import PageTransitionProvider from "./components/PageTransitionProvider";
 // Páginas (Lazy)
 const HomePage = lazy(() => import("./pages/HomePage"));
 const ArtistPage = lazy(() => import("./pages/ArtistPage"));
@@ -36,27 +36,30 @@ const LoadingScreen = () => (
 export default function App() {
   return (
     <MenuProvider>
-      <ScrollToTopOnRouteChange />
-      <ResetBgOnRoute />
+      {/* 1. EL PROVIDER DEBE ENVOLVER TODO EL CONTENIDO NAVEGABLE */}
+      <PageTransitionProvider> 
+        
+        <ScrollToTopOnRouteChange />
+        <ResetBgOnRoute />
 
-      <Suspense fallback={<LoadingScreen />}>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<HomePage />} />
-            
-            {/* Pasamos la data centralizada a la página de artista */}
-            <Route path="artistas/:id" element={<ArtistPage artistsData={ARTISTS_DATA} />} />
-            
-            <Route path="artistas" element={<RosterPage />} />
-            <Route path="sobre-nosotros" element={<SobreNosotrosPage />} />
-            <Route path="gallery" element={<GalleryPage />} />
-            
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Route>
-        </Routes>
-      </Suspense>
+        <Suspense fallback={<LoadingScreen />}>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<HomePage />} />
+              <Route path="artistas/:id" element={<ArtistPage artistsData={ARTISTS_DATA} />} />
+              <Route path="artistas" element={<RosterPage />} />
+              <Route path="sobre-nosotros" element={<SobreNosotrosPage />} />
+              <Route path="gallery" element={<GalleryPage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Route>
+          </Routes>
+        </Suspense>
 
-      <MusicPlayer />
+        {/* El MusicPlayer puede ir dentro o fuera, pero dentro es mejor 
+            si alguna vez quieres que la transición interactúe con él. */}
+        <MusicPlayer />
+
+      </PageTransitionProvider> 
     </MenuProvider>
   );
 }

@@ -17,6 +17,7 @@ import {
   FaApple, 
   FaLink 
 } from "react-icons/fa";
+import TransitionLink from "../components/TransitionLink";
 
 
 // MAPA DE REDES
@@ -270,7 +271,7 @@ export default function ArtistPage({ artistsData = [] }) {
         {/* 5. NEXT ARTIST */}
         {nextArtist && (
           <section className="relative w-full h-[60vh] md:h-[80vh] flex items-center justify-center overflow-hidden group border-t border-white/10 bg-[#050505] z-20">
-            <Link to={`/${nextArtist.slug ?? norm(nextArtist.nombre)}`} className="absolute inset-0 z-30 block cursor-pointer" />
+            <TransitionLink to={`artistas/${nextArtist.slug ?? norm(nextArtist.nombre)}`} className="absolute inset-0 z-30 block cursor-pointer" />
             <div className="absolute inset-0 -z-10">
                 <SafeImage src={nextArtist.fotos?.[0] || "/assets/placeholder.jpg"} className="w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-all duration-1000 group-hover:scale-[1.03] grayscale" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />

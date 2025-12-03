@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, forwardRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { FaInstagram, FaTwitter, FaTiktok, FaYoutube } from "react-icons/fa";
+import TransitionLink from "../TransitionLink";
 import { Link, useLocation } from "react-router-dom";
 import { useMenu } from "./MenuStore";
 
@@ -15,10 +16,14 @@ const navLinks = [
 
 function LinkOrA({ to, children, ...props }) {
   const isExt = typeof to === "string" && to.startsWith("http");
+  
+  // Si es externo, usa <a> normal (sin transición SPA)
   if (isExt) {
     return <a href={to} target="_blank" rel="noreferrer" {...props}>{children}</a>;
   }
-  return <Link to={to} {...props}>{children}</Link>;
+  
+  // Si es interno, usa TransitionLink en lugar de Link
+  return <TransitionLink to={to} {...props}>{children}</TransitionLink>;
 }
 
 export default function Navbar() {
@@ -46,14 +51,17 @@ export default function Navbar() {
     <header className="fixed inset-x-0 top-0 z-[80] w-full flex items-center justify-between px-6 md:px-10 h-20 pointer-events-none">
       
       {/* LOGO */}
-      <Link to="/" className="relative z-[90] flex items-center group mix-blend-difference pointer-events-auto">
+      <TransitionLink 
+        to="/" 
+        className="relative z-[90] flex items-center group mix-blend-difference pointer-events-auto"
+      >
         <img
           src="/assets/logo-blanco.png" 
           alt="Gaceta"
           className="block w-[120px] md:w-[150px] transition-opacity group-hover:opacity-80"
           data-logo="navbar-logo"
         />
-      </Link>
+      </TransitionLink>
 
       {/* BOTÓN MENU */}
       <button
