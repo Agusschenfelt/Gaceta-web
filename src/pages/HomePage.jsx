@@ -30,7 +30,7 @@ export default function HomePage() {
         description="Gaceta es un sello discográfico y productora audiovisual basada en Buenos Aires y Montevideo. Hogar de artistas como Ramma, Ara y Valuto."
         // image="/assets/home-og.jpg" // Opcional: una imagen específica para el home
       />
-      <div className="bg-transparent flex flex-col min-h-screen">
+      <div className="bg-transparent flex flex-col min-h-[100svh]">
         <IntroToLogo />
         <SeccionGacetaTv />
         <SeccionProximosShows />

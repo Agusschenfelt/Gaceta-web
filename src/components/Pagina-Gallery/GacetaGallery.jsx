@@ -239,12 +239,17 @@ export default function GacetaGallery({
 
     }, galleryRef);
 
+    // --- CORRECCIÓN PARPADEO MÓVIL ---
+    // Eliminamos el ResizeObserver manual. ScrollTrigger ya maneja el resize de ventana.
+    // El 'ro.observe' estaba forzando updates innecesarios al ocultarse la barra de direcciones.
+    /*
     const ro = new ResizeObserver(() => { ScrollTrigger.refresh(); });
     if (gridRef.current) ro.observe(gridRef.current);
+    */
 
     return () => {
       ctx.revert();
-      ro.disconnect();
+      // ro.disconnect();
       ScrollTrigger.getAll().forEach((st) => st.kill());
     };
   }, [items]);
@@ -255,7 +260,8 @@ export default function GacetaGallery({
   })), [items]);
 
   return (
-    <section ref={galleryRef} className="relative w-full min-h-screen bg-[#0a0a0a] text-white overflow-hidden">
+    // CAMBIO: min-h-[100svh] para estabilidad vertical en móviles
+    <section ref={galleryRef} className="relative w-full min-h-[100svh] bg-[#0a0a0a] text-white overflow-hidden">
       
       {/* 1. LUZ ROJA SUTIL (Spotlight) */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[120vh] bg-[radial-gradient(circle_at_center,rgba(145,30,30,0.12)_0%,transparent_60%)] pointer-events-none z-0" />
