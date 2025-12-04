@@ -62,7 +62,7 @@ export default function SeccionGacetaTv() {
       {/* Al ponerlo en -z-10, queda POR ENCIMA del fondo negro (-z-20) pero DETRÁS del video */}
       <div 
         ref={glowRef} 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[40vw] bg-[#8d1e1e] blur-[180px] rounded-full opacity-0 -z-10 mix-blend-screen" 
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[40svw] bg-[#8d1e1e] blur-[180px] rounded-full opacity-0 -z-10 mix-blend-screen" 
       />
 
       {/* 3. CONTENEDOR DE VIDEO (Capa superior implícita) */}

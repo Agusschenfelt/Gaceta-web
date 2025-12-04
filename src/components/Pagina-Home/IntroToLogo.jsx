@@ -128,7 +128,7 @@ export default function IntroToLogo() {
     <div ref={wrapRef} className="relative isolate bg-black">
       
       {/* === SECCIÓN 1: INTRO (LOGO ANIMADO) === */}
-      <section ref={introRef} className="relative h-screen w-full overflow-hidden z-20 flex items-center justify-center">
+      <section ref={introRef} className="relative h-[100svh] w-full overflow-hidden z-20 flex items-center justify-center">
         
         {/* VIDEO LOGO (Reemplaza a la imagen) */}
         <div ref={logoRef} className="relative z-10 w-[40vw] max-w-[500px] min-w-[250px] aspect-video flex items-center justify-center will-change-transform">
@@ -157,14 +157,14 @@ export default function IntroToLogo() {
       </div>
 
       {/* === SECCIÓN 2: PITCH TITLES === */}
-      <section ref={pitchRef} className="relative z-10 min-h-[90vh] flex flex-col items-center justify-center py-20">
+      <section ref={pitchRef} className="relative z-10 min-h-[90svh] flex flex-col items-center justify-center py-20">
         <div className="max-w-6xl px-6 w-full">
           <PitchTitles />
         </div>
       </section>
 
       {/* CONECTOR DE SALIDA (Luz Dorada) */}
-      <div className="relative z-10 h-[20vh] w-full pointer-events-none -mt-10">
+      <div className="relative z-10 h-[20svh] w-full pointer-events-none -mt-10">
         <div 
             ref={connectorLineRef} 
             className="absolute left-1/2 top-0 w-[1px] h-full bg-gradient-to-b from-[#dee5a0] via-[#dee5a0]/50 to-transparent shadow-[0_0_15px_#dee5a0]" 

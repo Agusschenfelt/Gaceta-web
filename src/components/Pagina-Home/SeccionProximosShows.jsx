@@ -36,39 +36,44 @@ export default function SeccionProximosShows() {
     });
   }, []);
 
-  useGSAP(() => {
-    const rows = gsap.utils.toArray(".show-row");
-    
-    rows.forEach((row, i) => {
-      gsap.fromTo(row,
-        { y: 30, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.3,
-          delay: i * 0.01,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: row,
-            start: "top 95%",
-            toggleActions: "play none none reverse"
-          }
+  // SeccionProximosShows.jsx
+
+useGSAP(() => {
+  const rows = gsap.utils.toArray(".show-row");
+  
+  rows.forEach((row, i) => {
+    gsap.fromTo(row,
+      { y: 30, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.3,
+        delay: i * 0.01,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: row,
+          start: "top 95%",
+          // CAMBIO AQUÍ: "play none none reverse" -> "play none none none"
+          // "reverse" hacía que si subías un poco y la barra movía el trigger, 
+          // la fila se ocultaba (opacity 0). Al poner "none", se queda visible.
+          toggleActions: "play none none none" 
         }
-      );
-    });
-  }, { scope: container });
+      }
+    );
+  });
+}, { scope: container });
 
   return (
     <section 
       ref={container} 
       // CAMBIO 1: Usamos GRID para superponer capas sin perder la referencia de altura
-      className="relative w-full min-h-screen grid grid-cols-1 grid-rows-1 bg-black z-10"
+      className="relative w-full min-h-[100svh] grid grid-cols-1 grid-rows-1 bg-black z-10"
     >
       
       {/* === CAPA 1: FONDO (VIDEO STICKY) === */}
       {/* Ocupa la misma celda que el contenido, por lo que hereda la altura TOTAL de la lista */}
       <div className="col-start-1 row-start-1 w-full h-full pointer-events-none z-0">
-        <div className="sticky top-0 w-full h-screen overflow-hidden">
+        <div className="sticky top-0 w-full h-[100svh] overflow-hidden">
             <video 
                 src="/assets/video-shows.mp4" 
                 autoPlay muted loop playsInline 

@@ -121,7 +121,7 @@ export default function FocusLightbox({ open, index, items, onClose, setIndex })
   const onBackdropMouseDown = (e) => { if (e.target === e.currentTarget) handleClose(); };
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md transition-all duration-300 animate-in fade-in zoom-in-95 duration-200" onMouseDown={onBackdropMouseDown}>
+    <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md transition-all animate-in fade-in zoom-in-95 duration-200" onMouseDown={onBackdropMouseDown}>
       
       {/* Controles Superiores */}
       <div className="absolute top-5 right-5 flex items-center gap-3 z-50" onMouseDown={(e) => e.stopPropagation()}>
@@ -151,7 +151,7 @@ export default function FocusLightbox({ open, index, items, onClose, setIndex })
 
       {/* Slider */}
       <div className="h-full w-full flex items-center justify-center px-4 md:px-8 pointer-events-none">
-        <div className="relative w-full max-w-[min(100vw,1400px)] h-[70vh] md:h-[85vh] overflow-hidden rounded-md pointer-events-auto bg-transparent flex items-center justify-center" onMouseDown={(e) => e.stopPropagation()}>
+        <div className="relative w-full max-w-[min(100vw,1400px)] h-[70svh] md:h-[85svh] overflow-hidden rounded-md pointer-events-auto bg-transparent flex items-center justify-center" onMouseDown={(e) => e.stopPropagation()}>
           <Swiper
             modules={[Navigation, Keyboard]} 
             initialSlide={index} 

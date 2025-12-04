@@ -2,6 +2,10 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { Analytics } from "@vercel/analytics/react"; 
 import { SpeedInsights } from "@vercel/speed-insights/react"
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import gsap from "gsap";
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Componentes Shell
 import Layout from "./components/Layout/Layout";
@@ -34,6 +38,11 @@ const LoadingScreen = () => (
     </div>
   </div>
 );
+
+// 1. Ignorar el resize vertical en móviles (Evita el parpadeo al aparecer la barra)
+ScrollTrigger.config({ 
+  ignoreMobileResize: true 
+});
 
 export default function App() {
   return (

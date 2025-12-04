@@ -52,7 +52,7 @@ export default function SeccionGalleryTeaser({
   return (
     <section
       ref={sectionRef}
-      className="relative w-full min-h-[90vh] bg-transparent overflow-hidden flex flex-col items-center justify-center pb-32 pt-48 -mt-24 z-30"
+      className="relative w-full min-h-[90svh] bg-transparent overflow-hidden flex flex-col items-center justify-center pb-32 pt-48 -mt-24 z-30"
     >
       {/* Fondo Gradiente */}
       <div className="absolute inset-0 -z-20 bg-gradient-to-b from-[#0e0e0f] from-0% via-[#911e1e] via-40% to-[#911e1e]" />

@@ -111,11 +111,11 @@ export default function TimeLineHorizontal({ data = GACETA_TIMELINE }) {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full h-[100vh] overflow-hidden bg-transparent text-white z-20"
+      className="relative w-full h-[100svh] overflow-hidden bg-transparent text-white z-20"
     >
       
       {/* Fondos */}
-      <div className="absolute top-0 left-0 w-full h-[30vh] bg-gradient-to-b from-transparent via-black/95 to-black pointer-events-none z-0" />
+      <div className="absolute top-0 left-0 w-full h-[30svh] bg-gradient-to-b from-transparent via-black/95 to-black pointer-events-none z-0" />
       <div className="absolute top-[30vh] left-0 w-full h-full bg-black pointer-events-none z-0" />
 
       {/* Vertical Line */}

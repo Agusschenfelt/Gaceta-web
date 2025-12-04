@@ -37,7 +37,7 @@ export default function SeccionNosotros() {
   }, { scope: container });
 
   return (
-    <section ref={container} className="relative w-full h-screen overflow-hidden bg-black">
+    <section ref={container} className="relative w-full h-[100vh] overflow-hidden bg-black">
       
       <div className="absolute inset-0 z-0"> 
          <video src="/assets/ara-perfil.mp4" autoPlay muted loop playsInline className="w-full h-full object-cover opacity-60" />
