@@ -212,18 +212,6 @@ export const GACETA_TIMELINE = [
           }
         },
         {
-          "id": "2024-08",
-          "date": "2024-10-09",
-          "displayDate": "09/10/2024",
-          "title": "Inauguración de POM",
-          "desc": "En alianza con Piece of Cake, abrimos POM (Piece Of Music) en Montevideo. Dos estudios a disposición, donde se hicieron varias de las producciones y sesiones del sello.",
-          media: {
-            type: "image",
-            src: "/assets/timeline/tangenteRamma.jpg",
-            alt: "Soldout de Ramma en la tangente"
-          }
-        },
-        {
           "id": "2024-10",
           "date": "2024-10-19",
           "displayDate": "20/10/2024",
@@ -233,18 +221,6 @@ export const GACETA_TIMELINE = [
             type: "image",
             src: "/assets/timeline/clicka.heic",
             alt: "Festival Clicka en Montevideo con todo el roster de Gaceta"
-          }
-        },
-        {
-          "id": "2024-09",
-          "date": "2024-11-15",
-          "displayDate": "15/11/2024",
-          "title": "Primer show en Córdoba (SOLD OUT)",
-          "desc": "Con más de 700 personas, Ramma debutó en la capital cordobesa con su primer sold out en esa ciudad.",
-          media: {
-            type: "image",
-            src: "/assets/timeline/tangenteRamma.jpg",
-            alt: "Soldout de Ramma en la tangente"
           }
         },
         {
@@ -393,7 +369,7 @@ export const GACETA_TIMELINE = [
           "desc": "Tramo europeo del año con paradas en: Las Palmas, Madrid, Jaen, Gijón, Albacete, Gandia y Estepona.",
           media: {
             type: "image",
-            src: "/assets/timeline/tangenteRamma.jpg",
+            src: "/assets/timeline/inmortalWT-es.jpeg",
             alt: "Soldout de Ramma en la tangente"
           }
         },
@@ -468,7 +444,7 @@ export const GACETA_TIMELINE = [
           "desc": "Cinco fechas en distintos puntos del país: Buenos Aires, Rosario, Córdoba, Mar del Plata y Mendoza.Además de Ramma, se suman ARA y Valuto.",
           media: {
             type: "image",
-            src: "/assets/timeline/tangenteRamma.jpg",
+            src: "/assets/timeline/inmortalWT-arg.jpeg",
             alt: "Soldout de Ramma en la tangente"
           }
         },
