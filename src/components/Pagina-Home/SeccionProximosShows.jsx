@@ -97,10 +97,10 @@ useGSAP(() => {
             <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 border-b border-white/20 pb-6">
             <div>
                 <span className="block text-xs font-mono text-[#dee5a0] tracking-widest mb-2 uppercase text-left">
-                Calendario 2025
+                  Calendario 2025
                 </span>
                 <h2 className="text-5xl md:text-8xl font-serif italic leading-none text-white text-left">
-                Próximos <span className="text-white/50">Shows</span>
+                  Shows
                 </h2>
             </div>
             </div>
@@ -123,7 +123,7 @@ useGSAP(() => {
                     <span className={`text-5xl font-light tracking-tighter transition-colors ${show.isMystery ? "text-white/30" : "text-white group-hover:text-[#dee5a0]"}`}>
                     {show.day}
                     </span>
-                    <span className="text-sm font-mono text-white/40 uppercase">
+                    <span className="text-2xl font-mono text-white/40 uppercase">
                     /{show.month}
                     </span>
                 </div>

@@ -10,7 +10,7 @@ export const showsData = [
     },
     {
       id: "2025-03-31-mad-sol",
-      artist: "Ramma",
+      artist: "RAMMA",
       date: "2025-03-31",
       city: "Madrid",
       country: "España",
@@ -19,7 +19,7 @@ export const showsData = [
     },
     {
       id: "2025-04-06-bcn-sauvage",
-      artist: "Ramma",
+      artist: "RAMMA",
       date: "2025-04-06",
       city: "Barcelona",
       country: "España",
@@ -28,7 +28,7 @@ export const showsData = [
     },
     {
       id: "2025-04-11-bue-artmedia",
-      artist: "Ramma",
+      artist: "RAMMA",
       date: "2025-04-11",
       city: "Buenos Aires",
       country: "Argentina",
@@ -37,7 +37,7 @@ export const showsData = [
     },
     {
       id: "2025-07-21-mad-uni",
-      artist: "Ramma",
+      artist: "RAMMA",
       date: "2025-07-21",
       city: "Madrid",
       country: "España",
@@ -64,7 +64,7 @@ export const showsData = [
     },
     {
       id: "2025-08-30-men-nido",
-      artist: "Ramma",
+      artist: "RAMMA",
       date: "2025-08-30",
       city: "Mendoza",
       country: "Argentina",
@@ -73,7 +73,7 @@ export const showsData = [
     },
     {
       id: "2025-09-05-cor-paraguay",
-      artist: "Ramma",
+      artist: "RAMMA",
       date: "2025-09-05",
       city: "Córdoba",
       country: "Argentina",
@@ -82,7 +82,7 @@ export const showsData = [
     },
     {
       id: "2025-09-06-ros-guemes",
-      artist: "Ramma",
+      artist: "RAMMA",
       date: "2025-09-06",
       city: "Rosario",
       country: "Argentina",
@@ -91,7 +91,7 @@ export const showsData = [
     },
     {
       id: "2025-10-04-mvd-museo",
-      artist: "Ramma",
+      artist: "RAMMA",
       date: "2025-10-04",
       city: "Montevideo",
       country: "Uruguay",
@@ -100,7 +100,7 @@ export const showsData = [
     },
     {
       id: "2025-10-24-mdp-vorterix",
-      artist: "Ramma",
+      artist: "RAMMA",
       date: "2025-10-24",
       city: "Mar del Plata",
       country: "Argentina",
@@ -109,7 +109,7 @@ export const showsData = [
     },
     {
       id: "2025-10-25-lp-opera",
-      artist: "Ramma",
+      artist: "RAMMA",
       date: "2025-10-25",
       city: "La Plata",
       country: "Argentina",
@@ -118,7 +118,7 @@ export const showsData = [
     },
     {
       id: "2025-11-25-bue-artmedia",
-      artist: "Ramma",
+      artist: "RAMMA",
       date: "2025-11-25",
       city: "Buenos Aires",
       country: "Argentina",

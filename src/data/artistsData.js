@@ -4,7 +4,7 @@ export const ARTISTS_DATA = [
     slug: "ramma",
     nombre: "Ramma",
     rol: "Artista",
-    foto: "/assets/ramma-perfil.jpg", // Foto principal para grid
+    foto: "/assets/artistas/ramma/perfil/foto-perfil.jpg",
     video: "/assets/ramma.webm", // Video hover grid (opcional)
 
     videoFondo: "/assets/ramma-perfil.mp4", // Video de fondo full screen
@@ -80,7 +80,7 @@ export const ARTISTS_DATA = [
     slug: "valuto",
     nombre: "Valuto",
     rol: "Artista",
-    foto: "/assets/valuto-perfil.jpg",
+    foto: "/assets/artistas/valuto/perfil/foto-perfil.jpg",
     video: "/assets/valuto-video.webm",
 
     videoFondo: "/assets/valuto-perfil.mp4",
@@ -142,8 +142,8 @@ Lanzó su primera canción el 15 de enero de 2023, titulada “Drama”, y desde
     slug: "ara",
     nombre: "ARA",
     rol: "Artista / Productor",
-    foto: "/assets/ara-perfil.jpg",
-    video: "/assets/ara-perfil.mp4",
+    foto: "/assets/artistas/ara/perfil/foto-perfil.jpg",
+    video: "/assets/artistas/ara/perfil/video-perfil.mp4",
 
     videoFondo: "/assets/ara-perfil.mp4",
     poster: "/assets/ara-perfil.jpg",
@@ -204,7 +204,7 @@ Hoy ARA continúa publicando música y afianzando su propuesta entre estudio y e
     slug: "tadu_vazquez",
     nombre: "Tadu Vazquez",
     rol: "Productor / Artista",
-    foto: "/assets/tadu-perfil.jpg",
+    foto: "/assets/artistas/tadu/perfil/foto-perfil.jpg",
     video: "/assets/ara-saltando.mov", // Placeholder
 
     videoFondo: "/assets/ara-saltando.mov", // Placeholder
@@ -333,7 +333,7 @@ Barta entiende la producción como gestión de sensaciones, dice “cómo la mú
     slug: "dazen",
     nombre: "Dazen",
     rol: "Productor",
-    foto: "/assets/dazen-perfil.jpg",
+    foto: "/assets/artistas/dazen/perfil/foto-perfil.jpg",
     video: null,
 
     videoFondo: "/assets/ramma-perfil.mp4", // Placeholder
