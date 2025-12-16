@@ -5,9 +5,9 @@ export const ARTISTS_DATA = [
     nombre: "Ramma",
     rol: "Artista",
     foto: "/assets/artistas/ramma/perfil/foto-perfil.jpg",
-    video: "/assets/ramma.webm", // Video hover grid (opcional)
+    video: "/assets/artistas/ramma/perfil/video-perfil.mp4", // Video hover grid (opcional)
 
-    videoFondo: "/assets/ramma-perfil.mp4", // Video de fondo full screen
+    videoFondo: "/assets/artistas/ramma/perfil/video-perfil.mp4", // Video de fondo full screen
     poster: "/assets/artistas/ramma/perfil/foto-perfil.jpg", // Imagen de carga del video
 
     biografia: `Ramiro Valentín Domínguez nacido en Buenos Aires, Argentina. Es músico y compositor. Creció en una casa con piano, donde su padre y su hermana tocaban. Ahí dio sus primeros pasos hasta convertir esa curiosidad en un vínculo profundo con la música. Su acercamiento se consolidó entre el piano y la iglesia, donde la práctica musical era parte de la vida familiar. A los 6 años descubrió el rock nacional y, con su primer MP3, empezó a devorar discos; más tarde llegó el folklore y el rock internacional con bandas como Oasis o The Beatles y, ya de adolescente, el hip-hop.
@@ -16,9 +16,11 @@ export const ARTISTS_DATA = [
                 Como solista, editó tres álbumes: Incrédulo (2022), Intrépido (2023) y INMORTAL (2025). Este último marcó un hito en su recorrido: debutó en el Top 8 global, consolidando el crecimiento de su obra y el alcance de su propuesta. En su catálogo conviven lanzamientos con millones de reproducciones como “MVP” o “Nostalgia”, además de “Bichigyal Remix”, que expandieron su audiencia y su escena. Ahora prepara RV, su proyecto más íntimo hasta la fecha.`,
 
     redes: {
-      instagram: "https://www.instagram.com/ramma.mvp/",
+      instagram: "https://www.instagram.com/ramma.mvp",
+      twitter: "https://x.com/555ramma",
+      tiktok: "https://www.tiktok.com/@555ramma?_r=1&_t=ZM-92HCgXj8roh", 
       spotify: "https://open.spotify.com/intl-es/artist/7b0pdDyPV9f9hyDXAhk4Sg?si=pEKWCAJOQnKDdrlHjn6GqA.",
-      youtube: "https://www.youtube.com/channel/UCb8ovNJ7bcsTay0boGlZ_bA",
+      youtube: "https://www.youtube.com/@theramma",
     },
 
     fotos: [
@@ -81,9 +83,11 @@ export const ARTISTS_DATA = [
     biografia: `Valentín “Valuto” Ibarburu, nacido en Montevideo, Uruguay. Es cantante y compositor criado en una familia de músicos. Desde chico se movió entre camarines, giras y escenarios gracias a su padre, por lo que el vivo y el estudio le resultan ambientes naturales. Esa cercanía con la música moldeó una intención artística concreta: hacer canciones accesibles y cercanas, pensadas para que muchos puedan sentirlas y cantarlas, sin buscar deliberadamente la rareza ni el aura de “incomprendido”. Para Valuto, la música es lo único que le despierta una ambición sostenida: aprender, crecer y “ir por más”. Sus influencias nacen en casa y se amplían a referentes populares como Michael Jackson, Justin Bieber y Luis Miguel. Lanzó su primera canción el 15 de enero de 2023, titulada “Drama”, y desde entonces publicó “No soy yo”, “Me estoy desubicando”, “Hechicera” y los EP Flashes y Con el Uniforme Puesto. En vivo alcanzó un doble sold out rioplatense siendo menor de edad: Sala Magnolio (Montevideo) y La Tangente (Buenos Aires). Actualmente continúa expandiendo su catálogo y presentando su repertorio en directo.`,
 
     redes: {
-      instagram: "https://www.instagram.com/v4luto/",
-      spotify: "https://open.spotify.com/intl-es/artist/0AQym39jmsVTiggRZdyiSW?si=DW1otryaRnuiNenRHj9_yQ",
-      youtube: "https://www.youtube.com/channel/UCLNEttprE5tIByz5Fc-JsiA",
+      instagram: "https://www.instagram.com/v4luto?igsh=N25qc2t0a3pnNXhm",
+      twitter: "https://x.com/v4luto?s=21",
+      tiktok: "https://www.tiktok.com/@v4luto?_r=1&_t=ZM-92HCcsynj5f", 
+      spotify: "https://open.spotify.com/artist/0AQym39jmsVTiggRZdyiSW?si=_i4jKcxKT_uU9T6HPi53Fw",
+      youtube: "https://youtube.com/@valuto3099?si=d5URnYH_kO41Tonp",
     },
 
     fotos: [
@@ -135,8 +139,11 @@ export const ARTISTS_DATA = [
     biografia: `Aramis Delonc Tocker, nacido en Buenos Aires, Argentina. Es cantante, compositor y productor que encontró en la música un lugar propio desde muy chico. En su casa siempre sonó de todo y, en los primeros años de primaria, empezó a tocar la guitarra en un taller escolar. Durante el 2020 descubrió la producción: se grababa con el celular y, con el tiempo, armó su home studio, donde hoy compone y desarrolla la mayor parte de sus canciones. Su motor creativo es expresar lo que le pasa y convertirlo en sonido: busca que quien escucha se identifique o, simplemente, disfrute “cómo suena y cómo está hecho”. Esa misma necesidad explica su vínculo con el vivo, una de las sensaciones que más lo movilizan. Define la singularidad de su proyecto en la manera de decir y hacer trascender ideas y emociones, sin perder cercanía ni claridad. Entre sus influencias tempranas aparece Michael Jackson, presente en su casa desde la infancia, y el empuje del movimiento urbano argentino, que funcionó como motor para dedicarse en serio. Empezó a producir en 2020, lanzó su primera canción en 2021 y no frenó: Lanzando su primer disco, “Youngboy” en 2024, y dos EPs en 2025, “#4u” y “BACKSTAGE COVER VOL.I” ese camino lo llevó a su primer show propio en La Tangente (Buenos Aires) en marzo de 2025, que resultó sold out, un hito que confirma el momento de crecimiento del proyecto. Hoy ARA continúa publicando música y afianzando su propuesta entre estudio y escenario, con la misma premisa que lo acompaña desde el inicio: sentir, decir y hacer que la canción llegue.`,
 
     redes: {
-      instagram: "https://www.instagram.com/ara.youngboy/",
-      spotify: "https://open.spotify.com/intl-es/artist/5wkxQh0fD5bsqxKm6Ajv7o?si=eZPYzfZ2TGeodf9szoqxLg",
+      instagram: "https://www.instagram.com/ara.youngboy?igsh=MXdxd2g3Y3p1eWlraw==",
+      twitter: "https://x.com/arayoungboy?s=21",
+      tiktok: "https://www.tiktok.com/@ara.youngboy?_r=1&_t=ZM-92HCbQedrKN", 
+      spotify: "https://open.spotify.com/artist/5wkxQh0fD5bsqxKm6Ajv7o?si=1xthNFgWTem2mUPi_Ksljw",
+      youtube: "https://www.youtube.com/@ara.youngboy",
     },
 
     fotos: [
@@ -188,7 +195,11 @@ export const ARTISTS_DATA = [
     biografia: `Tadeo Vázquez es músico y creador uruguayo cuya relación con la música empezó temprano y nunca se detuvo. De chico lo fascinaban los discos, los instrumentos y las bandas; a los 8/9 años tomó sus primeras clases “formales” de cajón peruano y percusión, mientras aprendía guitarra por su cuenta con tutoriales de YouTube. A los 15 descubrió que podía componer en la computadora: primero con GarageBand en la máquina de su padre y, un año más tarde, con FL Studio, un hallazgo que le abrió un camino propio entre la canción y la producción casera. Desde 2018 graba música y, desde 2022, lo hace de manera profesional. Su impulso creativo está atravesado por lo afectivo: compartir música y canciones con la gente que quiere. Esa mirada comunitaria se complementa con una curiosidad constante por el sonido y por el “cómo”: arreglos, texturas, herramientas y decisiones que sirven a la canción por encima de todo. Su formación es tanto íntima como diversa: sus padres, las clases de música escolares, sus amigos y una constelación de referencias rioplatenses e iberoamericanas donde conviven La Vela Puerca, Gustavo Cerati y Jorge Drexler. En su recorrido, Tadu destaca “todo lo que pasó con Ramma y con Gaceta", además de haber trabajado con Jorge Drexler; hitos que confirman un crecimiento sostenido a partir del trabajo diario y la colaboración. Actualmente, Tadeo sigue expandiendo su catálogo y su rol en estudio, con la vista puesta en nuevos lanzamientos y en el desarrollo de sanantonio (próximamente).`,
 
     redes: {
-      instagram: "https://www.instagram.com/taduvazquez/",
+      instagram: "https://www.instagram.com/taduvazquez?igsh=MTFscDFxN3FudjB6NQ==",
+      tiktok: "https://www.tiktok.com/@taduvazquezzz?_r=1&_t=ZM-92HCj5urMl6",
+      twitter: "https://x.com/taduvazquez?s=21",
+      youtube: "https://www.youtube.com/@taduvazquez",
+      spotify: "https://open.spotify.com/artist/71scL1K5Nu1Z7FgBkg3Gjk?si=Jvkw14TyQTqLw3ptzT49hw"
     },
 
     fotos: [
@@ -250,7 +261,14 @@ export const ARTISTS_DATA = [
 
     biografia: `Agustín Fossemale, nacido en Las Piedras, Uruguay es artista y productor. Su vínculo con la música nació en casa, atravesado por el candombe a través de su padre: a los 7 años pisó por primera vez el Teatro de Verano en Carnaval de Promesas. A los 18, con una Focusrite y un micrófono básico, empezó a grabarse y producirse en sus ratos libres mientras cursaba Ingeniería; cuando entendió que podía vivir de la música, dejó la universidad para dedicarse por completo. Arrancó como artista y productor, y a los 19 años consolidó su faceta en estudio al conectar con pioneros de la escena urbana uruguaya como Mesita, Pekeño 77 y Zeballos. Centrado en historias claras y una evolución constante del sonido, evita repetirse. Sus referencias cruzan No Te Va Gustar y El Cuarteto de Nos con el rap anglo (Wiz Khalifa, Snoop Dogg) e hispano (Canserbero, Nach, Porta, Kase.O), además del R&B contemporáneo de Brent Faiyaz. Activo desde 2017, lanzó “Te Quería”, su primer tema, que suma 3 millones de reproducciones; “Hechicera” es hoy su canción más escuchada. Desde 2019 se impuso publicar cada año al menos una canción que supere 1 millón de vistas y lo viene cumpliendo. Como artista, colaboró con Knak, Ramma, Valuto, Davus y Wave. Como productor, trabajó con Neo Pistea, C.R.O, Young Cister, Dillom, Pablo Chill-E, West Dubai, Homer el Mero Mero, Lucho SSJ, El Doctor, entre otros. `,
 
-    redes: { instagram: "#" },
+    redes: {
+      instagram: "https://www.instagram.com/fossezm?igsh=MWg2ZGhhemtsZjVrYg==",
+      tiktok: "https://www.tiktok.com/@fossezm?_r=1&_t=ZM-92HCfMElu15",
+      twitter: "https://x.com/fosseezm?s=21",
+      youtube: "https://youtube.com/@fossezm?si=cf16mWBTr4Z6wrG4",
+      spotify: "https://open.spotify.com/artist/2PCb69QCbQJvBJF9tuWcNo?si=8ZOQNcToQj2k0zC5ayPsaw"
+    },
+
     fotos: [
       "/assets/artistas/fosse/fotos/perfil1.webp",
       "/assets/artistas/fosse/fotos/perfil2.webp",
@@ -274,7 +292,7 @@ export const ARTISTS_DATA = [
 
 Barta entiende la producción como gestión de sensaciones, dice “cómo la música puede afectar cómo uno se siente, y saber manejar eso”. Entre sus hitos recientes, destaca su participación en INMORTAL con 4K y DOMINGO, álbum que debutó top 8 global, Flashes y Con el uniforme puesto, con Valuto. Consolidando su lugar dentro de Gaceta.`,
 
-    redes: { instagram: "#" },
+    redes: { instagram: "https://www.instagram.com/barta.flp?igsh=MW1uenduYmpzNzA4bg==", spotify: "https://open.spotify.com/artist/5NWl6RH247jjDkkNpvhmHF?si=rADpnU-vTv2vRLZyLtjMTg" },
     fotos: [
       "/assets/artistas/barta/fotos/perfil1.webp",
       "/assets/artistas/barta/fotos/perfil2.webp",
@@ -352,7 +370,7 @@ Actualmente desarrolla nuevas producciones y colaboraciones, expandiendo su alca
 
 `,
 
-    redes: { instagram: "#" },
+    redes: { instagram: "https://www.instagram.com/heydazen?igsh=djZraXp6YmRocnl3", spotify: "https://open.spotify.com/artist/5B9qhzPoZe3ybufInUGiDG?si=AVD4TBM8RGK-O27Iv0Zifw" },
     fotos: [
       "/assets/artistas/dazen/fotos/perfil1.webp",
       "/assets/artistas/dazen/fotos/perfil2.webp",
@@ -415,7 +433,12 @@ Actualmente desarrolla nuevas producciones y colaboraciones, expandiendo su alca
                 Hoy Lonzo sigue expandiendo su catálogo, llevando su estética híbrida entre el underground y el pop contemporáneo.
                `,
 
-    redes: { instagram: "https://www.instagram.com/prodlonzo/" },
+    redes: {
+      instagram: "https://www.instagram.com/prodlonzo?igsh=N2g4YnU1a202emN2",
+      tiktok: "https://www.tiktok.com/@prodlonzo?_r=1&_t=ZM-92HCePYugk0",
+      twitter: "https://x.com/prodlonzoo?s=21",
+      spotify: "https://open.spotify.com/artist/23a4GHE8SXM3a5sX6oDQNM?si=aWBLFj43SbSDHpjbLh4ozw"
+    },
     fotos: [
       "/assets/artistas/lonzo/fotos/perfil1.JPG",
       "/assets/artistas/lonzo/fotos/perfil2.JPG",

@@ -9,12 +9,12 @@ const DEFAULT_AREAS = [
   {
     titulo: "Gaceta Audiovisual",
     descripcion: "Narrativa visual y estética. Cubrimos shows, producimos videoclips y creamos el universo visual que acompaña a cada artista.",
-    imagen: "/assets/equipos/GAV_v3.png"
+    imagen: "/assets/equipos/GAV_v4.png"
   },
   {
     titulo: "Gaceta Marketing",
     descripcion: "Estrategia y comunidad. Conectamos los lanzamientos con su audiencia real a través de campañas digitales y gestión de identidad.",
-    imagen: "/assets/equipos/GAM.jpg"
+    imagen: "/assets/equipos/GAM_v2.png"
   },
   {
     titulo: "Piece Of Music",
