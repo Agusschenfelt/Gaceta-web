@@ -11,7 +11,7 @@ const navLinks = [
   { name: "Artistas", to: "/artistas" },
   { name: "Gallery", to: "/gallery" },
   { name: "Shows", to: "/#shows" },
-  { name: "Shop", to: "https://tutienda.tiendanube.com/" }, 
+  { name: "Shop", to: "https://gaceta.shop/" }, 
 ];
 
 function LinkOrA({ to, children, ...props }) {

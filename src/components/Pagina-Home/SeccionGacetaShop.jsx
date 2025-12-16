@@ -153,7 +153,7 @@ export default function SeccionGacetaShop() {
       {/* CTA */}
       <div className="relative z-10 flex justify-center shop-title">
         <a
-          href="https://tutienda.tiendanube.com"
+          href="https://gaceta.shop/"
           target="_blank"
           rel="noreferrer"
           className="group relative inline-flex items-center justify-center gap-3 px-8 py-3 bg-transparent border border-white/20 rounded-full overflow-hidden transition-all duration-300 hover:border-white/50"
