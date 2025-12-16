@@ -441,7 +441,7 @@ export const GACETA_TIMELINE = [
           "displayDate": "[agosto–octubre/2025]",
           "approximate": true,
           "title": "INMORTAL WORLD TOUR — Argentina",
-          "desc": "Cinco fechas en distintos puntos del país: Buenos Aires, Rosario, Córdoba, Mar del Plata y Mendoza.Además de Ramma, se suman ARA y Valuto.",
+          "desc": "Cinco fechas en distintos puntos del país: Buenos Aires, Rosario, Córdoba, Mar del Plata y Mendoza. Además de Ramma, se suman ARA y Valuto.",
           media: {
             type: "image",
             src: "/assets/timeline/inmortalWT-arg.jpeg",
@@ -457,7 +457,19 @@ export const GACETA_TIMELINE = [
           media: {
             type: "image",
             src: "/assets/timeline/BCtapa.webp",
-            alt: "Soldout de Ramma en la tangente"
+            alt: "Portada de backstage cover"
+          }
+        },
+        {
+          "id": "2025-15",
+          "date": "2025-12-01",
+          "displayDate": "01/12/2025",
+          "title": "RV",
+          "desc": "Ramma lanza su cuarto disco de estudio, “RV”. En su forma más pura, siendo Ramiro Valentín.",
+          media: {
+            type: "image",
+            src: "/assets/timeline/rv.webp",
+            alt: "Portada Rv"
           }
         }
       ]

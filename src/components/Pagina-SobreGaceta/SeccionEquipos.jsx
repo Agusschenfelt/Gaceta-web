@@ -9,17 +9,17 @@ const DEFAULT_AREAS = [
   {
     titulo: "Gaceta Audiovisual",
     descripcion: "Narrativa visual y estética. Cubrimos shows, producimos videoclips y creamos el universo visual que acompaña a cada artista.",
-    imagen: "/assets/equipoGAV.JPG"
+    imagen: "/assets/equipos/GAV_v3.png"
   },
   {
     titulo: "Gaceta Marketing",
     descripcion: "Estrategia y comunidad. Conectamos los lanzamientos con su audiencia real a través de campañas digitales y gestión de identidad.",
-    imagen: "/assets/equipoGAV.JPG"
+    imagen: "/assets/equipos/GAM.jpg"
   },
   {
     titulo: "Piece Of Music",
     descripcion: "Espacios de encuentro. Una iniciativa junto a Indutop para potenciar la industria y el talento emergente en Uruguay.",
-    imagen: "/assets/equipoGAV.JPG"
+    imagen: "/assets/equipos/POM.jpg"
   }
 ];
 

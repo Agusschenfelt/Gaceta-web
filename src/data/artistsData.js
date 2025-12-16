@@ -29,10 +29,10 @@ export const ARTISTS_DATA = [
 
     proyectos: [
       {
-        nombre: "EL TRAP LO MERECE",
+        nombre: "RV",
         spotify:
-          "https://open.spotify.com/intl-es/album/1EkBelutAGR7YVuyY0fk8g?si=x5OSV5XDRqeXTqHKRmIjDA",
-        imagen: "/assets/artistas/ramma/etlm.webp",
+          "https://open.spotify.com/intl-es/album/2xV4WY7ILWk3PFghGLFQkz?si=mu_xrmmqSCC7KOeBsqGrdg",
+        imagen: "/assets/artistas/ramma/rv.webp",
       },
       {
         nombre: "Inmortal",
@@ -63,12 +63,6 @@ export const ARTISTS_DATA = [
         spotify:
           "https://open.spotify.com/intl-es/album/3TArm15aTUm2Yvf1pekBKC?si=UJs0UQj2RXCB1LMLmSsksg",
         imagen: "/assets/artistas/ramma/trip.webp",
-      },
-      {
-        nombre: "Somos el show",
-        spotify:
-          "https://open.spotify.com/intl-es/album/2XCuqzRi8ME6YhPdQ8oSc8?si=CYkIdfTdTpKPZGKti8SXPw",
-        imagen: "/assets/artistas/ramma/somos-el-show.webp",
       },
     ],
   },
@@ -155,7 +149,7 @@ export const ARTISTS_DATA = [
       {
         nombre: "#4u",
         spotify: "https://open.spotify.com/intl-es/album/1UN6gHFKHxueuhdY4DRegP?si=0IfTk7T8STu3iitBl_MzXA",
-        imagen: "/assets/artistas/ara/4u.webp",
+        imagen: "/assets/artistas/ara/foryou.webp",
       },
       {
         nombre: "Backstage Cover Vol. 1",
@@ -197,10 +191,19 @@ export const ARTISTS_DATA = [
       instagram: "https://www.instagram.com/taduvazquez/",
     },
 
-    fotos: ["/assets/tadu-perfil.jpg", "/assets/tadu-perfil.jpg"],
+    fotos: [
+      "/assets/artistas/tadu/fotos/perfil1.jpg",
+      "/assets/artistas/tadu/fotos/perfil2.jpg",
+      "/assets/artistas/tadu/fotos/perfil3.jpg",
+    ],
 
     proyectos: [
-      { nombre: "Producciones Selectas", spotify: null, imagen: null },
+      {
+        nombre: "RV",
+        spotify:
+          "https://open.spotify.com/intl-es/album/2xV4WY7ILWk3PFghGLFQkz?si=mu_xrmmqSCC7KOeBsqGrdg",
+        imagen: "/assets/artistas/ramma/rv.webp",
+      },
     ],
   },
 
@@ -339,10 +342,10 @@ Actualmente desarrolla nuevas producciones y colaboraciones, expandiendo su alca
         imagen: "/assets/artistas/dazen/etlm.webp",
       },
       {
-        nombre: "ICÓNICOS",
+        nombre: "RV",
         spotify:
-          "https://open.spotify.com/intl-es/track/5cIXxxLrHVfUpHrWTAtSaB?si=d86251978abf432f",
-        imagen: "/assets/artistas/dazen/iconicos.webp",
+          "https://open.spotify.com/intl-es/album/2xV4WY7ILWk3PFghGLFQkz?si=mu_xrmmqSCC7KOeBsqGrdg",
+        imagen: "/assets/artistas/ramma/rv.webp",
       },
       {
         nombre: "INMORTAL",
@@ -355,12 +358,6 @@ Actualmente desarrolla nuevas producciones y colaboraciones, expandiendo su alca
         spotify:
           "https://open.spotify.com/intl-es/track/1XnlpYMGAzr69JA4SetBMy?si=0b2cf6e07c55421c",
         imagen: "/assets/artistas/dazen/no-matter.webp",
-      },
-      {
-        nombre: "Si Ya No Estás",
-        spotify:
-          "https://open.spotify.com/intl-es/track/50qWyVygeA1YqR83AN3GzV?si=2cd86e17b96a4118",
-        imagen: "/assets/artistas/dazen/si-ya-no-estass.webp",
       },
       {
         nombre: "VIDA LUJOSA",
@@ -390,9 +387,8 @@ Actualmente desarrolla nuevas producciones y colaboraciones, expandiendo su alca
 
     redes: { instagram: "https://www.instagram.com/prodlonzo/" },
     fotos: [
-      "/assets/artistas/lonzo/perfil/foto-perfil.jpg",
-      "/assets/artistas/lonzo/perfil/foto-perfil.jpg",
-      "/assets/artistas/lonzo/perfil/foto-perfil.jpg",
+      "/assets/artistas/lonzo/fotos/perfil1.JPG",
+      "/assets/artistas/lonzo/fotos/perfil2.JPG",
     ],
     proyectos: [
       {

@@ -141,10 +141,10 @@ export default function FooterGaceta() {
 
             <div className="flex gap-4 text-xl text-white/60">
                 {[
-                  { Icon: FaInstagram, url: "https://instagram.com/gacetaplay" },
-                  { Icon: FaTwitter, url: "https://x.com/gacetaplay" },
-                  { Icon: FaTiktok, url: "https://tiktok.com/@gaceta.play" },
-                  { Icon: FaYoutube, url: "https://youtube.com/@gacetaplay" }
+                  { Icon: FaInstagram, url: "https://www.instagram.com/esgaceta" },
+                  { Icon: FaTwitter, url: "https://x.com/esgaceta" },
+                  { Icon: FaTiktok, url: "https://www.tiktok.com/@esgaceta" },
+                  { Icon: FaYoutube, url: "https://youtube.com/@esgaceta" }
                 ].map(({ Icon, url }, i) => (
                     <a 
                         key={i} 
