@@ -192,9 +192,9 @@ export const ARTISTS_DATA = [
     },
 
     fotos: [
-      "/assets/artistas/tadu/fotos/perfil1.jpg",
-      "/assets/artistas/tadu/fotos/perfil2.jpg",
-      "/assets/artistas/tadu/fotos/perfil3.jpg",
+      "/assets/artistas/tadu/fotos/perfil1.jpeg",
+      "/assets/artistas/tadu/fotos/perfil2.jpeg",
+      "/assets/artistas/tadu/fotos/perfil3.jpeg",
     ],
 
     proyectos: [
@@ -203,6 +203,36 @@ export const ARTISTS_DATA = [
         spotify:
           "https://open.spotify.com/intl-es/album/2xV4WY7ILWk3PFghGLFQkz?si=mu_xrmmqSCC7KOeBsqGrdg",
         imagen: "/assets/artistas/ramma/rv.webp",
+      },
+      {
+        nombre: "El fin y el medio",
+        spotify:
+          "https://open.spotify.com/intl-es/album/5DkLPWI8YPIVPyRyFv3BAB?si=E6_O4H5zStmZOreegFEpBg",
+        imagen: "/assets/artistas/tadu/el-fin-y-el-medio.webp",
+      },
+      {
+        nombre: "Inmortal",
+        spotify:
+          "https://open.spotify.com/intl-es/album/2sbBzP8dNvlypd4YaSdIMv?si=Xd0-Khq9Q2-VXq-1l2gG7w",
+        imagen: "/assets/artistas/ramma/inmortal.webp",
+      },
+      {
+        nombre: "Kapsula",
+        spotify:
+          "https://open.spotify.com/intl-es/album/45kSFtLZc1h73uyX7KahDZ?si=lsYfQbK5TqyN74JL-asGNA",
+        imagen: "/assets/artistas/tadu/kapsula.webp",
+      },
+      {
+        nombre: "Kapsuleo",
+        spotify:
+          "https://open.spotify.com/intl-es/album/3pHaWVA0s43oYI4EA9NTBR?si=K8DQKmqmQWOGpwu4M8aFew",
+        imagen: "/assets/artistas/tadu/kapsuleo.webp",
+      },
+      {
+        nombre: "Mvp",
+        spotify:
+          "https://open.spotify.com/intl-es/track/2G3QPsYBPa1X4UjNIm5h5f?si=dc0261ed3dcf488d",
+        imagen: "/assets/artistas/tadu/mvp.webp",
       },
     ],
   },
