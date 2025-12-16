@@ -40,8 +40,8 @@ export default function SeccionNosotros() {
     <section ref={container} className="relative w-full h-[100vh] overflow-hidden bg-black">
       
       <div className="absolute inset-0 z-0"> 
-         <video src="/assets/ara-perfil.mp4" autoPlay muted loop playsInline className="w-full h-full object-cover opacity-60" />
-         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black" />
+         <video src="/assets/reel-sobre-nosotross.mp4" autoPlay muted loop playsInline className="w-full h-full object-cover opacity-60" />
+         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black" />
       </div>
 
       {/* Subimos un poco el contenido para dejar espacio a la línea abajo */}

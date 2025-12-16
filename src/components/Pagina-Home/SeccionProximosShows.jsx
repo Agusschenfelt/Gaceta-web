@@ -130,7 +130,7 @@ useGSAP(() => {
 
                 {/* ARTISTA & INFO */}
                 <div className="w-full md:w-2/4 flex flex-col">
-                    <h3 className={`text-3xl font-serif italic text-white transition-all duration-500
+                    <h3 className={`text-3xl font-bold text-white uppercase tracking-wider leading-none transition-all duration-500
                         ${show.isMystery 
                             ? "blur-sm opacity-50 group-hover:blur-[2px] group-hover:opacity-80" 
                             : "group-hover:translate-x-2"

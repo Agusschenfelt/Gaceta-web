@@ -120,7 +120,7 @@ export default function MusicPlayer() {
                 </div>
                 
                 <div className="flex flex-col min-w-0 pr-2">
-                   <span className="font-serif italic text-white text-lg leading-none truncate">
+                   <span className="font-serif text-white text-base leading-none truncate">
                       {currentTrack.title}
                    </span>
                    <span className="font-mono text-[9px] uppercase tracking-widest text-[#dee5a0] truncate">
