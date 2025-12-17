@@ -59,8 +59,6 @@ export default function App() {
         <ResetBgOnRoute />
         <ScrollToAnchor />
 
-
-        <HypeLock />
         <EventPopup />
         
         <Suspense fallback={<LoadingScreen />}>

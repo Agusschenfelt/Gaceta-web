@@ -94,7 +94,7 @@ export const TRACKS_DATA = [
     {
       title: "bby no t puedo ver",
       artist: "ARA",
-      src: "/assets/musica/bbaynotepuedover.mp3",
+      src: "/assets/musica/bbynotepuedover.mp3",
       cover: "/assets/musica/portadas/youngboy.webp",
     },
     {

@@ -100,7 +100,7 @@ export const ARTISTS_DATA = [
       {
         nombre: "CON EL UNIFORME PUESTO",
         spotify: "https://open.spotify.com/intl-es/album/0NSIPu4gynlpDew19wIGGQ?si=WMKv-YCASGi3mD34PEM_2g",
-        imagen: "/assets/artistas/valuto/ceup.webp",
+        imagen: "/assets/artistas/barta/ceup.webp",
       },
       {
         nombre: "Antes de las 12",
