@@ -16,6 +16,7 @@ import ResetBgOnRoute from "./components/ResetBgOnRoute";
 import PageTransitionProvider from "./components/PageTransitionProvider";
 import ScrollToAnchor from "./components/ScrollToAnchor";
 import EventPopup from "./components/EventPopup";
+import HypeLock from "./components/HypeLock";
 // Páginas (Lazy)
 const HomePage = lazy(() => import("./pages/HomePage"));
 const ArtistPage = lazy(() => import("./pages/ArtistPage"));
@@ -60,6 +61,8 @@ export default function App() {
 
         <EventPopup />
 
+        <HypeLock />
+        
         <Suspense fallback={<LoadingScreen />}>
           <Routes>
             <Route path="/" element={<Layout />}>

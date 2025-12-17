@@ -37,7 +37,7 @@ export default function HomePage() {
         <SeccionGacetaShop />
         <SeccionGalleryTeaser
           images={[
-            "/assets/ramma-perfil.jpg",
+            "/media/img/_woc7020-1440.webp",
             "/media/img/pyketoph-6-1440.webp",
             "/media/img/_woc5860-1440.webp",
           ]}

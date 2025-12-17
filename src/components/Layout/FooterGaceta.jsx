@@ -184,10 +184,7 @@ export default function FooterGaceta() {
               Made by Gaceta
             </span>
 
-            <a 
-              href="https://www.instagram.com/agusschenfelt/" // <--- Tu Portfolio
-              target="_blank" 
-              rel="noreferrer"
+            <span 
               // Evitamos que el click en el enlace cierre el acordeón antes de navegar (opcional, pero buena práctica)
               onClick={(e) => e.stopPropagation()} 
               className={`
@@ -207,7 +204,7 @@ export default function FooterGaceta() {
               `}
             >
               x Aguss
-            </a>
+            </span>
 
           </div>
       </div>
