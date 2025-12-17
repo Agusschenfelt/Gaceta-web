@@ -5,7 +5,7 @@ import { useGSAP } from "@gsap/react";
 import { useRef, useState, useLayoutEffect } from "react";
 
 // --- CONFIGURACIÓN ---
-const IS_LOCKED_INITIALLY = false; 
+const IS_LOCKED_INITIALLY = true; 
 const ACCESS_PASSWORD = "GACETAZO"; 
 
 export default function HypeLock() {

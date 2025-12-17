@@ -61,6 +61,7 @@ export default function App() {
 
 
         <HypeLock />
+        <EventPopup />
         
         <Suspense fallback={<LoadingScreen />}>
           <Routes>
