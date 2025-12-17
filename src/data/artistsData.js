@@ -43,13 +43,13 @@ export const ARTISTS_DATA = [
         imagen: "/assets/artistas/ramma/inmortal.webp",
       },
       {
-        nombre: "Intrepido",
+        nombre: "INTRÉPIDO",
         spotify:
           "https://open.spotify.com/intl-es/album/62clAr6AFp6kOQPfUwcDWM?si=LIrC2b55TsObTQlZYQT_eg",
         imagen: "/assets/artistas/ramma/intrepido.webp",
       },
       {
-        nombre: "Incredulo",
+        nombre: "Incrédulo",
         spotify:
           "https://open.spotify.com/intl-es/album/2vUPgoByWDx8yJlNIrOhu4?si=_7ujMZPgQrGTA3umqUnIbg",
         imagen: "/assets/artistas/ramma/incredulo.webp",
@@ -98,7 +98,7 @@ export const ARTISTS_DATA = [
 
     proyectos: [
       {
-        nombre: "Con el uniforme puesto",
+        nombre: "CON EL UNIFORME PUESTO",
         spotify: "https://open.spotify.com/intl-es/album/0NSIPu4gynlpDew19wIGGQ?si=WMKv-YCASGi3mD34PEM_2g",
         imagen: "/assets/artistas/valuto/ceup.webp",
       },
@@ -113,7 +113,7 @@ export const ARTISTS_DATA = [
         imagen: "/assets/artistas/valuto/me-estoy-desubicando.webp",
       },
       {
-        nombre: "Mi unico consuelo",
+        nombre: "Mi único consuelo",
         spotify: "https://open.spotify.com/intl-es/album/7gcin372WqtkRUEYIXq4lv?si=8GWfy-AiTY6iz6xZLSv3PA",
         imagen: "/assets/artistas/valuto/mi-unico-consuelo.webp",
       },
@@ -169,7 +169,7 @@ export const ARTISTS_DATA = [
         imagen: "/assets/artistas/ara/somos-el-show.webp",
       },
       {
-        nombre: "Todo para mi",
+        nombre: "todoparami",
         spotify: "https://open.spotify.com/intl-es/album/1ufGqkH6A6Svxj8JtRu57O?si=EKgStdL9Qim29HdnHE81rw",
         imagen: "/assets/artistas/ara/todo-para-mi.webp",
       },
@@ -184,7 +184,7 @@ export const ARTISTS_DATA = [
   {
     id: "tadu",
     slug: "tadu_vazquez",
-    nombre: "Tadu Vazquez",
+    nombre: "Tadu Vázquez",
     rol: "Productor / Artista",
     foto: "/assets/artistas/tadu/perfil/foto-perfil.jpg",
     video: "/assets/artistas/tadu/card/video-card.mp4",
@@ -274,7 +274,38 @@ export const ARTISTS_DATA = [
       "/assets/artistas/fosse/fotos/perfil2.webp",
       "/assets/artistas/fosse/fotos/perfil3.webp",
     ],
-    proyectos: [],
+    proyectos: [
+      {
+        nombre: "ALTURA (Remix)",
+        spotify:
+          "https://open.spotify.com/intl-es/album/5bsyhIRMYq0s2eQUsENbDA?si=DUVSXHpsSCS2UQesv8uovQ",
+        imagen: "/assets/artistas/fosse/altura-remix.webp",
+      },
+      {
+        nombre: "POSITIVO",
+        spotify:
+          "https://open.spotify.com/intl-es/album/6Tq424szeW90RmrrbmSP7k?si=kj_8hGpkTDWEEcjcpTtTqQ",
+        imagen: "/assets/artistas/fosse/positivo.webp",
+      },
+      {
+        nombre: "Runaway - Remix",
+        spotify:
+          "https://open.spotify.com/intl-es/track/2eKdN2k93a6akMJ5foLj4L?si=92b6c6ad2352417e",
+        imagen: "/assets/artistas/fosse/runaway.webp",
+      },
+      {
+        nombre: "SIN PRONTUARIO",
+        spotify:
+          "https://open.spotify.com/intl-es/track/2eKdN2k93a6akMJ5foLj4L?si=92b6c6ad2352417e",
+        imagen: "/assets/artistas/fosse/sin-prontuario.webp",
+      },
+      {
+        nombre: "todo x vos",
+        spotify:
+          "https://open.spotify.com/intl-es/album/3qBClD9Q7ieQh7MnElEvt6?si=d7QJxTgTQ3Gi3oTguhxq1A",
+        imagen: "/assets/artistas/fosse/todoxvos.webp",
+      },
+    ],
   },
 
   {

@@ -1,4 +1,4 @@
-// SeccionGacetaShop.jsx — Coherencia Visual: Cards con Borde (No fotos flotantes)
+// SeccionGacetaShop.jsx — Ajuste: Sold Out Premium (No triste)
 import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -6,6 +6,7 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
+// Mantenemos soldOut: true
 const products = [
   {
     id: "1",
@@ -13,6 +14,7 @@ const products = [
     price: 22555,
     image: "/assets/valuto-merch.png",
     href: "https://tutienda.tiendanube.com/black-logo-tee",
+    soldOut: true,
   },
   {
     id: "2",
@@ -20,6 +22,7 @@ const products = [
     price: 35555,
     image: "/assets/ramma-merch-remera.jpg",
     href: "https://tutienda.tiendanube.com/white-logo-tee",
+    soldOut: true,
   },
   {
     id: "3",
@@ -27,6 +30,7 @@ const products = [
     price: 65555,
     image: "/assets/ramma-merch-hoodie.png",
     href: "https://tutienda.tiendanube.com/hoodie-gaceta",
+    soldOut: true,
   },
 ];
 
@@ -40,44 +44,68 @@ const currency = (n) =>
 function ProductCard({ p }) {
   return (
     <a
-      href={p.href}
-      target="_blank"
-      rel="noreferrer"
-      className="block select-none group h-full"
-      data-card
+      href={p.soldOut ? null : p.href}
+      data-cursor={p.soldOut ? "not-allowed" : "pointer"} // Indicador para cursor personalizado si lo tuvieras
+      className={`block select-none h-full group relative ${
+        p.soldOut ? "cursor-not-allowed" : "cursor-pointer"
+      }`}
     >
-      <div className="will-change-transform h-full">
-        {/* COHERENCIA: Card con borde, fondo transparente, rounded-sm */}
-        <div className="relative rounded-sm overflow-hidden bg-white/[0.02] border border-white/5 hover:border-[#dee5a0]/40 transition-all duration-500 h-full flex flex-col">
+      <div className="will-change-transform h-full flex flex-col">
+        {/* COHERENCIA: Card con borde sutil */}
+        <div className="relative rounded-sm overflow-hidden bg-white/[0.02] border border-white/5 group-hover:border-[#dee5a0]/30 transition-all duration-500 h-full flex flex-col">
           
-          {/* IMAGEN: mix-blend-mode para integrar con el fondo oscuro */}
-          <div className="aspect-[4/5] relative overflow-hidden bg-white/5 border-b border-white/5">
-             {/* Overlay oscuro que desaparece en hover */}
-             <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 z-10" />
+          {/* IMAGEN - Full color y viva */}
+          <div className="aspect-[4/5] relative overflow-hidden bg-[#0a0a0a] border-b border-white/5">
+             {/* Overlay sutil en hover solo si NO está sold out */}
+            {!p.soldOut && (
+               <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 z-10" />
+            )}
              
             <img
               src={p.image}
               alt={p.title}
               loading="lazy"
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+              // Mantenemos el zoom suave en hover incluso si está sold out, para que se sienta premium
+              className="h-full w-full object-cover transition-transform duration-1000 opacity-100 scale-100 group-hover:scale-105"
             />
+
+            {/* BADGE SOLD OUT SOBRE LA IMAGEN (Opcional, pero ayuda) */}
+            {p.soldOut && (
+                <div className="absolute top-4 right-4 z-20">
+                    <span className="px-3 py-1 bg-[#911e1e] text-white text-[9px] font-mono uppercase tracking-widest rounded-full">
+                        Sold Out
+                    </span>
+                </div>
+            )}
           </div>
 
-          {/* INFO: Espaciada y limpia */}
-          <div className="p-6 flex flex-col flex-1 justify-between bg-[#0a0a0a]">
+          {/* INFO */}
+          <div className="p-6 flex flex-col flex-1 justify-between bg-[#0e0e0f]">
             <div>
-                <h3 className="text-white font-serif italic text-lg leading-tight mb-2 group-hover:text-[#dee5a0] transition-colors">
+                {/* Título mantiene su color blanco, no se apaga */}
+                <h3 className="font-serif italic text-lg leading-tight mb-2 text-white group-hover:text-[#dee5a0] transition-colors duration-300">
                   {p.title}
                 </h3>
-                <p className="text-white/60 text-xs font-mono tracking-wide">
+                <p className="text-[#dee5a0]/60 text-xs font-mono tracking-wide">
                   {currency(p.price)}
                 </p>
             </div>
             
-            {/* Botón "Ver Producto" */}
-            <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-[10px] uppercase tracking-widest text-white/40 group-hover:text-white transition-colors">
-                <span>Shop Now</span>
-                <span className="translate-x-[-5px] opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">→</span>
+            {/* FOOTER CARD */}
+            <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-[10px] uppercase tracking-widest">
+                {p.soldOut ? (
+                    // Estado Sold Out: Rojo sangre, llamativo, sin opacidad.
+                    <div className="flex items-center gap-2 text-[#911e1e] font-medium">
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#911e1e]"></span>
+                        <span>Agotado</span>
+                    </div>
+                ) : (
+                    // Estado Normal
+                    <div className="flex items-center gap-2 text-white/40 group-hover:text-white transition-colors">
+                        <span>Shop Now</span>
+                        <span className="translate-x-[-5px] opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">→</span>
+                    </div>
+                )}
             </div>
           </div>
 
@@ -118,7 +146,7 @@ export default function SeccionGacetaShop() {
     <section
       ref={sectionRef}
       id="gaceta-shop"
-      className="relative z-20 py-32 pb-64 bg-[#0a0a0a] overflow-hidden" // COHERENCIA: bg-[#0a0a0a]
+      className="relative z-20 py-32 pb-64 bg-[#0a0a0a] overflow-hidden"
     >
       
       {/* LÍNEA CONECTORA */}
@@ -150,7 +178,7 @@ export default function SeccionGacetaShop() {
         </div>
       </div>
 
-      {/* CTA */}
+      {/* CTA - Lo mantenemos para ir a la tienda real aunque este sold out estos items */}
       <div className="relative z-10 flex justify-center shop-title">
         <a
           href="https://gaceta.shop/"
@@ -159,7 +187,7 @@ export default function SeccionGacetaShop() {
           className="group relative inline-flex items-center justify-center gap-3 px-8 py-3 bg-transparent border border-white/20 rounded-full overflow-hidden transition-all duration-300 hover:border-white/50"
         >
           <span className="relative z-10 font-mono tracking-[0.1em] uppercase text-xs text-white/80 group-hover:text-white transition-colors">
-            Ver Todos
+            Ir a la tienda
           </span>
           <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </a>

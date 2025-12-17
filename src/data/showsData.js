@@ -122,7 +122,7 @@ export const showsData = [
       date: "2025-11-25",
       city: "Buenos Aires",
       country: "Argentina",
-      venue: "C Art Media",
+      venue: "Pre escucha 'RV' en el C Art Media",
       soldOut: true,
     },
     {

@@ -126,10 +126,10 @@ function MenuOverlay({ open, onClose }) {
                     
                     {/* 1. Redes Sociales */}
                     <div className="flex gap-6 text-xl text-white/50">
-                        <a href="https://www.instagram.com/gacetaplay/" target="_blank" className="hover:text-white transition-colors"><FaInstagram/></a>
-                        <a href="https://x.com/gacetaplay" target="_blank" className="hover:text-white transition-colors"><FaTwitter/></a>
-                        <a href="https://www.tiktok.com/@gaceta.play" target="_blank" className="hover:text-white transition-colors"><FaTiktok/></a>
-                        <a href="https://www.youtube.com/@gacetaplay" target="_blank" className="hover:text-white transition-colors"><FaYoutube/></a>
+                        <a href="https://www.instagram.com/esgaceta" target="_blank" className="hover:text-white transition-colors"><FaInstagram/></a>
+                        <a href="https://x.com/esgaceta" target="_blank" className="hover:text-white transition-colors"><FaTwitter/></a>
+                        <a href="https://www.tiktok.com/@esgaceta" target="_blank" className="hover:text-white transition-colors"><FaTiktok/></a>
+                        <a href="https://youtube.com/@esgaceta" target="_blank" className="hover:text-white transition-colors"><FaYoutube/></a>
                     </div>
 
                     {/* Separador visual (Línea vertical sutil) */}

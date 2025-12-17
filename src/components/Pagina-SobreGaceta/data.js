@@ -338,6 +338,19 @@ export const GACETA_TIMELINE = [
           }
         },
         {
+          "id": "2025-13",
+          "date": "2025-04-03",
+          "displayDate": "03/04/2025",
+          "title": "EL TRAP LO MERECE",
+          "desc": "En este EP se juntaron Ramma, Sixto Yegros y Tobi para demostrar que era el trap. Porque el trap lo merece.",
+          media: {
+            type: "image",
+            src: "/assets/timeline/ETLM.webp",
+            alt: "EP El trap lo merece"
+          }
+
+        },
+        {
           "id": "2025-05",
           "date": "2025-04-11",
           "displayDate": "11/04/2025",
@@ -401,7 +414,7 @@ export const GACETA_TIMELINE = [
           "id": "2025-10",
           "date": "2025-08-07",
           "displayDate": "07/08/2025",
-          "title": "Sala Magnolio Valuto (SOLD OUT)",
+          "title": "Magnolio Sala Valuto (SOLD OUT)",
           "desc": "Primer show propio de Valuto en Uruguay con su Sala Magnolio SOLD OUT. 17 días después viajó a Buenos Aires para su segundo show propio: La Tangente a sala llena.",
           media: {
             type: "image",
@@ -420,19 +433,6 @@ export const GACETA_TIMELINE = [
             src: "/assets/timeline/tangenteValuto.jpg",
             alt: "Segundo show de valuto en Argentina"
           }
-        },
-        {
-          "id": "2025-13",
-          "date": "2025-04-03",
-          "displayDate": "03/04/2025",
-          "title": "EL TRAP LO MERECE",
-          "desc": "En este EP se juntaron Ramma, Sixto Yegros y Tobi para demostrar que era el trap. Porque el trap lo merece.",
-          media: {
-            type: "image",
-            src: "/assets/timeline/ETLM.webp",
-            alt: "EP El trap lo merece"
-          }
-
         },
         {
           "id": "2025-14",

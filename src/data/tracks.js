@@ -20,10 +20,10 @@ export const TRACKS_DATA = [
       cover: "/assets/musica/portadas/youngboy.webp",
     },
     {
-      title: "Constelacion",
+      title: "Constelación",
       artist: "Ramma",
       src: "/assets/musica/constelacion.mp3",
-      cover: "/assets/musica/portadas/antesdelas12.webp",
+      cover: "/assets/musica/portadas/constelacion.webp",
     },
     {
       title: "CRY4ME",
@@ -74,13 +74,13 @@ export const TRACKS_DATA = [
       cover: "/assets/musica/portadas/tequeria.webp",
     },
     {
-      title: "Te quedaste con mi hoddie",
+      title: "te quedaste con mi hoodie",
       artist: "Fosse",
       src: "/assets/musica/tequedasteconmihoddie.mp3",
       cover: "/assets/musica/portadas/todoxvos.webp",
     },
     {
-      title: "ACÉRCATE",
+      title: "Acércate",
       artist: "Ramma",
       src: "/assets/musica/acercate.mp3",
       cover: "/assets/musica/portadas/trip2.webp",
@@ -122,7 +122,7 @@ export const TRACKS_DATA = [
       cover: "/assets/musica/portadas/ceup.webp",
     },
     {
-      title: "Ya no soy asi",
+      title: "Ya No Soy Así",
       artist: "Valuto",
       src: "/assets/musica/yanosoyasi.mp3",
       cover: "/assets/musica/portadas/ceup.webp",
