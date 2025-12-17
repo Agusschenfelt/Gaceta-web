@@ -56,7 +56,7 @@ export default function Navbar() {
         className="relative z-[90] flex items-center group mix-blend-difference pointer-events-auto"
       >
         <img
-          src="/assets/logo-blanco.png" 
+          src="/assets/logos/logo-gaceta-blanco.png" 
           alt="Gaceta"
           className="block w-[120px] md:w-[150px] transition-opacity group-hover:opacity-80"
           data-logo="navbar-logo"

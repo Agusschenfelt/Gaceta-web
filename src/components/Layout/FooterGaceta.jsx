@@ -1,7 +1,8 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { FaInstagram, FaTwitter, FaTiktok, FaYoutube } from "react-icons/fa";
 import TransitionLink from "../TransitionLink"; 
 import gsap from "gsap";
+
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
@@ -34,6 +35,9 @@ function AnimatedWord({ word, lift = "14vh", className = "" }) {
 
 export default function FooterGaceta() {
   const rootRef = useRef(null);
+  
+  // Estado para controlar si mostramos los créditos en móvil (toggle)
+  const [creditsOpen, setCreditsOpen] = useState(false);
 
   // ANIMACIÓN DE ENTRADA DIVERTIDA
   useGSAP(() => {
@@ -161,15 +165,51 @@ export default function FooterGaceta() {
         </div>
       </div>
 
-      {/* 3. FOOTER BOTTOM */}
-      <div className="relative z-20 max-w-[1400px] mx-auto px-6 md:px-10 mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/30 uppercase tracking-widest font-mono">
-          <div className="flex gap-6">
+      <div className="relative z-20 max-w-[1400px] mx-auto px-6 md:px-10 mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs uppercase tracking-widest font-mono">
+          
+          {/* Copyright */}
+          <div className="flex gap-6 text-white/30">
             <p>© 2025 Gaceta Music.</p>
             <p className="hidden sm:block">All rights reserved.</p>
           </div>
-          <p className="hover:text-white/60 transition-colors cursor-default">
-            Made by Gaceta
-          </p>
+
+          {/* EL GUIÑO INTERACTIVO (Tap to Reveal) */}
+          <div 
+            // AL HACER CLICK/TAP: Cambiamos el estado (true/false)
+            onClick={() => setCreditsOpen(!creditsOpen)}
+            className="group flex items-center cursor-pointer select-none py-2" // py-2 agranda el área de toque en el cel
+          >
+            
+            <span className="text-white/30 transition-colors duration-500 group-hover:text-white/50">
+              Made by Gaceta
+            </span>
+
+            <a 
+              href="https://www.instagram.com/agusschenfelt/" // <--- Tu Portfolio
+              target="_blank" 
+              rel="noreferrer"
+              // Evitamos que el click en el enlace cierre el acordeón antes de navegar (opcional, pero buena práctica)
+              onClick={(e) => e.stopPropagation()} 
+              className={`
+                /* --- TRANSICIONES BASE --- */
+                overflow-hidden whitespace-nowrap
+                transition-all duration-[900ms] ease-[cubic-bezier(0.23,1,0.32,1)]
+                text-[#dee5a0]
+
+                /* --- LÓGICA MIXTA (State + Hover) --- */
+                /* Si creditsOpen es TRUE (Mobile click) -> Mostramos.
+                   Si NO, aplicamos las clases de Desktop (Hover).
+                */
+                ${creditsOpen 
+                    ? "max-w-[200px] opacity-100 ml-2" // Estado ABIERTO (Mobile/Click)
+                    : "max-w-0 opacity-0 ml-0 md:group-hover:max-w-[300px] md:group-hover:opacity-100 md:group-hover:ml-3" // Estado CERRADO + HOVER Desktop
+                }
+              `}
+            >
+              x Aguss
+            </a>
+
+          </div>
       </div>
 
       {/* 4. GACETA GIGANTE (Contenedor ajustado) */}
