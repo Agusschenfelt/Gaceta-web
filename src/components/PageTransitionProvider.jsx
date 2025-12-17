@@ -116,6 +116,11 @@ export default function PageTransitionProvider({ children }) {
       onComplete: () => {
         navigate(to);
         animateOutPush();
+        window.scrollTo(0, 0); 
+        setTimeout(() => {
+            window.scrollTo(0, 0); // Doble check por si acaso (Safari a veces es rebelde)
+            animateOutPush();
+        }, 10);
       }
     });
 

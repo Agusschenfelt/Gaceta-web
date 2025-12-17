@@ -115,7 +115,7 @@ export default function HypeLock() {
                     }}
                     placeholder="ENTER PASSWORD"
                     className={`
-                        w-full bg-transparent border-b py-2 text-center font-mono text-sm tracking-[0.3em] uppercase outline-none transition-all duration-300
+                        w-full bg-transparent border-b py-2 text-center font-mono text-[16px] md:text-sm tracking-[0.3em] uppercase outline-none transition-all duration-300
                         ${error 
                             ? "border-[#911e1e] text-[#911e1e] placeholder-[#911e1e]/50" 
                             : success 
