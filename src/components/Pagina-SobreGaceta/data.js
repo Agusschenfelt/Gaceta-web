@@ -358,7 +358,7 @@ export const GACETA_TIMELINE = [
           "desc": "Su show más grande hasta ese momento en Buenos Aires: repasó todas las etapas de su catálogo, pasando por distintas etapas.  también SOLD OUT.",
           media: {
             type: "image",
-            src: "/assets/timeline/tangenteRamma.jpg",
+            src: "/assets/timeline/cartmedia-ramma.jpg",
             alt: "Soldout de Ramma en la tangente"
           }
         },
@@ -461,7 +461,19 @@ export const GACETA_TIMELINE = [
           }
         },
         {
-          "id": "2025-15",
+          "id": "2025-19",
+          "date": "2025-11-25",
+          "displayDate": "25/11/2025",
+          "title": "Pre escucha 'RV' en el C Art Media",
+          "desc": "Ramma se presentó en el C Art Media ante 3000 personas para escuchar “RV” antes de que salga.",
+          media: {
+            type: "image",
+            src: "/assets/timeline/preescuchaRV.png",
+            alt: "Portada de backstage cover"
+          }
+        },
+        {
+          "id": "2025-20",
           "date": "2025-12-01",
           "displayDate": "01/12/2025",
           "title": "RV",

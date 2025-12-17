@@ -15,6 +15,7 @@ import MusicPlayer from "./components/Layout/MusicPlayer";
 import ResetBgOnRoute from "./components/ResetBgOnRoute";
 import PageTransitionProvider from "./components/PageTransitionProvider";
 import ScrollToAnchor from "./components/ScrollToAnchor";
+import EventPopup from "./components/EventPopup";
 // Páginas (Lazy)
 const HomePage = lazy(() => import("./pages/HomePage"));
 const ArtistPage = lazy(() => import("./pages/ArtistPage"));
@@ -56,6 +57,8 @@ export default function App() {
         <ScrollToTopOnRouteChange />
         <ResetBgOnRoute />
         <ScrollToAnchor />
+
+        <EventPopup />
 
         <Suspense fallback={<LoadingScreen />}>
           <Routes>
