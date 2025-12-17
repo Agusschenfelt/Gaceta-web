@@ -59,7 +59,6 @@ export default function App() {
         <ResetBgOnRoute />
         <ScrollToAnchor />
 
-        <EventPopup />
 
         <HypeLock />
         
