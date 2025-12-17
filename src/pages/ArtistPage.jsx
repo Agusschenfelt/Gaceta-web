@@ -5,7 +5,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
 import SEO from "../SEO";
 
-
 // ICONOS
 import { 
   FaInstagram, 
@@ -18,7 +17,6 @@ import {
   FaLink 
 } from "react-icons/fa";
 import TransitionLink from "../components/TransitionLink";
-
 
 // MAPA DE REDES
 const SOCIAL_ICONS = {
@@ -43,6 +41,8 @@ const SafeImage = ({ src, className }) => {
 
 export default function ArtistPage({ artistsData = [] }) {
   const { id } = useParams();
+  
+  // Normalizador de slugs
   const norm = (s) => s?.toLowerCase().trim().replace(/\s+/g, "-");
 
   const currentIndex = useMemo(
@@ -55,7 +55,6 @@ export default function ArtistPage({ artistsData = [] }) {
     ? artistsData[(currentIndex + 1) % artistsData.length] 
     : null;
 
-  const [videoReady, setVideoReady] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
 
   const containerRef = useRef(null);
@@ -65,7 +64,7 @@ export default function ArtistPage({ artistsData = [] }) {
   const lineRef = useRef(null); 
   const videoRef = useRef(null);
 
-  // FORCE PLAY VIDEO
+  // FORCE PLAY VIDEO (Fix para móviles/safari)
   useEffect(() => {
     if (videoRef.current) {
         videoRef.current.muted = true;
@@ -80,18 +79,22 @@ export default function ArtistPage({ artistsData = [] }) {
     let splitTitle;
     const ctx = gsap.context(() => {
       
+      // Animación del Título
       if (titleRef.current) {
+        // Usamos chars para animación letra por letra
         splitTitle = new SplitType(titleRef.current, { types: "chars" });
         gsap.from(splitTitle.chars, {
           yPercent: 120, opacity: 0, duration: 1.2, ease: "power4.out", stagger: 0.03
         });
       }
 
+      // Animación elementos del Hero
       gsap.fromTo("[data-hero-anim]",
         { y: 30, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", stagger: 0.1, delay: 0.5 }
       );
 
+      // Línea divisoria vertical
       if (lineRef.current) {
         gsap.fromTo(lineRef.current, 
             { height: "0%" },
@@ -108,6 +111,7 @@ export default function ArtistPage({ artistsData = [] }) {
         );
       }
 
+      // Elementos Fade In generales
       const fadeElements = gsap.utils.toArray(".fade-in-up");
       fadeElements.forEach((el) => {
         gsap.fromTo(el, 
@@ -123,8 +127,15 @@ export default function ArtistPage({ artistsData = [] }) {
 
   if (!artist) return <Navigate to="/" replace />;
 
+  // === LÓGICA DE TAMAÑO DE TEXTO (FIX MOBILE) ===
+  // Si el nombre es largo (> 8 letras), reducimos el tamaño en mobile para que no se corte.
+  const isLongName = artist.nombre.length > 8;
+  const titleSizeClass = isLongName 
+      ? "text-[12vw] md:text-[11rem]"  // Tamaño reducido para nombres largos
+      : "text-[18vw] md:text-[13rem]"; // Tamaño original gigante
+
+  // Datos del artista
   const video = artist.videoFondo;
-  const poster = artist.poster ?? (artist.fotos?.[0] || "/assets/placeholder.jpg");
   const sources = Array.isArray(video) ? video : [{ src: video, type: "video/mp4" }];
   const temas = (artist.proyectos ?? []).slice(0, 6);
   const paragraphs = artist.biografia ? artist.biografia.split('\n').filter(Boolean) : [];
@@ -135,7 +146,7 @@ export default function ArtistPage({ artistsData = [] }) {
   return (
     <main ref={containerRef} className="relative w-full min-h-screen bg-transparent text-white selection:bg-[#dee5a0] selection:text-black overflow-hidden">
       
-      <SEO title={artist.nombre} description={paragraphs[0]} image={artist.fotos?.[0]} url={`/${id}`} />
+      <SEO title={artist.nombre} description={paragraphs[0]} image={artist.fotos?.[0]} url={`/artistas/${id}`} type="profile" />
 
       {/* 1. FONDO FIXED */}
       <div className="fixed inset-0 z-0">
@@ -160,13 +171,30 @@ export default function ArtistPage({ artistsData = [] }) {
       <div className="relative z-20">
         
         {/* 2. HERO */}
-        <section ref={heroRef} className="min-h-screen flex flex-col items-center justify-center text-center px-6">
-            <h1 ref={titleRef} key={id} className="text-[18vw] md:text-[13rem] leading-[0.8] font-bold tracking-tighter text-white mix-blend-overlay opacity-90">
+        <section ref={heroRef} className="min-h-screen flex flex-col items-center justify-center text-center px-4 md:px-6">
+            
+            {/* TÍTULO AJUSTADO */}
+            <h1 
+                ref={titleRef} 
+                key={id} 
+                className={`
+                    ${titleSizeClass} 
+                    leading-[0.9] 
+                    font-bold 
+                    tracking-tighter 
+                    text-white 
+                    mix-blend-overlay 
+                    opacity-90
+                    w-full 
+                    break-words 
+                    text-balance
+                `}
+            >
                 {artist.nombre}
             </h1>
             
-            <div className="fade-in-up mt-12 flex flex-col items-center gap-8">
-                {/* ETIQUETA DE ROL MEJORADA (Pill Premium) */}
+            <div className="mt-12 flex flex-col items-center gap-8" data-hero-anim>
+                {/* ETIQUETA DE ROL */}
                 <span className="
                     px-6 py-2 rounded-full 
                     bg-white/5 border border-white/10 backdrop-blur-md 
@@ -177,11 +205,10 @@ export default function ArtistPage({ artistsData = [] }) {
                     {artist.rol}
                 </span>
 
-                {/* === SOCIAL DOCK (Íconos) === */}
+                {/* SOCIAL DOCK */}
                 <div className="flex flex-wrap justify-center mt-4 gap-4">
                 {Object.entries(artist.redes || {}).map(([network, url]) => {
                     if (!url) return null;
-                    // Normalizamos nombre para buscar el ícono
                     const key = network.toLowerCase().replace(/\s/g, "");
                     const Icon = SOCIAL_ICONS[key] || SOCIAL_ICONS.default;
 
@@ -194,8 +221,7 @@ export default function ArtistPage({ artistsData = [] }) {
                             aria-label={network}
                         >
                             <Icon className="text-xl text-white group-hover:text-black transition-colors" />
-                            {/* Tooltip */}
-                            <span className="absolute -top-8 text-[10px] font-mono uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity text-[#dee5a0]">
+                            <span className="absolute -top-8 text-[10px] font-mono uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity text-[#dee5a0] pointer-events-none">
                                 {network}
                             </span>
                         </a>
@@ -205,7 +231,7 @@ export default function ArtistPage({ artistsData = [] }) {
             </div>
         </section>
 
-        {/* 3. BIOGRAFÍA (TEXTO LEGILE + FOTOS) */}
+        {/* 3. BIOGRAFÍA */}
         <section ref={bioRef} className="relative max-w-[1400px] mx-auto px-6 md:px-12 py-20 md:py-32">
             
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 relative">
@@ -215,7 +241,7 @@ export default function ArtistPage({ artistsData = [] }) {
                     <div ref={lineRef} className="w-[1px] bg-[#dee5a0] shadow-[0_0_10px_#dee5a0]" style={{ height: '0%' }} />
                 </div>
 
-                {/* TEXTO (Con sombra y peso visual) */}
+                {/* TEXTO */}
                 <div className="lg:col-span-8 flex flex-col gap-10 lg:pr-16">
                     {paragraphs.map((text, i) => (
                         <div key={i} className="fade-in-up">
@@ -271,7 +297,7 @@ export default function ArtistPage({ artistsData = [] }) {
         {/* 5. NEXT ARTIST */}
         {nextArtist && (
           <section className="relative w-full h-[60vh] md:h-[80vh] flex items-center justify-center overflow-hidden group border-t border-white/10 bg-[#050505] z-20">
-            <TransitionLink to={`artistas/${nextArtist.slug ?? norm(nextArtist.nombre)}`} className="absolute inset-0 z-30 block cursor-pointer" />
+            <TransitionLink to={`/artistas/${nextArtist.slug ?? norm(nextArtist.nombre)}`} className="absolute inset-0 z-30 block cursor-pointer" />
             <div className="absolute inset-0 -z-10">
                 <SafeImage src={nextArtist.fotos?.[0] || "/assets/placeholder.jpg"} className="w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-all duration-1000 group-hover:scale-[1.03] grayscale" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />

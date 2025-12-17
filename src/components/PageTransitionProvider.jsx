@@ -18,10 +18,16 @@ const ROUTE_MAP = {
 
 const formatArtistName = (slug) => {
   if (!slug) return "";
+  // Excepciones de mayúsculas
   if (slug.toLowerCase() === "ara") return "ARA";
-  if (slug.toLowerCase() === "mvp") return "MVP";
+  if (slug.toLowerCase() === "mvp") return "MVP"; // Por si acaso
+
   return slug
-    .split("-")
+    // 1. Reemplazamos guiones bajos Y medios por espacios
+    .replace(/[_]/g, " ") 
+    .replace(/[-]/g, " ")
+    // 2. Dividimos por espacio
+    .split(" ")
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
 };
