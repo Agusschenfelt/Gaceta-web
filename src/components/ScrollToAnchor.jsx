@@ -21,7 +21,7 @@ export default function ScrollToAnchor() {
       // === CONFIGURACIÓN DE TIEMPOS ===
       // Tu transición de salida dura aprox 1.6s (texto + cortina).
       // Esperamos 1.8s para estar seguros de que el 'overflow: hidden' se quitó.
-      const INITIAL_DELAY = 1800; 
+      const INITIAL_DELAY = 0; 
 
       const attemptScroll = () => {
         const element = document.getElementById(elementId);

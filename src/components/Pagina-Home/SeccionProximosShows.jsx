@@ -66,6 +66,7 @@ useGSAP(() => {
   return (
     <section 
       ref={container} 
+      id="shows"
       // CAMBIO 1: Usamos GRID para superponer capas sin perder la referencia de altura
       className="relative w-full min-h-[100svh] grid grid-cols-1 grid-rows-1 bg-black z-10"
     >
