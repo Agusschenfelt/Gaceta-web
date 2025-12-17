@@ -94,7 +94,7 @@ export default function HypeLock() {
         </div>
 
         {/* TÍTULO */}
-        <h2 className="text-4xl md:text-5xl font-serif italic text-white text-center">
+        <h2 className="text-4xl md:text-5xl font-bold text-white text-center">
           Próximamente
         </h2>
 

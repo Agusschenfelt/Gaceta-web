@@ -4,6 +4,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useMenu } from "./MenuStore";
 import { TRACKS_DATA } from "../../data/tracks";
 
+// HELPER: Genera un índice aleatorio distinto al actual
+const getRandomTrackIndex = (currentIndex, totalTracks) => {
+  if (totalTracks <= 1) return 0;
+  let newIndex;
+  do {
+    newIndex = Math.floor(Math.random() * totalTracks);
+  } while (newIndex === currentIndex);
+  return newIndex;
+};
+
 export default function MusicPlayer() {
   const { open: menuOpen } = useMenu();
   const [isDesktop, setIsDesktop] = useState(false);
@@ -12,11 +22,14 @@ export default function MusicPlayer() {
   
   // Estados del reproductor
   const audioRef = useRef(null);
-  const [trackIndex, setTrackIndex] = useState(0);
+
+  // 1. INICIO ALEATORIO: Inicializamos el estado con un número random
+  const [trackIndex, setTrackIndex] = useState(() => Math.floor(Math.random() * TRACKS_DATA.length));
+  
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
-  const [volume, setVolume] = useState(0.5); // Volumen inicial 50%
+  const [volume, setVolume] = useState(0.5); 
 
   const currentTrack = tracks[trackIndex];
 
@@ -28,26 +41,38 @@ export default function MusicPlayer() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // Control de Play/Pause
+  // Control de Play/Pause y cambio de track
   useEffect(() => {
     if (!audioRef.current) return;
+    
+    // Si cambia el índice y estaba sonando, o si le dimos play
     if (isPlaying) {
-      audioRef.current.play().catch(() => setIsPlaying(false));
+      // Pequeño timeout para asegurar que el src cargó si cambió el track
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+            // Auto-play policy a veces bloquea, manejamos el error silenciosamente
+            setIsPlaying(false);
+        });
+      }
     } else {
       audioRef.current.pause();
     }
-  }, [isPlaying, trackIndex]); // trackIndex aquí reinicia el play al cambiar canción
+  }, [isPlaying, trackIndex]); 
 
   // Manejadores
   const togglePlay = () => setIsPlaying(!isPlaying);
   
+  // 2. SIGUIENTE ALEATORIO
   const handleNext = () => {
-    setTrackIndex((prev) => (prev + 1) % tracks.length);
-    setIsPlaying(true); // Auto-play al cambiar
+    setTrackIndex((prev) => getRandomTrackIndex(prev, tracks.length));
+    setIsPlaying(true); 
   };
 
+  // 3. ANTERIOR ALEATORIO (Opcional: en modo shuffle, "atrás" también suele ser random 
+  // si no guardamos historial. Para mantener el vibe de descubrimiento, lo dejamos random).
   const handlePrev = () => {
-    setTrackIndex((prev) => (prev - 1 + tracks.length) % tracks.length);
+    setTrackIndex((prev) => getRandomTrackIndex(prev, tracks.length));
     setIsPlaying(true);
   };
 
@@ -66,7 +91,7 @@ export default function MusicPlayer() {
     }
   };
 
-  const handleEnded = () => handleNext(); // Auto-next
+  const handleEnded = () => handleNext(); // Auto-next aleatorio al terminar tema
 
   // Formato de tiempo (mm:ss)
   const fmt = (time) => {
@@ -80,14 +105,13 @@ export default function MusicPlayer() {
 
   return (
     <>
-      {/* ELEMENTO DE AUDIO INVISIBLE */}
       <audio
         ref={audioRef}
         src={currentTrack.src}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
         onEnded={handleEnded}
-        volume={volume} // Nota: React audio tag no soporta volume prop directo a veces, se controla mejor con ref
+        volume={volume} 
       />
 
       {/* ---- MINI PLAYER (Flotante) ---- */}
@@ -112,9 +136,7 @@ export default function MusicPlayer() {
 
             <div className="relative flex items-center justify-between p-2 pl-3 h-14">
               
-              {/* Info + Cover */}
               <div className="flex items-center gap-3 overflow-hidden">
-                {/* Disco Giratorio */}
                 <div className={`w-9 h-9 rounded-full border border-white/10 overflow-hidden shrink-0 ${isPlaying ? 'animate-[spin_4s_linear_infinite]' : ''}`}>
                    <img src={currentTrack.cover} alt="Cover" className="w-full h-full object-cover opacity-90" />
                 </div>
@@ -129,7 +151,6 @@ export default function MusicPlayer() {
                 </div>
               </div>
 
-              {/* Controles Compactos */}
               <div className="flex items-center gap-1 pr-2">
                  <button onClick={handlePrev} className="p-2 text-white/50 hover:text-white transition-colors"><SkipBack size={14}/></button>
                  <button onClick={togglePlay} className="p-2 text-white hover:text-[#dee5a0] transition-colors">
@@ -159,25 +180,20 @@ export default function MusicPlayer() {
               rounded-xl shadow-2xl overflow-hidden
             "
           >
-            {/* Ruido de fondo */}
             <div className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay bg-noise" />
 
             <div className="relative p-6 flex flex-col gap-6">
                
-               {/* Cover Art */}
                <div className="w-full aspect-square rounded-lg border border-white/5 overflow-hidden relative group shadow-2xl">
                   <img src={currentTrack.cover} alt="Cover Grande" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-700" />
-                  {/* Brillo vinilo */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/5 pointer-events-none" />
                </div>
 
-               {/* Track Info */}
                <div className="text-center">
                   <h3 className="text-2xl font-serif italic text-white mb-1 truncate">{currentTrack.title}</h3>
                   <p className="text-xs font-mono uppercase tracking-[0.2em] text-[#dee5a0]">{currentTrack.artist}</p>
                </div>
 
-               {/* Scrubber */}
                <div className="w-full">
                   <div className="flex justify-between text-[10px] font-mono text-white/30 mb-2">
                      <span>{fmt(currentTime)}</span>
@@ -197,7 +213,6 @@ export default function MusicPlayer() {
                   />
                </div>
 
-               {/* Controles Grandes */}
                <div className="flex items-center justify-between px-4 pb-2">
                   <button onClick={handlePrev} className="text-white/40 hover:text-white transition-colors hover:scale-110"><SkipBack size={28} /></button>
                   <button 
