@@ -6,7 +6,7 @@ import { useRef, useState, useLayoutEffect } from "react";
 
 // --- CONFIGURACIÓN ---
 const IS_LOCKED_INITIALLY = true; 
-const ACCESS_PASSWORD = "GACETAZO"; 
+const ACCESS_PASSWORD = "showgratis"; 
 
 export default function HypeLock() {
   const containerRef = useRef(null);
@@ -44,7 +44,7 @@ export default function HypeLock() {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    if (password.toUpperCase() === ACCESS_PASSWORD) {
+    if (password === ACCESS_PASSWORD) {
         setSuccess(true);
         setError(false);
         // Quitamos el foco del input inmediatamente para evitar teclados molestos
@@ -98,7 +98,7 @@ export default function HypeLock() {
             <div className="relative w-full max-w-[240px] group">
                 <input
                     ref={inputRef}
-                    type="text" 
+                    type="password" 
                     value={password}
                     onChange={(e) => {
                         setPassword(e.target.value);
