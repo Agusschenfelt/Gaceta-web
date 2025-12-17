@@ -21,20 +21,18 @@ export default function HypeLock() {
   // 1. CONTROL DE SCROLL REFORZADO (Bloquea HTML y BODY)
   useLayoutEffect(() => {
     if (isLocked) {
-      // Bloqueo agresivo para Desktop y Móvil
-      document.documentElement.style.overflow = "hidden"; // Bloquea tag html
-      document.body.style.overflow = "hidden";            // Bloquea tag body
-      document.body.style.height = "100vh";               // Fuerza altura fija
-      document.body.style.touchAction = "none";           // Deshabilita gestos táctiles en móvil
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+      // USAMOS 100dvh PARA MÓVILES (Dynamic Viewport Height)
+      document.body.style.height = "100dvh";               
+      document.body.style.touchAction = "none";           
     } else {
-      // Liberación total
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
       document.body.style.height = "";
       document.body.style.touchAction = "";
     }
 
-    // Limpieza al desmontar el componente
     return () => {
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
@@ -43,14 +41,14 @@ export default function HypeLock() {
     };
   }, [isLocked]);
 
-  // 2. LÓGICA DE VALIDACIÓN
   const handleSubmit = (e) => {
     e.preventDefault();
     
     if (password.toUpperCase() === ACCESS_PASSWORD) {
-        // --- ÉXITO ---
         setSuccess(true);
         setError(false);
+        // Quitamos el foco del input inmediatamente para evitar teclados molestos
+        if(inputRef.current) inputRef.current.blur();
         
         const tl = gsap.timeline({
             onComplete: () => setIsLocked(false)
@@ -60,7 +58,6 @@ export default function HypeLock() {
           .to(containerRef.current, { opacity: 0, backdropFilter: "blur(0px)", duration: 0.8 }, "-=0.1");
 
     } else {
-        // --- ERROR ---
         setError(true);
         gsap.fromTo(formRef.current, 
             { x: -10 }, 
@@ -74,17 +71,13 @@ export default function HypeLock() {
   return (
     <div 
       ref={containerRef}
-      // Agregamos 'overscroll-none' para evitar el efecto de rebote en Mac/iOS
-      className="fixed inset-0 z-[90] flex flex-col items-center justify-center bg-black/60 backdrop-blur-xl select-none overscroll-none touch-none"
+      className="fixed inset-0 z-[90] flex flex-col items-center justify-center bg-black/60 backdrop-blur-xl select-none overscroll-none touch-none h-[100dvh]"
     >
-      {/* VIGNETTE & RUIDO */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)] pointer-events-none" />
       <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
 
-      {/* CONTENIDO */}
       <div className="relative z-10 flex flex-col items-center gap-8 w-full max-w-sm px-6">
         
-        {/* HEADER: BADGE DE ESTADO */}
         <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-md">
             <div className={`w-1.5 h-1.5 rounded-full ${success ? "bg-[#dee5a0] shadow-[0_0_10px_#dee5a0]" : "bg-red-500 animate-pulse"}`} />
             <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/50">
@@ -93,12 +86,10 @@ export default function HypeLock() {
             {success ? <Unlock className="w-3 h-3 text-[#dee5a0]" /> : <Lock className="w-3 h-3 text-white/30" />}
         </div>
 
-        {/* TÍTULO */}
-        <h2 className="text-4xl md:text-5xl font-bold text-white text-center">
+        <h2 className="text-4xl md:text-5xl font-serif italic text-white text-center">
           Próximamente
         </h2>
 
-        {/* INPUT DE CONTRASEÑA */}
         <form 
             ref={formRef} 
             onSubmit={handleSubmit}
@@ -114,8 +105,11 @@ export default function HypeLock() {
                         setError(false);
                     }}
                     placeholder="ENTER PASSWORD"
+                    // IMPORTANTE: autoFocus removido para evitar zoom al cargar
+                    autoFocus={false} 
                     className={`
-                        w-full bg-transparent border-b py-2 text-center font-mono text-[16px] md:text-sm tracking-[0.3em] uppercase outline-none transition-all duration-300
+                        w-full bg-transparent border-b py-2 text-center font-mono tracking-[0.3em] uppercase outline-none transition-all duration-300
+                        text-[16px] md:text-sm 
                         ${error 
                             ? "border-[#911e1e] text-[#911e1e] placeholder-[#911e1e]/50" 
                             : success 
@@ -123,7 +117,6 @@ export default function HypeLock() {
                                 : "border-white/20 text-white focus:border-white/60 placeholder-white/20"
                         }
                     `}
-                    autoFocus
                     autoComplete="off"
                 />
                 
@@ -138,7 +131,6 @@ export default function HypeLock() {
                 </button>
             </div>
 
-            {/* MENSAJE DE FEEDBACK */}
             <div className="h-4 text-[9px] font-mono uppercase tracking-widest text-center">
                 {error && <span className="text-[#911e1e]">Access Denied • Try Again</span>}
                 {success && <span className="text-[#dee5a0]">Welcome to Gaceta</span>}
@@ -146,7 +138,6 @@ export default function HypeLock() {
             </div>
         </form>
 
-        {/* REDES */}
         <div className="flex items-center gap-6 mt-8 opacity-50 hover:opacity-100 transition-opacity duration-500">
             <a href="https://instagram.com/esgaceta" target="_blank" rel="noreferrer">
                 <FaInstagram className="w-5 h-5 text-white hover:text-[#dee5a0] transition-colors" />
@@ -158,7 +149,6 @@ export default function HypeLock() {
 
       </div>
 
-      {/* FOOTER TÉCNICO */}
       <div className="absolute bottom-12 flex flex-col items-center gap-1 opacity-30">
         <div className="w-px h-8 bg-gradient-to-b from-transparent via-white to-transparent" />
         <span className="text-[9px] font-mono uppercase tracking-[0.3em] text-white">
