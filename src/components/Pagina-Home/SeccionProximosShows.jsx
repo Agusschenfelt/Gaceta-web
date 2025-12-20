@@ -32,78 +32,52 @@ export default function SeccionProximosShows() {
         city: show.city,
         status: show.soldOut ? "sold out" : (isMystery ? "soon" : "tickets"), 
         isMystery: isMystery,
+        // CAMBIO 1: Pasamos el link de la data al componente procesado
+        ticketLink: show.ticketLink || "#", 
       };
     });
   }, []);
 
-  // SeccionProximosShows.jsx
-
-useGSAP(() => {
-  const rows = gsap.utils.toArray(".show-row");
-  
-  rows.forEach((row, i) => {
-    gsap.fromTo(row,
-      { y: 30, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.3,
-        delay: i * 0.01,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: row,
-          start: "top 95%",
-          // CAMBIO AQUÍ: "play none none reverse" -> "play none none none"
-          // "reverse" hacía que si subías un poco y la barra movía el trigger, 
-          // la fila se ocultaba (opacity 0). Al poner "none", se queda visible.
-          toggleActions: "play none none none" 
+  useGSAP(() => {
+    const rows = gsap.utils.toArray(".show-row");
+    rows.forEach((row, i) => {
+      gsap.fromTo(row,
+        { y: 30, opacity: 0 },
+        {
+          y: 0, opacity: 1, duration: 0.3, delay: i * 0.01, ease: "power2.out",
+          scrollTrigger: {
+            trigger: row, start: "top 95%", toggleActions: "play none none none" 
+          }
         }
-      }
-    );
-  });
-}, { scope: container });
+      );
+    });
+  }, { scope: container });
 
   return (
     <section 
       ref={container} 
       id="shows"
-      // CAMBIO 1: Usamos GRID para superponer capas sin perder la referencia de altura
       className="relative w-full min-h-[100svh] grid grid-cols-1 grid-rows-1 bg-black z-10"
     >
-      
-      {/* === CAPA 1: FONDO (VIDEO STICKY) === */}
-      {/* Ocupa la misma celda que el contenido, por lo que hereda la altura TOTAL de la lista */}
+      {/* CAPA 1: FONDO (Sin cambios) */}
       <div className="col-start-1 row-start-1 w-full h-full pointer-events-none z-0">
         <div className="sticky top-0 w-full h-[100svh] overflow-hidden">
-            <video 
-                src="/assets/video-shows.mp4" 
-                autoPlay muted loop playsInline 
-                className="w-full h-full object-cover opacity-60" 
-            />
-            {/* Overlay para legibilidad */}
+            <video src="/assets/video-shows.mp4" autoPlay muted loop playsInline className="w-full h-full object-cover opacity-60" />
             <div className="absolute inset-0 bg-black/50" />
-            
-            {/* Gradientes decorativos (arriba y abajo) para suavizar la entrada/salida */}
             <div className="absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-[#0a0a0a] to-transparent" />
             <div className="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
         </div>
       </div>
 
-      {/* === CAPA 2: CONTENIDO (SCROLLABLE) === */}
-      {/* z-10 para estar encima del video. Padding y diseño original. */}
+      {/* CAPA 2: CONTENIDO */}
       <div className="col-start-1 row-start-1 w-full h-full z-10 flex flex-col items-center py-32 px-4 md:px-10">
-        
         <div className="w-full max-w-[1200px] mx-auto">
-            {/* HEADER */}
+            {/* HEADER (Sin cambios) */}
             <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 border-b border-white/20 pb-6">
-            <div>
-                <span className="block text-xs font-mono text-[#dee5a0] tracking-widest mb-2 uppercase text-left">
-                  Calendario 2025
-                </span>
-                <h2 className="text-5xl md:text-8xl font-serif italic leading-none text-white text-left">
-                  Shows
-                </h2>
-            </div>
+                <div>
+                    <span className="block text-xs font-mono text-[#dee5a0] tracking-widest mb-2 uppercase text-left">Calendario 2025/2026</span>
+                    <h2 className="text-5xl md:text-8xl font-serif italic leading-none text-white text-left">Shows</h2>
+                </div>
             </div>
 
             {/* LISTA DE SHOWS */}
@@ -119,24 +93,16 @@ useGSAP(() => {
                 `}
                 >
                 
-                {/* FECHA */}
+                {/* FECHA & ARTISTA (Sin cambios) */}
                 <div className="w-full md:w-1/4 flex items-baseline gap-2 mb-2 md:mb-0">
                     <span className={`text-5xl font-light tracking-tighter transition-colors ${show.isMystery ? "text-white/30" : "text-white group-hover:text-[#dee5a0]"}`}>
                     {show.day}
                     </span>
-                    <span className="text-2xl font-mono text-white/40 uppercase">
-                    /{show.month}
-                    </span>
+                    <span className="text-2xl font-mono text-white/40 uppercase">/{show.month}</span>
                 </div>
 
-                {/* ARTISTA & INFO */}
                 <div className="w-full md:w-2/4 flex flex-col">
-                    <h3 className={`text-3xl font-bold text-white uppercase tracking-wider leading-none transition-all duration-500
-                        ${show.isMystery 
-                            ? "blur-sm opacity-50 group-hover:blur-[2px] group-hover:opacity-80" 
-                            : "group-hover:translate-x-2"
-                        }
-                    `}>
+                    <h3 className={`text-3xl font-bold text-white uppercase tracking-wider leading-none transition-all duration-500 ${show.isMystery ? "blur-sm opacity-50 group-hover:blur-[2px] group-hover:opacity-80" : "group-hover:translate-x-2"}`}>
                     {show.artist}
                     </h3>
                     <p className={`text-sm text-white/50 mt-1 flex items-center gap-2 ${show.isMystery ? "blur-[2px]" : ""}`}>
@@ -145,27 +111,32 @@ useGSAP(() => {
                     </p>
                 </div>
 
-                {/* BOTON / STATUS */}
+                {/* BOTON / STATUS - CAMBIO AQUÍ */}
                 <div className="w-full md:w-1/4 flex justify-end items-center mt-4 md:mt-0">
                     {show.status === "sold out" ? (
-                    <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-red-500 uppercase border border-red-500/30 px-3 py-1 rounded-full bg-red-500/10">
-                        Sold Out
-                    </span>
+                        <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-red-500 uppercase border border-red-500/30 px-3 py-1 rounded-full bg-red-500/10">
+                            Sold Out
+                        </span>
                     ) : show.status === "soon" ? (
-                    <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-white/40 uppercase border border-white/10 px-3 py-1 rounded-full group-hover:text-white/70 group-hover:border-white/30 transition-colors">
-                        Coming Soon
-                    </span>
+                        <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-white/40 uppercase border border-white/10 px-3 py-1 rounded-full group-hover:text-white/70 group-hover:border-white/30 transition-colors">
+                            Coming Soon
+                        </span>
                     ) : (
-                    <button className="flex items-center gap-2 px-4 py-2 bg-white text-black text-xs font-bold font-mono uppercase tracking-wider hover:bg-[#dee5a0] transition-colors">
-                        Tickets <ArrowUpRight size={14} />
-                    </button>
+                        /* CAMBIO 2: Cambiamos <button> por <a> manteniendo las clases IDÉNTICAS */
+                        <a 
+                            href={show.ticketLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 px-6 py-3 bg-white text-black text-xs font-bold font-mono uppercase tracking-wider hover:bg-[#dee5a0] transition-colors cursor-pointer"
+                        >
+                            Tickets <ArrowUpRight size={14} />
+                        </a>
                     )}
                 </div>
                 </div>
             ))}
             </div>
         </div>
-
       </div>
     </section>
   );

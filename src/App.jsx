@@ -58,8 +58,6 @@ export default function App() {
         <ScrollToTopOnRouteChange />
         <ResetBgOnRoute />
         <ScrollToAnchor />
-
-        <EventPopup />
         
         <Suspense fallback={<LoadingScreen />}>
           <Routes>

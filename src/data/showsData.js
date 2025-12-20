@@ -126,12 +126,13 @@ export const showsData = [
       soldOut: true,
     },
     {
-      id: "??-ara",
+      id: "2026-03-20-bue-uniclub",
       artist: "ARA",
-      date: null,
+      date: "2026-03-20",
       city: "Buenos Aires",
       country: "Argentina",
-      venue: "???",
+      venue: "Uniclub",
       soldOut: false,
+      ticketLink: "https://alpogo.com/evento/ara-en-uniclub-23988",
     },
   ];
