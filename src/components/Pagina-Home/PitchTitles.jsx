@@ -186,18 +186,18 @@ export default function PitchTitles() {
       ref={rootRef}
       className="relative flex flex-col items-center gap-[30vh] md:gap-[40vh] py-24 md:py-10"
     >
-      <h3 className="pitch-title font-medium tracking-tight text-white titulo font-inter text-[clamp(2rem,4.5vw,3.5rem)] max-w-4xl text-center leading-[1.1]">
+      <h3 className="pitch-title font-medium tracking-tight text-white font-inter text-[clamp(2.5rem,6vw,7rem)] max-w-4xl text-center leading-[1.1]">
         Hecho por y para <br />
         <span className="cursiva text-[#dee5a0]">artistas</span>
       </h3>
 
-      <h3 className="pitch-title font-medium tracking-tight text-white titulo font-inter text-[clamp(2rem,4.5vw,3.5rem)] max-w-4xl text-center leading-[1.1]">
+      <h3 className="pitch-title font-medium tracking-tight text-white font-inter text-[clamp(2.5rem,6vw,7rem)] max-w-4xl text-center leading-[1.1]">
         Fundado en 2021 <br />
         en el <span className="cursiva text-[#dee5a0]">Río de la Plata</span> <br />
         con una visión
       </h3>
 
-      <h3 className="pitch-title font-medium tracking-tight text-white titulo font-inter text-[clamp(2rem,4.5vw,3.5rem)] max-w-4xl text-center leading-[1.1]">
+      <h3 className="pitch-title font-medium tracking-tight text-white font-inter text-[clamp(2.5rem,6vw,7rem)] max-w-4xl text-center leading-[1.1]">
         Desarrollar y dar a conocer <span className="cursiva text-[#dee5a0]">talentos</span>
       </h3>
     </div>

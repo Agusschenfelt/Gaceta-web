@@ -18,9 +18,7 @@ export default function IntroToLogo() {
   const pitchRef = useRef(null);
   const artistasRef = useRef(null);
   const connectorLineRef = useRef(null);
-  const navLogoEl = document.querySelector("[data-logo]");
 
-  if(navLogoEl) gsap.set(navLogoEl, { autoAlpha: 0 });
 
   useEffect(() => {
     // Asegurar que el aftermovie esté listo y silenciado
@@ -34,7 +32,6 @@ export default function IntroToLogo() {
       // 1. ESTADO INICIAL
       if(navLogoEl) gsap.set(navLogoEl, { autoAlpha: 0 }); // Navbar oculto
       
-      gsap.set(videoWrapRef.current, { autoAlpha: 0 }); 
       gsap.set(overlayRef.current, { opacity: 0.3 }); 
       gsap.set(logoRef.current, { opacity: 1, scale: 1, filter: "blur(0px)" });
 
@@ -44,36 +41,50 @@ export default function IntroToLogo() {
           trigger: introRef.current,
           start: "top top",
           end: "bottom 70%",
-          scrub: true, // La animación está atada al scroll
+          scrub: 0.5, // Leve delay para suavizar el "stuck"
+          fastScrollEnd: true, // CRITICO: Forza al final si scrollean rápido
           pin: true,
           anticipatePin: 1,
         },
       });
 
       tlIntro
-        .to(scrollIndRef.current, { opacity: 0, duration: 0.1 }, 0)
-        
-        // A) El Logo Central explota (Video)
-        .to(logoRef.current, { 
-            scale: 50, 
-            opacity: 0, 
-            filter: "blur(20px)", 
-            duration: 1, 
-            ease: "power2.in" 
-        }, 0)
-        
-        // B) Aparece el fondo (Aftermovie)
-        .to(videoWrapRef.current, { autoAlpha: 1, duration: 0.5 }, 0.4)
-        
-        // C) APARECE EL LOGO DEL NAVBAR (Sincronizado)
-        // Empieza en 0.8 (cuando el logo central ya casi desapareció)
-        .to(navLogoEl, { 
-            autoAlpha: 1, 
-            duration: 0.2, 
-            ease: "power2.out" 
-        }, 0.8)
+        .add(() => {}, 0); // Start anchor
 
-        .call(() => video?.play().catch(() => {}), null, 0.5);
+      if (scrollIndRef.current) {
+         tlIntro.to(scrollIndRef.current, { opacity: 0, duration: 0.1 }, 0);
+      }
+        
+        // A) LOGO EXPLODE + BLUR (Cinematic Fly-Through)
+      if (logoRef.current) {
+        tlIntro.to(logoRef.current, { 
+            scale: 50, // Much larger scale to ensure it covers screen before vanishing
+            opacity: 0, 
+            filter: "blur(40px)", // Heavier blur at end
+            duration: 2.0, // Slower duration for drama
+            ease: "expo.in", // Accelerates into the camera
+        }, 0);
+      }
+        
+        // B) VIDEO REVEAL (CLIP PATH)
+      if (videoWrapRef.current) {
+        tlIntro.fromTo(videoWrapRef.current, 
+            { autoAlpha: 1, clipPath: "inset(40% 20% 40% 20% round 20px)", scale: 0.9 },
+            { clipPath: "inset(0% 0% 0% 0% round 0px)", scale: 1, duration: 1.5, ease: "power2.inOut" },
+            0.2 // Small overlap
+        );
+      }
+        
+        // C) NAVBAR LOGO
+        if (navLogoEl) {
+           tlIntro.to(navLogoEl, { 
+              autoAlpha: 1, 
+              duration: 0.5, 
+              ease: "power2.out" 
+           }, 1.2);
+        }
+
+        tlIntro.call(() => video?.play().catch(() => {}), null, 0.5);
 
 
       // 3. Otros efectos (Fade texto, conector, etc) - SE MANTIENEN IGUAL
@@ -82,8 +93,8 @@ export default function IntroToLogo() {
         ease: "power1.inOut",
         scrollTrigger: {
             trigger: pitchRef.current,
-            start: "top 40%", 
-            end: "bottom 80%",   
+            start: "top 20%", 
+            end: "bottom 20%",   
             scrub: true,
         }
       });
@@ -128,7 +139,7 @@ export default function IntroToLogo() {
     <div ref={wrapRef} className="relative isolate bg-black">
       
       {/* === SECCIÓN 1: INTRO (LOGO ANIMADO) === */}
-      <section ref={introRef} className="relative h-[100svh] w-full overflow-hidden z-20 flex items-center justify-center">
+      <section ref={introRef} className="relative h-full-screen w-full overflow-hidden z-20 flex items-center justify-center">
         
         {/* VIDEO LOGO (Reemplaza a la imagen) */}
         <div ref={logoRef} className="relative z-10 w-[40vw] max-w-[500px] min-w-[250px] aspect-video flex items-center justify-center will-change-transform">

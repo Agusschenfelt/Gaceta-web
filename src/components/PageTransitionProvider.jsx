@@ -53,6 +53,7 @@ export default function PageTransitionProvider({ children }) {
   const navType = useNavigationType();
   
   const curtainRef = useRef(null);
+  const goldRef = useRef(null);
   const textRef = useRef(null);
   const loaderRef = useRef(null);
   
@@ -84,11 +85,7 @@ export default function PageTransitionProvider({ children }) {
     setIsArtistStyle(!isSystem);
   };
 
-  // === FIX SCROLL 2: Reset forzado al cambiar de ruta ===
-  useLayoutEffect(() => {
-      // Forzamos scroll arriba cada vez que cambia la ruta
-      window.scrollTo(0, 0);
-  }, [location.pathname]);
+
 
   // 1. BACK / SWIPE (POP)
   useLayoutEffect(() => {
@@ -133,18 +130,21 @@ export default function PageTransitionProvider({ children }) {
     const tl = gsap.timeline({
       onComplete: () => {
         navigate(to);
-        // === FIX SCROLL 3: Forzar scroll arriba ANTES de quitar la cortina ===
         window.scrollTo(0, 0); 
         animateOutPush();
       }
     });
 
-    tl.set(curtainRef.current, { yPercent: 100, display: "flex" })
-      .set(textRef.current, { yPercent: 100 })
-      .set(loaderRef.current, { opacity: 0 })
-      .to(curtainRef.current, { yPercent: 0, duration: 0.7, ease: "expo.out" })
-      .to(textRef.current, { yPercent: 0, duration: 0.8, ease: "power4.out" }, "-=0.3")
-      .to(loaderRef.current, { opacity: 1, duration: 0.3 }, "<");
+    // START STATE
+    gsap.set(curtainRef.current, { yPercent: 100, display: "flex" });
+    gsap.set(goldRef.current, { yPercent: 100, display: "block" });
+    gsap.set(textRef.current, { opacity: 0, scale: 0.8 });
+    
+    // SEQUENCE
+    tl.to(goldRef.current, { yPercent: 0, duration: 0.8, ease: "expo.out" }) // Gold shoots up
+      .to(curtainRef.current, { yPercent: 0, duration: 0.8, ease: "expo.out" }, "-=0.6") // Black follows
+      .to(textRef.current, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }, "-=0.2") // Logo Pulse
+      .to({}, { duration: 0.3 }); // Hold
   };
 
   const animateOutPush = () => {
@@ -153,11 +153,13 @@ export default function PageTransitionProvider({ children }) {
         setIsAnimating(false);
         toggleBodyScroll(false);
         gsap.set(curtainRef.current, { display: "none" });
+        gsap.set(goldRef.current, { display: "none" });
       }
     });
 
-    tl.to(textRef.current, { yPercent: -100, duration: 0.6, ease: "power2.in", delay: 0.1 })
-      .to(curtainRef.current, { yPercent: -100, duration: 1.0, ease: "expo.inOut" }, "-=0.3");
+    // EXIT SEQUENCE
+    tl.to(curtainRef.current, { yPercent: -100, duration: 1.0, ease: "expo.inOut" })
+      .to(goldRef.current, { yPercent: -100, duration: 0.8, ease: "expo.inOut" }, "-=0.8");
   };
 
   // 3. BACK MANUAL
@@ -175,10 +177,14 @@ export default function PageTransitionProvider({ children }) {
         } 
     });
 
-    tl.set(curtainRef.current, { yPercent: -100, display: "flex" })
-      .set(textRef.current, { yPercent: -100 }) 
-      .to(curtainRef.current, { yPercent: 0, duration: 0.7, ease: "expo.out" })
-      .to(textRef.current, { yPercent: 0, duration: 0.8, ease: "power4.out" }, "-=0.3");
+    // Similar reverse logic or same wipe? Let's use same wipe for consistency but maybe faster
+    gsap.set(curtainRef.current, { yPercent: 100, display: "flex" });
+    gsap.set(goldRef.current, { yPercent: 100, display: "block" });
+    
+     tl.to(goldRef.current, { yPercent: 0, duration: 0.7, ease: "expo.out" })
+       .to(curtainRef.current, { yPercent: 0, duration: 0.7, ease: "expo.out" }, "-=0.5")
+       .to(curtainRef.current, { yPercent: -100, duration: 0.8, ease: "expo.inOut", delay: 0.2 })
+       .to(goldRef.current, { yPercent: -100, duration: 0.8, ease: "expo.inOut" }, "-=0.7");
   };
 
   useEffect(() => {
@@ -189,34 +195,30 @@ export default function PageTransitionProvider({ children }) {
     <PageTransitionContext.Provider value={{ navigateWithTransition, goBack, isAnimating }}>
       {children}
       
+      {/* GOLD STRIP LAYER */}
+      <div 
+        ref={goldRef}
+        className="fixed inset-0 z-[10000] bg-[#dee5a0] hidden pointer-events-none"
+      />
+
+      {/* BLACK CURTAIN LAYER */}
       <div 
         ref={curtainRef}
-        className="fixed inset-0 z-[9999] bg-[#0a0a0a] hidden flex-col items-center justify-center pointer-events-none"
+        className="fixed inset-0 z-[10001] bg-[#0a0a0a] hidden flex-col items-center justify-center pointer-events-none"
       >
-        <div className="relative overflow-hidden px-4 py-2 text-center w-full flex justify-center">
-            
+        {/* NOISE TEXTURE */}
+        <div className="absolute inset-0 opacity-[0.08] pointer-events-none bg-[url('data:image/svg+xml;base64,...')]" 
+             style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")` }} 
+        />
+
+        <div className="relative overflow-hidden px-4 py-2 text-center w-full flex justify-center z-10">
             <h2 
                 ref={textRef}
-                className={`
-                    will-change-transform text-center leading-none
-                    ${isArtistStyle 
-                        ? "font-sans font-bold text-white tracking-tighter text-[15vw] md:text-[13rem]" 
-                        : "font-serif italic text-[#dee5a0] mix-blend-screen tracking-tight text-[15vw] md:text-[10vw]"
-                    }
-                `}
+                className="font-serif italic text-white text-[15vw] md:text-[8vw] tracking-tighter mix-blend-difference"
             >
-                {transitionText}
+                GACETA
             </h2>
-
         </div>
-
-        <div ref={loaderRef} className="absolute bottom-10 right-10 flex items-center gap-3 opacity-0">
-             <div className={`w-2 h-2 animate-pulse rounded-full ${isArtistStyle ? 'bg-white' : 'bg-[#dee5a0]'}`} />
-             <span className={`font-mono text-xs uppercase tracking-widest ${isArtistStyle ? 'text-white/50' : 'text-[#dee5a0]/50'}`}>
-                {isArtistStyle ? 'Loading Artist' : 'Loading System'}
-             </span>
-        </div>
-
       </div>
     </PageTransitionContext.Provider>
   );

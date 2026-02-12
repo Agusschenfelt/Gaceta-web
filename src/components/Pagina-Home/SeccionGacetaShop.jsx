@@ -1,5 +1,5 @@
 // SeccionGacetaShop.jsx — Ajuste: Sold Out Premium (No triste)
-import { useRef } from "react";
+import React, { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -10,25 +10,25 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 const products = [
   {
     id: "1",
-    title: "CON EL UNIFORME PUESTO Official cap",
-    price: 23000,
-    image: "/assets/merch1.webp",
-    href: "https://gaceta.shop/productos/con-el-uniforme-puesto-official-cap/",
+    title: "Black Gaceta Tee",
+    price: 20000,
+    image: "/assets/gaceta-negra.jpeg",
+    href: "https://gaceta.shop/productos/black-gaceta-tee/",
     soldOut: false,
   },
   {
     id: "2",
     title: "White RV Oversize Tee",
-    price: 39000,
-    image: "/assets/merch2.webp",
+    price: 29999,
+    image: "/assets/rv-tee.jpeg",
     href: "https://gaceta.shop/productos/white-rv-oversize-tee/",
     soldOut: false,
   },
   {
     id: "3",
-    title: "White Backstage Cover Tee",
-    price: 32000,
-    image: "/assets/merch3.webp",
+    title: "Black Backstage Cover Tee",
+    price: 29999,
+    image: "/assets/bc-negra.jpeg",
     href: "https://gaceta.shop/productos/white-backstagecover-tee/",
     soldOut: false,
   },
@@ -41,7 +41,7 @@ const currency = (n) =>
     maximumFractionDigits: 0,
   });
 
-function ProductCard({ p }) {
+const ProductCard = React.memo(function ProductCard({ p }) {
   return (
     <a
       href={p.soldOut ? null : p.href}
@@ -64,6 +64,8 @@ function ProductCard({ p }) {
             <img
               src={p.image}
               alt={p.title}
+              width="400"
+              height="500"
               loading="lazy"
               // Mantenemos el zoom suave en hover incluso si está sold out, para que se sienta premium
               className="h-full w-full object-cover transition-transform duration-1000 opacity-100 scale-100 group-hover:scale-105"
@@ -113,7 +115,7 @@ function ProductCard({ p }) {
       </div>
     </a>
   );
-}
+});
 
 export default function SeccionGacetaShop() {
   const sectionRef = useRef(null);

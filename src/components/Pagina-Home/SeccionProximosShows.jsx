@@ -12,7 +12,14 @@ export default function SeccionProximosShows() {
 
   // === TRANSFORMACIÓN DE DATOS ===
   const processedShows = useMemo(() => {
-    return showsData.map((show) => {
+    const sortedShows = [...showsData].sort((a, b) => {
+      if (!a.date && b.date) return -1;
+      if (a.date && !b.date) return 1;
+      if (!a.date && !b.date) return 0;
+      return b.date.localeCompare(a.date);
+    });
+
+    return sortedShows.map((show) => {
       const isMystery = !show.date;
       let day = "??";
       let month = "SOON";

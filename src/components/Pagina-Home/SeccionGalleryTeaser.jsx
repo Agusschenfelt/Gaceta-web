@@ -77,15 +77,15 @@ export default function SeccionGalleryTeaser({
       {/* Cartas */}
       <div className="relative w-full max-w-5xl h-[550px] flex items-center justify-center z-20 perspective-[1000px] mb-10">
           <div ref={el => cardsRef.current[0] = el} className="absolute w-[260px] md:w-[320px] aspect-[3/4] rounded-xl shadow-2xl border-[8px] border-white/90 overflow-hidden origin-bottom-right bg-black">
-              <img src={displayImages[0]} alt="" className="w-full h-full object-cover" />
+              <img src={displayImages[0]} alt="" width="300" height="400" loading="lazy" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-black/10" />
           </div>
           <div ref={el => cardsRef.current[2] = el} className="absolute w-[260px] md:w-[320px] aspect-[3/4] rounded-xl shadow-2xl border-[8px] border-white/90 overflow-hidden origin-bottom-left bg-black">
-              <img src={displayImages[2]} alt="" className="w-full h-full object-cover" />
+              <img src={displayImages[2]} alt="" width="300" height="400" loading="lazy" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-black/10" />
           </div>
           <div ref={el => cardsRef.current[1] = el} className="absolute w-[280px] md:w-[340px] aspect-[3/4] rounded-xl shadow-[0_30px_80px_rgba(0,0,0,0.4)] border-[8px] border-white overflow-hidden z-20 bg-black">
-              <img src={displayImages[1]} alt="" className="w-full h-full object-cover" />
+              <img src={displayImages[1]} alt="" width="300" height="400" loading="lazy" className="w-full h-full object-cover" />
           </div>
       </div>
 

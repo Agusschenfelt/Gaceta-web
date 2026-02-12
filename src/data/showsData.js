@@ -126,6 +126,15 @@ export const showsData = [
       soldOut: true,
     },
     {
+      id: "2026-01-24-bue-corrientes",
+      artist: "RAMMA",
+      date: "2026-01-24",
+      city: "Buenos Aires",
+      country: "Argentina",
+      venue: "Avenida Corrientes",
+      soldOut: true,
+    },
+    {
       id: "2026-03-20-bue-uniclub",
       artist: "ARA",
       date: "2026-03-20",

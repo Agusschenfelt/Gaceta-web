@@ -45,6 +45,8 @@ export default function ArtistCardHover({ artist }) {
         src={artist.foto}
         alt={artist.nombre}
         className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter grayscale group-hover:grayscale-0 opacity-90 group-hover:opacity-100"
+        width="300"
+        height="400"
         loading="lazy"
         decoding="async"
       />

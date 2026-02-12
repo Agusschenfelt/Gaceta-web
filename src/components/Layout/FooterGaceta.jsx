@@ -44,25 +44,24 @@ export default function FooterGaceta() {
     // Animación de las letras gigantes
     gsap.fromTo(".footer-letter", 
       { 
-        y: 200,      // Empiezan muy abajo (escondidas)
+        y: 150,      // Menos desplazamiento
         opacity: 0,  
-        rotate: 15,  // Un poco rotadas para dar sensación de movimiento orgánico
-        scale: 0.8   
+        rotate: 5,   // Rotación muy sutil, más elegante
+        scale: 0.9,
+        filter: "blur(10px)" // Efecto de desenfoque inicial
       },
       {
         y: 0,
         opacity: 1,
         rotate: 0,
         scale: 1,
-        duration: 1.2,
-        stagger: 0.05, // Efecto de ola (una por una)
-        ease: "back.out(1.7)", // EL SECRETO: Este 'ease' hace que reboten al final (divertido)
+        filter: "blur(0px)",
+        duration: 1.6,
+        stagger: 0.08, // Más lento entre letras
+        ease: "power3.out", // Más suave, menos rebote
         scrollTrigger: {
           trigger: rootRef.current,
-          start: "top 75%", // Empieza cuando el footer asoma el 25%
-          // "play none none reset" -> Significa: 
-          // Al entrar: PLAY. 
-          // Al salir por arriba: RESET (para que se anime de nuevo al bajar).
+          start: "top 70%", 
           toggleActions: "play none none reset" 
         }
       }

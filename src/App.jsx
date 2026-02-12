@@ -15,8 +15,7 @@ import MusicPlayer from "./components/Layout/MusicPlayer";
 import ResetBgOnRoute from "./components/ResetBgOnRoute";
 import PageTransitionProvider from "./components/PageTransitionProvider";
 import ScrollToAnchor from "./components/ScrollToAnchor";
-import EventPopup from "./components/EventPopup";
-import HypeLock from "./components/HypeLock";
+import SmoothScroll from "./components/SmoothScroll";
 // Páginas (Lazy)
 const HomePage = lazy(() => import("./pages/HomePage"));
 const ArtistPage = lazy(() => import("./pages/ArtistPage"));
@@ -47,6 +46,8 @@ ScrollTrigger.config({
   ignoreMobileResize: true 
 });
 
+
+
 export default function App() {
   return (
     <MenuProvider>
@@ -54,7 +55,7 @@ export default function App() {
       <SpeedInsights />
       {/* 1. EL PROVIDER DEBE ENVOLVER TODO EL CONTENIDO NAVEGABLE */}
       <PageTransitionProvider> 
-        
+        <SmoothScroll>
         <ScrollToTopOnRouteChange />
         <ResetBgOnRoute />
         <ScrollToAnchor />
@@ -75,6 +76,7 @@ export default function App() {
         {/* El MusicPlayer puede ir dentro o fuera, pero dentro es mejor 
             si alguna vez quieres que la transición interactúe con él. */}
         <MusicPlayer />
+        </SmoothScroll>
 
       </PageTransitionProvider> 
     </MenuProvider>
