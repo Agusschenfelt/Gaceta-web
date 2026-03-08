@@ -19,15 +19,15 @@ export default function SmoothScroll({ children }) {
     // Conectar Lenis con ScrollTrigger
     lenis.on("scroll", ScrollTrigger.update);
 
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
+    // Guardar referencia para poder removerla en cleanup
+    const lenisRaf = (time) => lenis.raf(time * 1000);
+    gsap.ticker.add(lenisRaf);
 
     gsap.ticker.lagSmoothing(0);
 
     return () => {
       lenis.destroy();
-      gsap.ticker.remove(lenis.raf);
+      gsap.ticker.remove(lenisRaf);
     };
   }, []);
 

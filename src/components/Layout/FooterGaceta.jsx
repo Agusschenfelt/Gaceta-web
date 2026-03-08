@@ -6,8 +6,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const FOOTER_LINKS = [
   { label: "Sobre Nosotros", href: "/sobre-nosotros" },
   { label: "Artistas", href: "/artistas" },

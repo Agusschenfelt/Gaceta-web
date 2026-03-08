@@ -3,8 +3,6 @@ import { useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 
-gsap.registerPlugin(ScrollToPlugin);
-
 export default function ScrollToAnchor() {
   const location = useLocation();
   const lastHash = useRef('');

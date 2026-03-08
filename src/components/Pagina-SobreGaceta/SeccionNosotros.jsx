@@ -4,7 +4,6 @@ import { SplitText } from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(SplitText, useGSAP, ScrollTrigger);
 
 export default function SeccionNosotros() {
   const container = useRef();

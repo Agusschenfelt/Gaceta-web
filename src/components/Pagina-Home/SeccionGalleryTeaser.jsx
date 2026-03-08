@@ -3,8 +3,6 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import TransitionLink from "../TransitionLink";
 
-gsap.registerPlugin(ScrollTrigger);
-
 export default function SeccionGalleryTeaser({
   images = [],
   title = "GALLERY",

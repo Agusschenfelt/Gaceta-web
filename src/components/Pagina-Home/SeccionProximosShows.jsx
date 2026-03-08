@@ -1,22 +1,33 @@
-import React, { useRef, useMemo } from "react";
+import React, { useRef, useMemo, useState, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight } from "lucide-react";
 import { showsData } from "../../data/showsData"; 
 
-gsap.registerPlugin(ScrollTrigger);
-
 export default function SeccionProximosShows() {
   const container = useRef(null);
+  const videoRef = useRef(null);
+  const [videoSrc, setVideoSrc] = useState(null);
+
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVideoSrc("/assets/video-shows.mp4"); observer.disconnect(); } },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // === TRANSFORMACIÓN DE DATOS ===
   const processedShows = useMemo(() => {
     const sortedShows = [...showsData].sort((a, b) => {
-      if (!a.date && b.date) return -1;
-      if (a.date && !b.date) return 1;
+      if (!a.date && b.date) return 1;   // mystery/TBA va al final
+      if (a.date && !b.date) return -1;  // fechas concretas primero
       if (!a.date && !b.date) return 0;
-      return b.date.localeCompare(a.date);
+      return a.date.localeCompare(b.date); // ascendente = más próximo primero
     });
 
     return sortedShows.map((show) => {
@@ -53,7 +64,7 @@ export default function SeccionProximosShows() {
         {
           y: 0, opacity: 1, duration: 0.3, delay: i * 0.01, ease: "power2.out",
           scrollTrigger: {
-            trigger: row, start: "top 95%", toggleActions: "play none none none" 
+            trigger: row, start: "top 95%", once: true,
           }
         }
       );
@@ -68,8 +79,8 @@ export default function SeccionProximosShows() {
     >
       {/* CAPA 1: FONDO (Sin cambios) */}
       <div className="col-start-1 row-start-1 w-full h-full pointer-events-none z-0">
-        <div className="sticky top-0 w-full h-[100svh] overflow-hidden">
-            <video src="/assets/video-shows.mp4" autoPlay muted loop playsInline className="w-full h-full object-cover opacity-60" />
+        <div ref={videoRef} className="sticky top-0 w-full h-[100svh] overflow-hidden">
+            <video src={videoSrc || undefined} autoPlay muted loop playsInline className="w-full h-full object-cover opacity-60" />
             <div className="absolute inset-0 bg-black/50" />
             <div className="absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-[#0a0a0a] to-transparent" />
             <div className="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-[#0a0a0a] to-transparent" />

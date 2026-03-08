@@ -1,10 +1,8 @@
 // HomePage.jsx
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-gsap.registerPlugin(ScrollTrigger);
 import SEO from "../SEO.jsx";
 
 import { useEffect, lazy, Suspense } from "react";
+import gsap from "gsap";
 
 // Lazy Load heavy sections
 const SeccionGacetaShop = lazy(() => import("../components/Pagina-Home/SeccionGacetaShop"));

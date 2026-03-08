@@ -3,8 +3,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GACETA_TIMELINE } from "./data";
 
-gsap.registerPlugin(ScrollTrigger);
-
 function fmt(iso) {
   if (!iso) return "";
   const [y, m, d] = iso.split("-");

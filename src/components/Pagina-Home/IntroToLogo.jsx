@@ -5,8 +5,6 @@ import PitchTitles from "./PitchTitles";
 import SeccionArtistas from "./SeccionArtistas"; // Ajusta rutas si es necesario
 import { ARTISTS_DATA } from "../../data/artistsData"; // Ajusta rutas si es necesario
 
-gsap.registerPlugin(ScrollTrigger);
-
 export default function IntroToLogo() {
   const wrapRef = useRef(null);
   const introRef = useRef(null);
@@ -163,7 +161,7 @@ export default function IntroToLogo() {
       {/* === BACKGROUND FIX (AFTERMOVIE) === */}
       {/* Este video aparece detrás cuando el logo explota */}
       <div ref={videoWrapRef} className="fixed inset-0 z-0 pointer-events-none">
-        <video ref={videoRef} src="/assets/aftermovie.mp4" className="w-full h-full object-cover" playsInline muted preload="auto" loop />
+        <video ref={videoRef} src="/assets/aftermovie.mp4" className="w-full h-full object-cover" playsInline muted preload="metadata" loop />
         <div ref={overlayRef} className="absolute inset-0 bg-black" />
       </div>
 

@@ -4,8 +4,6 @@ import { useLocation } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const HOME_BG = "#0e0e10"; // mismo que en :root --pageBg
 
 export default function ResetBgOnRoute() {

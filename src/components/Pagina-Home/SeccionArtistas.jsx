@@ -7,7 +7,6 @@ import ArtistCardHover from './ArtistCardHover';
 import TransitionLink from '../TransitionLink';
 import { ArrowUpRight } from 'lucide-react';
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 // Nombres exactos de los Headliners (debe coincidir con tu data)
 const HEADLINERS = ["ARA", "RAMMA", "VALUTO"];
@@ -32,7 +31,8 @@ export default function SeccionArtistas({ artistsData, showAll = false }) {
       ease: "power3.out",
       scrollTrigger: {
         trigger: containerRef.current,
-        start: "top 75%", // Empieza cuando el top de la sección está al 75% del viewport
+        start: "top 75%",
+        once: true,
       }
     });
   }, { scope: containerRef });

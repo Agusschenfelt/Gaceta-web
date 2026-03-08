@@ -31,8 +31,6 @@ const SOCIAL_ICONS = {
   default: FaLink
 };
 
-gsap.registerPlugin(ScrollTrigger);
-
 const SafeImage = ({ src, className }) => {
   const [error, setError] = useState(false);
   if (error || !src) return null; 
@@ -116,7 +114,7 @@ export default function ArtistPage({ artistsData = [] }) {
       fadeElements.forEach((el) => {
         gsap.fromTo(el, 
           { y: 50, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", scrollTrigger: { trigger: el, start: "top 85%" } }
+          { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", scrollTrigger: { trigger: el, start: "top 85%", once: true } }
         );
       });
 
@@ -165,7 +163,7 @@ export default function ArtistPage({ artistsData = [] }) {
         {/* Gradientes de Lectura */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent z-10" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
-        <div className="absolute inset-0 opacity-[0.06] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-10" />
+        <div className="noise-texture absolute inset-0 opacity-[0.06] z-10" />
       </div>
 
       <div className="relative z-20">

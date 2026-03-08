@@ -187,6 +187,30 @@ html.lenis body {
     pointer-events: none;
 }
 
+/* 🎞️ NOISE TEXTURE — reutilizable localmente (evita requests externas) */
+.noise-texture {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+}
+
+/* ♿ ACCESIBILIDAD — respetar preferencia del usuario por reducción de movimiento */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* 📱 MOBILE PLAYER SPACE — evita que el contenido quede detrás del player fijo */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 4rem; /* h-16 = 64px */
+  }
+}
+
 /* 📱 MOBILE VIEWPORT FIX */
 /* Utilizar svh/dvh previene el salto cuando la barra de Safari se minimiza */
 .h-full-screen {

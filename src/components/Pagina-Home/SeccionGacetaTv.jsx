@@ -1,7 +1,6 @@
-import { useLayoutEffect, useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-gsap.registerPlugin(ScrollTrigger);
 
 export default function SeccionGacetaTv() {
   const sectionRef = useRef(null);
@@ -23,7 +22,7 @@ export default function SeccionGacetaTv() {
     return () => observer.disconnect();
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const ctx = gsap.context(() => {
         // Entrada del Video
         gsap.fromTo(cardRef.current, 

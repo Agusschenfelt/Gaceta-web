@@ -8,14 +8,19 @@ import TimelineMobile from '../components/Pagina-SobreGaceta/TimelineMobile';
 import SEO from "../SEO.jsx";
 
 function useIsMobile(breakpoint = 768) {
-  const [isMobile, setIsMobile] = useState(
-    typeof window !== 'undefined' ? window.innerWidth < breakpoint : false
-  );
+  const getMq = () =>
+    typeof window !== 'undefined'
+      ? window.matchMedia(`(max-width: ${breakpoint - 1}px)`)
+      : null;
+
+  const [isMobile, setIsMobile] = useState(() => getMq()?.matches ?? false);
 
   useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth < breakpoint);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+    const mq = getMq();
+    if (!mq) return;
+    const onChange = (e) => setIsMobile(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
   }, [breakpoint]);
 
   return isMobile;

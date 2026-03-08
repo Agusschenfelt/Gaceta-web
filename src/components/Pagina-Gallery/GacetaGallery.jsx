@@ -2,8 +2,6 @@ import React, { useState, useCallback, useLayoutEffect, useMemo, useRef, Suspens
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
-
 // IMPORTACIÓN STATIC PARA ESTABILIDAD
 import FocusLightbox from "./FocusLightbox";
 

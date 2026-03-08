@@ -216,7 +216,7 @@ export default function PageTransitionProvider({ children }) {
                 ref={textRef}
                 className="font-serif italic text-white text-[15vw] md:text-[8vw] tracking-tighter mix-blend-difference"
             >
-                GACETA
+                {transitionText || "GACETA"}
             </h2>
         </div>
       </div>

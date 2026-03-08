@@ -3,8 +3,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GACETA_TIMELINE } from "./data";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const LINE_TOP_PCT = 22; 
 const CARD_W = 320;
 const CARD_GAP = 80;

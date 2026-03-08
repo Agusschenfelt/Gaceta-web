@@ -3,9 +3,13 @@ import { lazy, Suspense } from "react";
 import { Analytics } from "@vercel/analytics/react"; 
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
-gsap.registerPlugin(ScrollTrigger);
+// Registro único — no repetir en componentes individuales
+gsap.registerPlugin(ScrollTrigger, SplitText, ScrollToPlugin, useGSAP);
 
 // Componentes Shell
 import Layout from "./components/Layout/Layout";
@@ -16,6 +20,7 @@ import ResetBgOnRoute from "./components/ResetBgOnRoute";
 import PageTransitionProvider from "./components/PageTransitionProvider";
 import ScrollToAnchor from "./components/ScrollToAnchor";
 import SmoothScroll from "./components/SmoothScroll";
+import CustomCursor from "./components/CustomCursor";
 // Páginas (Lazy)
 const HomePage = lazy(() => import("./pages/HomePage"));
 const ArtistPage = lazy(() => import("./pages/ArtistPage"));
@@ -53,6 +58,7 @@ export default function App() {
     <MenuProvider>
       <Analytics />
       <SpeedInsights />
+      <CustomCursor />
       {/* 1. EL PROVIDER DEBE ENVOLVER TODO EL CONTENIDO NAVEGABLE */}
       <PageTransitionProvider> 
         <SmoothScroll>

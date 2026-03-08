@@ -4,7 +4,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 // Mantenemos soldOut: true
 const products = [
@@ -12,7 +11,7 @@ const products = [
     id: "1",
     title: "Black Gaceta Tee",
     price: 20000,
-    image: "/assets/gaceta-negra.jpeg",
+    image: "/assets/gaceta-negra.webp",
     href: "https://gaceta.shop/productos/black-gaceta-tee/",
     soldOut: false,
   },
@@ -20,7 +19,7 @@ const products = [
     id: "2",
     title: "White RV Oversize Tee",
     price: 29999,
-    image: "/assets/rv-tee.jpeg",
+    image: "/assets/rv-tee.webp",
     href: "https://gaceta.shop/productos/white-rv-oversize-tee/",
     soldOut: false,
   },
@@ -28,7 +27,7 @@ const products = [
     id: "3",
     title: "Black Backstage Cover Tee",
     price: 29999,
-    image: "/assets/bc-negra.jpeg",
+    image: "/assets/bc-negra.webp",
     href: "https://gaceta.shop/productos/white-backstagecover-tee/",
     soldOut: false,
   },
@@ -126,6 +125,7 @@ export default function SeccionGacetaShop() {
         scrollTrigger: {
             trigger: sectionRef.current,
             start: "top 70%",
+            once: true,
         }
     });
 
@@ -139,7 +139,7 @@ export default function SeccionGacetaShop() {
     
     gsap.to(".card-shop", {
       y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: "power3.out",
-      scrollTrigger: { trigger: ".shop-grid", start: "top 85%" }
+      scrollTrigger: { trigger: ".shop-grid", start: "top 85%", once: true }
     });
 
   }, { scope: sectionRef });
