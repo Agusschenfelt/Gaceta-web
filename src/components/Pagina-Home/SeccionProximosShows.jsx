@@ -57,18 +57,27 @@ export default function SeccionProximosShows() {
   }, []);
 
   useGSAP(() => {
-    const rows = gsap.utils.toArray(".show-row");
-    rows.forEach((row, i) => {
-      gsap.fromTo(row,
-        { y: 30, opacity: 0 },
-        {
-          y: 0, opacity: 1, duration: 0.3, delay: i * 0.01, ease: "power2.out",
-          scrollTrigger: {
-            trigger: row, start: "top 95%", once: true,
-          }
-        }
-      );
+    // Header entrance: eyebrow slide + "Shows" wipe horizontal + borde
+    const headerTl = gsap.timeline({
+      scrollTrigger: { trigger: container.current, start: "top 75%", once: true }
     });
+
+    headerTl
+      .fromTo(".shows-eyebrow",
+        { y: 12, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0)
+      .fromTo(".shows-heading",
+        { clipPath: "inset(0% 100% 0% 0%)" },
+        { clipPath: "inset(0% 0% 0% 0%)", duration: 0.9, ease: "power3.out" }, 0.12);
+
+    // Show rows: un solo ScrollTrigger con stagger en lugar de N instancias individuales
+    gsap.fromTo(".show-row",
+      { x: -24, opacity: 0 },
+      {
+        x: 0, opacity: 1, duration: 0.4, ease: "power2.out", stagger: 0.04,
+        scrollTrigger: { trigger: container.current, start: "top 70%", once: true }
+      }
+    );
   }, { scope: container });
 
   return (
@@ -78,12 +87,12 @@ export default function SeccionProximosShows() {
       className="relative w-full min-h-[100svh] grid grid-cols-1 grid-rows-1 bg-black z-10"
     >
       {/* CAPA 1: FONDO (Sin cambios) */}
-      <div className="col-start-1 row-start-1 w-full h-full pointer-events-none z-0">
+      <div aria-hidden="true" className="col-start-1 row-start-1 w-full h-full pointer-events-none z-0">
         <div ref={videoRef} className="sticky top-0 w-full h-[100svh] overflow-hidden">
-            <video src={videoSrc || undefined} autoPlay muted loop playsInline className="w-full h-full object-cover opacity-60" />
+            <video src={videoSrc || undefined} autoPlay muted loop playsInline preload="metadata" className="w-full h-full object-cover opacity-60" />
             <div className="absolute inset-0 bg-black/50" />
-            <div className="absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-[#0a0a0a] to-transparent" />
-            <div className="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
+            <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-fondo to-transparent" />
+            <div className="absolute bottom-0 left-0 w-full h-72 bg-gradient-to-t from-fondo to-transparent" />
         </div>
       </div>
 
@@ -93,8 +102,8 @@ export default function SeccionProximosShows() {
             {/* HEADER (Sin cambios) */}
             <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 border-b border-white/20 pb-6">
                 <div>
-                    <span className="block text-xs font-mono text-[#dee5a0] tracking-widest mb-2 uppercase text-left">Calendario 2025/2026</span>
-                    <h2 className="text-5xl md:text-8xl font-serif italic leading-none text-white text-left">Shows</h2>
+                    <span className="shows-eyebrow block text-xs font-mono text-secundario tracking-widest mb-2 uppercase text-left">Calendario 2026</span>
+                    <h2 className="shows-heading text-5xl md:text-6xl lg:text-8xl font-serif italic leading-none text-white text-left">Shows</h2>
                 </div>
             </div>
 
@@ -103,36 +112,36 @@ export default function SeccionProximosShows() {
             {processedShows.map((show) => (
                 <div
                 key={show.id}
-                className={`show-row group relative flex flex-col md:flex-row md:items-center p-6 border border-white/10 transition-all duration-500 rounded-sm backdrop-blur-[2px]
-                    ${show.isMystery 
-                        ? "bg-white/[0.02] hover:bg-white/[0.05]" 
-                        : "bg-black/30 hover:bg-white/[0.08] hover:border-[#dee5a0]/50"
+                className={`show-row group relative flex flex-col md:flex-row md:items-center p-4 md:p-6 border border-white/10 transition-[background-color,border-color] duration-500 rounded-sm
+                    ${show.isMystery
+                        ? "bg-black/20 hover:bg-black/30"
+                        : "bg-black/50 hover:bg-black/60 hover:border-secundario/50"
                     }
                 `}
                 >
                 
                 {/* FECHA & ARTISTA (Sin cambios) */}
                 <div className="w-full md:w-1/4 flex items-baseline gap-2 mb-2 md:mb-0">
-                    <span className={`text-5xl font-light tracking-tighter transition-colors ${show.isMystery ? "text-white/30" : "text-white group-hover:text-[#dee5a0]"}`}>
+                    <span className={`text-4xl md:text-5xl font-light tracking-tighter transition-colors ${show.isMystery ? "text-white/30" : "text-white group-hover:text-secundario"}`}>
                     {show.day}
                     </span>
                     <span className="text-2xl font-mono text-white/40 uppercase">/{show.month}</span>
                 </div>
 
                 <div className="w-full md:w-2/4 flex flex-col">
-                    <h3 className={`text-3xl font-bold text-white uppercase tracking-wider leading-none transition-all duration-500 ${show.isMystery ? "blur-sm opacity-50 group-hover:blur-[2px] group-hover:opacity-80" : "group-hover:translate-x-2"}`}>
+                    <h3 className={`text-3xl font-bold text-white uppercase tracking-wider leading-none transition-[filter,opacity,transform] duration-500 ${show.isMystery ? "blur-sm opacity-50 group-hover:blur-[2px] group-hover:opacity-80" : "group-hover:translate-x-2"}`}>
                     {show.artist}
                     </h3>
-                    <p className={`text-sm text-white/50 mt-1 flex items-center gap-2 ${show.isMystery ? "blur-[2px]" : ""}`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${show.isMystery ? "bg-white/20" : "bg-[#dee5a0]"}`} />
-                    {show.venue} <span className="text-white/20">/</span> {show.city}
+                    <p className={`text-sm text-white/50 mt-1 flex items-center gap-2 min-w-0 ${show.isMystery ? "blur-[2px]" : ""}`}>
+                    <span className={`w-1.5 h-1.5 shrink-0 rounded-full ${show.isMystery ? "bg-white/20" : "bg-secundario"}`} />
+                    <span className="truncate">{show.venue} <span className="text-white/20">/</span> {show.city}</span>
                     </p>
                 </div>
 
                 {/* BOTON / STATUS - CAMBIO AQUÍ */}
-                <div className="w-full md:w-1/4 flex justify-end items-center mt-4 md:mt-0">
+                <div className="w-full md:w-1/4 flex justify-start md:justify-end items-center mt-3 md:mt-0">
                     {show.status === "sold out" ? (
-                        <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-red-500 uppercase border border-red-500/30 px-3 py-1 rounded-full bg-red-500/10">
+                        <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-white/40 uppercase border border-white/15 px-3 py-1 rounded-full bg-white/5">
                             Sold Out
                         </span>
                     ) : show.status === "soon" ? (
@@ -145,9 +154,9 @@ export default function SeccionProximosShows() {
                             href={show.ticketLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 px-6 py-3 bg-white text-black text-xs font-bold font-mono uppercase tracking-wider hover:bg-[#dee5a0] transition-colors cursor-pointer"
+                            className="flex items-center gap-2 px-6 py-3 min-h-[44px] bg-white text-black text-xs font-bold font-mono uppercase tracking-wider hover:bg-secundario transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secundario focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                         >
-                            Tickets <ArrowUpRight size={14} />
+                            Tickets <ArrowUpRight size={14} className="transition-transform duration-200 group-hover:translate-x-px group-hover:-translate-y-px" />
                         </a>
                     )}
                 </div>

@@ -18,15 +18,11 @@ const ROUTE_MAP = {
 
 const formatArtistName = (slug) => {
   if (!slug) return "";
-  // Excepciones de mayúsculas
   if (slug.toLowerCase() === "ara") return "ARA";
-  if (slug.toLowerCase() === "mvp") return "MVP"; // Por si acaso
-
+  if (slug.toLowerCase() === "mvp") return "MVP";
   return slug
-    // 1. Reemplazamos guiones bajos Y medios por espacios
-    .replace(/[_]/g, " ") 
+    .replace(/[_]/g, " ")
     .replace(/[-]/g, " ")
-    // 2. Dividimos por espacio
     .split(" ")
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
@@ -39,9 +35,7 @@ const getLabelForPath = (pathname) => {
   const segments = path.split("/").filter(Boolean);
   if (segments.length > 0) {
     const lastSegment = segments[segments.length - 1];
-    if (path.includes("/artistas/")) {
-        return formatArtistName(lastSegment);
-    }
+    if (path.includes("/artistas/")) return formatArtistName(lastSegment);
     return lastSegment.replace(/-/g, " ").toUpperCase();
   }
   return "GACETA";
@@ -51,18 +45,17 @@ export default function PageTransitionProvider({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const navType = useNavigationType();
-  
+
   const curtainRef = useRef(null);
-  const goldRef = useRef(null);
-  const textRef = useRef(null);
-  const loaderRef = useRef(null);
-  
-  const isFirstMount = useRef(true);
+  const goldRef    = useRef(null);
+  const textRef    = useRef(null);
+  const lineRef    = useRef(null);
+
+  const isReady = useRef(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [transitionText, setTransitionText] = useState("");
   const [isArtistStyle, setIsArtistStyle] = useState(false);
 
-  // === FIX SCROLL 1: Desactivar memoria del navegador ===
   useLayoutEffect(() => {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
@@ -72,10 +65,10 @@ export default function PageTransitionProvider({ children }) {
   const toggleBodyScroll = (lock) => {
     if (lock) {
       document.body.style.overflow = "hidden";
-      document.body.style.height = "100vh";
+      document.body.style.height   = "100vh";
     } else {
       document.body.style.overflow = "";
-      document.body.style.height = "";
+      document.body.style.height   = "";
     }
   };
 
@@ -85,13 +78,19 @@ export default function PageTransitionProvider({ children }) {
     setIsArtistStyle(!isSystem);
   };
 
+  // isReady becomes true after the Strict Mode double-invoke cycle completes.
+  // Its cleanup resets the flag so the second Strict Mode run still skips POP.
+  useEffect(() => {
+    isReady.current = true;
+    return () => { isReady.current = false; };
+  }, []);
 
-
-  // 1. BACK / SWIPE (POP)
+  // ─── POP (browser back / swipe) ──────────────────────────────────────────
   useLayoutEffect(() => {
-    if (isFirstMount.current) {
-      isFirstMount.current = false;
-      gsap.set(curtainRef.current, { display: "none" }); 
+    if (!isReady.current) {
+      // Initial mount OR Strict Mode re-mount — just initialize, never animate
+      gsap.set(curtainRef.current, { display: "none" });
+      gsap.set(goldRef.current,    { display: "none" });
       toggleBodyScroll(false);
       return;
     }
@@ -101,24 +100,29 @@ export default function PageTransitionProvider({ children }) {
       prepareStyle(label);
       toggleBodyScroll(true);
 
+      // Curtain is already covering (assumed from before POP). Just exit it.
       const tl = gsap.timeline({
         onComplete: () => {
-            toggleBodyScroll(false);
-            gsap.set(curtainRef.current, { display: "none" });
+          toggleBodyScroll(false);
+          gsap.set(curtainRef.current, { display: "none" });
+          gsap.set(goldRef.current,    { display: "none" });
+          gsap.set(textRef.current,    { y: 0, opacity: 1 });
         }
       });
-      
+
       tl.set(curtainRef.current, { yPercent: 0, display: "flex" })
-        .set(textRef.current, { yPercent: 0 }) 
-        .set(loaderRef.current, { opacity: 1 })
-        .to(curtainRef.current, { duration: 0.3 })
-        .to(textRef.current, { yPercent: 100, duration: 0.8, ease: "power3.inOut" })
-        .to(curtainRef.current, { yPercent: 100, duration: 1.0, ease: "expo.inOut" }, "-=0.6");
+        .set(goldRef.current,    { yPercent: 0, display: "block" })
+        .set(textRef.current,    { y: 0, opacity: 1 })
+        .set(lineRef.current,    { width: "100%" })
+        .to({}, { duration: 0.12 })
+        .to(textRef.current,    { y: -50, opacity: 0, duration: 0.22, ease: "power3.in" })
+        .to(curtainRef.current, { yPercent: -100, duration: 0.65, ease: "expo.inOut" }, "-=0.12")
+        .to(goldRef.current,    { yPercent: -100, duration: 0.55, ease: "expo.inOut" }, "-=0.5");
     }
   }, [location.pathname, navType]);
 
 
-  // 2. NAVEGACIÓN MANUAL (PUSH)
+  // ─── PUSH (manual navigation) ────────────────────────────────────────────
   const navigateWithTransition = (to, customLabel = null) => {
     if (isAnimating || location.pathname === to) return;
     setIsAnimating(true);
@@ -130,21 +134,23 @@ export default function PageTransitionProvider({ children }) {
     const tl = gsap.timeline({
       onComplete: () => {
         navigate(to);
-        window.scrollTo(0, 0); 
+        window.scrollTo(0, 0);
         animateOutPush();
       }
     });
 
-    // START STATE
+    // ── Initial state ──
     gsap.set(curtainRef.current, { yPercent: 100, display: "flex" });
-    gsap.set(goldRef.current, { yPercent: 100, display: "block" });
-    gsap.set(textRef.current, { opacity: 0, scale: 0.8 });
-    
-    // SEQUENCE
-    tl.to(goldRef.current, { yPercent: 0, duration: 0.8, ease: "expo.out" }) // Gold shoots up
-      .to(curtainRef.current, { yPercent: 0, duration: 0.8, ease: "expo.out" }, "-=0.6") // Black follows
-      .to(textRef.current, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }, "-=0.2") // Logo Pulse
-      .to({}, { duration: 0.3 }); // Hold
+    gsap.set(goldRef.current,    { yPercent: 100, display: "block" });
+    gsap.set(textRef.current,    { y: 80, opacity: 1 });
+    gsap.set(lineRef.current,    { width: 0 });
+
+    // ── Enter sequence ──
+    tl.to(goldRef.current,    { yPercent: 0, duration: 0.5,  ease: "expo.out" })
+      .to(curtainRef.current, { yPercent: 0, duration: 0.55, ease: "expo.out" }, "-=0.45")
+      .to(textRef.current,    { y: 0,        duration: 0.45, ease: "power4.out" }, "-=0.2")
+      .to(lineRef.current,    { width: "100%", duration: 0.5, ease: "none" },      "-=0.3")
+      .to({}, { duration: 0.05 });
   };
 
   const animateOutPush = () => {
@@ -153,38 +159,42 @@ export default function PageTransitionProvider({ children }) {
         setIsAnimating(false);
         toggleBodyScroll(false);
         gsap.set(curtainRef.current, { display: "none" });
-        gsap.set(goldRef.current, { display: "none" });
+        gsap.set(goldRef.current,    { display: "none" });
+        gsap.set(textRef.current,    { y: 0, opacity: 1 }); // reset para siguiente transición
       }
     });
 
-    // EXIT SEQUENCE
-    tl.to(curtainRef.current, { yPercent: -100, duration: 1.0, ease: "expo.inOut" })
-      .to(goldRef.current, { yPercent: -100, duration: 0.8, ease: "expo.inOut" }, "-=0.8");
+    tl.to(textRef.current,    { y: -50, opacity: 0, duration: 0.2,  ease: "power3.in" })
+      .to(curtainRef.current, { yPercent: -100, duration: 0.65, ease: "expo.inOut" }, "-=0.1")
+      .to(goldRef.current,    { yPercent: -100, duration: 0.55, ease: "expo.inOut" }, "-=0.5");
   };
 
-  // 3. BACK MANUAL
+
+  // ─── BACK (manual goBack button) ─────────────────────────────────────────
   const goBack = () => {
     if (isAnimating) return;
     setIsAnimating(true);
-    toggleBodyScroll(true); 
-    
-    prepareStyle("GACETA"); 
+    toggleBodyScroll(true);
 
-    const tl = gsap.timeline({ 
-        onComplete: () => {
-            navigate(-1);
-            toggleBodyScroll(false); 
-        } 
+    prepareStyle("GACETA");
+
+    gsap.set(curtainRef.current, { yPercent: 100, display: "flex" });
+    gsap.set(goldRef.current,    { yPercent: 100, display: "block" });
+    gsap.set(textRef.current,    { y: 80, opacity: 1 });
+    gsap.set(lineRef.current,    { width: 0 });
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        navigate(-1);
+        toggleBodyScroll(false);
+      }
     });
 
-    // Similar reverse logic or same wipe? Let's use same wipe for consistency but maybe faster
-    gsap.set(curtainRef.current, { yPercent: 100, display: "flex" });
-    gsap.set(goldRef.current, { yPercent: 100, display: "block" });
-    
-     tl.to(goldRef.current, { yPercent: 0, duration: 0.7, ease: "expo.out" })
-       .to(curtainRef.current, { yPercent: 0, duration: 0.7, ease: "expo.out" }, "-=0.5")
-       .to(curtainRef.current, { yPercent: -100, duration: 0.8, ease: "expo.inOut", delay: 0.2 })
-       .to(goldRef.current, { yPercent: -100, duration: 0.8, ease: "expo.inOut" }, "-=0.7");
+    tl.to(goldRef.current,    { yPercent: 0, duration: 0.45, ease: "expo.out" })
+      .to(curtainRef.current, { yPercent: 0, duration: 0.5,  ease: "expo.out" }, "-=0.4")
+      .to(textRef.current,    { y: 0,        duration: 0.4,  ease: "power4.out" }, "-=0.18")
+      .to(lineRef.current,    { width: "100%", duration: 0.35, ease: "none" }, "-=0.25")
+      .to({}, { duration: 0.05 });
   };
 
   useEffect(() => {
@@ -194,31 +204,48 @@ export default function PageTransitionProvider({ children }) {
   return (
     <PageTransitionContext.Provider value={{ navigateWithTransition, goBack, isAnimating }}>
       {children}
-      
-      {/* GOLD STRIP LAYER */}
-      <div 
+
+      {/* GOLD STRIP — primer layer */}
+      <div
         ref={goldRef}
-        className="fixed inset-0 z-[10000] bg-[#dee5a0] hidden pointer-events-none"
+        aria-hidden="true"
+        className="fixed inset-0 z-[10000] bg-secundario hidden pointer-events-none"
       />
 
-      {/* BLACK CURTAIN LAYER */}
-      <div 
+      {/* BLACK CURTAIN — segundo layer */}
+      <div
         ref={curtainRef}
-        className="fixed inset-0 z-[10001] bg-[#0a0a0a] hidden flex-col items-center justify-center pointer-events-none"
+        aria-hidden="true"
+        className="fixed inset-0 z-[10001] bg-fondo hidden flex-col items-center justify-center pointer-events-none"
       >
-        {/* NOISE TEXTURE */}
-        <div className="absolute inset-0 opacity-[0.08] pointer-events-none bg-[url('data:image/svg+xml;base64,...')]" 
-             style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")` }} 
-        />
+        {/* Noise */}
+        <div className="absolute inset-0 opacity-[0.06] pointer-events-none noise-texture" />
 
-        <div className="relative overflow-hidden px-4 py-2 text-center w-full flex justify-center z-10">
-            <h2 
-                ref={textRef}
-                className="font-serif italic text-white text-[15vw] md:text-[8vw] tracking-tighter mix-blend-difference"
-            >
-                {transitionText || "GACETA"}
-            </h2>
+        {/* Etiqueta esquina — editorial */}
+        <span className="absolute top-6 left-6 md:top-8 md:left-10 font-mono text-[9px] tracking-[0.35em] text-secundario/50 uppercase z-10 select-none">
+          GACETA
+        </span>
+
+        {/* Destino — slide-up dentro de overflow:hidden */}
+        <div className="relative overflow-hidden px-6 py-2 text-center w-full flex justify-center z-10">
+          <h2
+            ref={textRef}
+            className={`leading-none tracking-tighter mix-blend-difference
+              ${isArtistStyle
+                ? "font-serif italic text-white text-[clamp(3rem,14vw,9rem)]"
+                : "font-bold text-white text-[clamp(2rem,10vw,7rem)]"
+              }`}
+          >
+            {transitionText || "GACETA"}
+          </h2>
         </div>
+
+        {/* Línea de progreso — barre de izquierda a derecha */}
+        <div
+          ref={lineRef}
+          className="absolute bottom-0 left-0 h-[2px] bg-secundario z-10 pointer-events-none"
+          style={{ width: 0 }}
+        />
       </div>
     </PageTransitionContext.Provider>
   );

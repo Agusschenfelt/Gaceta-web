@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import TransitionLink from '../TransitionLink';
 
@@ -13,10 +12,11 @@ export default function ArtistCardHover({ artist }) {
 
   // Detección de dispositivo para optimización
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.matchMedia("(max-width: 768px)").matches);
-    checkMobile(); // Chequeo inicial
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const onChange = (e) => setIsMobile(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
   }, []);
 
   const handleMouseEnter = () => {
@@ -35,8 +35,8 @@ export default function ArtistCardHover({ artist }) {
 
   return (
     <TransitionLink
-      to={`artistas/${slug}`}
-      className="group relative block w-full aspect-[3/4] overflow-hidden rounded-xl bg-neutral-900 ring-1 ring-white/5 transition-all duration-500 hover:ring-[#dee5a0]/30 hover:shadow-2xl hover:-translate-y-2"
+      to={`/artistas/${slug}`}
+      className="group relative block w-full aspect-[3/4] overflow-hidden rounded-xl bg-black ring-1 ring-white/5 transition-[box-shadow,transform,outline-color] duration-500 hover:ring-secundario/30 hover:shadow-2xl hover:-translate-y-2"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -44,7 +44,7 @@ export default function ArtistCardHover({ artist }) {
       <img
         src={artist.foto}
         alt={artist.nombre}
-        className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter grayscale group-hover:grayscale-0 opacity-90 group-hover:opacity-100"
+        className="absolute inset-0 w-full h-full object-cover transition-[filter,opacity,transform] duration-700 group-hover:scale-105 filter grayscale group-hover:grayscale-0 opacity-90 group-hover:opacity-100"
         width="300"
         height="400"
         loading="lazy"
@@ -72,17 +72,17 @@ export default function ArtistCardHover({ artist }) {
         {/* En móvil siempre visible, en desktop aparece al hover */}
         <div 
             ref={contentRef}
-            className={`transition-all duration-200 ${isMobile ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100'}`}
+            className={`transition-[opacity,transform] duration-200 ${isMobile ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100'}`}
         >
             {/* Línea decorativa */}
-            <div className={`h-1 w-8 bg-[#dee5a0] mb-3 transition-all duration-500 ${!isMobile && 'w-0 group-hover:w-16'}`} />
+            <div className={`h-1 bg-secundario mb-3 transition-[width] duration-500 ${isMobile ? 'w-8' : 'w-0 group-hover:w-16'}`} />
             
             <h3 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-wider leading-none">
             {artist.nombre}
             </h3>
             
             {!isMobile && (
-                <span className="inline-block mt-3 text-xs text-[#dee5a0] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity delay-100">
+                <span className="inline-block mt-3 text-xs text-secundario uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity delay-100">
                     Ver Perfil →
                 </span>
             )}

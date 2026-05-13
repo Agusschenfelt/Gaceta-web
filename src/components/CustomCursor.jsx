@@ -24,7 +24,16 @@ export default function CustomCursor() {
 
     let mouseX = -100;
     let mouseY = -100;
-    
+
+    // Restaurar cursor nativo para usuarios de teclado
+    const onMouseMoveRestore = () => { document.body.style.cursor = 'none'; };
+    const onTabKey = (e) => {
+      if (e.key === 'Tab') {
+        document.body.style.cursor = 'auto';
+        window.addEventListener("mousemove", onMouseMoveRestore, { passive: true, once: true });
+      }
+    };
+
     const onMouseMove = (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
@@ -61,14 +70,17 @@ export default function CustomCursor() {
     const onMouseEnterWindow = () => gsap.to(dot, { opacity: 1, duration: 0.2 });
 
     window.addEventListener("mousemove", onMouseMove, { passive: true });
+    window.addEventListener("keydown", onTabKey);
     document.addEventListener("mouseover", onMouseOver);
     document.addEventListener("mouseout", onMouseOut);
     document.addEventListener("mouseleave", onMouseLeaveWindow);
     document.addEventListener("mouseenter", onMouseEnterWindow);
 
     return () => {
-      document.body.style.cursor = 'auto'; // Restauramos al desmontarse
+      document.body.style.cursor = 'auto';
       window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mousemove", onMouseMoveRestore);
+      window.removeEventListener("keydown", onTabKey); // safety: remove any pending once listener too
       document.removeEventListener("mouseover", onMouseOver);
       document.removeEventListener("mouseout", onMouseOut);
       document.removeEventListener("mouseleave", onMouseLeaveWindow);
@@ -81,13 +93,12 @@ export default function CustomCursor() {
     <div
       ref={cursorWrapperRef}
       className="fixed top-0 left-0 pointer-events-none z-[9999]"
-      style={{ willChange: "transform" }}
     >
       <div 
         ref={cursorDotRef}
-        className="absolute w-4 h-4 rounded-full bg-[#dee5a0] flex items-center justify-center text-[#0a0a0a] shadow-[0_0_10px_rgba(222,229,160,0.5)]"
+        className="absolute w-4 h-4 rounded-full bg-secundario flex items-center justify-center text-fondo shadow-[0_0_10px_rgba(222,229,160,0.5)]"
       >
-        <span ref={textRef} className="text-[3px] font-black tracking-widest opacity-0 transition-opacity duration-200" />
+        <span ref={textRef} className="text-[5px] font-black tracking-[0.15em] opacity-0 transition-opacity duration-200 select-none" />
       </div>
     </div>
   );

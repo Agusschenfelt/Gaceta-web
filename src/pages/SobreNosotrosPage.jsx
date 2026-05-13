@@ -1,11 +1,12 @@
 // src/pages/SobreNosotrosPage.jsx
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import SeccionNosotros from '../components/Pagina-SobreGaceta/SeccionNosotros';
 import SeccionSumate from '../components/Pagina-SobreGaceta/SeccionSumate';
 import SeccionEquipos from '../components/Pagina-SobreGaceta/SeccionEquipos';
-import TimelineHorizontal from '../components/Pagina-SobreGaceta/TimeLineHorizontal';
-import TimelineMobile from '../components/Pagina-SobreGaceta/TimelineMobile';
 import SEO from "../SEO.jsx";
+
+const TimelineHorizontal = lazy(() => import('../components/Pagina-SobreGaceta/TimeLineHorizontal'));
+const TimelineMobile = lazy(() => import('../components/Pagina-SobreGaceta/TimelineMobile'));
 
 function useIsMobile(breakpoint = 768) {
   const getMq = () =>
@@ -36,9 +37,11 @@ export default function SobreNosotrosPage() {
         description="De la esperanza al primer paso. Conoce la historia de Gaceta, nuestra filosofía de trabajo y el equipo detrás de los artistas."
         url="/sobre-nosotros"
       />
-      <div className="bg-[#0a0a0a] min-h-screen">
+      <div className="bg-fondo min-h-screen">
         <SeccionNosotros />
-        {isMobile ? <TimelineMobile /> : <TimelineHorizontal />}
+        <Suspense fallback={<div role="status" aria-busy="true" className="h-[40vh]" />}>
+          {isMobile ? <TimelineMobile /> : <TimelineHorizontal />}
+        </Suspense>
         <SeccionEquipos />
         <SeccionSumate />
       </div>

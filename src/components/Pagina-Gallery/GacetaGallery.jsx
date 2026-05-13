@@ -1,9 +1,8 @@
-import React, { useState, useCallback, useLayoutEffect, useMemo, useRef, Suspense, lazy, useEffect } from "react";
+import React, { useState, useCallback, useLayoutEffect, useMemo, useRef, Suspense, useEffect, lazy } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-// IMPORTACIÓN STATIC PARA ESTABILIDAD
-import FocusLightbox from "./FocusLightbox";
+const FocusLightbox = lazy(() => import("./FocusLightbox"));
 
 const clsx = (...xs) => xs.filter(Boolean).join(" ");
 
@@ -73,7 +72,7 @@ function SmartImage({
   const mainSrc = base ? `/media/img/${base}-dl.jpg` : (src || fallbackSrc);
 
   return (
-    <div className={clsx("relative overflow-hidden bg-[#111]", className)}>
+    <div className={clsx("relative overflow-hidden bg-black", className)}>
       <div 
         className={clsx(
           "absolute inset-0 bg-white/5 transition-opacity duration-700",
@@ -95,7 +94,7 @@ function SmartImage({
           fetchPriority={fetchPriority}
           decoding="async"
           className={clsx(
-            "block w-full h-full object-cover transition-all duration-700 ease-out will-change-transform",
+            "block w-full h-full object-cover transition-[opacity,filter] duration-700 ease-out",
             loaded ? "opacity-100 blur-0" : "opacity-0 blur-sm"
           )}
           onLoad={() => setLoaded(true)}
@@ -123,6 +122,42 @@ function MediaCard({
 }) {
   const mediaRef = useRef(null);
 
+  // Play/pause video based on viewport visibility
+  useEffect(() => {
+    if (item.type !== "video" || !mediaRef.current) return;
+    const video = mediaRef.current;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.25 }
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, [item.type]);
+
+  // Entrance animation — reveal when card enters viewport
+  const cardRef = useRef(null);
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add("is-visible");
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.05, rootMargin: "0px 0px -4% 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const SPAN = {
     1: "md:col-span-1", 2: "md:col-span-2", 3: "md:col-span-3", 4: "md:col-span-4",
     5: "md:col-span-5", 6: "md:col-span-6", 7: "md:col-span-7", 8: "md:col-span-8",
@@ -131,30 +166,31 @@ function MediaCard({
   const spanCls = SPAN[span] || "md:col-span-3";
 
   return (
-    <div 
-        className={clsx("relative col-span-12 gallery-img transition-all duration-500", spanCls, zClass)} 
-        style={customStyle} // Apply random margins/offsets here
+    <div
+        ref={cardRef}
+        className={clsx("relative col-span-12 gallery-img", spanCls, zClass)}
+        style={customStyle}
         data-card
     >
-      <div className={clsx("flex w-full", sideClass)}>
+      <div className={clsx("gallery-card-body flex w-full", sideClass)}>
         <button 
           onClick={() => onOpen(i)} 
-          className="relative group block z-0 w-full outline-none"
-          aria-label={`Ver imagen ${i + 1}`}
+          className="relative group block z-0 w-full outline-none focus-visible:ring-2 focus-visible:ring-secundario focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-sm"
+          aria-label={item.alt || item.title || `Ver imagen ${i + 1} de la galería`}
         >
           <div
             className={clsx(
               "card-inner",
               // ESTILO CARDS
-              "relative rounded-sm overflow-hidden border border-white/5 bg-[#0a0a0a]", 
-              "transform transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]",
+              "relative rounded-sm overflow-hidden border border-white/5 bg-fondo",
+              "transform transition-[transform,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]",
               // HOVER: Lift up + Glow + Rotate slightly opposite to random rotation? No, resets rotation to 0 maybe?
-              "group-hover:scale-[1.05] group-hover:rotate-0 group-hover:z-[50] group-hover:border-[#dee5a0]/40 group-hover:shadow-[0_20px_50px_-10px_rgba(222,229,160,0.15)]",
+              "group-hover:scale-[1.05] group-hover:rotate-0 group-hover:z-[50] group-hover:border-secundario/40 group-hover:shadow-[0_20px_50px_-10px_rgba(222,229,160,0.15)]",
               "w-full mx-auto inline-block",
               "flex items-center justify-center",
               cardMaxClass,
               cardHClass,
-              "origin-center will-change-[transform,opacity]"
+              "origin-center"
             )}
           >
             {/* Overlay shine effect on hover */}
@@ -182,7 +218,7 @@ function MediaCard({
                 base={item.base}
                 src={item.src}
                 fallbackSrc={item.src}
-                alt={item.alt || `Galería Gaceta ${i}`}
+                alt={item.alt || item.title || `Fotografía GACETA`}
                 className="block w-full h-full object-cover mx-auto"
                 fetchPriority={priority ? "high" : "auto"}
                 loading={priority ? "eager" : "lazy"}
@@ -239,27 +275,22 @@ export default function GacetaGallery({
 
     if (trigger) observer.observe(trigger);
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      trigger.remove();
+    };
   }, [items.length]);
-
-  /* 
-    GSAP ANIMATIONS REMOVED BY USER REQUEST
-    The gallery is now static for maximum stability.
-  */
-  // useLayoutEffect(() => { ... gsap logic removed ... }, []);
 
   // Slice items for rendering
   const visibleItems = items.slice(0, visibleCount);
 
   return (
     // min-h-[100svh] para estabilidad en móviles
-    <section ref={galleryRef} className="relative w-full min-h-[100svh] bg-[#0a0a0a] text-white overflow-hidden">
+    <section ref={galleryRef} className="relative w-full min-h-[100svh] bg-fondo text-white overflow-hidden">
       
-      {/* 1. LUZ ROJA SUTIL */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[120vh] bg-[radial-gradient(circle_at_center,rgba(145,30,30,0.12)_0%,transparent_60%)] pointer-events-none z-0" />
-      
+
       {/* 2. VIÑETA OSCURA */}
-      <div className="fixed inset-0 pointer-events-none z-[5] bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_90%)]" />
+      <div aria-hidden="true" className="fixed inset-0 pointer-events-none z-[5] bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_90%)]" />
 
       {/* HEADER TÍTULO */}
       <div
@@ -269,19 +300,30 @@ export default function GacetaGallery({
         )}
       >
         <h2 className="select-none text-center leading-none">
-          <span className="block font-serif italic text-2xl md:text-5xl text-[#dee5a0]/50 mb-4 md:mb-6">GACETA</span>
-          <span className="block font-black text-[18vw] md:text-[15vw] text-[#dee5a0]/30 tracking-tight">
+          <span className="block font-serif italic text-2xl md:text-5xl text-secundario/50 mb-4 md:mb-6">GACETA</span>
+          <span className="block font-black text-[18vw] md:text-[15vw] text-secundario/30 tracking-tight">
             {title}
           </span>
         </h2>
       </div>
 
+
       {/* GRID */}
+{/* MINI LABEL */}
+      {!open && (
+        <div className="relative z-[20] pt-28 md:pt-36 pb-8 md:pb-10 px-6 md:px-10 max-w-[1800px] mx-auto">
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/30">
+            <span className="text-white/60">{items.length}</span>
+            {" "}fotos · abrí cualquiera para descargar
+          </p>
+        </div>
+      )}
+
       <div
         ref={gridRef}
         className={clsx(
           "relative mx-auto max-w-[1800px] 2xl:max-w-[2400px] px-4 md:px-10 z-[10]",
-          open ? "invisible" : "mt-[35vh] md:mt-[45vh]"
+          open ? "invisible" : "mt-0"
         )}
         aria-hidden={open}
       >
@@ -298,11 +340,11 @@ export default function GacetaGallery({
                 onOpen={openAt}
                 span={layoutProps.span}
                 sideClass={layoutProps.side}
-                customStyle={layoutProps.style}
+                customStyle={{ ...layoutProps.style, '--card-delay': `${(i % 5) * 40}ms` }}
                 zClass="z-[10] hover:z-[50]" // Ensure hover lifts
-                cardMaxClass="max-w-[75vw] md:max-w-[min(20vw,380px)]" // Slightly smaller max-width
+                cardMaxClass="max-w-[68vw] md:max-w-[min(20vw,380px)]" // Slightly smaller max-width
                 cardHClass="max-h-[45vh] md:max-h-[40vh]" // Slightly shorter max-height
-                priority={isPriority} 
+                priority={isPriority}
               />
             );
           })}
@@ -311,7 +353,7 @@ export default function GacetaGallery({
 
       {/* LIGHTBOX */}
       {open && (
-        <Suspense fallback={<div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center text-white">Cargando...</div>}>
+        <Suspense fallback={<div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center text-white">Cargando...</div>}>
           <FocusLightbox
             open={open}
             index={index}

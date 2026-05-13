@@ -1,95 +1,137 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+const FALLBACK_ID = "nVIm2-qJzYA";
 
 export default function SeccionGacetaTv() {
   const sectionRef = useRef(null);
   const cardRef = useRef(null);
-  const glowRef = useRef(null);
+  const labelRef = useRef(null);
 
-  const videoIds = ["nVIm2-qJzYA", "yXEHvgxi3MI", "uIByPBurV5g", "MKFDGc5f_5s"];
-  const [videoId] = useState(() => videoIds[Math.floor(Math.random() * videoIds.length)]);
-  const [isIframeActive, setIsIframeActive] = useState(false);
+  const [videoId, setVideoId] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
-    const sec = sectionRef.current;
-    if (!sec) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setIsIframeActive(true); observer.disconnect(); } },
-      { root: null, threshold: 0.1 }
+    const cached = sessionStorage.getItem("gaceta_latest_video");
+    if (cached) { setVideoId(cached); return; }
+
+    fetch("/api/latest-video")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((data) => {
+        setVideoId(data.videoId);
+        sessionStorage.setItem("gaceta_latest_video", data.videoId);
+      })
+      .catch(() => setVideoId(FALLBACK_ID));
+  }, []);
+
+  useGSAP(() => {
+    gsap.fromTo(
+      cardRef.current,
+      { y: 100, opacity: 0.6, scale: 0.95 },
+      {
+        y: 0, opacity: 1, scale: 1,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 85%",
+          end: "top 40%",
+          scrub: 1,
+        },
+      }
     );
-    observer.observe(sec);
-    return () => observer.disconnect();
-  }, []);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-        // Entrada del Video
-        gsap.fromTo(cardRef.current, 
-          { y: 100, opacity: 0.6, scale: 0.95 }, 
-          {
-            y: 0, opacity: 1, scale: 1,
-            ease: "power2.out",
-            scrollTrigger: {
-                trigger: sectionRef.current,
-                start: "top 85%", 
-                end: "top 40%",
-                scrub: 1, 
-            }
-        });
-
-        // Glow Pulsante
-        gsap.to(glowRef.current, { opacity: 0.5, duration: 3, repeat: -1, yoyo: true, ease: "sine.inOut" });
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
+    if (labelRef.current) {
+      gsap.fromTo(
+        labelRef.current,
+        { y: 10, opacity: 0, letterSpacing: "0.05em" },
+        {
+          y: 0, opacity: 1, letterSpacing: "0.2em",
+          duration: 0.7, ease: "power3.out",
+          scrollTrigger: {
+            trigger: labelRef.current,
+            start: "top 90%",
+            once: true,
+          },
+        }
+      );
+    }
+  }, { scope: sectionRef });
 
   return (
     <section
       ref={sectionRef}
       id="gacetatv"
-      // z-40: Mantenemos alto para tapar el final de Artistas.
-      // pb-32: Espacio suficiente para que termine el componente visualmente.
-      className="relative z-40 w-full -mt-32 pb-32 flex flex-col items-center pointer-events-none" 
+      className="relative z-40 w-full pt-24 pb-32 flex flex-col items-center pointer-events-none"
     >
-      
-      {/* 1. FONDO GRADIENTE (Capa más baja: -z-20) */}
-      {/* Usamos un gradiente que va de transparente a negro y se mantiene negro abajo */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0a0a] to-[#0a0a0a] -z-20" />
+      {/* Fondo gradiente */}
+      <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-transparent via-fondo to-fondo -z-20" />
 
-      {/* 2. GLOW ROJO (Capa media: -z-10) */}
-      {/* Al ponerlo en -z-10, queda POR ENCIMA del fondo negro (-z-20) pero DETRÁS del video */}
-      <div 
-        ref={glowRef} 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[40svw] bg-[#8d1e1e] blur-[180px] rounded-full opacity-0 -z-10 mix-blend-screen" 
-      />
-
-      {/* 3. CONTENEDOR DE VIDEO (Capa superior implícita) */}
+      {/* Card */}
       <div
         ref={cardRef}
-        className="relative z-20 w-[92%] max-w-[1100px] aspect-video rounded-2xl overflow-hidden ring-1 ring-white/10 bg-black shadow-2xl pointer-events-auto mt-24"
+        className="relative z-20 w-[92%] max-w-[1100px] aspect-video rounded-2xl overflow-hidden ring-1 ring-white/10 bg-black shadow-2xl pointer-events-auto"
       >
-        {!isIframeActive && (
-          <div className="w-full h-full flex items-center justify-center text-xs tracking-[0.2em] text-white/40 uppercase">
-            Cargando Stream...
+        {/* Loading */}
+        {!videoId && (
+          <div className="absolute inset-0 flex items-center justify-center text-xs tracking-[0.2em] text-white/30 uppercase">
+            Cargando...
           </div>
         )}
 
-        {isIframeActive && videoId && (
+        {/* Thumbnail facade */}
+        {videoId && !isPlaying && (
+          <button
+            onClick={() => setIsPlaying(true)}
+            className="absolute inset-0 w-full h-full group"
+            aria-label="Reproducir último video de GacetaTV"
+          >
+            <img
+              src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
+              alt="GacetaTV — último video"
+              className="w-full h-full object-cover"
+              loading="lazy"
+              onError={(e) => {
+                e.currentTarget.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+              }}
+            />
+            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition-colors duration-300" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/10 border border-white/25 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/20 group-hover:scale-110 transition-[background-color,transform] duration-300">
+                <svg
+                  className="w-6 h-6 md:w-8 md:h-8 text-white translate-x-0.5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+            </div>
+          </button>
+        )}
+
+        {/* Iframe — solo al hacer play */}
+        {videoId && isPlaying && (
           <iframe
             className="absolute inset-0 w-full h-full"
-            src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&autohide=1&showinfo=0&controls=1`}
+            src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&autohide=1&showinfo=0&controls=1&autoplay=1`}
             title="GacetaTV"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-            loading="lazy"
           />
         )}
       </div>
 
-      <h2 className="mt-10 text-center text-white/90 font-semibold tracking-widest uppercase text-xs z-20">
-        GACE<span className="text-[#8d1e1e]">TV</span>
+      <h2
+        ref={labelRef}
+        className="mt-10 text-center text-white/90 font-semibold tracking-widest uppercase text-xs z-20 opacity-0"
+      >
+        GACE<span className="text-secundario">TV</span>
       </h2>
+
+      {/* Fade hacia Shop */}
+      <div aria-hidden="true" className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-fondo to-transparent pointer-events-none z-30" />
     </section>
   );
 }

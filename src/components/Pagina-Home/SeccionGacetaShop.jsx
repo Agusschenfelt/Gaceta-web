@@ -1,11 +1,8 @@
-// SeccionGacetaShop.jsx — Ajuste: Sold Out Premium (No triste)
 import React, { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
-
-// Mantenemos soldOut: true
 const products = [
   {
     id: "1",
@@ -41,20 +38,23 @@ const currency = (n) =>
   });
 
 const ProductCard = React.memo(function ProductCard({ p }) {
+  const Tag = p.soldOut ? "div" : "a";
+  const linkProps = p.soldOut
+    ? { role: "group", "aria-label": `${p.title}, agotado` }
+    : { href: p.href, target: "_blank", rel: "noopener noreferrer" };
   return (
-    <a
-      href={p.soldOut ? null : p.href}
-      data-cursor={p.soldOut ? "not-allowed" : "pointer"} // Indicador para cursor personalizado si lo tuvieras
+    <Tag
+      {...linkProps}
       className={`block select-none h-full group relative ${
         p.soldOut ? "cursor-not-allowed" : "cursor-pointer"
       }`}
     >
-      <div className="will-change-transform h-full flex flex-col">
+      <div className="h-full flex flex-col">
         {/* COHERENCIA: Card con borde sutil */}
-        <div className="relative rounded-sm overflow-hidden bg-white/[0.02] border border-white/5 group-hover:border-[#dee5a0]/30 transition-all duration-500 h-full flex flex-col">
+        <div className="relative rounded-sm overflow-hidden bg-white/[0.02] border border-white/5 group-hover:border-secundario/30 transition-[border-color] duration-500 h-full flex flex-col">
           
           {/* IMAGEN - Full color y viva */}
-          <div className="aspect-[4/5] relative overflow-hidden bg-[#0a0a0a] border-b border-white/5">
+          <div className="aspect-[4/5] relative overflow-hidden bg-fondo border-b border-white/5">
              {/* Overlay sutil en hover solo si NO está sold out */}
             {!p.soldOut && (
                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 z-10" />
@@ -72,8 +72,8 @@ const ProductCard = React.memo(function ProductCard({ p }) {
 
             {/* BADGE SOLD OUT SOBRE LA IMAGEN (Opcional, pero ayuda) */}
             {p.soldOut && (
-                <div className="absolute top-4 right-4 z-20">
-                    <span className="px-3 py-1 bg-[#911e1e] text-white text-[9px] font-mono uppercase tracking-widest rounded-full">
+                <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20">
+                    <span className="px-3 py-1 bg-white/10 text-white/60 text-[9px] font-mono uppercase tracking-widest rounded-full border border-white/15">
                         Sold Out
                     </span>
                 </div>
@@ -81,13 +81,13 @@ const ProductCard = React.memo(function ProductCard({ p }) {
           </div>
 
           {/* INFO */}
-          <div className="p-6 flex flex-col flex-1 justify-between bg-[#0e0e0f]">
+          <div className="p-4 md:p-6 flex flex-col flex-1 justify-between bg-fondo">
             <div>
                 {/* Título mantiene su color blanco, no se apaga */}
-                <h3 className="font-serif italic text-lg leading-tight mb-2 text-white group-hover:text-[#dee5a0] transition-colors duration-300">
+                <h3 className="font-serif italic text-lg leading-tight mb-2 text-white group-hover:text-secundario transition-colors duration-300">
                   {p.title}
                 </h3>
-                <p className="text-[#dee5a0]/60 text-xs font-mono tracking-wide">
+                <p className="text-secundario/60 text-xs font-mono tracking-wide">
                   {currency(p.price)}
                 </p>
             </div>
@@ -95,16 +95,15 @@ const ProductCard = React.memo(function ProductCard({ p }) {
             {/* FOOTER CARD */}
             <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-[10px] uppercase tracking-widest">
                 {p.soldOut ? (
-                    // Estado Sold Out: Rojo sangre, llamativo, sin opacidad.
-                    <div className="flex items-center gap-2 text-[#911e1e] font-medium">
-                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#911e1e]"></span>
+                    <div className="flex items-center gap-2 text-white/40 font-medium">
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-white/30"></span>
                         <span>Agotado</span>
                     </div>
                 ) : (
                     // Estado Normal
                     <div className="flex items-center gap-2 text-white/40 group-hover:text-white transition-colors">
                         <span>Shop Now</span>
-                        <span className="translate-x-[-5px] opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">→</span>
+                        <span className="translate-x-[-5px] opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-[opacity,transform] duration-300">→</span>
                     </div>
                 )}
             </div>
@@ -112,7 +111,7 @@ const ProductCard = React.memo(function ProductCard({ p }) {
 
         </div>
       </div>
-    </a>
+    </Tag>
   );
 });
 
@@ -148,25 +147,33 @@ export default function SeccionGacetaShop() {
     <section
       ref={sectionRef}
       id="gaceta-shop"
-      className="relative z-20 py-32 pb-64 bg-[#0a0a0a] overflow-hidden"
+      className="relative z-20 py-32 pb-48"
     >
-      
+      {/* Gradiente ambiental sutil — el ruido viene del body, no se duplica */}
+      <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgba(255,255,255,0.015)_0%,transparent_100%)] pointer-events-none z-0" />
+
+      {/* Fade de entrada desde GacetaTV */}
+      <div aria-hidden="true" className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-fondo to-transparent pointer-events-none z-0" />
+
+      {/* Fade de salida hacia Gallery */}
+      <div aria-hidden="true" className="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-fondo to-transparent pointer-events-none z-30" />
+
       {/* LÍNEA CONECTORA */}
-      <div className="absolute -top-32 left-1/2 -translate-x-1/2 h-64 w-[1px] z-10 origin-top">
-         <div 
-            ref={connectorRef} 
-            className="w-full h-full bg-gradient-to-b from-[#dee5a0] via-[#dee5a0]/40 to-transparent" 
+      <div aria-hidden="true" className="absolute -top-32 left-1/2 -translate-x-1/2 h-64 w-[1px] z-10 origin-top">
+         <div
+            ref={connectorRef}
+            className="w-full h-full bg-gradient-to-b from-secundario via-secundario/40 to-transparent"
          />
       </div>
 
       {/* HEADER */}
       <div className="text-center mb-24 relative z-20 pt-10">
-        <h2 className="shop-title text-xs md:text-sm text-[#dee5a0] uppercase tracking-[0.3em] font-medium mb-4 opacity-80">
+        <p className="shop-title text-xs md:text-sm text-secundario uppercase tracking-[0.3em] font-medium mb-4 opacity-80">
           Merch Oficial
-        </h2>
-        <h3 className="shop-title text-5xl md:text-7xl font-serif italic text-white">
+        </p>
+        <h2 className="shop-title text-5xl md:text-6xl lg:text-7xl font-serif italic text-white">
           Gaceta Shop
-        </h3>
+        </h2>
       </div>
 
       {/* GRID PRODUCTOS */}
@@ -180,13 +187,12 @@ export default function SeccionGacetaShop() {
         </div>
       </div>
 
-      {/* CTA - Lo mantenemos para ir a la tienda real aunque este sold out estos items */}
       <div className="relative z-10 flex justify-center shop-title">
         <a
           href="https://gaceta.shop/"
           target="_blank"
           rel="noreferrer"
-          className="group relative inline-flex items-center justify-center gap-3 px-8 py-3 bg-transparent border border-white/20 rounded-full overflow-hidden transition-all duration-300 hover:border-white/50"
+          className="group relative inline-flex items-center justify-center gap-3 px-8 py-3 bg-transparent border border-white/20 rounded-full overflow-hidden transition-[border-color] duration-300 hover:border-white/50"
         >
           <span className="relative z-10 font-mono tracking-[0.1em] uppercase text-xs text-white/80 group-hover:text-white transition-colors">
             Ir a la tienda

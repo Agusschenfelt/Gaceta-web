@@ -14,7 +14,7 @@ export default function SEO({
   // Solo sobreescribimos si hay info nueva.
 
   const siteTitle = "GACETA";
-  const domain = "https://gaceta.shop"; 
+  const domain = "https://esgaceta.com";
 
   // Título: Si hay título específico, lo armamos. Si no, undefined (usa el del index.html).
   const metaTitle = title ? `${title} | ${siteTitle}` : undefined;

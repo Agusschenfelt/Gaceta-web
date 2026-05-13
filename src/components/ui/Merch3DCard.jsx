@@ -37,7 +37,7 @@ function AbstractMerch({ hovered }) {
           ior={1}
           chromaticAberration={0} // Expensive
           anisotropy={0.1}
-          color="#dee5a0"
+          color="var(--color-secundario)"
           metalness={0.5}
           resolution={128} // Forzar render frame target a muy baja res
         />
@@ -51,7 +51,7 @@ export default function Merch3DCard() {
 
   return (
     <div 
-        className="relative w-full h-[400px] bg-[#050505] rounded-sm overflow-hidden"
+        className="relative w-full h-[400px] bg-fondo rounded-sm overflow-hidden"
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
         style={{ cursor: 'pointer' }}

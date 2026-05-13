@@ -10,7 +10,7 @@ export default function Layout() {
       <NoiseOverlay />
       <NavbarDemo />
       {/* bg-[#0a0a0a] asegura fondo negro si el contenido es corto */}
-      <main className="flex-1 flex flex-col min-h-screen bg-[#0a0a0a]"> 
+      <main className="flex-1 flex flex-col min-h-screen bg-fondo">
         <Outlet />
       </main>
       <FooterGaceta />

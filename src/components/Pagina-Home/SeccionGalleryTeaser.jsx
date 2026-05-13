@@ -1,10 +1,10 @@
 import React, { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import TransitionLink from "../TransitionLink";
 
 export default function SeccionGalleryTeaser({
   images = [],
+  eyebrow = "",
   title = "GALLERY",
   ctaText = "VISITAR GALERÍA",
   ctaHref = "/gallery",
@@ -15,33 +15,38 @@ export default function SeccionGalleryTeaser({
   const btnRef = useRef(null);
 
   const displayImages = [
-    images[0] || "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=800&auto=format&fit=crop",
-    images[1] || "https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=800&auto=format&fit=crop",
-    images[2] || "https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?q=80&w=800&auto=format&fit=crop",
+    images[0] || "/media/img/_woc7020-840.webp",
+    images[1] || "/media/img/pyketoph-6-840.webp",
+    images[2] || "/media/img/_woc5860-840.webp",
   ];
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 60%", 
-          end: "bottom 90%",
-          scrub: 1,
-        }
-      });
+      const mm = gsap.matchMedia();
 
-      // Título entra
-      tl.fromTo(titleRef.current, { y: 150, opacity: 0 }, { y: 0, opacity: 1, duration: 1 }, 0);
+      const buildAnim = (xOffset, rot) => {
+        const [left, center, right] = cardsRef.current;
+        gsap.set([left, center, right], { y: 300, opacity: 0, scale: 0.8, rotation: 0, x: 0 });
 
-      const [left, center, right] = cardsRef.current;
-      gsap.set([left, center, right], { y: 300, opacity: 0, scale: 0.8, rotation: 0, x: 0 });
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 60%",
+            end: "bottom 90%",
+            scrub: 1,
+          }
+        });
 
-      tl.to(left, { y: 40, x: -280, rotation: -12, opacity: 1, scale: 0.9, duration: 1.5, ease: "power2.out" }, 0.1);
-      tl.to(right, { y: 40, x: 280, rotation: 12, opacity: 1, scale: 0.9, duration: 1.5, ease: "power2.out" }, 0.1);
-      tl.to(center, { y: 0, x: 0, rotation: 0, opacity: 1, scale: 1.15, zIndex: 10, duration: 1.5, ease: "power2.out" }, 0.1);
+        tl.fromTo(titleRef.current, { y: 150, opacity: 0 }, { y: 0, opacity: 1, duration: 1 }, 0);
+        tl.to(left,   { y: 40, x: -xOffset, rotation: -rot, opacity: 1, scale: 0.9,  duration: 1.5, ease: "power2.out" }, 0.1);
+        tl.to(right,  { y: 40, x: xOffset,  rotation:  rot, opacity: 1, scale: 0.9,  duration: 1.5, ease: "power2.out" }, 0.1);
+        tl.to(center, { y: 0,  x: 0,        rotation: 0,    opacity: 1, scale: 1.15, zIndex: 10, duration: 1.5, ease: "power2.out" }, 0.1);
+        tl.fromTo(btnRef.current, { scale: 0.8, opacity: 0, y: 20 }, { scale: 1, opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 1.2);
+      };
 
-      tl.fromTo(btnRef.current, { scale: 0.8, opacity: 0, y: 20 }, { scale: 1, opacity: 1, y: 0, duration: 0.6, ease: "back.out(1.5)" }, 1.2);
+      mm.add("(max-width: 639px)",                         () => buildAnim(80,  5));
+      mm.add("(min-width: 640px) and (max-width: 1023px)", () => buildAnim(160, 8));
+      mm.add("(min-width: 1024px)",                        () => buildAnim(280, 12));
     }, sectionRef);
 
     return () => ctx.revert();
@@ -52,47 +57,62 @@ export default function SeccionGalleryTeaser({
       ref={sectionRef}
       className="relative w-full min-h-[90svh] bg-transparent overflow-hidden flex flex-col items-center justify-center pb-32 pt-48 -mt-24 z-30"
     >
-      {/* Fondo Gradiente */}
-      <div className="absolute inset-0 -z-20 bg-gradient-to-b from-[#0e0e0f] from-0% via-[#911e1e] via-40% to-[#911e1e]" />
+      {/* Fondo — gradiente emergente, no caja sólida */}
+      <div aria-hidden="true" className="absolute inset-0 -z-20 bg-gradient-to-b from-transparent via-fondo/80 to-fondo" />
+
+      {/* Fade de salida hacia CTASobreNosotros */}
+      <div aria-hidden="true" className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-fondo to-transparent pointer-events-none z-20" />
 
       {/* Texturas */}
-      <div className="absolute inset-0 opacity-[0.08] pointer-events-none mix-blend-overlay -z-10" 
-           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")` }} 
-      />
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.3)_100%)] -z-10" />
+      <div aria-hidden="true" className="noise-texture absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay -z-10" />
+      <div aria-hidden="true" className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.3)_100%)] -z-10" />
+
+      {/* EYEBROW */}
+      {eyebrow && (
+        <span className="relative z-30 block text-[10px] font-mono uppercase tracking-[0.3em] text-secundario/70 mb-6 text-center">
+          {eyebrow}
+        </span>
+      )}
 
       {/* TÍTULO GIGANTE DE FONDO */}
-      <h2 
+      <h2
         ref={titleRef}
-        className="absolute top-[55%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[24vw] font-black leading-none whitespace-nowrap pointer-events-none select-none z-0 tracking-tighter"
-        style={{
-            color: "rgba(255, 255, 255, 0.15)", // Blanco al 15% - SÓLIDO
-        }}
+        aria-hidden="true"
+        className="absolute top-[55%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[24vw] font-black leading-none whitespace-nowrap pointer-events-none select-none z-0 tracking-tighter text-white/[0.15]"
       >
         {title}
       </h2>
 
       {/* Cartas */}
-      <div className="relative w-full max-w-5xl h-[550px] flex items-center justify-center z-20 perspective-[1000px] mb-10">
-          <div ref={el => cardsRef.current[0] = el} className="absolute w-[260px] md:w-[320px] aspect-[3/4] rounded-xl shadow-2xl border-[8px] border-white/90 overflow-hidden origin-bottom-right bg-black">
-              <img src={displayImages[0]} alt="" width="300" height="400" loading="lazy" className="w-full h-full object-cover" />
+      <div className="relative w-full max-w-5xl h-[clamp(300px,70vh,550px)] flex items-center justify-center z-20 perspective-[1000px] mb-10">
+          <div ref={el => cardsRef.current[0] = el} className="absolute w-[clamp(180px,40vw,280px)] md:w-[260px] lg:w-[320px] aspect-[3/4] rounded-xl shadow-2xl border-[8px] border-white/90 overflow-hidden origin-bottom-right bg-black">
+              <img src={displayImages[0]} alt="Foto de la galería GACETA 1" width="300" height="400" loading="lazy" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-black/10" />
           </div>
-          <div ref={el => cardsRef.current[2] = el} className="absolute w-[260px] md:w-[320px] aspect-[3/4] rounded-xl shadow-2xl border-[8px] border-white/90 overflow-hidden origin-bottom-left bg-black">
-              <img src={displayImages[2]} alt="" width="300" height="400" loading="lazy" className="w-full h-full object-cover" />
+          <div ref={el => cardsRef.current[2] = el} className="absolute w-[clamp(180px,40vw,280px)] md:w-[260px] lg:w-[320px] aspect-[3/4] rounded-xl shadow-2xl border-[8px] border-white/90 overflow-hidden origin-bottom-left bg-black">
+              <img src={displayImages[2]} alt="Foto de la galería GACETA 3" width="300" height="400" loading="lazy" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-black/10" />
           </div>
-          <div ref={el => cardsRef.current[1] = el} className="absolute w-[280px] md:w-[340px] aspect-[3/4] rounded-xl shadow-[0_30px_80px_rgba(0,0,0,0.4)] border-[8px] border-white overflow-hidden z-20 bg-black">
-              <img src={displayImages[1]} alt="" width="300" height="400" loading="lazy" className="w-full h-full object-cover" />
+          <div ref={el => cardsRef.current[1] = el} className="absolute w-[clamp(200px,44vw,300px)] md:w-[280px] lg:w-[340px] aspect-[3/4] rounded-xl shadow-[0_30px_80px_rgba(0,0,0,0.4)] border-[8px] border-white overflow-hidden z-20 bg-black">
+              <img src={displayImages[1]} alt="Foto de la galería GACETA 2" width="300" height="400" loading="lazy" className="w-full h-full object-cover" />
           </div>
       </div>
 
-      {/* CTA */}
-      <div ref={btnRef} className="relative z-30 mt-4">
-        <TransitionLink to={ctaHref} className="group relative inline-flex items-center justify-center gap-3 px-10 py-4 bg-white text-[#911e1e] rounded-full overflow-hidden transition-transform duration-300 hover:scale-105 shadow-xl">
-          <span className="relative z-10 font-bold tracking-[0.2em] uppercase text-xs md:text-sm group-hover:text-white transition-colors duration-300">{ctaText}</span>
-          <svg className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform duration-300 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-          <div className="absolute inset-0 bg-black translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+      {/* CTA — EDITORIAL FULL-WIDTH STRIP */}
+      <div ref={btnRef} className="relative z-30 w-full max-w-4xl px-6 md:px-10 mt-8">
+        <TransitionLink
+          to={ctaHref}
+          className="group flex items-center justify-between w-full py-5 md:py-6 border-t-2 border-b-2 border-white/25 hover:border-secundario transition-colors duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secundario focus-visible:ring-offset-4 focus-visible:ring-offset-fondo"
+        >
+          <span className="font-black text-2xl md:text-3xl lg:text-4xl uppercase tracking-tighter text-white group-hover:text-secundario transition-colors duration-300">
+            {ctaText}
+          </span>
+          <div className="flex items-center gap-3 text-white/50 group-hover:text-secundario transition-colors duration-300 shrink-0">
+            <span className="font-mono text-[10px] tracking-[0.2em] uppercase hidden sm:block">Archivo visual</span>
+            <svg className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </div>
         </TransitionLink>
       </div>
 

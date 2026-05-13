@@ -5,13 +5,17 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
+    target: 'esnext',
+    cssCodeSplit: true,
+    reportCompressedSize: false,
     rollupOptions: {
       output: {
         manualChunks: {
-          // Separamos las librerías grandes en sus propios archivos
           vendor: ['react', 'react-dom', 'react-router-dom'],
           animations: ['gsap', '@gsap/react'],
-          icons: ['lucide-react', 'react-icons']
+          icons: ['lucide-react'],
+          brandIcons: ['react-icons'],
+          gallery: ['swiper'],
         }
       }
     }

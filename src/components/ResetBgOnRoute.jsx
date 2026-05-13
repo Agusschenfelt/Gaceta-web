@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const HOME_BG = "#0e0e10"; // mismo que en :root --pageBg
+const HOME_BG = "#0a0a0a"; // mismo que --color-fondo en :root
 
 export default function ResetBgOnRoute() {
   const location = useLocation();
