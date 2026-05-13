@@ -97,7 +97,7 @@ export default function SeccionGacetaTv() {
             />
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition-colors duration-300" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/10 border border-white/25 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/20 group-hover:scale-110 transition-[background-color,transform] duration-300">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/10 border border-white/25 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/20 group-hover:scale-110 transition-[background-color,transform,border-color] duration-300">
                 <svg
                   className="w-6 h-6 md:w-8 md:h-8 text-white translate-x-0.5"
                   fill="currentColor"

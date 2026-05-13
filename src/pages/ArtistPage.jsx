@@ -1,6 +1,7 @@
-import { useRef, useLayoutEffect, useMemo, useState, useEffect } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { ARTISTS_DATA } from "../data/artistsData";
@@ -83,96 +84,91 @@ export default function ArtistPage() {
     }
   }, [id, artist]);
 
-  useLayoutEffect(() => {
+  useGSAP(() => {
     if (!artist) return;
 
     let splitTitle;
-    const ctx = gsap.context(() => {
 
-      // 1. FONDO — fade cinemático desde negro
-      if (bgRef.current) {
-        gsap.fromTo(bgRef.current,
-          { opacity: 0 },
-          { opacity: 1, duration: 1.6, ease: "power2.out" }
-        );
-      }
-
-      // 2. TÍTULO — SplitText letra por letra (existente, mantenido)
-      if (titleRef.current) {
-        splitTitle = new SplitText(titleRef.current, { type: "chars" });
-        gsap.from(splitTitle.chars, {
-          yPercent: 120, opacity: 0, duration: 1.2, ease: "power4.out", stagger: 0.03
-        });
-      }
-
-      // 3. HERO ELEMENTS — más decisivos, timing ajustado
-      gsap.fromTo("[data-hero-anim]",
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.08, delay: 0.35 }
+    // 1. FONDO — fade cinemático desde negro
+    if (bgRef.current) {
+      gsap.fromTo(bgRef.current,
+        { opacity: 0 },
+        { opacity: 1, duration: 1.6, ease: "power2.out" }
       );
+    }
 
-      // 4. LÍNEA DIVISORIA — scroll-driven (existente, mantenido)
-      if (lineRef.current) {
-        gsap.set(lineRef.current, { scaleY: 0, transformOrigin: "top" });
-        gsap.to(lineRef.current, {
-          scaleY: 1, ease: "none",
-          scrollTrigger: { trigger: bioRef.current, start: "top center", end: "bottom center", scrub: true }
-        });
-      }
-
-      // 5. BIOGRAPHY PARAGRAPHS — fade-in-up genérico (solo para textos)
-      const fadeElements = gsap.utils.toArray(".fade-in-up");
-      fadeElements.forEach((el) => {
-        gsap.fromTo(el,
-          { y: 40, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out",
-            scrollTrigger: { trigger: el, start: "top 87%", once: true } }
-        );
+    // 2. TÍTULO — SplitText letra por letra
+    if (titleRef.current) {
+      splitTitle = new SplitText(titleRef.current, { type: "chars" });
+      gsap.from(splitTitle.chars, {
+        yPercent: 120, opacity: 0, duration: 1.2, ease: "power4.out", stagger: 0.03
       });
+    }
 
-      // 6. FOTOS — clip-path wipe editorial (reveal de abajo hacia arriba)
-      const photos = gsap.utils.toArray(".photo-reveal");
-      photos.forEach((photo) => {
-        gsap.fromTo(photo,
-          { clipPath: "inset(100% 0% 0% 0%)" },
-          { clipPath: "inset(0% 0% 0% 0%)", duration: 1, ease: "power3.out",
-            scrollTrigger: { trigger: photo, start: "top 90%", once: true } }
-        );
+    // 3. HERO ELEMENTS
+    gsap.fromTo("[data-hero-anim]",
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.08, delay: 0.35 }
+    );
+
+    // 4. LÍNEA DIVISORIA — scroll-driven
+    if (lineRef.current) {
+      gsap.set(lineRef.current, { scaleY: 0, transformOrigin: "top" });
+      gsap.to(lineRef.current, {
+        scaleY: 1, ease: "none",
+        scrollTrigger: { trigger: bioRef.current, start: "top center", end: "bottom center", scrub: true }
       });
+    }
 
-      // 7. CATÁLOGO — reveal orquestado: número primero, luego título
-      const catalogItems = gsap.utils.toArray(".catalog-item-anim");
-      catalogItems.forEach((item) => {
-        const num = item.querySelector(".catalog-num");
-        const title = item.querySelector(".catalog-title");
+    // 5. BIOGRAPHY PARAGRAPHS
+    const fadeElements = gsap.utils.toArray(".fade-in-up");
+    fadeElements.forEach((el) => {
+      gsap.fromTo(el,
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out",
+          scrollTrigger: { trigger: el, start: "top 87%", once: true } }
+      );
+    });
 
-        const tl = gsap.timeline({
-          scrollTrigger: { trigger: item, start: "top 93%", once: true }
-        });
+    // 6. FOTOS — clip-path wipe editorial
+    const photos = gsap.utils.toArray(".photo-reveal");
+    photos.forEach((photo) => {
+      gsap.fromTo(photo,
+        { clipPath: "inset(100% 0% 0% 0%)" },
+        { clipPath: "inset(0% 0% 0% 0%)", duration: 1, ease: "power3.out",
+          scrollTrigger: { trigger: photo, start: "top 90%", once: true } }
+      );
+    });
 
-        if (num) tl.fromTo(num,
-          { x: -10, opacity: 0 },
-          { x: 0, opacity: 1, duration: 0.3, ease: "power2.out" }, 0);
-        if (title) tl.fromTo(title,
-          { x: -18, opacity: 0 },
-          { x: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 0.12);
+    // 7. CATÁLOGO — reveal orquestado
+    const catalogItems = gsap.utils.toArray(".catalog-item-anim");
+    catalogItems.forEach((item) => {
+      const num = item.querySelector(".catalog-num");
+      const title = item.querySelector(".catalog-title");
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: item, start: "top 93%", once: true }
       });
+      if (num) tl.fromTo(num,
+        { x: -10, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.3, ease: "power2.out" }, 0);
+      if (title) tl.fromTo(title,
+        { x: -18, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 0.12);
+    });
 
-      // 8. NEXT ARTIST — clip-path reveal al entrar en viewport
-      const nextText = containerRef.current?.querySelector(".next-artist-text");
-      if (nextText) {
-        gsap.fromTo(nextText,
-          { clipPath: "inset(40% 0% 40% 0%)", opacity: 0 },
-          { clipPath: "inset(0% 0% 0% 0%)", opacity: 1,
-            duration: 1, ease: "power3.out",
-            scrollTrigger: { trigger: nextText, start: "top 85%", once: true } }
-        );
-      }
+    // 8. NEXT ARTIST — clip-path reveal
+    const nextText = containerRef.current?.querySelector(".next-artist-text");
+    if (nextText) {
+      gsap.fromTo(nextText,
+        { clipPath: "inset(40% 0% 40% 0%)", opacity: 0 },
+        { clipPath: "inset(0% 0% 0% 0%)", opacity: 1,
+          duration: 1, ease: "power3.out",
+          scrollTrigger: { trigger: nextText, start: "top 85%", once: true } }
+      );
+    }
 
-    }, containerRef);
-
-    return () => { ctx.revert(); splitTitle?.revert(); };
-  }, [artist, id]);
+    return () => { splitTitle?.revert(); };
+  }, { scope: containerRef, dependencies: [artist, id] });
 
   if (!artist) return <Navigate to="/" replace />;
 
@@ -406,7 +402,7 @@ export default function ArtistPage() {
         {/* 6. NEXT ARTIST */}
         {nextArtist && (
           <section className="relative w-full min-h-[40svh] md:h-[80vh] flex items-center justify-center overflow-hidden group border-t border-white/10 bg-fondo z-20">
-            <TransitionLink to={`/artistas/${nextArtist.slug ?? norm(nextArtist.nombre)}`} className="absolute inset-0 z-30 block cursor-pointer" />
+            <TransitionLink to={`/artistas/${nextArtist.slug ?? norm(nextArtist.nombre)}`} aria-label={`Ver ${nextArtist.nombre}`} className="absolute inset-0 z-30 block cursor-pointer" />
             <div className="absolute inset-0 -z-10">
                 <SafeImage src={nextArtist.fotos?.[0] || "/assets/placeholder.jpg"} alt={nextArtist.nombre} className="w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-[opacity,transform] duration-1000 group-hover:scale-[1.03] grayscale" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />

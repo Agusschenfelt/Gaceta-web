@@ -37,7 +37,7 @@ export default function SobreNosotrosPage() {
         description="De la esperanza al primer paso. Conoce la historia de Gaceta, nuestra filosofía de trabajo y el equipo detrás de los artistas."
         url="/sobre-nosotros"
       />
-      <div className="bg-fondo min-h-screen">
+      <div className="bg-fondo min-h-[100svh]">
         <SeccionNosotros />
         <Suspense fallback={<div role="status" aria-busy="true" className="h-[40vh]" />}>
           {isMobile ? <TimelineMobile /> : <TimelineHorizontal />}

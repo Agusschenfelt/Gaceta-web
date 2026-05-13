@@ -51,7 +51,7 @@ export default function SeccionProximosShows() {
         status: show.soldOut ? "sold out" : (isMystery ? "soon" : "tickets"), 
         isMystery: isMystery,
         // CAMBIO 1: Pasamos el link de la data al componente procesado
-        ticketLink: show.ticketLink || "#", 
+        ticketLink: show.ticketLink || null,
       };
     });
   }, []);
@@ -148,17 +148,16 @@ export default function SeccionProximosShows() {
                         <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-white/40 uppercase border border-white/10 px-3 py-1 rounded-full group-hover:text-white/70 group-hover:border-white/30 transition-colors">
                             Coming Soon
                         </span>
-                    ) : (
-                        /* CAMBIO 2: Cambiamos <button> por <a> manteniendo las clases IDÉNTICAS */
-                        <a 
+                    ) : show.ticketLink ? (
+                        <a
                             href={show.ticketLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 px-6 py-3 min-h-[44px] bg-white text-black text-xs font-bold font-mono uppercase tracking-wider hover:bg-secundario transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secundario focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                            className="flex items-center gap-2 px-6 py-3 min-h-[44px] bg-white text-black text-xs font-bold font-mono uppercase tracking-wider hover:bg-secundario transition-[background-color] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secundario focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                         >
                             Tickets <ArrowUpRight size={14} className="transition-transform duration-200 group-hover:translate-x-px group-hover:-translate-y-px" />
                         </a>
-                    )}
+                    ) : null}
                 </div>
                 </div>
             ))}

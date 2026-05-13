@@ -353,7 +353,7 @@ export default function GacetaGallery({
 
       {/* LIGHTBOX */}
       {open && (
-        <Suspense fallback={<div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center text-white">Cargando...</div>}>
+        <Suspense fallback={<div role="status" aria-busy="true" className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center text-white">Cargando...</div>}>
           <FocusLightbox
             open={open}
             index={index}

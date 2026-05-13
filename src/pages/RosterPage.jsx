@@ -52,7 +52,7 @@ export default function RosterPage() {
         url="/artistas"
       />
 
-      <div ref={container} className="min-h-screen bg-fondo pt-32 pb-20 relative overflow-hidden">
+      <div ref={container} className="min-h-[100svh] bg-fondo pt-32 pb-20 relative overflow-hidden">
         
         <InfiniteMarquee />
 
