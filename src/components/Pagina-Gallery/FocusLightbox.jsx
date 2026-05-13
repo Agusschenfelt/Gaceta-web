@@ -77,8 +77,41 @@ function LightboxImage({ src, alt }) {
 export default function FocusLightbox({ open, index, items, onClose, setIndex }) {
   useLockScroll(open);
   const swiperRef = useRef(null);
+  const modalRef = useRef(null);
+  const closeButtonRef = useRef(null);
   const [muted, setMuted] = useState(true);
   const [isVideoActive, setIsVideoActive] = useState(false);
+
+  // Guardar foco anterior, mover a close button al abrir, restaurar al cerrar
+  useEffect(() => {
+    const previousFocus = document.activeElement;
+    closeButtonRef.current?.focus();
+    return () => { previousFocus?.focus(); };
+  }, []);
+
+  // Tab trap — confina el foco dentro del modal
+  useEffect(() => {
+    const handleTab = (e) => {
+      if (e.key !== "Tab" || !modalRef.current) return;
+      const focusables = Array.from(
+        modalRef.current.querySelectorAll(
+          'button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'
+        )
+      );
+      if (!focusables.length) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener("keydown", handleTab);
+    return () => window.removeEventListener("keydown", handleTab);
+  }, []);
 
   const handleClose = useCallback(() => {
     try {
@@ -121,32 +154,39 @@ export default function FocusLightbox({ open, index, items, onClose, setIndex })
   const onBackdropMouseDown = (e) => { if (e.target === e.currentTarget) handleClose(); };
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md transition-all animate-in fade-in zoom-in-95 duration-200" onMouseDown={onBackdropMouseDown}>
+    <div
+      ref={modalRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Galería — imagen ampliada"
+      className="fixed inset-0 z-[100] bg-black/95 lightbox-enter"
+      onMouseDown={onBackdropMouseDown}
+    >
       
       {/* Controles Superiores */}
       <div className="absolute top-5 right-5 flex items-center gap-3 z-50" onMouseDown={(e) => e.stopPropagation()}>
         {downloadHref && (
-          <a href={downloadHref} download={filename} title="Descargar" className="grid place-items-center h-12 w-12 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hover:scale-105 border border-white/5">
+          <a href={downloadHref} download={filename} title="Descargar" aria-label={activeItem?.type === "video" ? "Descargar video" : "Descargar imagen"} className="grid place-items-center h-12 w-12 rounded-full bg-white/10 hover:bg-white/20 text-white transition-[background-color,transform] hover:scale-105 border border-white/5">
             <Download className="h-5 w-5" />
           </a>
         )}
         {isVideoActive && (
-          <button onClick={() => setMuted((m) => !m)} className="grid place-items-center h-12 w-12 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hover:scale-105 border border-white/5">
+          <button onClick={() => setMuted((m) => !m)} aria-label={muted ? "Activar sonido" : "Silenciar"} className="grid place-items-center h-12 w-12 rounded-full bg-white/10 hover:bg-white/20 text-white transition-[background-color,transform] hover:scale-105 border border-white/5">
             {muted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
           </button>
         )}
-        <button onClick={handleClose} className="grid place-items-center h-12 w-12 rounded-full bg-white text-black transition-all hover:scale-105 hover:rotate-90">
+        <button ref={closeButtonRef} onClick={handleClose} aria-label="Cerrar galería" className="grid place-items-center h-12 w-12 rounded-full bg-white text-black transition-[transform] hover:scale-105 hover:rotate-90">
           <X className="h-5 w-5" />
         </button>
       </div>
 
       {/* Flechas Navegación */}
-      <button className="gaceta-prev hidden md:grid place-items-center absolute left-6 top-1/2 -translate-y-1/2 h-14 w-14 rounded-full bg-white/5 hover:bg-white/10 text-white z-50 border border-white/5 transition-colors" onMouseDown={(e) => e.stopPropagation()}>
-        <ChevronLeft className="h-7 w-7 opacity-80" />
+      <button aria-label="Imagen anterior" aria-hidden="true" className="gaceta-prev group hidden md:grid place-items-center absolute left-6 top-1/2 -translate-y-1/2 h-14 w-14 rounded-full bg-white/5 hover:bg-white/10 text-white z-50 border border-white/5 transition-colors" onMouseDown={(e) => e.stopPropagation()} tabIndex={-1}>
+        <ChevronLeft className="h-7 w-7 opacity-80 transition-transform duration-200 ease-out group-hover:-translate-x-0.5" />
       </button>
 
-      <button className="gaceta-next hidden md:grid place-items-center absolute right-6 top-1/2 -translate-y-1/2 h-14 w-14 rounded-full bg-white/5 hover:bg-white/10 text-white z-50 border border-white/5 transition-colors" onMouseDown={(e) => e.stopPropagation()}>
-        <ChevronRight className="h-7 w-7 opacity-80" />
+      <button aria-label="Imagen siguiente" aria-hidden="true" className="gaceta-next group hidden md:grid place-items-center absolute right-6 top-1/2 -translate-y-1/2 h-14 w-14 rounded-full bg-white/5 hover:bg-white/10 text-white z-50 border border-white/5 transition-colors" onMouseDown={(e) => e.stopPropagation()} tabIndex={-1}>
+        <ChevronRight className="h-7 w-7 opacity-80 transition-transform duration-200 ease-out group-hover:translate-x-0.5" />
       </button>
 
       {/* Slider */}
@@ -173,7 +213,7 @@ export default function FocusLightbox({ open, index, items, onClose, setIndex })
                 
                 {/* Caption / Descripción */}
                 {(it.title || it.description) && (
-                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/10 max-w-[90%]">
+                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center bg-black/80 px-6 py-3 rounded-full border border-white/10 max-w-[90%]">
                     {it.title && <p className="text-sm md:text-base font-semibold text-white leading-tight">{it.title}</p>}
                     {it.description && <p className="text-xs md:text-sm text-white/70 leading-tight mt-1">{it.description}</p>}
                   </div>

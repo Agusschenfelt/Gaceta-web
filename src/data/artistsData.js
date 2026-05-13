@@ -4,11 +4,11 @@ export const ARTISTS_DATA = [
     slug: "ramma",
     nombre: "Ramma",
     rol: "Artista",
-    foto: "/assets/artistas/ramma/perfil/foto-perfil.jpg",
+    foto: "/assets/artistas/ramma/perfil/foto-perfil.webp",
     video: "/assets/artistas/ramma/perfil/video-perfil.mp4", // Video hover grid (opcional)
 
     videoFondo: "/assets/artistas/ramma/perfil/video-perfil.mp4", // Video de fondo full screen
-    poster: "/assets/artistas/ramma/perfil/foto-perfil.jpg", // Imagen de carga del video
+    poster: "/assets/artistas/ramma/perfil/foto-perfil.webp", // Imagen de carga del video
 
     biografia: `Ramiro Valentín Domínguez nacido en Buenos Aires, Argentina. Es músico y compositor. Creció en una casa con piano, donde su padre y su hermana tocaban. Ahí dio sus primeros pasos hasta convertir esa curiosidad en un vínculo profundo con la música. Su acercamiento se consolidó entre el piano y la iglesia, donde la práctica musical era parte de la vida familiar. A los 6 años descubrió el rock nacional y, con su primer MP3, empezó a devorar discos; más tarde llegó el folklore y el rock internacional con bandas como Oasis o The Beatles y, ya de adolescente, el hip-hop.
                 Estudia piano desde los 6 años, descubrió Ableton a los 12 y, desde los 14, lo usa de forma regular. A lo largo de su adolescencia grabó canciones a raperos de Trelew, mientras comenzaba a hacer su propia música, un hábito que mantiene hasta hoy. Su proyecto se distingue por la versatilidad: en el equipo “Ramma” cada integrante asume más de un rol cuando hace falta, y esa flexibilidad también se refleja en la música, capaz de ir de un tema acústico a un trap con naturalidad.
@@ -74,11 +74,11 @@ export const ARTISTS_DATA = [
     slug: "valuto",
     nombre: "Valuto",
     rol: "Artista",
-    foto: "/assets/artistas/valuto/perfil/foto-perfil.jpg",
+    foto: "/assets/artistas/valuto/perfil/foto-perfil.webp",
     video: "/assets/artistas/valuto/card/video-card.mp4",
 
     videoFondo: "/assets/artistas/valuto/perfil/video-perfil.mp4",
-    poster: "/assets/artistas/valuto/perfil/foto-perfil.jpg",
+    poster: "/assets/artistas/valuto/perfil/foto-perfil.webp",
 
     biografia: `Valentín “Valuto” Ibarburu, nacido en Montevideo, Uruguay. Es cantante y compositor criado en una familia de músicos. Desde chico se movió entre camarines, giras y escenarios gracias a su padre, por lo que el vivo y el estudio le resultan ambientes naturales. Esa cercanía con la música moldeó una intención artística concreta: hacer canciones accesibles y cercanas, pensadas para que muchos puedan sentirlas y cantarlas, sin buscar deliberadamente la rareza ni el aura de “incomprendido”. Para Valuto, la música es lo único que le despierta una ambición sostenida: aprender, crecer y “ir por más”. Sus influencias nacen en casa y se amplían a referentes populares como Michael Jackson, Justin Bieber y Luis Miguel.
 
@@ -132,11 +132,11 @@ Lanzó su primera canción el 15 de enero de 2023, titulada “Drama”, y desde
     slug: "ara",
     nombre: "ARA",
     rol: "Artista / Productor",
-    foto: "/assets/artistas/ara/perfil/foto-perfil.jpg",
+    foto: "/assets/artistas/ara/perfil/foto-perfil.webp",
     video: "/assets/artistas/ara/perfil/video-perfil.mp4",
 
     videoFondo: "/assets/artistas/ara/perfil/video-perfil.mp4",
-    poster: "/assets/artistas/ara/perfil/foto-perfil.jpg",
+    poster: "/assets/artistas/ara/perfil/foto-perfil.webp",
 
     biografia: `Aramis Delonc Tocker, nacido en Buenos Aires, Argentina. Es cantante, compositor y productor que encontró en la música un lugar propio desde muy chico. En su casa siempre sonó de todo y, en los primeros años de primaria, empezó a tocar la guitarra en un taller escolar. Durante el 2020 descubrió la producción: se grababa con el celular y, con el tiempo, armó su home studio, donde hoy compone y desarrolla la mayor parte de sus canciones.
 Su motor creativo es expresar lo que le pasa y convertirlo en sonido: busca que quien escucha se identifique o, simplemente, disfrute “cómo suena y cómo está hecho”. Esa misma necesidad explica su vínculo con el vivo, una de las sensaciones que más lo movilizan. Define la singularidad de su proyecto en la manera de decir y hacer trascender ideas y emociones, sin perder cercanía ni claridad.
@@ -191,11 +191,11 @@ Hoy ARA continúa publicando música y afianzando su propuesta entre estudio y e
     slug: "tadu_vazquez",
     nombre: "Tadu Vázquez",
     rol: "Productor / Artista",
-    foto: "/assets/artistas/tadu/perfil/foto-perfil.jpg",
+    foto: "/assets/artistas/tadu/perfil/foto-perfil.webp",
     video: "/assets/artistas/tadu/card/video-card.mp4",
 
     videoFondo: "/assets/artistas/tadu/card/video-card.mp4", // Placeholder
-    poster: "/assets/artistas/tadu/perfil/foto-perfil.jpg",
+    poster: "/assets/artistas/tadu/perfil/foto-perfil.webp",
 
     biografia: `Tadeo Vázquez es músico y creador uruguayo cuya relación con la música empezó temprano y nunca se detuvo. De chico lo fascinaban los discos, los instrumentos y las bandas; a los 8/9 años tomó sus primeras clases “formales” de cajón peruano y percusión, mientras aprendía guitarra por su cuenta con tutoriales de YouTube. A los 15 descubrió que podía componer en la computadora: primero con GarageBand en la máquina de su padre y, un año más tarde, con FL Studio, un hallazgo que le abrió un camino propio entre la canción y la producción casera.
 
@@ -265,10 +265,10 @@ Actualmente, Tadeo sigue expandiendo su catálogo y su rol en estudio, con la vi
     slug: "fosse",
     nombre: "Fosse",
     rol: "Productor / Artista",
-    foto: "/assets/artistas/fosse/perfil/foto-perfil.jpg",
+    foto: "/assets/artistas/fosse/perfil/foto-perfil.webp",
     video: "/assets/artistas/fosse/perfil/video-perfil.mp4",
 
-    poster: "/assets/artistas/fosse/perfil/foto-perfil.jpg",
+    poster: "/assets/artistas/fosse/perfil/foto-perfil.webp",
     videoFondo: "/assets/artistas/fosse/perfil/video-perfil.mp4",
 
     biografia: `Agustín Fossemale, nacido en Las Piedras, Uruguay es artista y productor. Su vínculo con la música nació en casa, atravesado por el candombe a través de su padre: a los 7 años pisó por primera vez el Teatro de Verano en Carnaval de Promesas. A los 18, con una Focusrite y un micrófono básico, empezó a grabarse y producirse en sus ratos libres mientras cursaba Ingeniería; cuando entendió que podía vivir de la música, dejó la universidad para dedicarse por completo. Arrancó como artista y productor, y a los 19 años consolidó su faceta en estudio al conectar con pioneros de la escena urbana uruguaya como Mesita, Pekeño 77 y Zeballos.
@@ -330,11 +330,11 @@ Como artista, colaboró con Knak, Ramma, Valuto, Davus y Wave. Como productor, t
     slug: "barta",
     nombre: "Barta",
     rol: "Productor",
-    foto: "/assets/artistas/barta/perfil/foto-perfil.jpg",
+    foto: "/assets/artistas/barta/perfil/foto-perfil.webp",
     video: "/assets/artistas/barta/perfil/video-perfil.mp4",
 
     videoFondo: "/assets/artistas/barta/perfil/video-perfil.mp4",
-    poster: "/assets/artistas/barta/perfil/foto-perfil.jpg",
+    poster: "/assets/artistas/barta/perfil/foto-perfil.webp",
 
     biografia: `Ramiro Bartaburu “Barta” nacido en Montevideo, Uruguay. Es productor emergente de la escena urbana rioplatense. Criado en una familia de músicos: padre baterista y madre cantante. Entre 2019 y 2020 descubrió la producción y la posibilidad de crear desde casa; desde entonces supo que quería dedicarse a eso. Lleva mas de 5 años produciendo y, desde hace dos años y medio, lo hace con dedicación plena. En sus inicios con su amigo Valuto, pero expandiéndose con artistas como Knak, Ramma, Frozouda, Zell, entre otros. Enfocándose en un objetivo claro: música, fácil de escuchar y pegadiza, entendida como una herramienta emocional capaz de mover el ánimo del oyente. 
 
@@ -403,11 +403,11 @@ Barta entiende la producción como gestión de sensaciones, dice “cómo la mú
     slug: "dazen",
     nombre: "Dazen",
     rol: "Productor",
-    foto: "/assets/artistas/dazen/perfil/foto-perfil.jpg",
+    foto: "/assets/artistas/dazen/perfil/foto-perfil.webp",
     video: "/assets/artistas/dazen/perfil/video-perfil.mp4",
 
     videoFondo: "/assets/artistas/dazen/perfil/video-perfil.mp4", // Placeholder
-    poster: "/assets/artistas/dazen/perfil/foto-perfil.jpg",
+    poster: "/assets/artistas/dazen/perfil/foto-perfil.webp",
 
     biografia: `Diego Trachta  “Dazen” es productor musical Argentino. Creció entre Formosa y Rosario y hoy está radicado en Buenos Aires. Su primer vínculo formal con la música llegó a los 11 años, estudiando batería y guitarra en una academia; una década más tarde encontró en la producción su lugar natural: entre 2015 y 2016 publicó remakes de electrónica y, en 2017, comenzó a subir type beats a YouTube, canal que pronto se volvió un referencia en habla hispana, y lo conectó con artistas y productores de distintas escenas.
 
@@ -469,11 +469,11 @@ Actualmente desarrolla nuevas producciones y colaboraciones, expandiendo su alca
     slug: "lonzo",
     nombre: "Lonzo",
     rol: "Productor",
-    foto: "/assets/artistas/lonzo/perfil/foto-perfil.jpg",
+    foto: "/assets/artistas/lonzo/perfil/foto-perfil.webp",
     video: "/assets/artistas/lonzo/perfil/video-perfil.mp4",
 
     videoFondo: "/assets/artistas/lonzo/perfil/video-perfil.mp4", // Placeholder
-    poster: "/assets/artistas/lonzo/perfil/foto-perfil.jpg",
+    poster: "/assets/artistas/lonzo/perfil/foto-perfil.webp",
 
     biografia: `Joaquín González, nacido en Melo, un pequeño pueblo de Uruguay. Es productor musical y beatmaker. Creció entre la música en inglés que sonaba en su casa y la tradición local; primero se volcó al pop y más tarde encontró en el trap un punto de quiebre. En 2021 comenzó a producir a diario: descubrió la cultura underground de Estados Unidos (Yeat, SoFaygo, ssgkobe), y se formó de manera autodidacta con tutoriales de productores como Cxdy y Rio Leyva, puliendo técnica y criterio en FL Studio hasta forjar un sello propio.
                 Su búsqueda creativa pasa por explorar géneros y combinar herramientas para que cada track tenga identidad sin quedar encasillado. Tiene un objetivo claro: que al escuchar una canción se reconozca su mano aun sin ver los créditos. Para Lonzo, producir es construir canciones memorables a partir de melodías efectivas, diseño sonoro cuidado y una dirección artística que prioriza la voz y el clima.
