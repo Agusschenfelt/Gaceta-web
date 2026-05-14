@@ -81,6 +81,7 @@ export default function FocusLightbox({ open, index, items, onClose, setIndex })
   const closeButtonRef = useRef(null);
   const [muted, setMuted] = useState(true);
   const [isVideoActive, setIsVideoActive] = useState(false);
+  const [hintVisible, setHintVisible] = useState(true);
 
   // Guardar foco anterior, mover a close button al abrir, restaurar al cerrar
   useEffect(() => {
@@ -126,6 +127,12 @@ export default function FocusLightbox({ open, index, items, onClose, setIndex })
   }, [onClose]);
 
   useKey("Escape", () => { if (open) handleClose(); }, open);
+
+  // Auto-fade el hint de navegación tras 2.5s
+  useEffect(() => {
+    const t = setTimeout(() => setHintVisible(false), 2500);
+    return () => clearTimeout(t);
+  }, []);
 
   const playCurrentPauseOthers = (sw) => {
     const allVideos = sw?.el?.querySelectorAll("video") ?? [];
@@ -222,6 +229,20 @@ export default function FocusLightbox({ open, index, items, onClose, setIndex })
             ))}
           </Swiper>
         </div>
+      </div>
+
+      {/* Hint de navegación — auto-fade tras 2.5s */}
+      <div
+        aria-hidden="true"
+        className={clsx(
+          "absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none transition-opacity duration-700",
+          hintVisible ? "opacity-100" : "opacity-0"
+        )}
+      >
+        <p className="font-mono text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-white/30 text-center whitespace-nowrap">
+          <span className="md:hidden">deslizá · toca fuera para cerrar</span>
+          <span className="hidden md:inline">← → navegar · Esc cerrar</span>
+        </p>
       </div>
     </div>,
     document.body

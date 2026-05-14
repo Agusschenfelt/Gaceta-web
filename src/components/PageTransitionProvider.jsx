@@ -219,7 +219,7 @@ export default function PageTransitionProvider({ children }) {
         className="fixed inset-0 z-[10001] bg-fondo hidden flex-col items-center justify-center pointer-events-none"
       >
         {/* Noise */}
-        <div className="absolute inset-0 opacity-[0.06] pointer-events-none noise-texture" />
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none noise-texture" />
 
         {/* Etiqueta esquina — editorial */}
         <span className="absolute top-6 left-6 md:top-8 md:left-10 font-mono text-[9px] tracking-[0.35em] text-secundario/50 uppercase z-10 select-none">

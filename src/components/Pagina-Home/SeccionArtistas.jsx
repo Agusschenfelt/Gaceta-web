@@ -81,7 +81,7 @@ export default function SeccionArtistas({ artistsData, showAll = false }) {
                 <TransitionLink
                     to="/artistas"
                     aria-label="Ver todos los artistas"
-                    className="group relative inline-flex items-center gap-3 px-8 py-4 overflow-hidden rounded-full bg-white/5 border border-white/10 hover:border-secundario/50 transition-[border-color] duration-500"
+                    className="group relative inline-flex items-center gap-3 px-8 py-4 overflow-hidden rounded-sm bg-white/5 border border-white/10 hover:border-secundario/50 transition-[border-color] duration-500"
                 >
                     <span className="relative z-10 font-mono text-xs uppercase tracking-[0.2em] text-white group-hover:text-secundario transition-colors">
                         Ver Roster Completo

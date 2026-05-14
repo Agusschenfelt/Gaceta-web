@@ -83,11 +83,11 @@ export default function SeccionEquipos({ areas = DEFAULT_AREAS }) {
         {/* GRID */}
         <div className="team-grid grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10">
           {areas.map((a, i) => (
-            <article key={i} className="team-card group relative aspect-[3/4] overflow-hidden rounded-lg bg-white/5 border border-white/5 focus-within:ring-2 focus-within:ring-secundario focus-within:ring-offset-2 focus-within:ring-offset-fondo">
+            <article key={i} tabIndex={0} className="team-card group relative aspect-[3/4] overflow-hidden rounded-lg bg-white/5 border border-white/5 focus-within:ring-2 focus-within:ring-secundario focus-within:ring-offset-2 focus-within:ring-offset-fondo" aria-label={a.titulo}>
               <img 
                 src={a.imagen} 
                 alt={a.titulo} 
-                className="absolute inset-0 h-full w-full object-cover transition-[filter,opacity,transform] duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0 opacity-60 group-hover:opacity-100" 
+                className="absolute inset-0 h-full w-full object-cover transition-[filter,opacity,transform] duration-500 group-hover:scale-105 grayscale group-hover:grayscale-0 opacity-60 group-hover:opacity-100"
                 loading="lazy" 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90 transition-opacity duration-500" />
@@ -98,7 +98,7 @@ export default function SeccionEquipos({ areas = DEFAULT_AREAS }) {
                     {a.titulo}
                 </h3>
                 {/* Descripción: siempre visible en mobile, reveal en desktop */}
-                <div className="grid grid-rows-[1fr] md:grid-rows-[0fr] md:group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-out">
+                <div className="grid grid-rows-[1fr] md:grid-rows-[0fr] md:group-hover:grid-rows-[1fr] md:group-focus-within:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-out">
                     <div className="overflow-hidden">
                         <p className="text-sm text-white/70 leading-relaxed pt-3 border-t border-secundario/30">
                             {a.descripcion}

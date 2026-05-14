@@ -2,6 +2,24 @@ import React, { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import TransitionLink from "../TransitionLink";
 
+// Derives srcset entries for a given extension from a webp URL like "/media/img/foo-840.webp"
+function buildSrcSet(webpUrl, ext) {
+  const match = webpUrl.match(/^(.*)-\d+\.webp$/);
+  if (!match) return undefined;
+  const base = match[1];
+  return [320, 560, 840].map((w) => `${base}-${w}.${ext} ${w}w`).join(", ");
+}
+
+function TeaserImage({ src, alt }) {
+  return (
+    <picture>
+      <source type="image/avif" srcSet={buildSrcSet(src, "avif")} sizes="(max-width: 639px) 44vw, (max-width: 1023px) 280px, 340px" />
+      <source type="image/webp" srcSet={buildSrcSet(src, "webp")} sizes="(max-width: 639px) 44vw, (max-width: 1023px) 280px, 340px" />
+      <img src={src} alt={alt} width="320" height="427" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+    </picture>
+  );
+}
+
 export default function SeccionGalleryTeaser({
   images = [],
   eyebrow = "",
@@ -67,6 +85,9 @@ export default function SeccionGalleryTeaser({
       <div aria-hidden="true" className="noise-texture absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay -z-10" />
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.3)_100%)] -z-10" />
 
+      {/* Heading accesible para screen readers */}
+      <h2 className="sr-only">Galería GACETA</h2>
+
       {/* EYEBROW */}
       {eyebrow && (
         <span className="relative z-30 block text-[10px] font-mono uppercase tracking-[0.3em] text-secundario/70 mb-6 text-center">
@@ -86,15 +107,15 @@ export default function SeccionGalleryTeaser({
       {/* Cartas */}
       <div className="relative w-full max-w-5xl h-[clamp(300px,70vh,550px)] flex items-center justify-center z-20 perspective-[1000px] mb-10">
           <div ref={el => cardsRef.current[0] = el} className="absolute w-[clamp(180px,40vw,280px)] md:w-[260px] lg:w-[320px] aspect-[3/4] rounded-xl shadow-2xl border-[8px] border-white/90 overflow-hidden origin-bottom-right bg-black">
-              <img src={displayImages[0]} alt="Foto de la galería GACETA 1" width="300" height="400" loading="lazy" className="w-full h-full object-cover" />
+              <TeaserImage src={displayImages[0]} alt="Foto de la galería GACETA 1" />
               <div className="absolute inset-0 bg-black/10" />
           </div>
           <div ref={el => cardsRef.current[2] = el} className="absolute w-[clamp(180px,40vw,280px)] md:w-[260px] lg:w-[320px] aspect-[3/4] rounded-xl shadow-2xl border-[8px] border-white/90 overflow-hidden origin-bottom-left bg-black">
-              <img src={displayImages[2]} alt="Foto de la galería GACETA 3" width="300" height="400" loading="lazy" className="w-full h-full object-cover" />
+              <TeaserImage src={displayImages[2]} alt="Foto de la galería GACETA 3" />
               <div className="absolute inset-0 bg-black/10" />
           </div>
           <div ref={el => cardsRef.current[1] = el} className="absolute w-[clamp(200px,44vw,300px)] md:w-[280px] lg:w-[340px] aspect-[3/4] rounded-xl shadow-[0_30px_80px_rgba(0,0,0,0.4)] border-[8px] border-white overflow-hidden z-20 bg-black">
-              <img src={displayImages[1]} alt="Foto de la galería GACETA 2" width="300" height="400" loading="lazy" className="w-full h-full object-cover" />
+              <TeaserImage src={displayImages[1]} alt="Foto de la galería GACETA 2" />
           </div>
       </div>
 
@@ -102,7 +123,7 @@ export default function SeccionGalleryTeaser({
       <div ref={btnRef} className="relative z-30 w-full max-w-4xl px-6 md:px-10 mt-8">
         <TransitionLink
           to={ctaHref}
-          className="group flex items-center justify-between w-full py-5 md:py-6 border-t-2 border-b-2 border-white/25 hover:border-secundario transition-colors duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secundario focus-visible:ring-offset-4 focus-visible:ring-offset-fondo"
+          className="group flex items-center justify-between w-full py-5 md:py-6 border-t-2 border-b-2 border-white/25 hover:border-secundario transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secundario focus-visible:ring-offset-4 focus-visible:ring-offset-fondo"
         >
           <span className="font-black text-2xl md:text-3xl lg:text-4xl uppercase tracking-tighter text-white group-hover:text-secundario transition-colors duration-300">
             {ctaText}

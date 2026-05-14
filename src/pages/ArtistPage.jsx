@@ -140,21 +140,19 @@ export default function ArtistPage() {
       );
     });
 
-    // 7. CATÁLOGO — reveal orquestado
+    // 7. CATÁLOGO — reveal orquestado (1 ScrollTrigger con stagger en el container)
     const catalogItems = gsap.utils.toArray(".catalog-item-anim");
-    catalogItems.forEach((item) => {
-      const num = item.querySelector(".catalog-num");
-      const title = item.querySelector(".catalog-title");
-      const tl = gsap.timeline({
-        scrollTrigger: { trigger: item, start: "top 93%", once: true }
+    if (catalogItems.length) {
+      const nums   = catalogItems.map(el => el.querySelector(".catalog-num")).filter(Boolean);
+      const titles = catalogItems.map(el => el.querySelector(".catalog-title")).filter(Boolean);
+      const catalogSection = catalogItems[0].closest("section");
+
+      const catalogTl = gsap.timeline({
+        scrollTrigger: { trigger: catalogSection, start: "top 80%", once: true }
       });
-      if (num) tl.fromTo(num,
-        { x: -10, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.3, ease: "power2.out" }, 0);
-      if (title) tl.fromTo(title,
-        { x: -18, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 0.12);
-    });
+      if (nums.length)   catalogTl.fromTo(nums,   { x: -10, opacity: 0 }, { x: 0, opacity: 1, duration: 0.3, ease: "power2.out",  stagger: 0.07 }, 0);
+      if (titles.length) catalogTl.fromTo(titles, { x: -18, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, ease: "power3.out",  stagger: 0.07 }, 0.12);
+    }
 
     // 8. NEXT ARTIST — clip-path reveal
     const nextText = containerRef.current?.querySelector(".next-artist-text");
@@ -210,7 +208,7 @@ export default function ArtistPage() {
         {/* Gradientes de Lectura */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent z-10" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
-        <div className="noise-texture absolute inset-0 opacity-[0.06] z-10" />
+        <div className="noise-texture absolute inset-0 opacity-[0.03] z-10" />
       </div>
 
       <div className="relative z-20">
@@ -234,16 +232,16 @@ export default function ArtistPage() {
                 ref={titleRef} 
                 key={id} 
                 className={`
-                    ${titleSizeClass} 
-                    leading-[0.9] 
-                    font-bold 
-                    tracking-tighter 
-                    text-white 
-                    mix-blend-overlay 
-                    opacity-90
-                    w-full 
-                    break-words 
+                    ${titleSizeClass}
+                    leading-[0.9]
+                    font-bold
+                    tracking-tighter
+                    text-white
+                    opacity-95
+                    w-full
+                    break-words
                     text-balance
+                    drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]
                 `}
             >
                 {artist.nombre}
@@ -315,7 +313,7 @@ export default function ArtistPage() {
                     <div className="flex flex-col gap-12 md:sticky md:top-32">
                         {sidePhotos.map((photo, i) => (
                             <div key={i} className={`photo-reveal rounded-lg overflow-hidden border border-white/10 shadow-2xl bg-black ${i % 2 === 0 ? 'aspect-[3/4]' : 'aspect-square'}`}>
-                                <SafeImage src={photo} alt={`Foto de ${artist.nombre} ${i + 1}`} className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity duration-700" />
+                                <SafeImage src={photo} alt={`Foto de ${artist.nombre} ${i + 1}`} className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity duration-500" />
                             </div>
                         ))}
                     </div>
@@ -390,6 +388,8 @@ export default function ArtistPage() {
                         <span className="shrink-0 text-[9px] font-mono uppercase tracking-widest text-white/20 border border-white/10 rounded-full px-2.5 py-1">Sold Out</span>
                       ) : isUpcoming && show.ticketLink ? (
                         <span className="shrink-0 text-[9px] font-mono uppercase tracking-widest text-secundario border border-secundario/30 rounded-full px-2.5 py-1 group-hover:bg-secundario/10 transition-[background-color] duration-200">Entradas</span>
+                      ) : isUpcoming ? (
+                        <span className="shrink-0 text-[9px] font-mono uppercase tracking-widest text-secundario/50 border border-secundario/20 rounded-full px-2.5 py-1">Pronto</span>
                       ) : null}
                     </Tag>
                   </li>
@@ -404,12 +404,14 @@ export default function ArtistPage() {
           <section className="relative w-full min-h-[40svh] md:h-[80vh] flex items-center justify-center overflow-hidden group border-t border-white/10 bg-fondo z-20">
             <TransitionLink to={`/artistas/${nextArtist.slug ?? norm(nextArtist.nombre)}`} aria-label={`Ver ${nextArtist.nombre}`} className="absolute inset-0 z-30 block cursor-pointer" />
             <div className="absolute inset-0 -z-10">
-                <SafeImage src={nextArtist.fotos?.[0] || "/assets/placeholder.jpg"} alt={nextArtist.nombre} className="w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-[opacity,transform] duration-1000 group-hover:scale-[1.03] grayscale" />
+                <SafeImage src={nextArtist.fotos?.[0] || "/assets/placeholder.jpg"} alt={nextArtist.nombre} className="w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-[opacity,transform] duration-500 group-hover:scale-[1.03] grayscale" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
             </div>
             <div className="text-center z-20 relative mix-blend-screen px-4">
-                <p className="text-xs font-mono tracking-[0.3em] uppercase text-secundario mb-6 opacity-70 group-hover:opacity-100 transition-opacity">Siguiente Artista</p>
-                <h2 className="next-artist-text text-7xl md:text-[8rem] lg:text-[12rem] font-serif italic text-white leading-none tracking-tighter group-hover:scale-105 transition-transform duration-700">{nextArtist.nombre}</h2>
+                <p className="text-xs font-mono tracking-[0.3em] uppercase text-secundario mb-6 opacity-70 group-hover:opacity-100 transition-opacity">
+                  {currentIndex + 1} / {artistsData.length} · Siguiente
+                </p>
+                <h2 className="next-artist-text text-7xl md:text-[8rem] lg:text-[12rem] font-serif italic text-white leading-none tracking-tighter group-hover:scale-105 transition-transform duration-500">{nextArtist.nombre}</h2>
             </div>
           </section>
         )}

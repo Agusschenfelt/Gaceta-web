@@ -91,7 +91,7 @@ export default function SeccionNosotros() {
       </div>
 
       {/* Línea conectora hacia el Timeline */}
-      <div className="absolute bottom-0 h-28 w-px z-20 left-[33px] md:left-[calc(50vw_-_0.5px)]">
+      <div className="absolute bottom-0 h-28 w-px z-20 left-6 md:left-[calc(50vw_-_0.5px)]">
         <div ref={lineRef} className="w-full h-full bg-gradient-to-b from-transparent via-secundario/60 to-secundario shadow-[0_0_10px_var(--color-secundario)]" />
       </div>
 

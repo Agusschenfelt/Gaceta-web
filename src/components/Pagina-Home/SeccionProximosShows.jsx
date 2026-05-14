@@ -102,7 +102,7 @@ export default function SeccionProximosShows() {
             {/* HEADER (Sin cambios) */}
             <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 border-b border-white/20 pb-6">
                 <div>
-                    <span className="shows-eyebrow block text-xs font-mono text-secundario tracking-widest mb-2 uppercase text-left">Calendario 2026</span>
+                    <span className="shows-eyebrow block text-xs font-mono text-secundario tracking-widest mb-2 uppercase text-left">Calendario {new Date().getFullYear()}</span>
                     <h2 className="shows-heading text-5xl md:text-6xl lg:text-8xl font-serif italic leading-none text-white text-left">Shows</h2>
                 </div>
             </div>
@@ -145,8 +145,8 @@ export default function SeccionProximosShows() {
                             Sold Out
                         </span>
                     ) : show.status === "soon" ? (
-                        <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-white/40 uppercase border border-white/10 px-3 py-1 rounded-full group-hover:text-white/70 group-hover:border-white/30 transition-colors">
-                            Coming Soon
+                        <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-secundario/50 uppercase border border-secundario/20 px-3 py-1 rounded-full group-hover:text-secundario group-hover:border-secundario/50 transition-[color,border-color] duration-300">
+                            Pronto
                         </span>
                     ) : show.ticketLink ? (
                         <a
@@ -157,7 +157,11 @@ export default function SeccionProximosShows() {
                         >
                             Tickets <ArrowUpRight size={14} className="transition-transform duration-200 group-hover:translate-x-px group-hover:-translate-y-px" />
                         </a>
-                    ) : null}
+                    ) : (
+                        <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-secundario/50 uppercase border border-secundario/20 px-3 py-1 rounded-full">
+                            Pronto
+                        </span>
+                    )}
                 </div>
                 </div>
             ))}

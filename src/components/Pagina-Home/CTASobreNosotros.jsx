@@ -91,7 +91,7 @@ export default function CTASobreNosotros() {
       <div ref={ctaRef} className="opacity-0">
         <TransitionLink
           to="/sobre-nosotros"
-          className="group flex items-center gap-2.5 font-mono text-[10px] tracking-[0.3em] uppercase text-white/30 hover:text-secundario transition-colors duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secundario rounded-sm"
+          className="group flex items-center gap-2.5 font-mono text-[10px] tracking-[0.3em] uppercase text-white/60 hover:text-secundario transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secundario rounded-sm"
         >
           <span>Sobre GACETA</span>
           <svg

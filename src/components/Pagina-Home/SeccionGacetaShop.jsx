@@ -10,7 +10,7 @@ const products = [
     price: 20000,
     image: "/assets/gaceta-negra.webp",
     href: "https://gaceta.shop/productos/black-gaceta-tee/",
-    soldOut: false,
+    soldOut: true,
   },
   {
     id: "2",
@@ -18,7 +18,7 @@ const products = [
     price: 29999,
     image: "/assets/rv-tee.webp",
     href: "https://gaceta.shop/productos/white-rv-oversize-tee/",
-    soldOut: false,
+    soldOut: true,
   },
   {
     id: "3",
@@ -26,7 +26,7 @@ const products = [
     price: 29999,
     image: "/assets/bc-negra.webp",
     href: "https://gaceta.shop/productos/white-backstagecover-tee/",
-    soldOut: false,
+    soldOut: true,
   },
 ];
 
@@ -50,62 +50,63 @@ const ProductCard = React.memo(function ProductCard({ p }) {
       }`}
     >
       <div className="h-full flex flex-col">
-        {/* COHERENCIA: Card con borde sutil */}
-        <div className="relative rounded-sm overflow-hidden bg-white/[0.02] border border-white/5 group-hover:border-secundario/30 transition-[border-color] duration-500 h-full flex flex-col">
-          
-          {/* IMAGEN - Full color y viva */}
+        <div className={`relative rounded-sm overflow-hidden bg-white/[0.02] border transition-[border-color] duration-500 h-full flex flex-col ${
+          p.soldOut ? "border-white/5 opacity-60" : "border-white/5 group-hover:border-secundario/30"
+        }`}>
+
+          {/* IMAGEN */}
           <div className="aspect-[4/5] relative overflow-hidden bg-fondo border-b border-white/5">
-             {/* Overlay sutil en hover solo si NO está sold out */}
             {!p.soldOut && (
-               <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 z-10" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 z-10" />
             )}
-             
+
             <img
               src={p.image}
               alt={p.title}
               width="400"
               height="500"
               loading="lazy"
-              // Mantenemos el zoom suave en hover incluso si está sold out, para que se sienta premium
-              className="h-full w-full object-cover transition-transform duration-1000 opacity-100 scale-100 group-hover:scale-105"
+              className={`h-full w-full object-cover transition-[filter,transform] duration-500 ${
+                p.soldOut ? "grayscale opacity-70" : "group-hover:scale-105"
+              }`}
             />
 
-            {/* BADGE SOLD OUT SOBRE LA IMAGEN (Opcional, pero ayuda) */}
+            {/* SOLD OUT — stamp centrado y rotado */}
             {p.soldOut && (
-                <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20">
-                    <span className="px-3 py-1 bg-white/10 text-white/60 text-[9px] font-mono uppercase tracking-widest rounded-full border border-white/15">
-                        Sold Out
-                    </span>
-                </div>
+              <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/30">
+                <span className="font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-white/80 border border-white/40 px-4 py-2 rotate-[-12deg] bg-black/50 backdrop-blur-sm">
+                  Sold Out
+                </span>
+              </div>
             )}
           </div>
 
           {/* INFO */}
           <div className="p-4 md:p-6 flex flex-col flex-1 justify-between bg-fondo">
             <div>
-                {/* Título mantiene su color blanco, no se apaga */}
-                <h3 className="font-serif italic text-lg leading-tight mb-2 text-white group-hover:text-secundario transition-colors duration-300">
-                  {p.title}
-                </h3>
-                <p className="text-secundario/60 text-xs font-mono tracking-wide">
-                  {currency(p.price)}
-                </p>
+              <h3 className={`font-serif italic text-lg leading-tight mb-2 transition-colors duration-300 ${
+                p.soldOut ? "text-white/40" : "text-white group-hover:text-secundario"
+              }`}>
+                {p.title}
+              </h3>
+              <p className={`text-xs font-mono tracking-wide ${p.soldOut ? "text-white/20 line-through" : "text-secundario/60"}`}>
+                {currency(p.price)}
+              </p>
             </div>
-            
+
             {/* FOOTER CARD */}
             <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-[10px] uppercase tracking-widest">
-                {p.soldOut ? (
-                    <div className="flex items-center gap-2 text-white/40 font-medium">
-                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-white/30"></span>
-                        <span>Agotado</span>
-                    </div>
-                ) : (
-                    // Estado Normal
-                    <div className="flex items-center gap-2 text-white/40 group-hover:text-white transition-colors">
-                        <span>Shop Now</span>
-                        <span className="translate-x-[-5px] opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-[opacity,transform] duration-300">→</span>
-                    </div>
-                )}
+              {p.soldOut ? (
+                <div className="flex items-center gap-2 text-white/30 font-medium">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-white/20" />
+                  <span>Agotado</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-white/40 group-hover:text-white transition-colors">
+                  <span>Shop Now</span>
+                  <span className="translate-x-[-5px] opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-[opacity,transform] duration-300">→</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -136,10 +137,11 @@ export default function SeccionGacetaShop() {
       y: 30, opacity: 0, duration: 0.8, ease: "power3.out", stagger: 0.1
     }, "-=0.5");
     
-    gsap.to(".card-shop", {
-      y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: "power3.out",
-      scrollTrigger: { trigger: ".shop-grid", start: "top 85%", once: true }
-    });
+    gsap.fromTo(".card-shop",
+      { y: 40, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: "power3.out",
+        scrollTrigger: { trigger: ".shop-grid", start: "top 85%", once: true } }
+    );
 
   }, { scope: sectionRef });
 
@@ -180,7 +182,7 @@ export default function SeccionGacetaShop() {
       <div className="shop-grid relative z-10 px-6 md:px-12 max-w-[1200px] mx-auto mb-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {products.map((p) => (
-            <div key={p.id} className="card-shop opacity-0 translate-y-10 h-full">
+            <div key={p.id} className="card-shop h-full">
                 <ProductCard p={p} />
             </div>
           ))}
@@ -192,9 +194,9 @@ export default function SeccionGacetaShop() {
           href="https://gaceta.shop/"
           target="_blank"
           rel="noreferrer"
-          className="group relative inline-flex items-center justify-center gap-3 px-8 py-3 bg-transparent border border-white/20 rounded-full overflow-hidden transition-[border-color] duration-300 hover:border-white/50"
+          className="group relative inline-flex items-center justify-center gap-3 px-8 py-3 bg-transparent border border-white/20 rounded-sm overflow-hidden transition-[border-color] duration-300 hover:border-secundario/50"
         >
-          <span className="relative z-10 font-mono tracking-[0.1em] uppercase text-xs text-white/80 group-hover:text-white transition-colors">
+          <span className="relative z-10 font-mono tracking-[0.1em] uppercase text-xs text-white/80 group-hover:text-secundario transition-colors">
             Ir a la tienda
           </span>
           <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

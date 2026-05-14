@@ -44,7 +44,7 @@ export default function ArtistCardHover({ artist }) {
       <img
         src={artist.foto}
         alt={artist.nombre}
-        className="absolute inset-0 w-full h-full object-cover transition-[filter,opacity,transform] duration-700 group-hover:scale-105 filter grayscale group-hover:grayscale-0 opacity-90 group-hover:opacity-100"
+        className="absolute inset-0 w-full h-full object-cover transition-[filter,opacity,transform] duration-500 group-hover:scale-105 filter grayscale group-hover:grayscale-0 opacity-90 group-hover:opacity-100"
         width="300"
         height="400"
         loading="lazy"
@@ -70,9 +70,9 @@ export default function ArtistCardHover({ artist }) {
       {/* 4. CONTENIDO (Nombre) */}
       <div className="absolute inset-0 flex flex-col justify-end p-6 z-20">
         {/* En móvil siempre visible, en desktop aparece al hover */}
-        <div 
+        <div
             ref={contentRef}
-            className={`transition-[opacity,transform] duration-200 ${isMobile ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100'}`}
+            className={isMobile ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'}
         >
             {/* Línea decorativa */}
             <div className={`h-1 bg-secundario mb-3 transition-[width] duration-500 ${isMobile ? 'w-8' : 'w-0 group-hover:w-16'}`} />

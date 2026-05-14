@@ -98,9 +98,9 @@ export default function FooterGaceta() {
         {/* 1. FRASE GIGANTE (Izquierda) */}
         <div className="lg:col-span-7 self-start">
           <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light leading-[0.95] tracking-tight text-white/90">
-            La escena, <br />
-            en primera <br />
-            <span className="font-serif italic text-secundario">plana.</span>
+            creando <br />
+            experiencias <br />
+            <span className="font-serif italic text-secundario">únicas.</span>
           </h2>
         </div>
 
@@ -113,7 +113,7 @@ export default function FooterGaceta() {
             <nav className="flex flex-col gap-3">
               {FOOTER_LINKS.map((item) => {
                 const isExternal = item.href.startsWith("mailto") || item.href.startsWith("http");
-                const linkClasses = "group relative w-fit text-lg font-light text-white/80 hover:text-white transition-colors cursor-pointer py-2 block";
+                const linkClasses = "group relative w-fit text-lg font-light text-white/80 hover:text-secundario transition-colors cursor-pointer py-2 block";
                 const underline = (
                     <span className="absolute -bottom-1 left-0 w-0 h-px bg-secundario transition-[width] duration-300 group-hover:w-full" />
                 );
@@ -173,33 +173,38 @@ export default function FooterGaceta() {
           
           {/* Copyright */}
           <div className="flex gap-6 text-white/30">
-            <p>© 2026 Gaceta Music.</p>
+            <p>© {new Date().getFullYear()} Gaceta Music.</p>
             <p className="hidden sm:block">All rights reserved.</p>
           </div>
 
           {/* EL GUIÑO INTERACTIVO (Tap to Reveal) */}
-          <button
-            type="button"
-            aria-expanded={creditsOpen}
-            onClick={() => setCreditsOpen(!creditsOpen)}
-            className="group flex items-center py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secundario focus-visible:ring-offset-2 focus-visible:ring-offset-fondo rounded-sm"
-          >
-            
-            <span className="text-white/30 transition-colors duration-500 group-hover:text-white/50">
-              Made by Gaceta
-            </span>
+          <div className="group flex items-center py-2">
+            <button
+              type="button"
+              aria-expanded={creditsOpen}
+              onClick={() => setCreditsOpen(!creditsOpen)}
+              className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secundario focus-visible:ring-offset-2 focus-visible:ring-offset-fondo rounded-sm"
+            >
+              <span className="text-white/30 transition-colors duration-300 group-hover:text-white/50">
+                Made by Gaceta
+              </span>
+            </button>
 
-            <span
-              className={`overflow-hidden whitespace-nowrap text-secundario transition-[max-width,opacity,margin-left] duration-[900ms] ease-[cubic-bezier(0.23,1,0.32,1)] ${
+            <a
+              href="https://agusschenfelt.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Portfolio de Aguss"
+              onClick={(e) => e.stopPropagation()}
+              className={`overflow-hidden whitespace-nowrap text-secundario hover:text-white transition-[max-width,opacity,margin-left,color] duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secundario rounded-sm ${
                 creditsOpen
                   ? "max-w-[200px] opacity-100 ml-2"
                   : "max-w-0 opacity-0 ml-0 md:group-hover:max-w-[300px] md:group-hover:opacity-100 md:group-hover:ml-3"
               }`}
             >
-              x Aguss
-            </span>
-
-          </button>
+              <span className="text-[10px]">x aguss</span>
+            </a>
+          </div>
       </div>
 
       {/* 4. GACETA GIGANTE (Contenedor ajustado) */}

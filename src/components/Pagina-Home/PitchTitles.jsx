@@ -212,20 +212,20 @@ export default function PitchTitles() {
       className="relative flex flex-col items-center gap-[15svh] md:gap-[25vh] lg:gap-[40vh] py-20 md:py-10"
       style={{ perspective: "1000px" }}
     >
-      <h3 className="pitch-title font-medium tracking-tight text-white font-inter text-[clamp(2.5rem,6vw,7rem)] max-w-4xl text-center leading-[1.1]">
+      <h2 className="pitch-title font-medium tracking-tight text-white font-inter text-[clamp(2.5rem,6vw,7rem)] max-w-4xl text-center leading-[1.1]">
         Hecho por y para <br />
         <span className="cursiva text-secundario">artistas</span>
-      </h3>
+      </h2>
 
-      <h3 className="pitch-title font-medium tracking-tight text-white font-inter text-[clamp(2.5rem,6vw,7rem)] max-w-4xl text-center leading-[1.1]">
+      <h2 className="pitch-title font-medium tracking-tight text-white font-inter text-[clamp(2.5rem,6vw,7rem)] max-w-4xl text-center leading-[1.1]">
         Fundado en 2021 <br />
         en el <span className="cursiva text-secundario">Río de la Plata</span> <br />
         con una visión
-      </h3>
+      </h2>
 
-      <h3 className="pitch-title font-medium tracking-tight text-white font-inter text-[clamp(2.5rem,6vw,7rem)] max-w-4xl text-center leading-[1.1]">
+      <h2 className="pitch-title font-medium tracking-tight text-white font-inter text-[clamp(2.5rem,6vw,7rem)] max-w-4xl text-center leading-[1.1]">
         Desarrollar y dar a conocer <span className="cursiva text-secundario">talentos</span>
-      </h3>
+      </h2>
     </div>
   );
 }

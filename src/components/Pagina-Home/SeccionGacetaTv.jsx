@@ -11,14 +11,18 @@ export default function SeccionGacetaTv() {
 
   const [videoId, setVideoId] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [imgFailed, setImgFailed] = useState(false);
 
   useEffect(() => {
     const cached = sessionStorage.getItem("gaceta_latest_video");
     if (cached) { setVideoId(cached); return; }
 
-    fetch("/api/latest-video")
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    fetch("/api/latest-video", { signal: controller.signal })
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then((data) => {
+        clearTimeout(timeout);
         setVideoId(data.videoId);
         sessionStorage.setItem("gaceta_latest_video", data.videoId);
       })
@@ -26,6 +30,9 @@ export default function SeccionGacetaTv() {
   }, []);
 
   useGSAP(() => {
+    // Estado inicial en GSAP, no en DOM — evita flash si JS tarda en cargar
+    if (labelRef.current) gsap.set(labelRef.current, { opacity: 0 });
+
     gsap.fromTo(
       cardRef.current,
       { y: 100, opacity: 0.6, scale: 0.95 },
@@ -72,15 +79,17 @@ export default function SeccionGacetaTv() {
         ref={cardRef}
         className="relative z-20 w-[92%] max-w-[1100px] aspect-video rounded-2xl overflow-hidden ring-1 ring-white/10 bg-black shadow-2xl pointer-events-auto"
       >
-        {/* Loading */}
+        {/* Loading skeleton */}
         {!videoId && (
-          <div className="absolute inset-0 flex items-center justify-center text-xs tracking-[0.2em] text-white/30 uppercase">
-            Cargando...
-          </div>
+          <div
+            className="absolute inset-0 bg-white/[0.04] animate-pulse"
+            role="status"
+            aria-label="Cargando video"
+          />
         )}
 
         {/* Thumbnail facade */}
-        {videoId && !isPlaying && (
+        {videoId && !isPlaying && !imgFailed && (
           <button
             onClick={() => setIsPlaying(true)}
             className="absolute inset-0 w-full h-full group"
@@ -92,7 +101,11 @@ export default function SeccionGacetaTv() {
               className="w-full h-full object-cover"
               loading="lazy"
               onError={(e) => {
-                e.currentTarget.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                if (e.currentTarget.src.includes("maxresdefault")) {
+                  e.currentTarget.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                } else {
+                  setImgFailed(true);
+                }
               }}
             />
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition-colors duration-300" />
@@ -111,6 +124,21 @@ export default function SeccionGacetaTv() {
           </button>
         )}
 
+        {/* Fallback — YouTube inaccesible o thumbnail rota */}
+        {videoId && !isPlaying && imgFailed && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/80">
+            <p className="text-white/40 font-mono text-xs uppercase tracking-widest">No se pudo cargar el video</p>
+            <a
+              href="https://youtube.com/@esgaceta"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-5 py-2.5 border border-white/20 text-white/70 hover:text-white hover:border-white/50 transition-colors font-mono text-xs uppercase tracking-widest focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secundario rounded-sm"
+            >
+              Ver en YouTube ↗
+            </a>
+          </div>
+        )}
+
         {/* Iframe — solo al hacer play */}
         {videoId && isPlaying && (
           <iframe
@@ -125,7 +153,7 @@ export default function SeccionGacetaTv() {
 
       <h2
         ref={labelRef}
-        className="mt-10 text-center text-white/90 font-semibold tracking-widest uppercase text-xs z-20 opacity-0"
+        className="mt-10 text-center text-white/90 font-semibold tracking-widest uppercase text-xs z-20"
       >
         GACE<span className="text-secundario">TV</span>
       </h2>

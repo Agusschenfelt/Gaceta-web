@@ -226,7 +226,7 @@ export default function IntroToLogo() {
           className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/50 flex flex-col items-center gap-2"
         >
           <span className="text-[10px] uppercase tracking-widest font-mono">Scroll</span>
-          <div className="w-px h-8 bg-white/30" />
+          <div className="w-px h-8 bg-white/30 animate-scroll-hint" />
         </div>
       </section>
 

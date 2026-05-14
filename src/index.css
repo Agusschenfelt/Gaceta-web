@@ -90,6 +90,15 @@ body {
     mask-repeat: no-repeat;
 }
 
+/* ⬇ SCROLL HINT — smooth, no elastic bounce */
+@keyframes scrollHint {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(5px); opacity: 1; }
+}
+.animate-scroll-hint {
+  animation: scrollHint 2s ease-in-out infinite;
+}
+
 /* 🎵 MUSIC PLAYER DELIGHT */
 @keyframes playingBar {
   0%, 100% { transform: scaleY(0.3); }

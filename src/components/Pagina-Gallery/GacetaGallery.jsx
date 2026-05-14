@@ -242,14 +242,39 @@ export default function GacetaGallery({
 }) {
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
-  const openAt = useCallback((i) => { setIndex(i); setOpen(true); }, []);
+  const savedScrollY = useRef(0);
+  const openAt = useCallback((i) => {
+    savedScrollY.current = window.scrollY;
+    setIndex(i);
+    setOpen(true);
+  }, []);
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: savedScrollY.current, behavior: "instant" });
+    });
+  }, []);
 
   const galleryRef = useRef(null);
   const titleRef = useRef(null);
   const gridRef = useRef(null);
 
-  // Progressive Loading State
-  const [visibleCount, setVisibleCount] = useState(12); // Initial chunk to ensure fast transition
+  // Progressive Loading State — se persiste en sessionStorage para que
+  // volver desde el lightbox o desde otra página restaure la posición
+  const GALLERY_COUNT_KEY = "gaceta_gallery_count";
+  const [visibleCount, setVisibleCount] = useState(() => {
+    try {
+      const saved = parseInt(sessionStorage.getItem(GALLERY_COUNT_KEY) || "12", 10);
+      return Math.min(saved, items.length) || 12;
+    } catch {
+      return 12;
+    }
+  });
+
+  // Persistir visibleCount en sessionStorage cuando cambia
+  useEffect(() => {
+    try { sessionStorage.setItem(GALLERY_COUNT_KEY, String(visibleCount)); } catch {}
+  }, [visibleCount]);
 
   // Generamos el layout deterministicamente una sola vez
   const layout = useMemo(() => {
@@ -311,11 +336,21 @@ export default function GacetaGallery({
       {/* GRID */}
 {/* MINI LABEL */}
       {!open && (
-        <div className="relative z-[20] pt-28 md:pt-36 pb-8 md:pb-10 px-6 md:px-10 max-w-[1800px] mx-auto">
-          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/30">
-            <span className="text-white/60">{items.length}</span>
+        <div className="relative z-[20] pt-28 md:pt-36 pb-8 md:pb-10 px-6 md:px-10 max-w-[1800px] mx-auto flex items-baseline gap-6">
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
+            <span className="text-white/60">{visibleCount}</span>
+            {" / "}
+            <span className="text-white/40">{items.length}</span>
             {" "}fotos · abrí cualquiera para descargar
           </p>
+          {visibleCount < items.length && (
+            <button
+              onClick={() => setVisibleCount(items.length)}
+              className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/30 hover:text-secundario transition-colors duration-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-secundario rounded-sm"
+            >
+              Ver todo
+            </button>
+          )}
         </div>
       )}
 
@@ -358,7 +393,7 @@ export default function GacetaGallery({
             open={open}
             index={index}
             items={items}
-            onClose={() => setOpen(false)}
+            onClose={handleClose}
             setIndex={setIndex}
           />
         </Suspense>

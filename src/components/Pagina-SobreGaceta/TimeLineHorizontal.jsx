@@ -109,7 +109,7 @@ export default function TimeLineHorizontal({ data = GACETA_TIMELINE }) {
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: `+=${maxX() * 0.15}`,
+          end: `+=${maxX() * 0.25}`,
           scrub: true,
         }
       });
@@ -129,7 +129,14 @@ export default function TimeLineHorizontal({ data = GACETA_TIMELINE }) {
       ref={sectionRef}
       className="relative w-full h-[100svh] overflow-hidden bg-transparent text-white z-20"
     >
-      
+      {/* Skip link — accesibilidad teclado/switch */}
+      <a
+        href="#timeline-end"
+        className="absolute top-4 left-4 z-[100] px-3 py-1.5 bg-fondo border border-secundario text-secundario text-[10px] font-mono uppercase tracking-widest opacity-0 focus:opacity-100 focus-visible:opacity-100 transition-opacity rounded-sm pointer-events-auto"
+      >
+        Saltar timeline →
+      </a>
+
       {/* Fondos */}
       <div className="absolute top-0 left-0 w-full h-[30svh] bg-gradient-to-b from-transparent via-fondo/95 to-fondo pointer-events-none z-0" />
       <div className="absolute top-[30vh] left-0 w-full h-full bg-fondo pointer-events-none z-0" />
@@ -145,7 +152,7 @@ export default function TimeLineHorizontal({ data = GACETA_TIMELINE }) {
         <span className="font-mono text-[10px] tracking-[0.25em] text-secundario/50 uppercase">Seguí scrolleando</span>
         <div className="flex items-center gap-2">
           <div className="w-8 h-px bg-secundario/30" />
-          <span className="text-secundario/60 text-sm animate-bounce" style={{ animationDuration: "1.4s" }}>→</span>
+          <span className="text-secundario/60 text-sm animate-scroll-hint">→</span>
           <div className="w-8 h-px bg-secundario/30" />
         </div>
       </div>
@@ -185,8 +192,8 @@ export default function TimeLineHorizontal({ data = GACETA_TIMELINE }) {
 
           {/* FINAL */}
           <div className="relative shrink-0 flex w-[600px] items-center group/future">
-             <span className="absolute -top-[180px] left-10 text-[20rem] font-black text-white/[0.08] select-none pointer-events-none leading-none font-inter z-0 blur-md transition-opacity duration-1000 group-hover/future:text-white/[0.02]">
-                 2026
+             <span className="absolute -top-[180px] left-10 text-[20rem] font-black text-white/[0.08] select-none pointer-events-none leading-none font-inter z-0 blur-md transition-opacity duration-500 group-hover/future:text-white/[0.02]">
+                 {new Date().getFullYear()}
              </span>
              <div className="absolute top-0 left-0 w-64 h-px bg-gradient-to-r from-white/10 to-transparent" />
              <div className="pt-16 pl-20 opacity-60 hover:opacity-100 transition-opacity duration-500 cursor-default">
@@ -197,6 +204,9 @@ export default function TimeLineHorizontal({ data = GACETA_TIMELINE }) {
 
         </div>
       </div>
+
+      {/* Target del skip link */}
+      <div id="timeline-end" tabIndex={-1} className="sr-only" />
     </section>
   );
 }
@@ -231,7 +241,7 @@ function EventCard({ ev }) {
             {ev.media?.type === "video" ? (
                 <video ref={videoRef} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" src={ev.media.src} muted loop playsInline preload="metadata" />
             ) : (
-                <img src={ev.media.src} alt={ev.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-[opacity,transform] duration-700" loading="lazy" />
+                <img src={ev.media.src} alt={ev.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-[opacity,transform] duration-500" loading="lazy" />
             )}
         </div>
 

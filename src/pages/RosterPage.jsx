@@ -1,9 +1,10 @@
-import React, { useRef, useState, useMemo } from "react";
+import React, { useRef, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import SEO from "../SEO";
-import SeccionArtistas from "../components/Pagina-Home/SeccionArtistas"; 
-import { ARTISTS_DATA } from "../data/artistsData"; 
+import SeccionArtistas from "../components/Pagina-Home/SeccionArtistas";
+import { ARTISTS_DATA } from "../data/artistsData";
 
 // Componente Marquee (Texto Infinito)
 const InfiniteMarquee = () => (
@@ -11,7 +12,7 @@ const InfiniteMarquee = () => (
     <div className="whitespace-nowrap animate-marquee">
       {[...Array(4)].map((_, i) => (
         <span key={i} className="text-[15vw] font-black uppercase tracking-tighter leading-none mx-4">
-          Gaceta Roster — 2026 — Talent & Culture —
+          Gaceta Roster — {new Date().getFullYear()} — Talent & Culture —
         </span>
       ))}
     </div>
@@ -27,13 +28,19 @@ const FILTER_OPTIONS = [
 
 export default function RosterPage() {
   const container = useRef(null);
-  const [filter, setFilter] = useState("all"); 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filter = searchParams.get("rol") || "all";
+
+  const setFilter = (key) => {
+    if (key === "all") setSearchParams({}, { replace: true });
+    else setSearchParams({ rol: key }, { replace: true });
+  };
 
   // Lógica de Filtrado
   const filteredArtists = useMemo(() => {
     if (filter === "all") return ARTISTS_DATA;
-    return ARTISTS_DATA.filter((artist) => 
-        artist.rol.toLowerCase().includes(filter)
+    return ARTISTS_DATA.filter((artist) =>
+      artist.rol.toLowerCase().includes(filter)
     );
   }, [filter]);
 
@@ -97,9 +104,18 @@ export default function RosterPage() {
             </div>
         </div>
 
-        <div key={filter}>
-            <SeccionArtistas artistsData={filteredArtists} showAll={true} />
-        </div>
+        {filteredArtists.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-32 px-6 text-center">
+            <p className="font-mono text-xs uppercase tracking-[0.3em] text-white/20 mb-3">
+              Sin resultados
+            </p>
+            <p className="text-white/40 text-sm font-light">
+              No hay talentos en esta categoría todavía.
+            </p>
+          </div>
+        ) : (
+          <SeccionArtistas artistsData={filteredArtists} showAll={true} />
+        )}
 
       </div>
     </>
