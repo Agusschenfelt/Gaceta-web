@@ -1,0 +1,480 @@
+{
+  "artist": "Fosse",
+  "slug": "fosse",
+  "tracks": [
+    {
+      "id": "UY01G2400096",
+      "title": "40 DE MADRID",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse"
+      ],
+      "audio_file": "/audio/UY01G2400096.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273d1b84ae7e6008939991e2cd4",
+      "spotify_url": "https://open.spotify.com/track/3moYLZjrZukq50B1Grz7nw",
+      "release": "40 DE MADRID",
+      "release_date": "2025-11-27",
+      "duration_ms": 102111,
+      "deezer_id": 3644810052
+    },
+    {
+      "id": "UY01G2400029",
+      "title": "te quedaste con mi hoodie",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse",
+        "LEA GOVEA",
+        "GALO"
+      ],
+      "audio_file": "/audio/UY01G2400029.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27329e0425b13e7af01e88514f7",
+      "spotify_url": "https://open.spotify.com/track/0Vb7o6SMvReCTo1OdGAH62",
+      "release": "todo x vos",
+      "release_date": "2025-05-22",
+      "duration_ms": 137555,
+      "deezer_id": 3365221071
+    },
+    {
+      "id": "UY01G2400025",
+      "title": "no me busques xq re estoy",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse",
+        "Luk-s"
+      ],
+      "audio_file": "/audio/UY01G2400025.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27329e0425b13e7af01e88514f7",
+      "spotify_url": "https://open.spotify.com/track/3zSBd1GOGRVMq1Cv0KLMQh",
+      "release": "todo x vos",
+      "release_date": "2025-05-22",
+      "duration_ms": 150872,
+      "deezer_id": 3320265661
+    },
+    {
+      "id": "UY01G2400028",
+      "title": "te odiaria pero es alta tranza",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse"
+      ],
+      "audio_file": "/audio/UY01G2400028.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27329e0425b13e7af01e88514f7",
+      "spotify_url": "https://open.spotify.com/track/4CM97Onjbhuarb6LN0868P",
+      "release": "todo x vos",
+      "release_date": "2025-05-22",
+      "duration_ms": 127951,
+      "deezer_id": 3365221051
+    },
+    {
+      "id": "UY01G2400027",
+      "title": "somos iguales",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse"
+      ],
+      "audio_file": "/audio/UY01G2400027.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27329e0425b13e7af01e88514f7",
+      "spotify_url": "https://open.spotify.com/track/192E8t89lmecDn3Vw1eooQ",
+      "release": "todo x vos",
+      "release_date": "2025-05-22",
+      "duration_ms": 120480,
+      "deezer_id": 3365221041
+    },
+    {
+      "id": "UY01G2400022",
+      "title": "Hechicera",
+      "artist": "Fosse",
+      "artists": [
+        "Valuto",
+        "Wave",
+        "Fosse",
+        "Ramma"
+      ],
+      "audio_file": "/audio/UY01G2400022.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2734d5dee8cf6bde3fe43dc4456",
+      "spotify_url": "https://open.spotify.com/track/31EBGq2sl8xlOG4OR7PKh5",
+      "release": "Hechicera",
+      "release_date": "2025-04-22",
+      "duration_ms": 176484,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142400083",
+      "title": "ALTURA - Remix",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse",
+        "Valuto",
+        "Davus",
+        "Wave",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/UYT142400083.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27307c519b41da4748c323a60f9",
+      "spotify_url": "https://open.spotify.com/track/3sMdkiQTmuI3UyYIBjFmrT",
+      "release": "ALTURA (Remix)",
+      "release_date": "2025-01-23",
+      "duration_ms": 245538,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142400041",
+      "title": "BRENT.",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse",
+        "Lonzo",
+        "Barta"
+      ],
+      "audio_file": "/audio/UYT142400041.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273aee6c592cd768a13177cd442",
+      "spotify_url": "https://open.spotify.com/track/1Jf7HgbH5CXPzAPzAbRzkJ",
+      "release": "BRENT.",
+      "release_date": "2024-09-10",
+      "duration_ms": 140000,
+      "deezer_id": 2959929371
+    },
+    {
+      "id": "UYT142400020",
+      "title": "ALTURA",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/UYT142400020.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2737bdc01170d04b9d256a752c3",
+      "spotify_url": "https://open.spotify.com/track/1x4xUyec4llMhfCdAqZmkG",
+      "release": "ALTURA",
+      "release_date": "2024-05-15",
+      "duration_ms": 89076,
+      "deezer_id": 2758328921
+    },
+    {
+      "id": "UYT142400019",
+      "title": "lo q le hago.",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse"
+      ],
+      "audio_file": "/audio/UYT142400019.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273f452121d55de8f067bbdc3ea",
+      "spotify_url": "https://open.spotify.com/track/4nwozuy28hFUTLOguxDQP3",
+      "release": "lo q le hago.",
+      "release_date": "2024-05-01",
+      "duration_ms": 105600,
+      "deezer_id": 2755395451
+    },
+    {
+      "id": "UYT142400011",
+      "title": "Estimulos",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse",
+        "Knak"
+      ],
+      "audio_file": "/audio/UYT142400011.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2730d0ed8d1d2cb868eaa6310d4",
+      "spotify_url": "https://open.spotify.com/track/1njtTHMw5lArBoJdmELBmb",
+      "release": "Estimulos",
+      "release_date": "2024-03-12",
+      "duration_ms": 134068,
+      "deezer_id": 2812866432
+    },
+    {
+      "id": "UYT142300062",
+      "title": "Virginia",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse",
+        "Gavo"
+      ],
+      "audio_file": "/audio/UYT142300062.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273ce51430b7ae1def890a0d509",
+      "spotify_url": "https://open.spotify.com/track/5OMr7qoAROdHXCTqaS8JbJ",
+      "release": "Hotel Club",
+      "release_date": "2024-01-12",
+      "duration_ms": 160677,
+      "deezer_id": 2594173522
+    },
+    {
+      "id": "UYT142300061",
+      "title": "Solos",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse"
+      ],
+      "audio_file": "/audio/UYT142300061.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273ce51430b7ae1def890a0d509",
+      "spotify_url": "https://open.spotify.com/track/1KARcdH3GZfg3U6GocEz95",
+      "release": "Hotel Club",
+      "release_date": "2024-01-12",
+      "duration_ms": 106774,
+      "deezer_id": 2594173512
+    },
+    {
+      "id": "UYT142300060",
+      "title": "4 Am",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse",
+        "Cronin"
+      ],
+      "audio_file": "/audio/UYT142300060.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273ce51430b7ae1def890a0d509",
+      "spotify_url": "https://open.spotify.com/track/7vzPJ20sAypS5AlTb0h9rj",
+      "release": "Hotel Club",
+      "release_date": "2024-01-12",
+      "duration_ms": 148645,
+      "deezer_id": 2594173502
+    },
+    {
+      "id": "QZW9M2336157",
+      "title": "Seis y Cuarto",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse",
+        "Knak"
+      ],
+      "audio_file": "/audio/QZW9M2336157.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273ce51430b7ae1def890a0d509",
+      "spotify_url": "https://open.spotify.com/track/3rzvY7BrWM9VGEeCDBrWTp",
+      "release": "Hotel Club",
+      "release_date": "2024-01-12",
+      "duration_ms": 158774,
+      "deezer_id": 2594173492
+    },
+    {
+      "id": "UYT142300059",
+      "title": "Club",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse"
+      ],
+      "audio_file": "/audio/UYT142300059.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273ce51430b7ae1def890a0d509",
+      "spotify_url": "https://open.spotify.com/track/5J8kwLf4mp9rjctoP2RFmV",
+      "release": "Hotel Club",
+      "release_date": "2024-01-12",
+      "duration_ms": 113777,
+      "deezer_id": 2594173482
+    },
+    {
+      "id": "UYT142300058",
+      "title": "¿A Qué Le Escribo?",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse"
+      ],
+      "audio_file": "/audio/UYT142300058.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273ce51430b7ae1def890a0d509",
+      "spotify_url": "https://open.spotify.com/track/0QXA8VuqwmP7Z0mxF3uIbj",
+      "release": "Hotel Club",
+      "release_date": "2024-01-12",
+      "duration_ms": 29819,
+      "deezer_id": 2594173472
+    },
+    {
+      "id": "UYT142300057",
+      "title": "Seis y Cuarto",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse",
+        "Knak"
+      ],
+      "audio_file": "/audio/UYT142300057.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27359eb8073be4239cadd5d933b",
+      "spotify_url": "https://open.spotify.com/track/1Uh4cnRmAiub96nzuicv6L",
+      "release": "Seis y Cuarto",
+      "release_date": "2023-12-20",
+      "duration_ms": 158774,
+      "deezer_id": 2584264492
+    },
+    {
+      "id": "UYT142300003",
+      "title": "Vivo",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse"
+      ],
+      "audio_file": "/audio/UYT142300003.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273206584eaf37929aed88f794b",
+      "spotify_url": "https://open.spotify.com/track/3OA7Wtpur6Ls3DTsCXNyug",
+      "release": "Vivo",
+      "release_date": "2023-02-15",
+      "duration_ms": 196683,
+      "deezer_id": 2116337687
+    },
+    {
+      "id": "UYT142200049",
+      "title": "OH NO!",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse"
+      ],
+      "audio_file": "/audio/UYT142200049.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273c625292aed354b7819c19417",
+      "spotify_url": "https://open.spotify.com/track/48Z5n1yNZKX9EkdRDBJAql",
+      "release": "OH NO!",
+      "release_date": "2023-01-18",
+      "duration_ms": 185968,
+      "deezer_id": 2080126327
+    },
+    {
+      "id": "UYT142200020",
+      "title": "No",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse"
+      ],
+      "audio_file": "/audio/UYT142200020.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273a3149ae10a49dbcaf8ecb821",
+      "spotify_url": "https://open.spotify.com/track/0NeMHARibq2yY0HhFiZzHs",
+      "release": "No",
+      "release_date": "2022-10-13",
+      "duration_ms": 134482,
+      "deezer_id": 1925161177
+    },
+    {
+      "id": "UYT142200019",
+      "title": "Shopping Net",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse"
+      ],
+      "audio_file": "/audio/UYT142200019.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27353ad84436df2020bac7f91df",
+      "spotify_url": "https://open.spotify.com/track/1zZExmBfap1bW4gPAKomrI",
+      "release": "Shopping Net",
+      "release_date": "2022-09-22",
+      "duration_ms": 132480,
+      "deezer_id": 1890949517
+    },
+    {
+      "id": "QZHN92119591",
+      "title": "Huarache",
+      "artist": "Fosse",
+      "artists": [
+        "Kloudy Koon",
+        "Fosse"
+      ],
+      "audio_file": "/audio/QZHN92119591.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2730acccd450616ac4194dbf3c2",
+      "spotify_url": "https://open.spotify.com/track/1RJ9mAXtwXkf8IFrsz4KkW",
+      "release": "Huarache",
+      "release_date": "2021-06-15",
+      "duration_ms": 121641,
+      "deezer_id": 1385994062
+    },
+    {
+      "id": "QZDA52012597",
+      "title": "Estoy Mejor",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse",
+        "KKO"
+      ],
+      "audio_file": "/audio/QZDA52012597.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273794bb908fdf94613a591b0b6",
+      "spotify_url": "https://open.spotify.com/track/641sgWOlLngXyJjXHV7ukX",
+      "release": "Estoy Mejor",
+      "release_date": "2020-04-03",
+      "duration_ms": 179550,
+      "deezer_id": 2067398957
+    },
+    {
+      "id": "QZFYW2014757",
+      "title": "Te Queria - Versión Acústica",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse",
+        "KKO"
+      ],
+      "audio_file": "/audio/QZFYW2014757.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273a3b1b0895f3f8b3208be135a",
+      "spotify_url": "https://open.spotify.com/track/516t8dbEhsa2rZx5PViUMQ",
+      "release": "Te Queria (Versión Acústica)",
+      "release_date": "2020-01-02",
+      "duration_ms": 284184,
+      "deezer_id": 2067398947
+    },
+    {
+      "id": "QZFZ41977943",
+      "title": "La Situación",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse"
+      ],
+      "audio_file": "/audio/QZFZ41977943.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273d1e1210a6a3525881aa47975",
+      "spotify_url": "https://open.spotify.com/track/6sfZVMPiZtFjiKmahvPSv6",
+      "release": "La Situación",
+      "release_date": "2019-08-02",
+      "duration_ms": 193870,
+      "deezer_id": 2067398917
+    },
+    {
+      "id": "QZFYW1938715",
+      "title": "Ahora Que",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse"
+      ],
+      "audio_file": "/audio/QZFYW1938715.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2731e9626815c3075064c2e4b36",
+      "spotify_url": "https://open.spotify.com/track/4qZDLDqjG2MpFYBBCg69bw",
+      "release": "Ahora Que",
+      "release_date": "2019-05-24",
+      "duration_ms": 140326,
+      "deezer_id": 2067404757
+    },
+    {
+      "id": "US7VG1956883",
+      "title": "Ya No",
+      "artist": "Fosse",
+      "artists": [
+        "Lautaro Lopez",
+        "Fosse",
+        "Nissa"
+      ],
+      "audio_file": "/audio/US7VG1956883.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27313cd71e8b6b00dfb80ede179",
+      "spotify_url": "https://open.spotify.com/track/5Roz9Q9bbAeYv4w9saCUKs",
+      "release": "Ya No",
+      "release_date": "2019-02-15",
+      "duration_ms": 179966,
+      "deezer_id": 633116892
+    },
+    {
+      "id": "QZES91866202",
+      "title": "Te Queria",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse",
+        "KKO"
+      ],
+      "audio_file": "/audio/QZES91866202.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27326b60edec3f37c633d5bc1e1",
+      "spotify_url": "https://open.spotify.com/track/5VAyqQT8B4AtfZWCguR0Jd",
+      "release": "Te Queria",
+      "release_date": "2018-12-14",
+      "duration_ms": 207615,
+      "deezer_id": 2067754367
+    },
+    {
+      "id": "QM2PV1802233",
+      "title": "California",
+      "artist": "Fosse",
+      "artists": [
+        "Fosse"
+      ],
+      "audio_file": "/audio/QM2PV1802233.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27345b443cc3d553177033e7646",
+      "spotify_url": "https://open.spotify.com/track/10YU9lBlQJQDlzYACoMc8a",
+      "release": "California",
+      "release_date": "2018-09-08",
+      "duration_ms": 136615,
+      "deezer_id": 2067754387
+    }
+  ]
+}

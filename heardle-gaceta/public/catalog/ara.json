@@ -1,0 +1,990 @@
+{
+  "artist": "ARA",
+  "slug": "ara",
+  "tracks": [
+    {
+      "id": "SE6XW2621528",
+      "title": "notienetanto",
+      "artist": "ARA",
+      "artists": [
+        "ARA",
+        "Roxxee"
+      ],
+      "audio_file": "/audio/SE6XW2621528.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273420aa41605e367b6bc146333",
+      "spotify_url": "https://open.spotify.com/track/3ay9gVcgxlrOpenftwYtpB",
+      "release": "notienetanto",
+      "release_date": "2026-08-20",
+      "duration_ms": 102000,
+      "deezer_id": 4224051672
+    },
+    {
+      "id": "UY01G2400152",
+      "title": "BkstGE VOL.333 sOOn",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UY01G2400152.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27395ee360a9999edca0abccd68",
+      "spotify_url": "https://open.spotify.com/track/2b4Khf1nOdPhOUugkjxQN4",
+      "release": "BACKSTAGE COVER VOL. 2",
+      "release_date": "2026-03-12",
+      "duration_ms": 16500,
+      "deezer_id": 3879674141
+    },
+    {
+      "id": "UY01G2400151",
+      "title": "10K",
+      "artist": "ARA",
+      "artists": [
+        "ARA",
+        "Roxxee"
+      ],
+      "audio_file": "/audio/UY01G2400151.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27395ee360a9999edca0abccd68",
+      "spotify_url": "https://open.spotify.com/track/0xF6186uwDOlh9rTUODmhR",
+      "release": "BACKSTAGE COVER VOL. 2",
+      "release_date": "2026-03-12",
+      "duration_ms": 185346,
+      "deezer_id": 3879674131
+    },
+    {
+      "id": "UY01G2400150",
+      "title": "el estrés de tu cuerpo",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UY01G2400150.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27395ee360a9999edca0abccd68",
+      "spotify_url": "https://open.spotify.com/track/0HHNdcT6rZKU7uIOlx8kUU",
+      "release": "BACKSTAGE COVER VOL. 2",
+      "release_date": "2026-03-12",
+      "duration_ms": 172142,
+      "deezer_id": 3879674121
+    },
+    {
+      "id": "UY01G2400149",
+      "title": "ESTADOS UNIDOS",
+      "artist": "ARA",
+      "artists": [
+        "ARA",
+        "Dazen"
+      ],
+      "audio_file": "/audio/UY01G2400149.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27395ee360a9999edca0abccd68",
+      "spotify_url": "https://open.spotify.com/track/46dLdCEJEnTI3hkRxeJRu0",
+      "release": "BACKSTAGE COVER VOL. 2",
+      "release_date": "2026-03-12",
+      "duration_ms": 110553,
+      "deezer_id": 3879674111
+    },
+    {
+      "id": "UY01G2400148",
+      "title": "AVISAME SI ESTAS SOLA",
+      "artist": "ARA",
+      "artists": [
+        "ARA",
+        "Dazen"
+      ],
+      "audio_file": "/audio/UY01G2400148.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27395ee360a9999edca0abccd68",
+      "spotify_url": "https://open.spotify.com/track/6ne0grYeIAvmr31GwvtbU5",
+      "release": "BACKSTAGE COVER VOL. 2",
+      "release_date": "2026-03-12",
+      "duration_ms": 140924,
+      "deezer_id": 3879674101
+    },
+    {
+      "id": "UY01G2400122",
+      "title": "No-o-O",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UY01G2400122.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27395ee360a9999edca0abccd68",
+      "spotify_url": "https://open.spotify.com/track/6LvFQ1SmVLLexlOtXVseh0",
+      "release": "BACKSTAGE COVER VOL. 2",
+      "release_date": "2026-03-12",
+      "duration_ms": 119155,
+      "deezer_id": 3697049662
+    },
+    {
+      "id": "UY01G2400147",
+      "title": "BCKSTG3cOVR Vl.2",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UY01G2400147.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27395ee360a9999edca0abccd68",
+      "spotify_url": "https://open.spotify.com/track/5PYh7IpEo8rCXEu9Wjppjw",
+      "release": "BACKSTAGE COVER VOL. 2",
+      "release_date": "2026-03-12",
+      "duration_ms": 15094,
+      "deezer_id": 3879674081
+    },
+    {
+      "id": "UY01G2400131",
+      "title": "me engualichaste remix",
+      "artist": "ARA",
+      "artists": [
+        "Natán",
+        "ARA"
+      ],
+      "audio_file": "/audio/UY01G2400131.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273eaa872c58678759686f1762b",
+      "spotify_url": "https://open.spotify.com/track/7yoqxVu48MhMSaHT07Atdo",
+      "release": "me engualichaste remix",
+      "release_date": "2026-01-14",
+      "duration_ms": 202593,
+      "deezer_id": 3762932682
+    },
+    {
+      "id": "UY01G2400091",
+      "title": "BACKSTAGE COVER VOL. 2 SOON",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UY01G2400091.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b0801dc5d4b040e781c0b596",
+      "spotify_url": "https://open.spotify.com/track/2WAG9tNIdwOHeHSOamJ4ew",
+      "release": "BACKSTAGE COVER VOL. 1",
+      "release_date": "2025-10-29",
+      "duration_ms": 17174,
+      "deezer_id": 3612085262
+    },
+    {
+      "id": "UY01G2400089",
+      "title": "DON´T SAY THAT",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UY01G2400089.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b0801dc5d4b040e781c0b596",
+      "spotify_url": "https://open.spotify.com/track/6TcXyWakzd8t9q9QjJu8Cu",
+      "release": "BACKSTAGE COVER VOL. 1",
+      "release_date": "2025-10-29",
+      "duration_ms": 140906,
+      "deezer_id": 3612085252
+    },
+    {
+      "id": "UY01G2400088",
+      "title": "QUIERO AMARTE",
+      "artist": "ARA",
+      "artists": [
+        "ARA",
+        "Oney1"
+      ],
+      "audio_file": "/audio/UY01G2400088.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b0801dc5d4b040e781c0b596",
+      "spotify_url": "https://open.spotify.com/track/09l76TiKhPfZTLhkLxFeFM",
+      "release": "BACKSTAGE COVER VOL. 1",
+      "release_date": "2025-10-29",
+      "duration_ms": 125711,
+      "deezer_id": 3612085242
+    },
+    {
+      "id": "UY01G2400087",
+      "title": "DATE VUELTA BB",
+      "artist": "ARA",
+      "artists": [
+        "ARA",
+        "143leti",
+        "Roxxee"
+      ],
+      "audio_file": "/audio/UY01G2400087.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b0801dc5d4b040e781c0b596",
+      "spotify_url": "https://open.spotify.com/track/4naDLUoD7xphIdhwSncv3j",
+      "release": "BACKSTAGE COVER VOL. 1",
+      "release_date": "2025-10-29",
+      "duration_ms": 122086,
+      "deezer_id": 3612085232
+    },
+    {
+      "id": "UY01G2400086",
+      "title": "DEALE$",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UY01G2400086.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b0801dc5d4b040e781c0b596",
+      "spotify_url": "https://open.spotify.com/track/1qv3D7z7ywfAWM0ZBSA7aL",
+      "release": "BACKSTAGE COVER VOL. 1",
+      "release_date": "2025-10-29",
+      "duration_ms": 155323,
+      "deezer_id": 3578714511
+    },
+    {
+      "id": "UY01G2400076",
+      "title": "MVD",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UY01G2400076.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b0801dc5d4b040e781c0b596",
+      "spotify_url": "https://open.spotify.com/track/3DjFdpXKA3QlCKnDQzjny3",
+      "release": "BACKSTAGE COVER VOL. 1",
+      "release_date": "2025-10-29",
+      "duration_ms": 146604,
+      "deezer_id": 3530232031
+    },
+    {
+      "id": "UY01G2400090",
+      "title": "BIENVENIDOS A BACKSTAGE COVER",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UY01G2400090.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b0801dc5d4b040e781c0b596",
+      "spotify_url": "https://open.spotify.com/track/6PZmYUbrWsjJdNvjuMAngJ",
+      "release": "BACKSTAGE COVER VOL. 1",
+      "release_date": "2025-10-29",
+      "duration_ms": 13745,
+      "deezer_id": 3612085202
+    },
+    {
+      "id": "QZNJX2592523",
+      "title": "Vibes 2",
+      "artist": "ARA",
+      "artists": [
+        "Dan :)",
+        "Reinaldo Vielma",
+        "Pinto",
+        "ARA"
+      ],
+      "audio_file": "/audio/QZNJX2592523.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273ab4e626751430e5caa8642c3",
+      "spotify_url": "https://open.spotify.com/track/4wUht0wm2id8EeQZSMCtHk",
+      "release": "Vibes 2",
+      "release_date": "2025-07-24",
+      "duration_ms": 140312,
+      "deezer_id": 3462308981
+    },
+    {
+      "id": "UY01G2400053",
+      "title": "comonadie.",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UY01G2400053.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2733e231afd3b3efc4a4c15b142",
+      "spotify_url": "https://open.spotify.com/track/2rSoRSYCsBoHgEPzLjW18r",
+      "release": "#4u",
+      "release_date": "2025-06-25",
+      "duration_ms": 117551,
+      "deezer_id": 3427301151
+    },
+    {
+      "id": "UY01G2400052",
+      "title": "avisame!",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UY01G2400052.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2733e231afd3b3efc4a4c15b142",
+      "spotify_url": "https://open.spotify.com/track/4lRUToaNh1WkQi3N6FBtpy",
+      "release": "#4u",
+      "release_date": "2025-06-25",
+      "duration_ms": 183050,
+      "deezer_id": 3427301141
+    },
+    {
+      "id": "UY01G2400038",
+      "title": "vidapartida",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UY01G2400038.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2733e231afd3b3efc4a4c15b142",
+      "spotify_url": "https://open.spotify.com/track/6krVIan4vj1rwgTjxGLhMv",
+      "release": "#4u",
+      "release_date": "2025-06-25",
+      "duration_ms": 114193,
+      "deezer_id": 3378107691
+    },
+    {
+      "id": "UY01G2400026",
+      "title": "todoparami",
+      "artist": "ARA",
+      "artists": [
+        "ARA",
+        "Roxxee"
+      ],
+      "audio_file": "/audio/UY01G2400026.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2733e231afd3b3efc4a4c15b142",
+      "spotify_url": "https://open.spotify.com/track/2EOEFULjJaBBXBhoN8zDB7",
+      "release": "#4u",
+      "release_date": "2025-06-25",
+      "duration_ms": 121875,
+      "deezer_id": 3353126211
+    },
+    {
+      "id": "QM4TX2592381",
+      "title": "RETRO 90",
+      "artist": "ARA",
+      "artists": [
+        "almeja",
+        "Ramma",
+        "ARA"
+      ],
+      "audio_file": "/audio/QM4TX2592381.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2731e0a8e246842c3dd1ae265a9",
+      "spotify_url": "https://open.spotify.com/track/0ibNwd67Emyl0GU1wwjghq",
+      "release": "RETRO 90",
+      "release_date": "2025-03-20",
+      "duration_ms": 195000,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UY01G2400008",
+      "title": "nada entre los dos",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UY01G2400008.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739fa71d64b24b97878340be0c",
+      "spotify_url": "https://open.spotify.com/track/4qWH5FsDyP3Wq7IuS65OB4",
+      "release": "nada entre los dos",
+      "release_date": "2025-01-30",
+      "duration_ms": 126575,
+      "deezer_id": 3207746951
+    },
+    {
+      "id": "UYT142400044",
+      "title": "DONDE QUIERO ESTAR",
+      "artist": "ARA",
+      "artists": [
+        "ARA",
+        "Tiano"
+      ],
+      "audio_file": "/audio/UYT142400044.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273588cdc358a5d6ca126cbc7a0",
+      "spotify_url": "https://open.spotify.com/track/2YSSUGCmckHNw3sOv3A0rF",
+      "release": "Youngboy",
+      "release_date": "2024-12-12",
+      "duration_ms": 133846,
+      "deezer_id": 3028438551
+    },
+    {
+      "id": "UYT142400051",
+      "title": "cosas claras",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UYT142400051.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273588cdc358a5d6ca126cbc7a0",
+      "spotify_url": "https://open.spotify.com/track/0jiCczWC4gMYALSHxUQy67",
+      "release": "Youngboy",
+      "release_date": "2024-12-12",
+      "duration_ms": 159793,
+      "deezer_id": 3086635561
+    },
+    {
+      "id": "QZW9L2494372",
+      "title": "PLATA SUCIA",
+      "artist": "ARA",
+      "artists": [
+        "ARA",
+        "Ramma"
+      ],
+      "audio_file": "/audio/QZW9L2494372.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273588cdc358a5d6ca126cbc7a0",
+      "spotify_url": "https://open.spotify.com/track/07daeGfWPgWcnzauB5rDAS",
+      "release": "Youngboy",
+      "release_date": "2024-12-12",
+      "duration_ms": 191350,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142400069",
+      "title": "MONEYUPPP",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UYT142400069.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273588cdc358a5d6ca126cbc7a0",
+      "spotify_url": "https://open.spotify.com/track/5PpQ5xZWFx5BD3yEjl7U5X",
+      "release": "Youngboy",
+      "release_date": "2024-12-12",
+      "duration_ms": 144205,
+      "deezer_id": 3128464711
+    },
+    {
+      "id": "UYT142400068",
+      "title": "CORVETTE",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UYT142400068.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273588cdc358a5d6ca126cbc7a0",
+      "spotify_url": "https://open.spotify.com/track/5S28sThYEtpwVsWJL7Qwxl",
+      "release": "Youngboy",
+      "release_date": "2024-12-12",
+      "duration_ms": 94838,
+      "deezer_id": 3128464691
+    },
+    {
+      "id": "QZW9L2494371",
+      "title": "NO SE CÓMO HACES",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/QZW9L2494371.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273588cdc358a5d6ca126cbc7a0",
+      "spotify_url": "https://open.spotify.com/track/2cHDB63Y3PysY8Kfc4hsiR",
+      "release": "Youngboy",
+      "release_date": "2024-12-12",
+      "duration_ms": 144276,
+      "deezer_id": 3128464671
+    },
+    {
+      "id": "UYT142400042",
+      "title": "bby no t puedo ver",
+      "artist": "ARA",
+      "artists": [
+        "ARA",
+        "Tiano"
+      ],
+      "audio_file": "/audio/UYT142400042.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273588cdc358a5d6ca126cbc7a0",
+      "spotify_url": "https://open.spotify.com/track/0QfkcqInCmMHQ2mopRuQRm",
+      "release": "Youngboy",
+      "release_date": "2024-12-12",
+      "duration_ms": 109759,
+      "deezer_id": 2990840561
+    },
+    {
+      "id": "UYT142400025",
+      "title": "COMO SOY",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UYT142400025.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273588cdc358a5d6ca126cbc7a0",
+      "spotify_url": "https://open.spotify.com/track/5rhL1Be0YEcuqwFRlOd6vS",
+      "release": "Youngboy",
+      "release_date": "2024-12-12",
+      "duration_ms": 161250,
+      "deezer_id": 2821147092
+    },
+    {
+      "id": "UYT142400065",
+      "title": "RETROCEDER PARA MEJORAR",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UYT142400065.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273588cdc358a5d6ca126cbc7a0",
+      "spotify_url": "https://open.spotify.com/track/6NSjU3WDidVhzvLANoK8Bi",
+      "release": "Youngboy",
+      "release_date": "2024-12-12",
+      "duration_ms": 120339,
+      "deezer_id": 3128464611
+    },
+    {
+      "id": "ARSPO2400011",
+      "title": "BUENOS 4IRES MOOD",
+      "artist": "ARA",
+      "artists": [
+        "J4MES",
+        "Tomas Coletto",
+        "ARA",
+        "Ivan Armesto"
+      ],
+      "audio_file": "/audio/ARSPO2400011.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27390a58e9185e85d87a83fe6a7",
+      "spotify_url": "https://open.spotify.com/track/2rlVswJQ2vzovYHLWBd6xt",
+      "release": "BUENOS 4IRES MOOD",
+      "release_date": "2024-11-21",
+      "duration_ms": 205795,
+      "deezer_id": 3098957951
+    },
+    {
+      "id": "UYT142400038",
+      "title": "Findes",
+      "artist": "ARA",
+      "artists": [
+        "Ramma",
+        "ARA",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142400038.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732dff48bbc352b32683288b0e",
+      "spotify_url": "https://open.spotify.com/track/5NZzIGEH6fVRIRc9QRFX5t",
+      "release": "Somos el Show",
+      "release_date": "2024-07-25",
+      "duration_ms": 179134,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142400037",
+      "title": "Ronda",
+      "artist": "ARA",
+      "artists": [
+        "Ramma",
+        "ARA",
+        "Davus",
+        "Sege",
+        "Barta"
+      ],
+      "audio_file": "/audio/UYT142400037.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732dff48bbc352b32683288b0e",
+      "spotify_url": "https://open.spotify.com/track/4SgHhnWew8u2SB3GAXKKMK",
+      "release": "Somos el Show",
+      "release_date": "2024-07-25",
+      "duration_ms": 182841,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142400036",
+      "title": "Vaiven",
+      "artist": "ARA",
+      "artists": [
+        "Ramma",
+        "ARA",
+        "FRO!",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142400036.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732dff48bbc352b32683288b0e",
+      "spotify_url": "https://open.spotify.com/track/3Cgyzyb4S0qNS66kCq3ym0",
+      "release": "Somos el Show",
+      "release_date": "2024-07-25",
+      "duration_ms": 178764,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142400035",
+      "title": "Abajo de las Estrellas",
+      "artist": "ARA",
+      "artists": [
+        "Ramma",
+        "ARA",
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142400035.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732dff48bbc352b32683288b0e",
+      "spotify_url": "https://open.spotify.com/track/6JSkchnL5tqzRfgBG4Km7L",
+      "release": "Somos el Show",
+      "release_date": "2024-07-25",
+      "duration_ms": 175038,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142400034",
+      "title": "Somos el Show",
+      "artist": "ARA",
+      "artists": [
+        "Ramma",
+        "ARA",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142400034.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732dff48bbc352b32683288b0e",
+      "spotify_url": "https://open.spotify.com/track/4fFKhl1Gio5VjHoCqvxPMj",
+      "release": "Somos el Show",
+      "release_date": "2024-07-25",
+      "duration_ms": 114014,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142400022",
+      "title": "Bichigyal - Remix",
+      "artist": "ARA",
+      "artists": [
+        "PRIZE",
+        "Sautu",
+        "ARA",
+        "Ramma",
+        "c n d",
+        "Tiano",
+        "almeja"
+      ],
+      "audio_file": "/audio/UYT142400022.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2734007883d0de1d9e08405900b",
+      "spotify_url": "https://open.spotify.com/track/4v45rww5vNHvlu3iqdwa9u",
+      "release": "Bichigyal (Remix)",
+      "release_date": "2024-05-24",
+      "duration_ms": 330000,
+      "deezer_id": 2800265182
+    },
+    {
+      "id": "SE5752480578",
+      "title": "Todo Se Acabo - Demo",
+      "artist": "ARA",
+      "artists": [
+        "broow",
+        "Young Noisy",
+        "ARA",
+        "Almost Big"
+      ],
+      "audio_file": "/audio/SE5752480578.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736131aa4b5f534380aab2ca09",
+      "spotify_url": "https://open.spotify.com/track/4FJLWAgdLuH1PfQZ4QFlXw",
+      "release": "Todo Se Acabo (Demo)",
+      "release_date": "2024-05-02",
+      "duration_ms": 312679,
+      "deezer_id": 2771391471
+    },
+    {
+      "id": "UYT142400018",
+      "title": "Cada Vibración",
+      "artist": "ARA",
+      "artists": [
+        "Valuto",
+        "ARA",
+        "GALO"
+      ],
+      "audio_file": "/audio/UYT142400018.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732052111e96b4575926c27212",
+      "spotify_url": "https://open.spotify.com/track/3bmAIVmWuAxekEYzT1qr7g",
+      "release": "Cada Vibración",
+      "release_date": "2024-04-30",
+      "duration_ms": 119211,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142400014",
+      "title": "x interes",
+      "artist": "ARA",
+      "artists": [
+        "ARA",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142400014.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273e295eeea1126dd8fcdc797e9",
+      "spotify_url": "https://open.spotify.com/track/0TGwFfD6OQAIDRw4Tsf49R",
+      "release": "x interes",
+      "release_date": "2024-04-23",
+      "duration_ms": 159553,
+      "deezer_id": 2736537281
+    },
+    {
+      "id": "UYT142400008",
+      "title": "Fácil",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UYT142400008.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27366143341ae1c0468af51d312",
+      "spotify_url": "https://open.spotify.com/track/2rqWKh8F9xuvmFRDZMpYGO",
+      "release": "Fácil",
+      "release_date": "2024-02-15",
+      "duration_ms": 147485,
+      "deezer_id": 2624229942
+    },
+    {
+      "id": "UYT142300053",
+      "title": "YOUNGBOY",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/UYT142300053.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732ee271f5e115d90038505dcd",
+      "spotify_url": "https://open.spotify.com/track/3kNN5D9bjLwruW6InBNKp2",
+      "release": "YOUNGBOY",
+      "release_date": "2023-11-24",
+      "duration_ms": 147581,
+      "deezer_id": 2546037902
+    },
+    {
+      "id": "QMFME2389059",
+      "title": "Hash",
+      "artist": "ARA",
+      "artists": [
+        "ARA",
+        "Santy-P",
+        "NICOLO"
+      ],
+      "audio_file": "/audio/QMFME2389059.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2737e1fa68d09c013add25f0f60",
+      "spotify_url": "https://open.spotify.com/track/5APiVz0FAyYJ2CXJl9i1cv",
+      "release": "Hash",
+      "release_date": "2023-10-23",
+      "duration_ms": 175044,
+      "deezer_id": 2511015081
+    },
+    {
+      "id": "QZTAX2397458",
+      "title": "¿Que nos paso?",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/QZTAX2397458.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273c0eb237c2ab2580f36bebdb1",
+      "spotify_url": "https://open.spotify.com/track/2zK07p81g95JpizKTUYWYd",
+      "release": "¿Que nos paso?",
+      "release_date": "2023-09-17",
+      "duration_ms": 148049,
+      "deezer_id": 2449940735
+    },
+    {
+      "id": "QZNWR2315376",
+      "title": "Neptuno",
+      "artist": "ARA",
+      "artists": [
+        "DIEMBI",
+        "ARA"
+      ],
+      "audio_file": "/audio/QZNWR2315376.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735035a9f1f67f9076acc9ef18",
+      "spotify_url": "https://open.spotify.com/track/4pfWwxAxtp1WVXEnwf3XvJ",
+      "release": "SIDE EYE",
+      "release_date": "2023-08-18",
+      "duration_ms": 208000,
+      "deezer_id": 2353912725
+    },
+    {
+      "id": "QZNWT2398560",
+      "title": "Baby",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/QZNWT2398560.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2731b66aafdcfc1ed5f372ec232",
+      "spotify_url": "https://open.spotify.com/track/4JZ5J7FITIeGtcGFJG9H56",
+      "release": "Baby",
+      "release_date": "2023-07-19",
+      "duration_ms": 178357,
+      "deezer_id": 2368966935
+    },
+    {
+      "id": "QZMEQ2311393",
+      "title": "Fast!",
+      "artist": "ARA",
+      "artists": [
+        "soffyy",
+        "murph",
+        "ARA"
+      ],
+      "audio_file": "/audio/QZMEQ2311393.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739086657fa3e32a67235f8df4",
+      "spotify_url": "https://open.spotify.com/track/5cBRw1w4ukrLMTZO3miMoL",
+      "release": "SUPER STAR",
+      "release_date": "2023-06-21",
+      "duration_ms": 167626,
+      "deezer_id": 2756676701
+    },
+    {
+      "id": "QZK6N2363587",
+      "title": "Sticky",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/QZK6N2363587.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735fa6dd575526d91013eb2968",
+      "spotify_url": "https://open.spotify.com/track/12AJ5zN2S5XNM5DuoIAPqd",
+      "release": "Sticky",
+      "release_date": "2023-05-21",
+      "duration_ms": 134639,
+      "deezer_id": 2276835997
+    },
+    {
+      "id": "QZES72315214",
+      "title": "Horas Espejo",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/QZES72315214.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739cd1fb783d53f172848ecab4",
+      "spotify_url": "https://open.spotify.com/track/1Y8PzjyAr9AydujJA3dq9a",
+      "release": "Horas Espejo",
+      "release_date": "2023-03-13",
+      "duration_ms": 155037,
+      "deezer_id": 2177855987
+    },
+    {
+      "id": "QZFZ72322586",
+      "title": "Desconocidos",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/QZFZ72322586.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736837626933bf72904f367425",
+      "spotify_url": "https://open.spotify.com/track/3Ecw1MKNmPvysBxLimlN8Q",
+      "release": "Desconocidos",
+      "release_date": "2023-02-07",
+      "duration_ms": 142508,
+      "deezer_id": 2132038107
+    },
+    {
+      "id": "QZFZ72322587",
+      "title": "Todo Te Di",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/QZFZ72322587.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736837626933bf72904f367425",
+      "spotify_url": "https://open.spotify.com/track/7swl1WnUSowKtjcSBGTQVE",
+      "release": "Desconocidos",
+      "release_date": "2023-02-07",
+      "duration_ms": 134756,
+      "deezer_id": 2132038097
+    },
+    {
+      "id": "QZFYX2386236",
+      "title": "22",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/QZFYX2386236.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739cafcf9efd02cac2abf1b3da",
+      "spotify_url": "https://open.spotify.com/track/07PTeOQns3zJHBVPiRnw4t",
+      "release": "22",
+      "release_date": "2023-01-10",
+      "duration_ms": 151102,
+      "deezer_id": 2096162117
+    },
+    {
+      "id": "QZW9N2221794",
+      "title": "No Fue Tan Real",
+      "artist": "ARA",
+      "artists": [
+        "Bruneto H",
+        "ARA"
+      ],
+      "audio_file": "/audio/QZW9N2221794.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27388907bc0933be853e3e81f49",
+      "spotify_url": "https://open.spotify.com/track/5kzqTT3epDxnN8zNTA8IAt",
+      "release": "No Fue Tan Real",
+      "release_date": "2022-12-15",
+      "duration_ms": 187121,
+      "deezer_id": 2077264727
+    },
+    {
+      "id": "QZTAZ2233444",
+      "title": "Niveles",
+      "artist": "ARA",
+      "artists": [
+        "ARA",
+        "Mrtinnou"
+      ],
+      "audio_file": "/audio/QZTAZ2233444.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736ea976183a1837c920bb51e6",
+      "spotify_url": "https://open.spotify.com/track/7qgMJs1BX9vuFdke75bF9a",
+      "release": "Niveles",
+      "release_date": "2022-12-01",
+      "duration_ms": 156321,
+      "deezer_id": 2026853647
+    },
+    {
+      "id": "QZTAZ2234369",
+      "title": "BUCLE",
+      "artist": "ARA",
+      "artists": [
+        "NICOLO",
+        "ARA"
+      ],
+      "audio_file": "/audio/QZTAZ2234369.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273aa9688982853e80fde615447",
+      "spotify_url": "https://open.spotify.com/track/2vp5zo4elta0qQFkcrDZgd",
+      "release": "BUCLE",
+      "release_date": "2022-11-19",
+      "duration_ms": 150071,
+      "deezer_id": 2950196831
+    },
+    {
+      "id": "QZPLS2216017",
+      "title": "Ahora Ke?",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/QZPLS2216017.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27387eac0ca9f68911a73c723e0",
+      "spotify_url": "https://open.spotify.com/track/5zeXV2nxtYa43jeQg0lCBE",
+      "release": "Ahora Ke?",
+      "release_date": "2022-10-16",
+      "duration_ms": 164008,
+      "deezer_id": 1946488617
+    },
+    {
+      "id": "QZMZ92277922",
+      "title": "Textearte",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/QZMZ92277922.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273e71c1048a2e5140a2879c0ea",
+      "spotify_url": "https://open.spotify.com/track/7AKPV1EWHYqHRnA1dlRa2Y",
+      "release": "Textearte",
+      "release_date": "2022-07-02",
+      "duration_ms": 112412,
+      "deezer_id": 2100219337
+    },
+    {
+      "id": "QZHZ52219264",
+      "title": "Feiki",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/QZHZ52219264.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273356831117a569b8980ba8b29",
+      "spotify_url": "https://open.spotify.com/track/2MS97hgOqN3F7HUG4EFxg9",
+      "release": "Feiki",
+      "release_date": "2022-05-05",
+      "duration_ms": 160049,
+      "deezer_id": 2100242547
+    },
+    {
+      "id": "QZGLS2223121",
+      "title": "Ahora Estoy Bien",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/QZGLS2223121.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273e76f663dee2c7a4138049074",
+      "spotify_url": "https://open.spotify.com/track/6sawserOl0uoCFYayPwF8K",
+      "release": "Ahora Estoy Bien",
+      "release_date": "2022-03-05",
+      "duration_ms": 153750,
+      "deezer_id": 2100242207
+    },
+    {
+      "id": "QZGLM2228250",
+      "title": "Que Hubiera Pasado",
+      "artist": "ARA",
+      "artists": [
+        "ARA"
+      ],
+      "audio_file": "/audio/QZGLM2228250.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273f6da144984b84af5c6a57deb",
+      "spotify_url": "https://open.spotify.com/track/6LEFPskf7cMVqFmmEIG48i",
+      "release": "Que Hubiera Pasado",
+      "release_date": "2022-02-14",
+      "duration_ms": 143618,
+      "deezer_id": 2100242277
+    }
+  ]
+}

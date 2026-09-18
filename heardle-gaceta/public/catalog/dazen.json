@@ -1,0 +1,152 @@
+{
+  "artist": "Dazen",
+  "slug": "dazen",
+  "tracks": [
+    {
+      "id": "QT3F82670981",
+      "title": "Paz al Rato Freestyle",
+      "artist": "Dazen",
+      "artists": [
+        "Xanderr",
+        "Dazen"
+      ],
+      "audio_file": "/audio/QT3F82670981.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2737fe85325065430943bdaa38d",
+      "spotify_url": "https://open.spotify.com/track/6IGBabDDCH3jfTSE8fYtoJ",
+      "release": "Paz al Rato Freestyle",
+      "release_date": "2026-08-04",
+      "duration_ms": 112895,
+      "deezer_id": 4065664591
+    },
+    {
+      "id": "QT3F82669539",
+      "title": "Mbappé",
+      "artist": "Dazen",
+      "artists": [
+        "Xanderr",
+        "Dazen"
+      ],
+      "audio_file": "/audio/QT3F82669539.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732198bc9e602c251bdbae7aac",
+      "spotify_url": "https://open.spotify.com/track/6FhztDSPOpnXOX4hqvKpp8",
+      "release": "Mbappé",
+      "release_date": "2026-06-23",
+      "duration_ms": 99722,
+      "deezer_id": 4065641301
+    },
+    {
+      "id": "QZTBE2654440",
+      "title": "HARDEN",
+      "artist": "Dazen",
+      "artists": [
+        "EMEDEMEA",
+        "Exen",
+        "Dazen"
+      ],
+      "audio_file": "/audio/QZTBE2654440.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273ff0de108186f9afd10c7d13a",
+      "spotify_url": "https://open.spotify.com/track/6WgHcCAx06Ig8JwsafST70",
+      "release": "BENDITO´s",
+      "release_date": "2026-04-26",
+      "duration_ms": 149647,
+      "deezer_id": 3954101731
+    },
+    {
+      "id": "UY01G2400149",
+      "title": "ESTADOS UNIDOS",
+      "artist": "Dazen",
+      "artists": [
+        "ARA",
+        "Dazen"
+      ],
+      "audio_file": "/audio/UY01G2400149.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27395ee360a9999edca0abccd68",
+      "spotify_url": "https://open.spotify.com/track/46dLdCEJEnTI3hkRxeJRu0",
+      "release": "BACKSTAGE COVER VOL. 2",
+      "release_date": "2026-03-12",
+      "duration_ms": 110553,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UY01G2400148",
+      "title": "AVISAME SI ESTAS SOLA",
+      "artist": "Dazen",
+      "artists": [
+        "ARA",
+        "Dazen"
+      ],
+      "audio_file": "/audio/UY01G2400148.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27395ee360a9999edca0abccd68",
+      "spotify_url": "https://open.spotify.com/track/6ne0grYeIAvmr31GwvtbU5",
+      "release": "BACKSTAGE COVER VOL. 2",
+      "release_date": "2026-03-12",
+      "duration_ms": 140924,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "QZZ7T2449666",
+      "title": "Tu Perfume",
+      "artist": "Dazen",
+      "artists": [
+        "Timmo",
+        "Dazen"
+      ],
+      "audio_file": "/audio/QZZ7T2449666.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273c3cac00284f5916899cc21ef",
+      "spotify_url": "https://open.spotify.com/track/21LUDY0YGZ3mFWmR7OTFpH",
+      "release": "Tu Perfume",
+      "release_date": "2024-12-06",
+      "duration_ms": 183161,
+      "deezer_id": 3132870541
+    },
+    {
+      "id": "QZZ7Q2447950",
+      "title": "EMILY DICKSON",
+      "artist": "Dazen",
+      "artists": [
+        "DANI",
+        "Dazen"
+      ],
+      "audio_file": "/audio/QZZ7Q2447950.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2733da98234670bcbc935f17fd5",
+      "spotify_url": "https://open.spotify.com/track/1eNCNR8PvHklhxXaLM475g",
+      "release": "EMILY DICKSON",
+      "release_date": "2024-11-29",
+      "duration_ms": 154736,
+      "deezer_id": 3120007291
+    },
+    {
+      "id": "QZTBA2420806",
+      "title": "999",
+      "artist": "Dazen",
+      "artists": [
+        "Xanderr",
+        "Dazen"
+      ],
+      "audio_file": "/audio/QZTBA2420806.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b861b274863d575e876afe21",
+      "spotify_url": "https://open.spotify.com/track/35vWGpsj3v1nXSEmSq0P32",
+      "release": "999",
+      "release_date": "2024-09-09",
+      "duration_ms": 157555,
+      "deezer_id": 2967753971
+    },
+    {
+      "id": "UYT142400032",
+      "title": "ICÓNICOS",
+      "artist": "Dazen",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez",
+        "Dazen"
+      ],
+      "audio_file": "/audio/UYT142400032.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739f1dab8dfc7b1c9a62156a8a",
+      "spotify_url": "https://open.spotify.com/track/5cIXxxLrHVfUpHrWTAtSaB",
+      "release": "ICÓNICOS",
+      "release_date": "2024-06-27",
+      "duration_ms": 147216,
+      "deezer_id": "cached"
+    }
+  ]
+}
