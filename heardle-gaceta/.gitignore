@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+node_modules
+dist
+.DS_Store
+
+# Original 30s previews, kept out of git (see scripts/compress-audio.mjs)
+audio-raw
+
+# Caché de respuestas de Spotify, se regenera solo
+data/cache

@@ -1,0 +1,22 @@
+/*
+ * Design tokens. This is the single place to re-theme the game: swap the
+ * values below and every component follows (Tailwind maps them in
+ * tailwind.config.js). Current values reproduce the GACETA identity.
+ */
+:root {
+  --color-bg: #0a0a0a;
+  --color-fg: #ededed;
+  --color-fg-muted: rgba(255, 255, 255, 0.6);
+  --color-accent: #dee5a0;
+  --color-danger: #911e1e;
+  --color-surface: rgba(255, 255, 255, 0.05);
+  --color-border: rgba(255, 255, 255, 0.12);
+
+  --font-sans: "Inter", sans-serif;
+  --font-display: "Instrument Serif", serif;
+
+  --radius: 4px;
+
+  /* Noise texture used on the page background (inline SVG, no external asset). */
+  --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+}
