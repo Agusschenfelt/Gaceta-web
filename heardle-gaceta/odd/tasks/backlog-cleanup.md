@@ -13,17 +13,17 @@ Deezer preview) depends on the user, not on code. Out of scope here; it stays in
 
 ## Tasks
 
-- [ ] B1 — `loadCatalog` degrades. Today one missing artist JSON takes the whole catalog down,
+- [x] B1 — `loadCatalog` degrades. Today one missing artist JSON takes the whole catalog down,
       because `Promise.all` rejects on the first failure. Load what resolves, drop what does not,
       and only fail when nothing loaded. An artist whose file failed must not appear in the filter
       chips either, or it offers a selection with no tracks.
-- [ ] B2 — `useAudioPlayer`: guard against overlapping plays. `play()` calls `stop()` and then
+- [x] B2 — `useAudioPlayer`: guard against overlapping plays. `play()` calls `stop()` and then
       awaits `audio.play()`, so two fast clicks can interleave and leave two timers running.
       Also surface `ready`, which is computed and never used, so the first click gives feedback
       while the mp3 is still loading instead of feeling dead.
-- [ ] B3 — `submitGame` failures are swallowed by `.catch(() => {})`. Retry with backoff, and if
+- [x] B3 — `submitGame` failures are swallowed by `.catch(() => {})`. Retry with backoff, and if
       it still fails, say so instead of pretending the round was recorded.
-- [ ] B4 — Tests for `search.js`, `pickTrack.js`, the `loadCatalog` merge, `playerIdentity.js` and
+- [x] B4 — Tests for `search.js`, `pickTrack.js`, the `loadCatalog` merge, `playerIdentity.js` and
       the local adapter. All are pure or storage-backed logic, so they run in the existing `node`
       environment with a small `localStorage` stub — no jsdom needed. jsdom stays deferred until
       something actually needs to render a component.
@@ -55,7 +55,7 @@ Runner: `npm run test`.
 
 ## Progress
 
-All four done. Not committed.
+All four done, committed in `81364be` on `feat/heardle-gaceta`.
 
 - **B1** — `Promise.allSettled`; failed artists are dropped from both the pool and the artist list,
   and the whole load only fails when nothing resolved. Written test-first: the new case failed

@@ -51,6 +51,7 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Duraciones de los stages y cómo se calcula el score | `src/game/engine.js` (`STAGES`, `MAX_SCORE` arriba de todo) + `engine.test.js`. Si una etapa pasa de 16 s, leer la sección Audio |
 | Qué layout se usa según el ancho | `src/containers/GameContainer.jsx` (`isWide`) + `src/hooks/useMediaQuery.js` |
 | Largo del recorte de los mp3, bitrate, dónde quedan los originales | `scripts/compress-audio.mjs` (`CLIP_SECONDS`, `BITRATE`) |
+| Cuánto silencio inicial se recorta y con qué umbral | `scripts/compress-audio.mjs` (`ONSET_THRESHOLD`, `LEAD_IN`, `MAX_TRIM`) + `scripts/lib/onset.mjs` (`SILENCE_FLOOR`) |
 | Texto y emojis del share | `src/game/share.js` |
 | Cómo se elige el tema al azar, cuántos recientes se evitan | `src/catalog/pickTrack.js` (`RECENT_LIMIT`, clave `heardle:recent`) |
 | Ranking del buscador, cuántos resultados, normalización de acentos | `src/catalog/search.js` |
@@ -307,13 +308,53 @@ recortan a 16 s mono 96 kbps. Medido sobre los 431 temas: **~197 MB → 81 MB (-
 antes de tiempo. Hay que correr `npm run compress-audio -- --force --seconds=<nuevo>`, que
 re-comprime desde `audio-raw/`. Si borraste `audio-raw/`, hay que volver a bajar las previews.
 
+### Recorte del silencio inicial
+
+El mismo script corta el silencio de arranque. La primera etapa dura 0,5 s, así que un tema que
+tarda un segundo en sonar te quema el primer intento en nada, y el jugador no tiene cómo saber que
+no fue culpa suya. Medido sobre los 431: **14 temas tenían la primera etapa entera muda**, el peor
+2,45 s. Después del recorte: **cero**.
+
+Se arregla en el build y no en el reproductor a propósito. La alternativa era un `startOffset` por
+tema en el catálogo: eso mete estado nuevo en el contrato del catálogo, en el mapeo de tiempo de las
+barras de onda y en la matemática del fragmento que vive en el motor puro. Tres capas para un
+defecto que es del archivo.
+
+**El umbral de silencio es absoluto (-60 dBFS, `SILENCE_FLOOR = 33`) y tiene que seguir siéndolo.**
+La primera versión usaba "10% del pico del segmento", copiado de `build-peaks.mjs` — donde
+normalizar contra el pico del tema está bien, porque ahí el objetivo es dibujar barras comparables.
+Para autorizar un corte destructivo está mal, y no por gusto: **un umbral relativo no es estable
+bajo la operación que autoriza**. Al recortar se corre la ventana, cambia el pico, cambia el umbral,
+y la cabeza ya recortada vuelve a leerse como silencio. Con `UYB282548653` (fade-in largo y muy
+bajo) el pico pasó de 699 a 1165 y el archivo pedía recorte en cada corrida, apilando pérdida de
+generación de mp3. El test `onset.test.mjs` fija la regresión: cortar en el onset no puede dejar un
+onset nuevo.
+
+Un piso absoluto también es más conservador, que es lo que querés en un corte destructivo: nunca
+toca nada audible. Recorta 13 archivos, de 0,13 s a 1,64 s.
+
+**Después de recortar hay que correr `npm run peaks -- --force`.** `build-peaks.mjs` saltea los IDs
+que ya están en `peaks.json`, así que sin `--force` los temas recortados se quedan con la envolvente
+vieja y las barras no coinciden con lo que suena.
+
+Dato útil: `--force` en `compress-audio` re-encodea los 431 pero **el diff de git sigue siendo solo
+los que cambiaron**. El encode es determinístico, así que los intactos salen byte-idénticos.
+
+**Lo que esto NO arregla:** 5 temas abren por debajo de -40 dBFS (el peor, `UYB282548653`, a -55,7
+contra un cuerpo de -36,0). No tienen silencio, tienen un fade-in largo. Recortar más sería cortar
+contenido audible. El arreglo honesto es ganancia por tema — normalización de loudness, que es otra
+decisión y está sin hacer.
+
+**`peaks.json` no sirve para medir esto.** Sus buckets son de 250 ms (16 s / 64 valores) y la
+primera etapa dura 500 ms, así que subestima: encontraba 21 temas donde midiendo PCM a 25 ms hay 26.
+
 ## Supabase
 
 Correr `supabase/schema.sql` en el SQL editor del proyecto y cargar las dos `VITE_SUPABASE_*`. Tablas `players`, `games`, `emails`; vista `leaderboard`. Acceso anónimo con RLS; el modelo de confianza está comentado arriba del archivo (el cliente manda su propio `playerId`, no hay auth). El adapter de Supabase **no se probó contra un proyecto real todavía**; el local sí.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **62/62** en 7 archivos (o más si agregás tests).
+1. `npm run test` — tiene que dar **93/93** en 9 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
 2. `npm run build` — tiene que compilar.
 3. Probar a mano en `npm run dev`: cargar, play, un guess incorrecto, un skip, llegar al reveal, share, alias, mail. El ranking en modo local se ve en localStorage.
 

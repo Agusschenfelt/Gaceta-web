@@ -9,6 +9,12 @@
  * different clip length or bitrate can be produced later without hitting
  * Deezer again. Re-running is safe: already-compressed files are skipped.
  *
+ * It also cuts leading silence. The first stage of a round is half a second, so
+ * a preview that takes a second to make a sound spends the player's first guess
+ * on nothing, and the player cannot tell it was not their fault. The cut is
+ * measured on the original and applied while re-encoding, which keeps the
+ * runtime free of per-track offsets.
+ *
  * Usage:
  *   node scripts/compress-audio.mjs
  *   node scripts/compress-audio.mjs --dry
@@ -19,6 +25,8 @@ import { spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { onsetSeconds } from "./lib/onset.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const AUDIO_DIR = path.join(ROOT, "public", "audio");
@@ -42,6 +50,23 @@ const CONCURRENCY = 4;
 // processed by a previous run.
 const DURATION_SLACK = 0.5;
 
+// Silence worth acting on. Under this the player never notices, and staying
+// above the lead-in plus the encoder's own priming delay keeps a second run
+// from finding work to redo.
+const ONSET_THRESHOLD = 0.15;
+
+// Left in front of the first sound so the track opens rather than snaps.
+const LEAD_IN = 0.04;
+
+// A file that somehow reads as silent for this long is not a late intro, it is
+// a broken preview. Cutting it blind would leave the player with nothing.
+const MAX_TRIM = 5;
+
+// Enough of the head to find the onset without decoding the whole preview.
+const PROBE_SECONDS = 8;
+const PROBE_RATE = 8000;
+const PROBE_WINDOW_MS = 25;
+
 function run(cmd, cmdArgs) {
   return new Promise((resolve, reject) => {
     const child = spawn(cmd, cmdArgs);
@@ -56,6 +81,54 @@ function run(cmd, cmdArgs) {
         : reject(new Error(`${cmd} exited ${code}: ${stderr.trim()}`)),
     );
   });
+}
+
+/** Same as run(), but keeps stdout as bytes. Concatenating PCM as a string corrupts it. */
+function runBinary(cmd, cmdArgs) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(cmd, cmdArgs);
+    const chunks = [];
+    let stderr = "";
+    child.stdout.on("data", (d) => chunks.push(d));
+    child.stderr.on("data", (d) => (stderr += d));
+    child.on("error", reject);
+    child.on("close", (code) =>
+      code === 0
+        ? resolve(Buffer.concat(chunks))
+        : reject(new Error(`${cmd} exited ${code}: ${stderr.trim()}`)),
+    );
+  });
+}
+
+/**
+ * Seconds of silence at the head of a file.
+ *
+ * Decodes the first PROBE_SECONDS to mono PCM and hands them to the pure onset
+ * module. Infinity means the probed head is silent throughout.
+ */
+async function onsetOf(file) {
+  const raw = await runBinary("ffmpeg", [
+    "-v", "error",
+    "-i", file,
+    "-t", String(PROBE_SECONDS),
+    "-ac", "1",
+    "-ar", String(PROBE_RATE),
+    "-f", "s16le",
+    "-",
+  ]);
+  // Buffer.concat may land on an odd byte boundary; a trailing half sample is
+  // not worth a copy of the whole buffer.
+  const samples = new Int16Array(raw.buffer, raw.byteOffset, Math.floor(raw.length / 2));
+  return onsetSeconds(samples, {
+    sampleRate: PROBE_RATE,
+    windowMs: PROBE_WINDOW_MS,
+  });
+}
+
+/** Where to start the clip, given the onset of the source. Never past MAX_TRIM. */
+function trimStart(onset) {
+  if (!Number.isFinite(onset) || onset < ONSET_THRESHOLD) return 0;
+  return Math.min(Math.max(onset - LEAD_IN, 0), MAX_TRIM);
 }
 
 async function probe(file) {
@@ -93,13 +166,15 @@ async function exists(file) {
   }
 }
 
-async function encode(source, target) {
+async function encode(source, target, startAt = 0) {
   const tmp = `${target}.tmp.mp3`;
   try {
     await run("ffmpeg", [
       "-v", "error",
       "-y",
       "-i", source,
+      // After -i, so the seek is sample-accurate rather than snapped to a frame.
+      ...(startAt > 0 ? ["-ss", startAt.toFixed(3)] : []),
       "-t", String(CLIP_SECONDS),
       "-ac", String(CHANNELS),
       "-b:a", BITRATE,
@@ -125,25 +200,36 @@ async function processFile(name) {
   const { channels, duration } = await probe(target);
   const compressed =
     channels === CHANNELS && duration <= CLIP_SECONDS + DURATION_SLACK;
+  // Measured on what is actually served, so a file trimmed by an earlier run
+  // reads as done and the script stays idempotent.
+  const silentHead = (await onsetOf(target)) >= ONSET_THRESHOLD;
 
-  if (compressed && !FORCE) {
+  if (compressed && !silentHead && !FORCE) {
     if (!hasRaw) return { name, skipped: "compressed, no original kept" };
     return null;
   }
 
-  if (DRY) return { name, before, dry: true };
+  if (compressed && silentHead && !hasRaw) {
+    return { name, skipped: "opens with silence, no original to re-cut from" };
+  }
+
+  if (DRY) return { name, before, dry: true, silentHead };
 
   // The original is the encoding source, so it has to reach RAW_DIR first.
   if (!hasRaw) await fs.rename(target, raw);
 
+  // The cut is measured on the original: the served file may already be a
+  // trimmed copy, and trimming a trim would walk into the song.
+  const startAt = trimStart(await onsetOf(raw));
+
   try {
-    await encode(raw, target);
+    await encode(raw, target, startAt);
   } catch (err) {
     await fs.copyFile(raw, target);
     throw err;
   }
 
-  return { name, before, after: await sizeOf(target) };
+  return { name, before, after: await sizeOf(target), startAt };
 }
 
 async function pool(items, worker) {
@@ -199,6 +285,7 @@ async function main() {
   let after = 0;
   let touched = 0;
   let warned = 0;
+  const trimmed = [];
 
   for (const r of results) {
     if (!r) continue;
@@ -207,9 +294,17 @@ async function main() {
       warned++;
       continue;
     }
+    if (r.startAt > 0) trimmed.push(r);
     before += r.before;
     after += r.dry ? r.before : r.after;
     touched++;
+  }
+
+  if (trimmed.length) {
+    console.log(`  silence cut from ${trimmed.length} file(s):`);
+    for (const r of trimmed) {
+      console.log(`    ${r.name}  -${r.startAt.toFixed(2)}s`);
+    }
   }
 
   for (const f of failures) console.log(`  ✗ ${f.name}: ${f.message}`);
