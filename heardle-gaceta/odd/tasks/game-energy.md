@@ -56,6 +56,10 @@ Started and closed 2026-09-22.
   headline fit; nothing is cut, the search input stays on the frame edge.
 - The unlock sweep was caught mid-animation in the phone capture (accent on the first 4 ticks).
 
+- Commit `77c239e`. RDD assess (`--base-ref HEAD~1 --committed-only`): **medium**
+  (`executable_change` on CLAUDE.md), 524 changed lines → deferred to slice; the native review
+  runs when the user signs off on the look, so a design iteration does not burn a review.
+
 ## Not verified
 
 - Audio-driven states (accent playhead, beating isotype) and the miss shake: headless Chrome does
