@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { StageProgress } from "../molecules/StageProgress.jsx";
 import { PlayCircle } from "../molecules/PlayCircle.jsx";
 import { StageCounter } from "../molecules/StageCounter.jsx";
@@ -6,6 +7,23 @@ import { GuessHistory } from "../molecules/GuessHistory.jsx";
 import { Button } from "../atoms/Button.jsx";
 import { currentClipSeconds, isOver } from "../../game/engine.js";
 
+/** A miss knocks the circle sideways once. Decays so it reads as a hit, not a wobble. */
+const MISS_SHAKE = [
+  { transform: "translateX(0)" },
+  { transform: "translateX(-10px)" },
+  { transform: "translateX(8px)" },
+  { transform: "translateX(-5px)" },
+  { transform: "translateX(2px)" },
+  { transform: "translateX(0)" },
+];
+
+/** Level of the envelope right now, 0..1, from the middle bar the audio hook reports. */
+function currentLevel(levels) {
+  const middle = levels?.[Math.floor((levels?.length ?? 0) / 2)] ?? 0;
+  // The hook floors bars at 0.18 so they never vanish; undo that for the beat.
+  return Math.max((middle - 0.18) / 0.82, 0);
+}
+
 /**
  * A fixed-height frame: every row sizes to its content except the circle, which
  * takes whatever is left. The board therefore never scrolls — a short viewport
@@ -13,6 +31,7 @@ import { currentClipSeconds, isOver } from "../../game/engine.js";
  */
 export function GameBoard({
   game,
+  peaks = null,
   tracks,
   tracksById,
   audio,
@@ -26,6 +45,15 @@ export function GameBoard({
 }) {
   const over = isOver(game);
   const seconds = currentClipSeconds(game);
+  const span = game.stages[game.stages.length - 1];
+  const circleRef = useRef(null);
+  const missCount = game.attempts.filter((a) => a.type === "guess" && !a.correct).length;
+
+  useEffect(() => {
+    if (missCount === 0 || !circleRef.current?.animate) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    circleRef.current.animate(MISS_SHAKE, { duration: 380, easing: "ease-out" });
+  }, [missCount]);
 
   return (
     <section
@@ -43,18 +71,21 @@ export function GameBoard({
           so the screen still gets its display type without paying for it the
           whole round. The circle takes the space back. */}
       {!hasPlayed && game.attempts.length === 0 && (
-        <p className="headline fade-up shrink-0 pt-1 text-4xl !leading-[1.2]">
+        <p className="headline fade-up shrink-0 pt-1 text-4xl lg:text-5xl !leading-[1.2]">
           Adiviná el <em>tema</em>
         </p>
       )}
 
-      <div className="flex min-h-0 flex-1 basis-0 items-center justify-center">
+      <div ref={circleRef} className="flex min-h-0 flex-1 basis-0 items-center justify-center">
         <PlayCircle
           isPlaying={audio.isPlaying}
           progress={audio.progress}
           disabled={over}
           loading={!audio.ready}
-          levels={audio.levels}
+          level={currentLevel(audio.levels)}
+          peaks={peaks}
+          seconds={seconds}
+          span={span}
           onPlay={onPlay}
         />
       </div>

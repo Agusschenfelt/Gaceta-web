@@ -59,8 +59,10 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Reproducción: cuándo arranca, cuándo corta, anillo de progreso | `src/audio/useAudioPlayer.js` |
 | Flujo general, qué se muestra cuando, orden de paneles, localStorage de filtros | `src/containers/GameContainer.jsx` |
 | Pantalla de juego (círculo, contador, buscador, skip, historial) | `src/components/organisms/GameBoard.jsx` y las moléculas que usa |
-| Círculo de play, anillo y barras de onda | `src/components/molecules/PlayCircle.jsx` |
-| Cómo se calculan las barras (cantidad, altura mínima) | `src/audio/waveform.js` (`BAR_COUNT`, `MIN_HEIGHT`) + `waveform.test.js` |
+| Círculo de play, anillo de onda, barrido al desbloquear, latido del isotipo | `src/components/molecules/PlayCircle.jsx` (geometría arriba: `TICK_BASE`, `TICK_REACH`, `SWEEP_STEP_MS`) |
+| Cómo se calculan los ticks del anillo y cuántos están desbloqueados | `src/audio/waveform.js` (`ringTicks`, `unlockedTicks`, `RING_TICKS`, `CLIP_FILE_SECONDS`) + `waveform.test.js` |
+| Sacudón al errar, grano animado del fondo | `GameBoard.jsx` (`MISS_SHAKE`) · `src/index.css` (`grain`, `body::before`) |
+| Escalera de intentos en la columna derecha (layout ancho) | `src/components/molecules/GuessHistory.jsx` (`variant="ladder"`) |
 | Envolventes de onda por tema | `scripts/build-peaks.mjs` → `public/catalog/peaks.json` |
 | Autocomplete (teclado, ARIA, dropdown) | `src/components/molecules/GuessSearch.jsx` |
 | Barra de segmentos arriba | `src/components/molecules/StageProgress.jsx` + `atoms/Segment.jsx` |
@@ -214,8 +216,12 @@ Varios scrapers no resuelven relativas — hay que pasarlo a absoluto.
 
 ## El visualizador (por qué NO usa Web Audio)
 
-Las barras dentro del círculo son la forma de onda real del tema. Antes eran tres barras con un
-`@keyframes` que fingía seguir la música; ahora leen la envolvente precalculada del tema.
+**El anillo es el tema.** Alrededor del círculo hay 64 ticks radiales: la envolvente real de los
+primeros 8 s (la última etapa). Lo desbloqueado se ve blanco, lo que falta espera apagado. Cada
+fallo o skip desbloquea más y los ticks nuevos entran en barrido (apagado → acid gold → blanco,
+`.tick-unlock`). Mientras suena, el playhead pinta de acid gold lo que ya pasó y el isotipo del
+centro late con el nivel. Reemplazó a las cinco barras del centro y al anillo de progreso de 2px
+(2026-09-22, `odd/tasks/game-energy.md`).
 
 **La decisión importante: no se usa `AnalyserNode`.** `createMediaElementSource` captura la salida
 del elemento de audio de forma **permanente** — si el `AudioContext` queda suspendido, el juego se
@@ -233,17 +239,21 @@ En su lugar:
    eso se interponga entre el jugador y la primera ronda estaría mal. `GameContainer` dispara las
    dos cargas en paralelo y las barras llegan cuando llegan. Si falla, resuelve a `{}` y las barras
    quedan planas; nunca rechaza.
-3. `src/audio/waveform.js` es **pura y testeada**: `barHeights(peaks, time, duration)` devuelve las
-   alturas leyendo una ventana de la envolvente centrada en el momento actual, así las barras se
-   mueven desfasadas entre sí en vez de todas juntas.
-4. El tick de `requestAnimationFrame` de `useAudioPlayer` las actualiza. **Es solo visual**: el
+3. `src/audio/waveform.js` es **pura y testeada**: `ringTicks(peaks, span)` interpola la envolvente
+   y la normaliza contra lo más fuerte **dentro de los 8 s**, así una intro baja igual llena el
+   anillo. `CLIP_FILE_SECONDS = 16` tiene que coincidir con `CLIP_SECONDS` de `compress-audio`.
+   `barHeights` sigue existiendo: el hook la usa para sacar el nivel del momento (la barra del medio)
+   y de ahí sale el latido.
+4. El tick de `requestAnimationFrame` de `useAudioPlayer` actualiza nivel y progreso. **Es solo visual**: el
    corte del fragmento sigue dependiendo de `setTimeout` + `timeupdate`, como siempre.
 
 Dos detalles que no conviene deshacer:
 
-- Las barras se animan con **`scaleY`, no con `height`**. Cinco barras cambiando de alto a 60fps
-  fuerzan layout en cada frame; el detector de impeccable lo marca y tiene razón.
-- Con `prefers-reduced-motion` las barras quedan fijas (`REDUCED_MOTION` arriba de `PlayCircle`).
+- El latido es **`scale`, no tamaño**: nada hace reflow a 60fps. El sacudón es Web Animations
+  (`element.animate`) sobre el contenedor del círculo, no una clase, para no remontar nada.
+- `.tick-unlock` usa `animation-fill-mode: backwards` **a propósito**: con `both` la animación se
+  quedaría con el color final y taparía el acid gold del playhead en esos ticks.
+- Con `prefers-reduced-motion`: el isotipo no late, no hay sacudón y el grano queda quieto.
 
 ## Layout: una sola pantalla (regla dura)
 
@@ -354,7 +364,7 @@ Correr `supabase/schema.sql` en el SQL editor del proyecto y cargar las dos `VIT
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **93/93** en 9 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
+1. `npm run test` — tiene que dar **99/99** en 9 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
 2. `npm run build` — tiene que compilar.
 3. Probar a mano en `npm run dev`: cargar, play, un guess incorrecto, un skip, llegar al reveal, share, alias, mail. El ranking en modo local se ve en localStorage.
 

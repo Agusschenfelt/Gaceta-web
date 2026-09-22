@@ -254,6 +254,7 @@ export function GameContainer() {
   const gameView = game ? (
     <GameBoard
       game={game}
+      peaks={peaks[game.track.id] ?? null}
       tracks={catalog.tracks}
       tracksById={tracksById}
       audio={audio}
@@ -285,7 +286,15 @@ export function GameContainer() {
         </aside>
         <div className="flex min-h-0 flex-col">{gameView}</div>
         <aside className="flex min-h-0 flex-col justify-center" aria-label="Intentos">
-          {game && <GuessHistory attempts={game.attempts} tracksById={tracksById} />}
+          {game && (
+            <GuessHistory
+              variant="ladder"
+              attempts={game.attempts}
+              tracksById={tracksById}
+              stages={game.stages}
+              stageIndex={game.stageIndex}
+            />
+          )}
         </aside>
       </div>
     );

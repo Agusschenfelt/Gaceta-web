@@ -1,3 +1,6 @@
+import { useMemo, useState } from "react";
+import { ringTicks, unlockedTicks, RING_TICKS } from "../../audio/waveform.js";
+
 /**
  * The GACETA isotype is a folded G that already reads as a play triangle, so
  * the button's affordance and the label's mark are the same shape. Painted as a
@@ -15,43 +18,83 @@ const ISOTYPE_MASK = {
   WebkitMaskPosition: "center",
 };
 
+/* Ring geometry, in viewBox units. Ticks grow outwards from TICK_BASE. */
 const SIZE = 100;
-const STROKE = 2;
-const R = (SIZE - STROKE) / 2;
-const CIRC = 2 * Math.PI * R;
+const CENTER = SIZE / 2;
+const TICK_BASE = 37;
+const TICK_REACH = 12;
+const TICK_WIDTH = 1.5;
+const DISC_R = 33;
+
+/** Delay between two neighbouring ticks of an unlock sweep. */
+const SWEEP_STEP_MS = 14;
 
 /**
- * The elastic element of the game screen. It takes the height its parent has
- * left over and derives its width from that, so a shorter viewport, an open
- * settings panel or a growing attempt history all resolve by shrinking the
- * circle instead of pushing the layout into a scroll.
- *
- * `aspect-square` with `h-full` and `max-w-full` settles at
- * min(available height, available width), keeping the ring perfectly round.
- */
-/**
- * Read once: a viewer who asked for less motion should not get bars jumping
- * every frame. Toggling the OS setting mid-session is rare enough that a
- * listener would cost more than it buys here.
+ * Read once: a viewer who asked for less motion should not get the isotype
+ * pumping every frame. Toggling the OS setting mid-session is rare enough that
+ * a listener would cost more than it buys here.
  */
 const REDUCED_MOTION =
   typeof window !== "undefined" &&
   window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
+function tickLine(i, length) {
+  // Clockwise from twelve o'clock, like the song reads.
+  const angle = ((i + 0.5) / RING_TICKS) * 2 * Math.PI - Math.PI / 2;
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+  const outer = TICK_BASE + length * TICK_REACH;
+  return {
+    x1: CENTER + TICK_BASE * cos,
+    y1: CENTER + TICK_BASE * sin,
+    x2: CENTER + outer * cos,
+    y2: CENTER + outer * sin,
+  };
+}
+
+/**
+ * The ring is the song. Its ticks are the first `span` seconds of the track's
+ * own loudness envelope: the part the player has unlocked is lit, the rest
+ * waits dim. Every miss unlocks more and the new ticks sweep on; while the clip
+ * plays, the playhead turns the ticks it has passed acid gold and the isotype
+ * beats with the level.
+ *
+ * It is also the elastic element of the game screen. It takes the height its
+ * parent has left over and derives its width from that (`aspect-square` with
+ * `h-full` and `max-w-full` settles at the smaller of the two), so a shorter
+ * viewport or a growing attempt history shrinks the circle instead of
+ * scrolling.
+ */
 export function PlayCircle({
   isPlaying,
   progress,
   disabled,
   loading = false,
-  levels = [],
+  level = 0,
+  peaks = null,
+  seconds,
+  span,
   onPlay,
 }) {
-  const offset = CIRC * (1 - progress);
+  const ticks = useMemo(() => ringTicks(peaks, span), [peaks, span]);
+  const unlocked = unlockedTicks(seconds, span);
+  const played = isPlaying ? (progress * seconds * RING_TICKS) / span : 0;
+
+  // The ticks that just became playable, for the sweep. Derived during render
+  // (not in an effect) so the sweep starts on the same frame as the unlock. A
+  // ring that shrinks means a new round: it sweeps on from the top again.
+  const [sweep, setSweep] = useState({ from: 0, to: unlocked });
+  if (sweep.to !== unlocked) {
+    setSweep({ from: unlocked > sweep.to ? sweep.to : 0, to: unlocked });
+  }
+
+  const beat = isPlaying && !REDUCED_MOTION ? 1 + level * 0.14 : 1;
   const label = isPlaying
     ? "Reproduciendo"
     : loading
       ? "Cargando el fragmento"
       : "Escuchar fragmento";
+
   return (
     <button
       type="button"
@@ -59,58 +102,53 @@ export function PlayCircle({
       disabled={disabled}
       aria-busy={loading || undefined}
       aria-label={label}
-      className="group relative aspect-square h-full max-h-96 w-auto max-w-full rounded-full transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
+      className="group relative aspect-square h-full max-h-[26rem] w-auto max-w-full rounded-full transition-transform duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40"
     >
-      <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="absolute inset-0 h-full w-full -rotate-90">
+      <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="absolute inset-0 h-full w-full" aria-hidden="true">
+        <circle
+          cx={CENTER}
+          cy={CENTER}
+          r={DISC_R}
+          strokeWidth={0.4}
+          className="fill-bg stroke-border transition-colors duration-200 group-hover:fill-surface"
+        />
         {/* The ring itself reports loading, so it costs no layout height. */}
-        <circle
-          cx={SIZE / 2}
-          cy={SIZE / 2}
-          r={R}
-          fill="none"
-          stroke="var(--color-border)"
-          strokeWidth={STROKE}
-          className={loading ? "animate-[ring-pulse_1.4s_ease-in-out_infinite]" : undefined}
-        />
-        <circle
-          cx={SIZE / 2}
-          cy={SIZE / 2}
-          r={R}
-          fill="none"
-          stroke="var(--color-accent)"
-          strokeWidth={STROKE}
-          strokeDasharray={CIRC}
-          strokeDashoffset={offset}
-          strokeLinecap="butt"
-        />
-      </svg>
-      <span className="absolute inset-[6%] rounded-full bg-surface transition-colors group-hover:bg-border" />
-      <span className="absolute inset-0 flex items-center justify-center">
-        {isPlaying ? (
-          /* These bars used to be a CSS keyframe pretending to follow the
-             music. They now read the track's own envelope, so the circle moves
-             with what you are actually hearing. */
-          <span className="flex h-[24%] w-[30%] items-end justify-center gap-[5%]" aria-hidden="true">
-            {levels.map((height, i) => (
-              /* scaleY, not height: five bars changing height at 60fps would
-                 force layout every frame. */
-              <span
+        <g className={loading ? "animate-[ring-pulse_1.4s_ease-in-out_infinite]" : undefined}>
+          {ticks.map((length, i) => {
+            const open = i < unlocked;
+            const sweeping = open && i >= sweep.from && i < sweep.to;
+            return (
+              <line
                 key={i}
-                className="h-full flex-1 origin-bottom bg-fg"
+                {...tickLine(i, length)}
+                strokeWidth={TICK_WIDTH}
+                className={sweeping ? "tick-unlock" : undefined}
                 style={{
-                  transform: `scaleY(${REDUCED_MOTION ? 0.55 : height})`,
-                  transition: REDUCED_MOTION ? undefined : "transform 90ms linear",
+                  stroke: !open
+                    ? "var(--color-border)"
+                    : i < played
+                      ? "var(--color-accent)"
+                      : "var(--color-fg)",
+                  animationDelay: sweeping ? `${(i - sweep.from) * SWEEP_STEP_MS}ms` : undefined,
                 }}
               />
-            ))}
-          </span>
-        ) : (
-          <span
-            aria-hidden="true"
-            style={ISOTYPE_MASK}
-            className={`aspect-square w-[30%] bg-fg transition-opacity ${loading ? "opacity-40" : ""}`}
-          />
-        )}
+            );
+          })}
+        </g>
+      </svg>
+      <span className="absolute inset-0 flex items-center justify-center">
+        <span
+          aria-hidden="true"
+          style={{
+            ...ISOTYPE_MASK,
+            // Scale, not size: nothing reflows while it beats.
+            transform: `scale(${beat})`,
+            transition: "transform 90ms linear",
+          }}
+          className={`aspect-square w-[28%] transition-colors ${
+            isPlaying ? "bg-accent" : "bg-fg"
+          } ${loading ? "opacity-40" : ""}`}
+        />
       </span>
     </button>
   );
