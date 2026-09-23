@@ -5,8 +5,12 @@ node_modules
 dist
 .DS_Store
 
-# Original 30s previews, kept out of git (see scripts/compress-audio.mjs)
+# Audio sources and their envelopes stay local: the repository is public, and
+# together with the published files they would give away every answer.
+# Rebuild with npm run catalog + compress-audio + peaks. See CLAUDE.md, "Fuentes".
 audio-raw
+audio
+data/peaks.json
 
 # Caché de respuestas de Spotify, se regenera solo
 data/cache
