@@ -36,9 +36,12 @@ export function GameBoard({
   tracksById,
   audio,
   hasPlayed,
-  /* Wide layouts move the attempt list into its own column, so the board
-     renders it only when it owns it. */
-  showHistory = true,
+  /* Wide layouts pass the side columns in. The board then lays itself out as
+     the same three-column grid as the header, and puts them in the circle's
+     row so they centre on the circle rather than on the whole screen. The
+     attempt ladder on the right replaces both the list and the top bar. */
+  left = null,
+  right = null,
   onPlay,
   onGuess,
   onSkip,
@@ -47,6 +50,9 @@ export function GameBoard({
   const seconds = currentClipSeconds(game);
   const span = game.stages[game.stages.length - 1];
   const circleRef = useRef(null);
+  const wide = Boolean(left || right);
+  // Grid placement, only when wide; narrow keeps the single flex column.
+  const at = (classes) => (wide ? classes : "");
   const missCount = game.attempts.filter((a) => a.type === "guess" && !a.correct).length;
 
   useEffect(() => {
@@ -57,21 +63,29 @@ export function GameBoard({
 
   return (
     <section
-      className="flex min-h-0 w-full flex-1 flex-col gap-2.5 overflow-hidden"
+      className={
+        wide
+          ? "grid min-h-0 w-full flex-1 grid-cols-[13rem_minmax(0,26rem)_13rem] grid-rows-[auto_minmax(0,1fr)_auto_auto] justify-center gap-x-10 gap-y-2.5 overflow-hidden"
+          : "flex min-h-0 w-full flex-1 flex-col gap-2.5 overflow-hidden"
+      }
       aria-label="Juego"
     >
-      <StageProgress
-        stages={game.stages}
-        attempts={game.attempts}
-        stageIndex={game.stageIndex}
-        isPlaying={audio.isPlaying}
-      />
+      {!wide && (
+        <StageProgress
+          stages={game.stages}
+          attempts={game.attempts}
+          stageIndex={game.stageIndex}
+          isPlaying={audio.isPlaying}
+        />
+      )}
 
       {/* Every round opens on the title and clears the moment you press play,
           so the screen still gets its display type without paying for it the
           whole round. The circle takes the space back. */}
       {!hasPlayed && game.attempts.length === 0 && (
-        <p className="headline shrink-0 pt-1 text-4xl lg:text-5xl !leading-[1.2]">
+        <p
+          className={`headline shrink-0 pt-1 text-4xl lg:text-5xl !leading-[1.2] ${at("col-start-2 row-start-1")}`}
+        >
           {/* Words rise out of their own line, one after the other. */}
           <span className="word-mask">
             <span className="word-rise">Adiviná</span>
@@ -89,7 +103,16 @@ export function GameBoard({
         </p>
       )}
 
-      <div ref={circleRef} className="flex min-h-0 flex-1 basis-0 items-center justify-center">
+      {left && (
+        <aside className="col-start-1 row-start-2 min-w-0 self-center" aria-label="Ajustes">
+          {left}
+        </aside>
+      )}
+
+      <div
+        ref={circleRef}
+        className={`flex min-h-0 flex-1 basis-0 items-center justify-center ${at("col-start-2 row-start-2")}`}
+      >
         <PlayCircle
           isPlaying={audio.isPlaying}
           progress={audio.progress}
@@ -103,7 +126,13 @@ export function GameBoard({
         />
       </div>
 
-      <div className="flex shrink-0 items-end justify-between gap-3">
+      {right && (
+        <aside className="col-start-3 row-start-2 min-w-0 self-center" aria-label="Intentos">
+          {right}
+        </aside>
+      )}
+
+      <div className={`flex shrink-0 items-end justify-between gap-3 ${at("col-start-2 row-start-3")}`}>
         <StageCounter seconds={seconds} stageIndex={game.stageIndex} total={game.stages.length} />
         <Button variant="ghost" onClick={onSkip} disabled={over} className="-mr-4">
           Saltar →
@@ -111,9 +140,11 @@ export function GameBoard({
       </div>
 
       {/* Keyed by track so the typed query resets whenever a new round starts. */}
-      <GuessSearch key={game.track.id} tracks={tracks} disabled={over} onSelect={onGuess} />
+      <div className={`shrink-0 ${at("col-start-2 row-start-4")}`}>
+        <GuessSearch key={game.track.id} tracks={tracks} disabled={over} onSelect={onGuess} />
+      </div>
 
-      {showHistory && <GuessHistory attempts={game.attempts} tracksById={tracksById} />}
+      {!wide && <GuessHistory attempts={game.attempts} tracksById={tracksById} />}
     </section>
   );
 }

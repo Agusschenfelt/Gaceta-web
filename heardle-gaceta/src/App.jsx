@@ -14,7 +14,9 @@ export default function App() {
         paddingBottom: "max(0.875rem, env(safe-area-inset-bottom))",
       }}
     >
-      <header className="flex shrink-0 items-baseline justify-between gap-3">
+      {/* Wide screens: the same three columns as the game grid, so the wordmark
+          lines up with the artist column and the link with the attempt ladder. */}
+      <header className="flex shrink-0 items-baseline justify-between gap-3 lg:grid lg:grid-cols-[13rem_minmax(0,26rem)_13rem] lg:justify-center lg:gap-x-10">
         {/* The real wordmark, cropped so its bottom edge is the letter baseline
             — that is what makes `items-baseline` line it up with the serif.
             Its isotype is not repeated here: it lives inside the play circle. */}
@@ -33,7 +35,7 @@ export default function App() {
           href="https://esgaceta.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="label transition-colors hover:text-fg"
+          className="label transition-colors hover:text-fg lg:col-start-3 lg:justify-self-end"
         >
           esgaceta.com
         </a>

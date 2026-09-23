@@ -265,6 +265,18 @@ export function GameContainer() {
     />
   );
 
+  const ladder = game ? (
+    <GuessHistory
+      variant="ladder"
+      attempts={game.attempts}
+      tracksById={tracksById}
+      stages={game.stages}
+      stageIndex={game.stageIndex}
+    />
+  ) : null;
+
+  // Wide: settings and the attempt ladder take the side columns, placed by the
+  // board in the circle's row so all three centre on the same line.
   const gameView = game ? (
     <GameBoard
       game={game}
@@ -273,7 +285,8 @@ export function GameContainer() {
       tracksById={tracksById}
       audio={audio}
       hasPlayed={hasPlayed}
-      showHistory={!isWide}
+      left={isWide ? settings : null}
+      right={isWide ? ladder : null}
       onPlay={onPlay}
       onGuess={onGuess}
       onSkip={onSkip}
@@ -290,29 +303,7 @@ export function GameContainer() {
     </div>
   );
 
-  // Wide: settings and attempts take the side columns, so the board keeps its
-  // comfortable width and the margins stop being dead space.
-  if (isWide) {
-    return (
-      <div className="grid min-h-0 flex-1 grid-cols-[13rem_minmax(0,26rem)_13rem] justify-center gap-10">
-        <aside className="flex min-h-0 flex-col justify-center" aria-label="Ajustes">
-          {settings}
-        </aside>
-        <div className="flex min-h-0 flex-col">{gameView}</div>
-        <aside className="flex min-h-0 flex-col justify-center" aria-label="Intentos">
-          {game && (
-            <GuessHistory
-              variant="ladder"
-              attempts={game.attempts}
-              tracksById={tracksById}
-              stages={game.stages}
-              stageIndex={game.stageIndex}
-            />
-          )}
-        </aside>
-      </div>
-    );
-  }
+  if (isWide) return gameView;
 
   return (
     <div className="flex min-h-0 w-full flex-1 flex-col gap-2">

@@ -291,7 +291,12 @@ activada (el guess fue un click); si igual lo rechaza, el disco queda quieto esp
   `GameContainer`, no con CSS:
   - Angosto: ajustes como línea colapsable arriba, historial debajo del buscador.
   - Ancho: tres columnas `13rem / 26rem / 13rem`. Ajustes a la izquierda siempre abiertos
-    (`variant="panel"` en `GameSettings`), juego al medio, intentos a la derecha. El marco pasa a
+    (`variant="panel"` en `GameSettings`), juego al medio, escalera de intentos a la derecha.
+    **La grilla es de `GameBoard`**, no del contenedor: recibe `left` y `right` y los pone en la
+    fila del círculo, así los tres quedan centrados sobre la misma línea. El header de `App.jsx`
+    usa las mismas tres columnas, así el logo arranca donde la columna de artistas y
+    `esgaceta.com` termina donde la escalera. En ancho no hay barra de segmentos arriba: la
+    escalera ya es el progreso. Si cambiás el ancho de una columna, cambialo en los dos lados. El marco pasa a
     `lg:max-w-5xl`; resultado y ranking se quedan en `max-w-md` centrado para no estirarse.
 
   Se decide en JS y no con `lg:hidden` **a propósito**: dos copias del historial en el DOM serían
