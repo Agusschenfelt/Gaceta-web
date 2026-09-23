@@ -9,6 +9,7 @@ import { getGameServices } from "../services/gameServices.js";
 import { audioUrl, PEAKS_URL } from "../services/assetUrls.js";
 import { withRetry } from "../leaderboard/retry.js";
 import { toRoundError } from "../rounds/roundErrors.js";
+import { answerTrack } from "../rounds/answerTrack.js";
 import { GameBoard } from "../components/organisms/GameBoard.jsx";
 import { ResultReveal } from "../components/organisms/ResultReveal.jsx";
 import { Leaderboard } from "../components/organisms/Leaderboard.jsx";
@@ -41,23 +42,6 @@ const sameSet = (a, b) => a.length === b.length && a.every((x) => b.includes(x))
 
 const isConnectionError = (e) => toRoundError(e).code === "network";
 
-/**
- * The finished round's track: from the catalog when this browser has it, else
- * from what the judge returned, so the reveal never depends on a catalog file
- * having loaded.
- */
-function answerTrack(game, tracksById, artists) {
-  const known = tracksById.get(game.answerId);
-  if (known) return known;
-  const names = new Map(artists.map((a) => [a.slug, a.name]));
-  return {
-    id: game.answerId,
-    title: game.answer?.title ?? "Tema del catálogo",
-    artists: (game.answer?.artistSlugs ?? []).map((slug) => names.get(slug) ?? slug),
-    coverUrl: null,
-    spotifyUrl: null,
-  };
-}
 
 export function GameContainer() {
   const [catalog, setCatalog] = useState(null);
@@ -115,7 +99,7 @@ export function GameContainer() {
   );
 
   const startRound = useCallback(async () => {
-    if (!services || dealing.current) return;
+    if (!services || !catalog || dealing.current) return;
     dealing.current = true;
     const filter = artistFilter;
     // "All" means all the artists this browser loaded: a track whose catalog

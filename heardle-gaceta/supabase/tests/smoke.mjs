@@ -56,8 +56,10 @@ check(!JSON.stringify(catalog).includes(r1.audioKey), "the public catalog does n
 check(view?.answer?.title && view.answer.artistSlugs?.includes("ramma"), "the finished round carries the answer's title and artists");
 
 { const { error } = await a.rpc("set_alias", { p_alias: "el puto" }); check(error?.message?.includes("blocked_alias"), "blocked alias refused"); }
-{ const { data, error } = await a.rpc("set_alias", { p_alias: "smoke test" }); check(!error && data === "smoke test", "valid alias saved"); }
-{ const { data } = await a.rpc("my_stats"); check(data?.gamesPlayed === 1 && data.alias === "smoke test", "my_stats reflects the round"); }
+// Unique per run: aliases are unique, and an earlier run may not be cleaned up yet.
+const alias = `smoke ${Math.random().toString(36).slice(2, 8)}`;
+{ const { data, error } = await a.rpc("set_alias", { p_alias: alias }); check(!error && data === alias, "valid alias saved"); }
+{ const { data } = await a.rpc("my_stats"); check(data?.gamesPlayed === 1 && data.alias === alias, "my_stats reflects the round"); }
 
 console.log(`ids ${s1.user.id} ${(await b.auth.getUser()).data.user.id}`);
 process.exit(failures ? 1 : 0);

@@ -146,6 +146,8 @@ stable
 security definer
 set search_path = ''
 as $$
+  -- Left join: a round whose track row is gone still returns a round object
+  -- (with a null audioKey), never SQL NULL.
   select jsonb_build_object(
     'id', r.id,
     'audioKey', t.audio_key,
@@ -156,10 +158,10 @@ as $$
     'score', r.score,
     'answerId', case when r.status <> 'playing' then r.track_id end,
     'answer', case when r.status <> 'playing'
-      then jsonb_build_object('id', t.id, 'title', t.title, 'artistSlugs', t.artist_slugs) end
+      then jsonb_build_object('id', r.track_id, 'title', t.title, 'artistSlugs', t.artist_slugs) end
   )
-  from public.tracks t
-  where t.id = r.track_id;
+  from (select 1) one
+  left join public.tracks t on t.id = r.track_id;
 $$;
 
 -- The caller's round (open or not), locked, or an error. Never someone else's.
@@ -267,6 +269,11 @@ begin
 end;
 $$;
 
+-- Deploy note: changing a signature drops the old one, so a browser still on
+-- the previous bundle gets "function not found" until it reloads. Ship the
+-- schema and the client together, or keep the old overload until the new
+-- bundle is live.
+--
 -- `p_attempt` is how many attempts the client had seen when it acted. A retry
 -- of an attempt the server already recorded (the reply was lost) carries the
 -- old count, finds it stale and just gets the current round back: an attempt
@@ -282,6 +289,9 @@ declare
   r public.rounds := private.own_round(p_round);
   correct boolean;
 begin
+  if p_attempt is null or p_attempt < 0 then
+    raise exception 'invalid_attempt' using errcode = '22023';
+  end if;
   if r.status <> 'playing' or p_attempt is distinct from jsonb_array_length(r.attempts) then
     return private.round_view(r);
   end if;
@@ -307,6 +317,9 @@ as $$
 declare
   r public.rounds := private.own_round(p_round);
 begin
+  if p_attempt is null or p_attempt < 0 then
+    raise exception 'invalid_attempt' using errcode = '22023';
+  end if;
   if r.status <> 'playing' or p_attempt is distinct from jsonb_array_length(r.attempts) then
     return private.round_view(r);
   end if;

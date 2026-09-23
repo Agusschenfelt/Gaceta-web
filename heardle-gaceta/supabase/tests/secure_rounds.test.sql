@@ -87,6 +87,8 @@ select t.fails(format('select public.skip_round(%L, 0)', current_setting('t.r1')
 
 select t.act_as('00000000-0000-0000-0000-000000000001');
 select t.fails(format('select public.guess_round(%L, %L, 0)', current_setting('t.r1'), 'NOPE'), 'unknown_track');
+select t.fails(format('select public.skip_round(%L, null)', current_setting('t.r1')), 'invalid_attempt');
+select t.fails(format('select public.guess_round(%L, %L, -1)', current_setting('t.r1'), current_setting('t.wrong')), 'invalid_attempt');
 select t.check(
   (public.guess_round(current_setting('t.r1')::uuid, current_setting('t.wrong'), 0)->>'stageIndex')::int = 1,
   'a wrong guess advances one stage');
@@ -195,3 +197,12 @@ reset role;
 -- Old signatures are gone, so no client can reach the non-idempotent versions.
 select t.check(to_regprocedure('public.guess_round(uuid,text)') is null
   and to_regprocedure('public.skip_round(uuid)') is null, 'old attempt signatures dropped');
+
+-- A round whose track row disappeared still comes back as a round object.
+insert into public.tracks (id, audio_key, artist_slugs, title) values ('GONE', 'kgone', '{z}', 'Gone');
+insert into public.rounds (player_id, track_id) values ('00000000-0000-0000-0000-000000000003', 'GONE');
+alter table public.rounds drop constraint rounds_track_id_fkey;
+delete from public.tracks where id = 'GONE';
+select t.check(
+  (select private.round_view(r) from public.rounds r where r.track_id = 'GONE') ->> 'id' is not null,
+  'the view survives a missing track');

@@ -10,6 +10,7 @@ export const ROUND_ERRORS = Object.freeze({
   round_not_found: "Esa ronda ya no está. Recargá la página.",
   unknown_track: "Ese tema no está en el catálogo.",
   invalid_filter: "Esa selección de artistas no es válida.",
+  invalid_attempt: "No pudimos registrar el intento. Recargá la página.",
   invalid_alias: "El alias va de 2 a 16 letras, números, espacios, puntos o guiones.",
   blocked_alias: "Elegí otro alias.",
   alias_taken: "Ese alias ya está en uso.",

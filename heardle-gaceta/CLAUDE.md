@@ -486,12 +486,17 @@ entera, único sin importar mayúsculas). Palabras bloqueadas: `insert into publ
 carga el seed generado. **Lo que no prueba:** el login anónimo real ni PostgREST. Eso se verifica
 recién con un proyecto (o `supabase start`, que necesita Docker).
 
+**Orden de despliegue.** Si un cambio en `schema.sql` cambia la firma de una función (como pasó
+con `guess_round`/`skip_round` al sumar `p_attempt`), la vieja se borra: un browser con el bundle
+anterior recibe "function not found" hasta recargar. Aplicar el schema y deployar el cliente
+juntos, o dejar la firma vieja hasta que el bundle nuevo esté en producción.
+
 Límite aceptado: alguien que juegue los 431 temas puede reconocer cada mp3 por sus bytes y armarse
 una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **145/145** en 14 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
+1. `npm run test` — tiene que dar **149/149** en 15 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
 2. `npm run build` — tiene que compilar.
    Lint: el `eslint.config.js` de la raíz **ignora `heardle-gaceta/`**, así que un `eslint` común
    no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts`.

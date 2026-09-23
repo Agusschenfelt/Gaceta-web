@@ -3,9 +3,9 @@ import { createLocalRounds } from "./localRounds.js";
 import { installLocalStorage } from "../test-utils/localStorage.js";
 
 const tracks = [
-  { id: "A", audioKey: "ka", artistSlugs: ["ramma"] },
-  { id: "B", audioKey: "kb", artistSlugs: ["ramma"] },
-  { id: "C", audioKey: "kc", artistSlugs: ["ara"] },
+  { id: "A", title: "Uno", audioKey: "ka", artistSlugs: ["ramma"] },
+  { id: "B", title: "Dos", audioKey: "kb", artistSlugs: ["ramma"] },
+  { id: "C", title: "Tres", audioKey: "kc", artistSlugs: ["ara"] },
   { id: "NOAUDIO", audioKey: null, artistSlugs: ["ara"] },
 ];
 
@@ -45,7 +45,7 @@ describe("localRounds", () => {
     expect(missed).toMatchObject({ stageIndex: 1, status: "playing", answerId: null });
     const won = await rounds.guess(r.id, "C", 1);
     expect(won).toMatchObject({ status: "won", score: 3, answerId: "C" });
-    expect(won.answer).toEqual({ id: "C", title: undefined, artistSlugs: ["ara"] });
+    expect(won.answer).toEqual({ id: "C", title: "Tres", artistSlugs: ["ara"] });
     expect(recordRound).toHaveBeenCalledWith({ trackId: "C", won: true, stageWon: 1, attempts: 2 });
   });
 
@@ -81,6 +81,12 @@ describe("localRounds", () => {
     const replay = await rounds.skip(r.id, 0); // the first reply was lost
     expect(replay.attempts).toHaveLength(1);
     expect(replay.stageIndex).toBe(1);
+  });
+
+  it("rejects a missing attempt count instead of ignoring it", async () => {
+    const rounds = make();
+    const r = await rounds.start(["ara"]);
+    await expect(rounds.skip(r.id)).rejects.toMatchObject({ code: "invalid_attempt" });
   });
 
   it("hides the answer details while playing", async () => {

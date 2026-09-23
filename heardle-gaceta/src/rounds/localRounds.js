@@ -89,6 +89,8 @@ export function createLocalRounds({ tracks, recordRound }) {
 
   async function act(roundId, attempt, transition) {
     if (!open || open.id !== roundId) throw new RoundError("round_not_found");
+    // A missing count is a caller bug, not a replay: say so instead of no-op.
+    if (!Number.isInteger(attempt) || attempt < 0) throw new RoundError("invalid_attempt");
     // Same rule as the server: an attempt count that is not the current one is
     // a replay, and a replay changes nothing.
     if (isOver(open.game) || attempt !== open.game.attempts.length) return view(open.id, open.game);
