@@ -11,7 +11,7 @@ function track(id, overrides = {}) {
     title: `Title ${id}`,
     artist: "Solo",
     artists: ["Solo"],
-    audio_file: `/audio/${id}.mp3`,
+    audio_key: `key-${id}`,
     cover_url: `https://cdn/${id}.jpg`,
     spotify_url: `https://open.spotify.com/track/${id}`,
     release: "Album",
@@ -75,10 +75,20 @@ describe("loadCatalog", () => {
     });
 
     const [t] = (await loadCatalog()).tracks;
-    expect(t.audioFile).toBe("/audio/ISRC1.mp3");
+    expect(t.audioKey).toBe("key-ISRC1");
     expect(t.coverUrl).toBe("https://cdn/ISRC1.jpg");
     expect(t.spotifyUrl).toBe("https://open.spotify.com/track/ISRC1");
     expect(t.releaseDate).toBe("2025-01-01");
+  });
+
+  it("has no audio key when the catalog does not carry one (secret mode)", async () => {
+    serve({
+      "index.json": [{ slug: "a", name: "A", tracks: 1 }],
+      "a.json": { tracks: [track("ISRC1", { audio_key: undefined })] },
+    });
+
+    const [t] = (await loadCatalog()).tracks;
+    expect(t.audioKey).toBeNull();
   });
 
   it("falls back to the owning artist when `artists` is empty", async () => {

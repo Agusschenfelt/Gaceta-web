@@ -104,9 +104,10 @@ export function GameContainer() {
     if (catalog && !game) startRound();
   }, [catalog, game, startRound]);
 
+  const audioKey = game?.track.audioKey ?? null;
   const audio = useAudioPlayer(
-    game?.track.audioFile ?? null,
-    game ? (peaks[game.track.id] ?? null) : null
+    audioKey ? `/audio/${audioKey}.mp3` : null,
+    audioKey ? (peaks[audioKey] ?? null) : null
   );
 
   const refreshBoard = useCallback(async () => {
@@ -248,7 +249,7 @@ export function GameContainer() {
           audio.stop();
           setShowRanking(true);
         }}
-        peaks={peaks[game.track.id] ?? null}
+        peaks={audioKey ? (peaks[audioKey] ?? null) : null}
         audio={audio}
         submitState={submitState}
         onRetrySubmit={submitRound}
@@ -281,7 +282,7 @@ export function GameContainer() {
   const gameView = game ? (
     <GameBoard
       game={game}
-      peaks={peaks[game.track.id] ?? null}
+      peaks={audioKey ? (peaks[audioKey] ?? null) : null}
       tracks={catalog.tracks}
       tracksById={tracksById}
       audio={audio}

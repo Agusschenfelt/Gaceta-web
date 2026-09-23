@@ -1,6 +1,7 @@
 /**
- * Extracts a small loudness envelope for every clip in public/audio and writes
- * public/catalog/peaks.json as { "<ISRC>": [0..255 x BUCKETS] }.
+ * Extracts a small loudness envelope for every clip in audio/ and writes
+ * data/peaks.json as { "<ISRC>": [0..255 x BUCKETS] }. Keyed by ISRC, so it is
+ * a source: publish-assets.mjs re-keys it by audio key for the browser.
  *
  * Why precompute instead of an AnalyserNode: `createMediaElementSource`
  * permanently captures the element's output, so a suspended AudioContext
@@ -19,8 +20,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const AUDIO_DIR = path.join(ROOT, "public", "audio");
-const OUT = path.join(ROOT, "public", "catalog", "peaks.json");
+const AUDIO_DIR = path.join(ROOT, "audio");
+const OUT = path.join(ROOT, "data", "peaks.json");
 
 const BUCKETS = 64; // one per ~0.25s of a 16s clip
 const SAMPLE_RATE = 8000; // plenty for an envelope, and fast to decode

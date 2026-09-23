@@ -4,13 +4,16 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/publish-assets.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/publish-assets.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "catalog": "node scripts/build-catalog.mjs",
     "compress-audio": "node scripts/compress-audio.mjs",
-    "peaks": "node scripts/build-peaks.mjs"
+    "peaks": "node scripts/build-peaks.mjs",
+    "assets": "node scripts/publish-assets.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",

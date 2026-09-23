@@ -10,3 +10,12 @@ audio-raw
 
 # Caché de respuestas de Spotify, se regenera solo
 data/cache
+
+# Generated from audio/ and data/ by scripts/publish-assets.mjs (npm run assets).
+# Never commit them: with the secret off they map ISRC to audio.
+public/audio
+public/catalog
+# Contains the answer key (ISRC -> audio key)
+supabase/.generated
+# Supabase CLI state
+supabase/.temp

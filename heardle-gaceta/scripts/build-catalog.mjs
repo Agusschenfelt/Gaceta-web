@@ -7,9 +7,12 @@
  *   2. Spotify: fetch ISRC + canonical track URL for each track (batched).
  *   3. Deezer: resolve the track by ISRC (fallback: title + artist search) to get
  *      the 30s preview MP3. Preview URLs are signed and expire, so the file is
- *      downloaded into public/audio/<isrc>.mp3 (shared between artists on features).
- *   4. Write public/catalog/<slug>.json (brief schema + extra metadata),
- *      public/catalog/index.json and data/missing.json for manual follow-up.
+ *      downloaded into audio/<isrc>.mp3 (shared between artists on features).
+ *   4. Write data/catalog/<slug>.json (brief schema + extra metadata),
+ *      data/catalog/index.json and data/missing.json for manual follow-up.
+ *
+ * These are sources, not what the browser gets: they map ISRC to audio, which
+ * is the answer. `npm run assets` turns them into public/ (publish-assets.mjs).
  *
  * Idempotent: existing audio files are not re-downloaded.
  * Usage: npm run catalog [-- --only ramma,valuto] [--dry]
@@ -23,8 +26,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const AUDIO_DIR = path.join(ROOT, "public", "audio");
-const CATALOG_DIR = path.join(ROOT, "public", "catalog");
+const AUDIO_DIR = path.join(ROOT, "audio");
+const CATALOG_DIR = path.join(ROOT, "data", "catalog");
 const MARKET = "AR";
 
 // ---------- CLI ----------
@@ -216,7 +219,7 @@ async function buildArtist(artist, sp) {
     const { album } = seen.get(t.id);
     const artistNames = t.artists.map((a) => a.name);
     const audioRel = `/audio/${isrc}.mp3`; // shared across artists (features)
-    const audioAbs = path.join(ROOT, "public", audioRel);
+    const audioAbs = path.join(ROOT, audioRel);
 
     const entry = {
       id: isrc,

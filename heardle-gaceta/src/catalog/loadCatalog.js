@@ -52,7 +52,9 @@ export async function loadCatalog() {
         title: t.title,
         artists: t.artists?.length ? t.artists : [t.artist],
         artistSlugs: [slug],
-        audioFile: t.audio_file,
+        // Only present in local mode (no AUDIO_KEY_SECRET): with the secret the
+        // catalog never says which audio is which track. See publish-assets.mjs.
+        audioKey: t.audio_key ?? null,
         coverUrl: t.cover_url,
         spotifyUrl: t.spotify_url,
         release: t.release,

@@ -29,7 +29,7 @@ import { fileURLToPath } from "node:url";
 import { onsetSeconds } from "./lib/onset.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const AUDIO_DIR = path.join(ROOT, "public", "audio");
+const AUDIO_DIR = path.join(ROOT, "audio");
 const RAW_DIR = path.join(ROOT, "audio-raw");
 
 const args = process.argv.slice(2);
@@ -260,7 +260,7 @@ async function main() {
     .sort();
 
   if (!files.length) {
-    console.log("No mp3 files in public/audio");
+    console.log("No mp3 files in audio/");
     return;
   }
 
@@ -324,7 +324,7 @@ async function main() {
       `  ${mb(before)} → ${mb(after)} (-${Math.round((saved / before) * 100)}%)`,
     );
   }
-  console.log(`  public/audio  ${mb(total)}`);
+  console.log(`  audio/        ${mb(total)}`);
 
   if (failures.length) process.exit(1);
 }
