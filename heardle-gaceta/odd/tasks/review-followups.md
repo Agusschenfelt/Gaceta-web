@@ -65,6 +65,16 @@ TDD off; `npm run test`, `supabase/tests/run.sh`, `npm run build`, `supabase/tes
   failed via CDP: the board says "No pudimos cargar el fragmento…" and the ring stops pulsing.
 - Test users removed from the project (0 users, 0 rounds, 431 tracks).
 
+## Second review (lineage review-55747039fa4ea612)
+
+Consent granted; one lens (reliability); **approved** and acknowledged. Its five advisories were
+fixed in `2380035`: dealing guarded until the catalog loads, round view non-null with a missing
+track (left join, SQL test), missing/negative attempt rejected (`invalid_attempt`, SQL + unit
+tests), reveal fallback extracted to `src/rounds/answerTrack.js` with tests, deploy order for
+signature changes documented. 149/149 tests, SQL harness, schema re-applied, smoke 23/23 twice
+(alias now unique per run), test users removed. `2380035` assessed medium (126 lines): deferred
+to the next slice.
+
 ## Found on the way, not ours
 
 - `git fsck` reports missing objects in `main`'s older history (e.g. 3b8c91a, parent of c1d69ab)
