@@ -433,6 +433,13 @@ primera etapa dura 500 ms, así que subestima: encontraba 21 temas donde midiend
 
 ## Supabase
 
+**Proyecto en uso:** `heardle-gaceta`, ref `vqdqftckujawjkllrclk`, organización "Gaceta", región
+São Paulo (creado el 2026-09-23 con el CLI). Schema y seed cargados; logins anónimos activados y
+registro por email desactivado (el juego no lo usa) vía `supabase config push`. La contraseña de
+la base, la anon key y `AUDIO_KEY_SECRET` están en `.env` (git-ignored). El CLI quedó linkeado:
+`supabase/.temp/pooler-url` sirve para correr SQL con `psql` y `PGPASSWORD=$SUPABASE_DB_PASSWORD`.
+`supabase/tests/smoke.mjs` prueba el flujo completo contra este proyecto (ver cabecera del archivo).
+
 Puesta en marcha de un proyecto nuevo:
 
 1. Authentication → habilitar **Anonymous sign-ins**. Antes de lanzar, activar también el

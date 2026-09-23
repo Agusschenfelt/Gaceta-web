@@ -99,13 +99,21 @@ Started 2026-09-22.
   no published fix); candidate declined with the provider-issued decline, STATUS back to
   `fresh_target_ready`. **This change has not been reviewed by the native reviewers.**
 
+- Supabase project created 2026-09-23 via CLI (user-authorized): `heardle-gaceta`
+  (`vqdqftckujawjkllrclk`, org Gaceta, São Paulo). Schema applied through the pooler, seed
+  loaded (431 tracks), anonymous sign-ins on and email sign-up off via `config push` (diff
+  reviewed first: only those two plus site_url). `supabase/tests/smoke.mjs`: 20/20 against the
+  real project (tables unreadable/unwritable, no session no round, resume, isolation, answer ↔
+  audio key consistency, catalog free of keys, alias rules, stats). Browser round against it via
+  CDP: dealt, played and revealed by the server. Test users deleted afterwards (0 left).
+
 ## Not verified
 
-- The Supabase path end to end: real anonymous sign-in, PostgREST calling the functions, the
-  seed loaded into a hosted project. Needs a project (or `supabase start` with Docker).
+- CAPTCHA for anonymous sign-ins: needs Turnstile/hCaptcha keys from the user.
 - `vercel.json` on Vercel itself (checked locally with an equivalent server).
 
 ## Next step
 
-Create the Supabase project, follow the setup in CLAUDE.md (§ Supabase), set the three env vars
-in Vercel, and play a round end to end. Then retry the native review on a newer Gentle AI.
+Decide the domain and deploy: set `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` and
+`AUDIO_KEY_SECRET` in Vercel, add the domain to Supabase's site URL, add the CAPTCHA. Retry the
+native review on a newer Gentle AI.
