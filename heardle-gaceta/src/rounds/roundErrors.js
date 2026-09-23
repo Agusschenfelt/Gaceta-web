@@ -17,13 +17,14 @@ export const ROUND_ERRORS = Object.freeze({
   invalid_email: "Revisá el mail.",
   local_unavailable: "Falta configurar el juego (Supabase o AUDIO_KEY_SECRET).",
   network: "No pudimos conectar. Probá de nuevo.",
+  unexpected: "Algo salió mal. Probá de nuevo en un rato.",
 });
 
 export class RoundError extends Error {
   constructor(code, cause) {
-    super(ROUND_ERRORS[code] ?? ROUND_ERRORS.network);
+    super(ROUND_ERRORS[code] ?? ROUND_ERRORS.unexpected);
     this.name = "RoundError";
-    this.code = code in ROUND_ERRORS ? code : "network";
+    this.code = code in ROUND_ERRORS ? code : "unexpected";
     if (cause) this.cause = cause;
   }
 }
@@ -36,5 +37,14 @@ export function toRoundError(error) {
   // the database then refuses to register it as a player.
   if (text.includes("players_id_fkey")) return new RoundError("not_authenticated", error);
   const code = Object.keys(ROUND_ERRORS).find((c) => text.includes(c));
-  return new RoundError(code ?? "network", error);
+  if (code) return new RoundError(code, error);
+  // Only a failed request is a connection problem worth retrying; anything
+  // else (a server bug, a refused call) would fail the same way again.
+  return new RoundError(isConnectionFailure(error, text) ? "network" : "unexpected", error);
+}
+
+function isConnectionFailure(error, text) {
+  if (error instanceof TypeError) return true; // fetch() rejects with TypeError
+  if (error?.name === "AuthRetryableFetchError" || error?.status === 0) return true;
+  return /failed to fetch|network|load failed|timeout|timed out/i.test(text);
 }

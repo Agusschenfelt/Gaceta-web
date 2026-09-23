@@ -32,6 +32,11 @@ describe("toRoundError", () => {
     expect(e.message).toMatch(/conectar/);
   });
 
+  it("does not treat an unknown server error as a connection problem", () => {
+    const e = toRoundError({ message: "function public.something() does not exist", code: "42883" });
+    expect(e.code).toBe("unexpected");
+  });
+
   it("reads a deleted anonymous user as a lost session", () => {
     const e = toRoundError({ message: 'insert or update on table "players" violates foreign key constraint "players_id_fkey"' });
     expect(e.code).toBe("not_authenticated");

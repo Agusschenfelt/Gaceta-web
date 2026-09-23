@@ -406,7 +406,17 @@ begin
   end if;
   if exists (
     select 1
-    from regexp_split_to_table(lower(clean), '[^a-z0-9à-öø-ÿā-ž]+') token
+    -- Folded to plain ASCII by hand: lower() is locale-dependent and, under
+    -- the C locale, leaves Á or Ñ untouched, which would split "PÚTO" into
+    -- harmless pieces. Anything else non-ASCII is a separator.
+    from regexp_split_to_table(
+      translate(
+        lower(clean),
+        'ÀÁÂÃÄÅàáâãäåÈÉÊËèéêëÌÍÎÏìíîïÒÓÔÕÖòóôõöÙÚÛÜùúûüÑñÇç',
+        'aaaaaaaaaaaaeeeeeeeeiiiiiiiioooooooooouuuuuuuunncc'
+      ),
+      '[^a-z0-9]+'
+    ) token
     join public.blocked_words b on b.word = token
   ) then
     raise exception 'blocked_alias' using errcode = '22023';

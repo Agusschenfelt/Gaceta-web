@@ -43,6 +43,16 @@ const sameSet = (a, b) => a.length === b.length && a.every((x) => b.includes(x))
 
 const isConnectionError = (e) => toRoundError(e).code === "network";
 
+/**
+ * The artists a round is dealt from. "All" means all the artists this browser
+ * loaded: a track whose catalog file failed could not be searched, so it must
+ * not be dealt either. The ranking hint uses the same list, so what it says
+ * matches what the server decides.
+ */
+function dealSlugs(filter, artists) {
+  return filter.length ? filter : artists.map((a) => a.slug);
+}
+
 
 export function GameContainer() {
   const [catalog, setCatalog] = useState(null);
@@ -103,9 +113,7 @@ export function GameContainer() {
     if (!services || !catalog || dealing.current) return;
     dealing.current = true;
     const filter = artistFilter;
-    // "All" means all the artists this browser loaded: a track whose catalog
-    // file failed could not be searched, so it must not be dealt either.
-    const dealFrom = filter.length ? filter : catalog.artists.map((a) => a.slug);
+    const dealFrom = dealSlugs(filter, catalog.artists);
     setShowRanking(false);
     setRoundError(null);
     try {
@@ -296,7 +304,10 @@ export function GameContainer() {
       poolSize={poolSize}
       variant={isWide ? "panel" : "bar"}
       pendingNextRound={Boolean(game && dealtFilter && !sameSet(dealtFilter, artistFilter))}
-      ranked={isRankedSelection(artistFilter)}
+      ranked={isRankedSelection(
+        dealSlugs(artistFilter, catalog.artists),
+        catalog.artists.map((a) => a.slug)
+      )}
     />
   );
 

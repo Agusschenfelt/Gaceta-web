@@ -101,17 +101,21 @@ export function createLocalRounds({ tracks, recordRound }) {
     if (isOver(open.game) || attempt !== open.game.attempts.length) {
       return view(open.id, open.game, open.ranked);
     }
-    open = { ...open, game: transition(open.game) };
-    persist();
-    if (isOver(open.game)) {
+    const next = transition(open.game);
+    // Record a finished round before committing it: if recording fails, the
+    // round stays as it was and a retry of the same attempt finishes it again,
+    // instead of the result being lost.
+    if (isOver(next)) {
       await recordRound({
-        trackId: open.game.track.id,
-        won: open.game.status === STATUS.WON,
-        stageWon: stageWon(open.game),
-        attempts: open.game.attempts.length,
+        trackId: next.track.id,
+        won: next.status === STATUS.WON,
+        stageWon: stageWon(next),
+        attempts: next.attempts.length,
         ranked: open.ranked,
       });
     }
+    open = { ...open, game: next };
+    persist();
     return view(open.id, open.game, open.ranked);
   }
 

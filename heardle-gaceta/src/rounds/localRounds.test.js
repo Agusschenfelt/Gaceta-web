@@ -98,6 +98,20 @@ describe("localRounds", () => {
     expect((await one.start([])).ranked).toBe(true);
   });
 
+  it("keeps the round open when recording it fails, so a retry records it", async () => {
+    let fail = true;
+    const flaky = vi.fn(async () => {
+      if (fail) throw new Error("storage full");
+    });
+    const rounds = createLocalRounds({ tracks, recordRound: flaky });
+    const r = await rounds.start(["ara"]);
+    await expect(rounds.guess(r.id, "C", 0)).rejects.toThrow("storage full");
+    fail = false;
+    const retried = await rounds.guess(r.id, "C", 0);
+    expect(retried.status).toBe("won");
+    expect(flaky).toHaveBeenCalledTimes(2);
+  });
+
   it("hides the answer details while playing", async () => {
     expect((await make().start(["ara"])).answer).toBeNull();
   });

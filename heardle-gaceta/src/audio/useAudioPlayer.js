@@ -34,6 +34,7 @@ export function useAudioPlayer(src, peaks = null) {
     const audio = audioRef.current;
     if (audio) {
       audio.onplaying = null;
+      audio.onwaiting = null;
       audio.ontimeupdate = null;
       audio.pause();
       audio.currentTime = 0;
@@ -89,6 +90,7 @@ export function useAudioPlayer(src, peaks = null) {
         cancelAnimationFrame(rafRef.current);
         clearTimeout(timeoutRef.current);
         audio.onplaying = null;
+        audio.onwaiting = null;
         audio.ontimeupdate = null;
         audio.pause();
         audio.currentTime = 0;
@@ -97,12 +99,19 @@ export function useAudioPlayer(src, peaks = null) {
         setLevels(FLAT_BARS);
       };
       // The clip must stop even when the tab is hidden: requestAnimationFrame
-      // is suspended in background tabs, so the hard stop is a timer armed once
-      // playback actually starts, backed by the media element's own timeupdate.
+      // is suspended in background tabs, so the hard stop is a timer, backed by
+      // the media element's own timeupdate. The timer counts only what is left
+      // of the clip and is paused while the audio buffers ('waiting'), so a
+      // slow connection never cuts the fragment short.
       audio.onplaying = () => {
         if (!current()) return;
         clearTimeout(timeoutRef.current);
-        timeoutRef.current = setTimeout(finish, seconds * 1000);
+        const left = Math.max(clipRef.current - audio.currentTime, 0);
+        timeoutRef.current = setTimeout(finish, left * 1000);
+      };
+      audio.onwaiting = () => {
+        if (!current()) return;
+        clearTimeout(timeoutRef.current);
       };
       audio.ontimeupdate = () => {
         if (!current()) return;
@@ -112,6 +121,7 @@ export function useAudioPlayer(src, peaks = null) {
         await audio.play();
       } catch {
         audio.onplaying = null;
+        audio.onwaiting = null;
         audio.ontimeupdate = null;
         return; // autoplay policy or decode error: leave the UI idle
       }

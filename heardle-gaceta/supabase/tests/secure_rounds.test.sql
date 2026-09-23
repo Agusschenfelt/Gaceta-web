@@ -173,6 +173,8 @@ select t.fails($$select public.set_alias('a')$$, 'invalid_alias');
 select t.fails($$select public.set_alias('<script>')$$, 'invalid_alias');
 select t.fails($$select public.set_alias('el_puto')$$, 'blocked_alias');
 select t.fails($$select public.set_alias('GACETA oficial')$$, 'blocked_alias');
+select t.fails($$select public.set_alias('el PÚTO')$$, 'blocked_alias');
+select t.fails($$select public.set_alias('Pütá')$$, 'blocked_alias');
 select t.check(public.set_alias('  computadora  ') = 'computadora', 'a word merely containing a blocked one is fine');
 select t.check(public.set_alias('Tadu Vázquez') = 'Tadu Vázquez', 'accented letters are valid in any locale');
 select t.check(public.set_alias('ñandú_22.b-c') = 'ñandú_22.b-c', 'ñ, digits and punctuation are valid');

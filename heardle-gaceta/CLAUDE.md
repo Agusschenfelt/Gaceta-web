@@ -13,7 +13,7 @@ Vive dentro del repo de la web de GACETA (`Gaceta-web/heardle-gaceta/`) pero es 
 ```bash
 npm install --legacy-peer-deps   # siempre con --legacy-peer-deps
 npm run dev                      # Vite en http://localhost:5173
-npm run test                     # vitest (solo motor y share, entorno node)
+npm run test                     # vitest, entorno node: src/**/*.test.js y scripts/**/*.test.mjs
 npm run build                    # build a dist/
 npm run catalog                  # arma el catálogo (ver sección Catálogo)
 npm run catalog -- --only ramma,valuto   # solo esos artistas
@@ -405,8 +405,8 @@ así que le gana por especificidad a `leading-*`. Para pisarlo hace falta el mod
 ## Audio
 
 `scripts/compress-audio.mjs` (`npm run compress-audio`). Las previews de Deezer son 30 s stereo
-128 kbps, pero la etapa más larga del juego son **15 s** (`easy` en `engine.js`), así que se
-recortan a 16 s mono 96 kbps. Medido sobre los 431 temas: **~197 MB → 81 MB (-60%)**, de 480 KB a
+128 kbps, pero el juego escucha como máximo 8 s mientras adivinás (la última de `STAGES` en
+`engine.js`) y 16 s en el reveal, así que se recortan a 16 s mono 96 kbps. Medido sobre los 431 temas: **~197 MB → 81 MB (-60%)**, de 480 KB a
 188 KB por tema. Eso es lo que se ahorra el que juega desde el celular en cada reproducción.
 
 - **Los originales se guardan en `audio-raw/`**, que está en `.gitignore`. Son la fuente para
@@ -505,7 +505,7 @@ una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **158/158** en 16 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
+1. `npm run test` — tiene que dar **160/160** en 16 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
 2. `npm run build` — tiene que compilar.
    Lint: el `eslint.config.js` de la raíz **ignora `heardle-gaceta/`**, así que un `eslint` común
    no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts`.
@@ -576,6 +576,6 @@ cuando `poolSize === 0` de verdad; si no, va un spinner.
 
 Está activado globalmente. Después de un cambio, el flujo es: `gentle-ai review status --cwd <raíz del repo Gaceta-web> --contract gentle-ai.review-integration/v2 --agent claude-code --next-transition` y seguir el `next_transition` que devuelve. Cosas que ya pasaron y conviene saber:
 
-- La raíz del repo git es `Gaceta-web/`, no `heardle-gaceta/`. Todo el subproyecto está sin trackear, así que el review pide una **selección de archivos untracked**: pasar `--untracked-scope select --expected-untracked-inventory <digest del status> --intended-untracked=<ruta> …`. Excluir `audio/` (va a git, pero no tiene sentido mandar 431 mp3 a un reviewer), `audio-raw/`, `.env`, `data/cache/`, `data/missing.json`, `package-lock.json` y el brief.
+- La raíz del repo git es `Gaceta-web/`, no `heardle-gaceta/`. Todo el subproyecto está sin trackear, así que el review pide una **selección de archivos untracked**: pasar `--untracked-scope select --expected-untracked-inventory <digest del status> --intended-untracked=<ruta> …`. Excluir `audio/` y `data/peaks.json` (no van a git: ver "Fuentes vs. lo publicado"), `.published/`, `audio-raw/`, `.env`, `data/cache/`, `data/missing.json`, `package-lock.json` y el brief.
 - Si un fix agrega un archivo nuevo que no estaba en la selección congelada, el review responde `corrected_candidate_unavailable`. Se resuelve con `gentle-ai review recover --disposition scope_changed` (pide autorización del usuario) y una lineage sucesora.
 - El primer `status` con selección a veces da `operation_timeout` transitorio. Reportado en gentle-ai#1833. Un reintento idéntico suele andar.
