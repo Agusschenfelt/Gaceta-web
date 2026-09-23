@@ -110,3 +110,9 @@ TDD off (project config, see third-review-fixes.md). `npm run test`, `npm run bu
   caller that forgets to wire it degrades to the pre-existing (selection-only) behavior instead of
   throwing. Only `gameServices.js` calls it in the app; this default only protects other callers
   (tests, future code).
+- 2026-09-23: committed 9b2c479. Native review (medium, reliability lens) approved and
+  acknowledged (lineage review-be90fce45adb452d). Advisory follow-ups, not blocking:
+  R3-local-start-await-race (localRounds.start awaits hasPlayed between the open-round check and
+  the assignment → overlapping starts can orphan a round, local mode only) and
+  R3-repeat-reveal-derivation-untested (reveal derives "repeat" client-side from dealtFilter; an
+  open round dealt under another filter can mislabel the reason). Next: T4, pending user OK.
