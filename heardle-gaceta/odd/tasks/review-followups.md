@@ -43,8 +43,31 @@ locally), so its history can still be cleaned.
 - [x] R5 — Audio load errors are reported and retryable.
 - [x] R6 — Readability: README, stale 15 s comment, magic numbers, duplicated attempt mapping and
       `formatSeconds`, dead import, `SobreNosotrosPage` matchMedia guard.
-- [ ] R7 — Verify: tests, SQL harness, build, smoke against the real project, browser round.
+- [x] R7 — Verify: tests, SQL harness, build, smoke against the real project, browser round.
 
 ## Checks
 
 TDD off; `npm run test`, `supabase/tests/run.sh`, `npm run build`, `supabase/tests/smoke.mjs`, CDP.
+
+## Verification (2026-09-23)
+
+- History: `filter-branch` over `d7395a7..HEAD`; diff old→new HEAD is exactly the purged paths; no
+  commit of the branch contains them; branch objects all readable. Backup branch deleted after the
+  equivalence check. Sources restored locally (431 mp3, 3 byte-identical "… 2.mp3" duplicates
+  that had lived untracked in the folder removed).
+- 145/145 tests (14 files), SQL harness incl. replay and dropped old signatures, lint (with
+  `--no-ignore`: the root config ignores heardle-gaceta/).
+- Real project: schema re-applied (new function signatures), bucket `audio` created, 432 files
+  uploaded (re-run uploads 0), anon listing returns []. Smoke 23/23 incl. Storage streaming,
+  unlistable bucket, replayed attempt, answer details.
+- `npm run build`: no mp3 or peaks in dist; no secret values in the bundle. Served with the
+  vercel.json headers in Supabase mode: full round, zero CSP violations. With every mp3 request
+  failed via CDP: the board says "No pudimos cargar el fragmento…" and the ring stops pulsing.
+- Test users removed from the project (0 users, 0 rounds, 431 tracks).
+
+## Found on the way, not ours
+
+- `git fsck` reports missing objects in `main`'s older history (e.g. 3b8c91a, parent of c1d69ab)
+  and invalid reflog entries. Not caused by this work (the rewrite only touched this branch, whose
+  objects are complete). Likely the repo living in a synced Desktop folder; worth checking before
+  relying on this clone.
