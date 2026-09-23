@@ -8,10 +8,12 @@ import { GameContainer } from "./containers/GameContainer.jsx";
 export default function App() {
   return (
     <div
-      className="mx-auto flex h-svh w-full max-w-md flex-col gap-2 overflow-hidden px-4 sm:px-6 lg:max-w-5xl"
+      className="mx-auto flex h-svh w-full max-w-md flex-col gap-2 overflow-hidden lg:max-w-5xl"
       style={{
-        paddingTop: "max(0.875rem, env(safe-area-inset-top))",
-        paddingBottom: "max(0.875rem, env(safe-area-inset-bottom))",
+        paddingTop: "max(1.25rem, env(safe-area-inset-top))",
+        paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))",
+        paddingLeft: "max(1.5rem, env(safe-area-inset-left))",
+        paddingRight: "max(1.5rem, env(safe-area-inset-right))",
       }}
     >
       {/* Wide screens: the same three columns as the game grid, so the wordmark
