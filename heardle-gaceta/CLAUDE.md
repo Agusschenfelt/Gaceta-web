@@ -21,6 +21,8 @@ npm run catalog -- --dry                 # sin escribir nada
 npm run compress-audio                   # recorta los mp3 nuevos a 16 s mono 96k
 npm run compress-audio -- --dry          # sin escribir nada
 npm run peaks                            # envolventes de onda para el visualizador
+npm run assets                           # genera public/ desde las fuentes (corre solo antes de dev y build)
+supabase/tests/run.sh                    # prueba el schema contra un Postgres descartable
 ```
 
 > **Después de cada `npm run catalog` hay que correr `npm run compress-audio` y después
@@ -32,7 +34,8 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Variable | Quién la usa |
 |---|---|
 | `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` | Solo `npm run catalog`. Nunca llegan al browser. |
-| `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` | Ranking y mails. Vacías = adapter local con localStorage. |
+| `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` | Rondas, ranking y mails. Vacías = modo local (solo desarrollo). |
+| `AUDIO_KEY_SECRET` | `npm run assets`: nombres opacos de los mp3. **Obligatoria en producción y con Supabase**; sin ella el build falla. Nunca llega al browser. Cambiarla renombra todos los audios (hay que volver a cargar el seed). |
 
 ## Stack y reglas duras
 
@@ -53,7 +56,13 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Largo del recorte de los mp3, bitrate, dónde quedan los originales | `scripts/compress-audio.mjs` (`CLIP_SECONDS`, `BITRATE`) |
 | Cuánto silencio inicial se recorta y con qué umbral | `scripts/compress-audio.mjs` (`ONSET_THRESHOLD`, `LEAD_IN`, `MAX_TRIM`) + `scripts/lib/onset.mjs` (`SILENCE_FLOOR`) |
 | Texto y emojis del share | `src/game/share.js` |
-| Cómo se elige el tema al azar, cuántos recientes se evitan | `src/catalog/pickTrack.js` (`RECENT_LIMIT`, clave `heardle:recent`) |
+| Cómo se elige el tema (Supabase) | `start_round` en `supabase/schema.sql` (evita los últimos 20 del jugador) |
+| Cómo se elige el tema (modo local) | `src/catalog/pickTrack.js` (`RECENT_LIMIT`, clave `heardle:recent`) vía `src/rounds/localRounds.js` |
+| Reglas del servidor: rondas, ranking, alias, mails, límites | `supabase/schema.sql` + `supabase/tests/secure_rounds.test.sql` |
+| Qué servicio se usa (Supabase o local), login anónimo | `src/services/gameServices.js`, `supabaseServices.js` |
+| Rondas: puerto y las dos implementaciones | `src/rounds/localRounds.js`, `supabaseRounds.js`; textos de error en `roundErrors.js` |
+| Qué ve el browser del catálogo y los audios | `scripts/publish-assets.mjs` + `scripts/lib/publish.mjs` |
+| Headers de seguridad (CSP y demás) | `vercel.json` |
 | Ranking del buscador, cuántos resultados, normalización de acentos | `src/catalog/search.js` |
 | Cómo se cargan y mezclan los JSON del catálogo | `src/catalog/loadCatalog.js` |
 | Reproducción: cuándo arranca, cuándo corta, anillo de progreso | `src/audio/useAudioPlayer.js` |
@@ -65,7 +74,7 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Cómo se calculan los ticks del anillo y cuántos están desbloqueados | `src/audio/waveform.js` (`ringTicks`, `unlockedTicks`, `RING_TICKS`, `CLIP_FILE_SECONDS`) + `waveform.test.js` |
 | Sacudón al errar, grano animado del fondo | `GameBoard.jsx` (`MISS_SHAKE`) · `src/index.css` (`grain`, `body::before`) |
 | Escalera de intentos en la columna derecha (layout ancho) | `src/components/molecules/GuessHistory.jsx` (`variant="ladder"`) |
-| Envolventes de onda por tema | `scripts/build-peaks.mjs` → `public/catalog/peaks.json` |
+| Envolventes de onda por tema | `scripts/build-peaks.mjs` → `data/peaks.json` (publicado por clave de audio) |
 | Autocomplete (teclado, ARIA, dropdown) | `src/components/molecules/GuessSearch.jsx` |
 | Barra de segmentos arriba | `src/components/molecules/StageProgress.jsx` + `atoms/Segment.jsx` |
 | Historial de intentos (cruz roja, "Salteado") | `src/components/molecules/GuessHistory.jsx` |
@@ -75,7 +84,7 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Ranking, formulario de alias, cuántas filas entran (`TOP_ROWS`) | `src/components/organisms/Leaderboard.jsx` |
 | Captura de mail | `src/components/organisms/EmailCapture.jsx` |
 | Validación de alias, id anónimo | `src/player/playerIdentity.js` (`ALIAS_MIN`, `ALIAS_MAX`) |
-| Persistencia del ranking (Supabase o local) | `src/leaderboard/supabaseAdapter.js`, `localAdapter.js`; la interfaz común está en `leaderboardApi.js` |
+| Ranking (Supabase o local) | `src/leaderboard/supabaseAdapter.js`, `localAdapter.js`; la interfaz común está en `src/services/gameServices.js` |
 | Esquema de base de datos | `supabase/schema.sql` |
 | Colores, fuentes, radio, noise | `src/theme/tokens.css` |
 | Estilos base, focus ring, reduced motion, clase `.label` | `src/index.css` |
@@ -92,12 +101,27 @@ Variables en `.env` (no está en git, ver `.env.example`):
 
 ## Flujo de datos (leer una vez)
 
-1. `GameContainer` monta, llama a `loadCatalog()` que trae `public/catalog/index.json` y después un JSON por artista, mezcla todo y deduplica por ISRC (`track.id`). Un feature entre artistas queda una sola vez con `artistSlugs: [...]`.
-2. `pickTrack(tracks, artistFilter)` elige un tema al azar del pool filtrado evitando los últimos jugados (localStorage `heardle:recent`).
-3. `createGame({ track })` arma el estado. `game.stages` es el array de segundos; `game.stageIndex` el intento actual; `game.attempts` el historial (`{type:"guess", trackId, correct}` o `{type:"skip"}`); `game.status` es `playing | won | lost`.
-4. Play: `useAudioPlayer(track.audioFile)` crea un `new Audio()`, y `play(seconds)` reproduce desde 0 hasta `currentClipSeconds(game)`. El corte lo hacen un `setTimeout` armado en `onplaying` y el evento `timeupdate`; el `requestAnimationFrame` solo dibuja el anillo (ver Gotchas).
-5. Guess desde el autocomplete → `engine.guess(state, trackId)`; skip → `engine.skip(state)`. Ambos devuelven un estado nuevo (inmutable).
-6. Cuando `isOver(game)`, un efecto en `GameContainer` llama a `api.submitGame(...)` y refresca el ranking. `ResultReveal` **reemplaza** al `GameBoard` (no se apila debajo). Desde ahí se llega al `Leaderboard`, que es otra vista y se come el formulario de alias y `EmailCapture`.
+**El servidor es el árbitro** (desde 2026-09-23, `odd/tasks/secure-rounds.md`). El browser nunca
+sabe qué tema está sonando hasta que termina la ronda.
+
+1. `GameContainer` monta, llama a `loadCatalog()` (lee `public/catalog/`, generado por
+   `npm run assets`), mezcla y deduplica por ISRC. Ese catálogo sirve para el buscador y el reveal:
+   **no tiene ningún dato que conecte un tema con su audio**.
+2. `getGameServices()` elige el modo. Con `VITE_SUPABASE_*`: login anónimo de Supabase (la sesión
+   queda en `heardle:auth`) y todo por funciones de Postgres. Sin ellas: modo local, que imita las
+   mismas reglas en el browser y solo sirve para desarrollo.
+3. `rounds.start(filtro)` devuelve la **vista de la ronda**: `{ id, audioKey, stages, stageIndex,
+   attempts, status, score, answerId }`. `answerId` es `null` mientras se juega. Si hay una ronda
+   abierta, devuelve esa: **nunca se reparte otra** (recargar para cambiar un tema difícil no
+   sirve). Por eso cambiar los artistas a mitad de ronda aplica desde la próxima, y lo dice.
+4. Play: `useAudioPlayer("/audio/<audioKey>.mp3")` reproduce desde 0 hasta
+   `currentClipSeconds(game)`. El corte lo hacen un `setTimeout` armado en `onplaying` y el evento
+   `timeupdate`; el `requestAnimationFrame` solo dibuja el anillo (ver Gotchas).
+5. Guess → `rounds.guess(id, trackId)`; skip → `rounds.skip(id)`. Una acción por vez (`busy`); la
+   ronda solo cambia con la respuesta del árbitro. Un error se muestra arriba del buscador.
+6. Al terminar, la ronda ya quedó registrada por quien la arbitró; el contenedor solo refresca el
+   ranking. `ResultReveal` **reemplaza** al `GameBoard` y busca el tema en el catálogo por
+   `answerId`. Desde ahí se llega al `Leaderboard`, que es otra vista.
 
 Score: si ganás, `stages.length - índice del stage ganador` (acertar de una = 4 puntos, en el
 último intento = 1). Perder = 0. La definición única es `scoreFor(won, stageWon)` en el motor.
@@ -133,7 +157,12 @@ Si alguien quiere reponerlos, que lea esto primero y resuelva lo del resultado c
 
 ## Contratos de datos
 
-**Track en `public/catalog/<slug>.json`** (lo genera el script, no editar a mano salvo para corregir un dato puntual):
+**Fuentes vs. lo publicado.** `data/catalog/<slug>.json`, `audio/<ISRC>.mp3` y
+`data/peaks.json` son las **fuentes** (van a git, las escribe `npm run catalog`). `public/catalog/`,
+`public/audio/` y `supabase/.generated/tracks.sql` son **generados** por `npm run assets` y están en
+`.gitignore`. Las fuentes conectan ISRC con audio, que es la respuesta: nunca se sirven.
+
+**Track en `data/catalog/<slug>.json`** (lo genera el script, no editar a mano salvo para corregir un dato puntual). La versión publicada es igual pero **sin `audio_file` ni `deezer_id`**, y con `audio_key` solo en modo local:
 
 ```json
 {
@@ -151,13 +180,13 @@ Si alguien quiere reponerlos, que lea esto primero y resuelva lo del resultado c
 }
 ```
 
-`public/catalog/index.json`: `[{ "slug", "name", "tracks" }]`. La app lee el índice de forma dinámica: agregar un artista es correr el script, no tocar código.
+`data/catalog/index.json` (publicado tal cual): `[{ "slug", "name", "tracks" }]`. La app lee el índice de forma dinámica: agregar un artista es correr el script, no tocar código.
 
 **Track en memoria** (lo que ven los componentes, sale de `loadCatalog`): `{ id, title, artists, artistSlugs, audioFile, coverUrl, spotifyUrl, release, releaseDate }`. Ojo con el camelCase: el JSON usa snake_case, la app camelCase, la conversión está en `loadCatalog.js`.
 
-**Interfaz del leaderboard** (`leaderboardApi.js`): `submitGame({ playerId, trackId, won, stageWon, attempts })` (sin `score`), `getTop(limit)` → `[{ alias, gamesPlayed, totalScore, avgScore }]` ya filtrado y ordenado, `getPlayerStats(playerId)` → `{ gamesPlayed, totalScore, avgScore }`, `setAlias(playerId, alias)`, `subscribeEmail(email, playerId)`. Los dos adapters implementan exactamente eso.
+**Puertos** (`src/services/gameServices.js`): `rounds` = `start(artistSlugs)`, `guess(roundId, trackId)`, `skip(roundId)`, todos devuelven la vista de la ronda. `board` = `getTop(limit)` → `[{ alias, gamesPlayed, totalScore, avgScore }]` ya filtrado y ordenado, `getPlayerStats()` → `{ alias?, gamesPlayed, totalScore, avgScore }`, `setAlias(alias)` → el alias tal como quedó guardado, `subscribeEmail(email)`. Nadie manda puntaje ni `playerId`: en Supabase el jugador es `auth.uid()`.
 
-**localStorage** (todas las claves con prefijo `heardle:`): `playerId`, `alias`, `artistFilter`, `recent`, `emailPrompt` (`pending | done | dismissed`), y `local:games`, `local:aliases`, `local:emails` cuando no hay Supabase. Quien jugó antes del 2026-09-18 puede tener todavía un `heardle:difficulty` huérfano; no se lee más y no molesta.
+**localStorage** (todas las claves con prefijo `heardle:`): `auth` (sesión anónima de Supabase), `alias` (copia del servidor), `artistFilter`, `emailPrompt` (`pending | done | dismissed`); en modo local además `playerId`, `recent`, `local:round` (la ronda abierta), `local:games`, `local:aliases`, `local:emails`. Quien jugó antes del 2026-09-18 puede tener todavía un `heardle:difficulty` huérfano; no se lee más y no molesta.
 
 ## Catálogo
 
@@ -165,8 +194,8 @@ Si alguien quiere reponerlos, que lea esto primero y resuelva lo del resultado c
 
 1. Spotify: lista álbumes, singles y apariciones del artista y se queda con los tracks donde está acreditado. Después pide cada track de a uno para sacar el ISRC y el link.
 2. Deezer: resuelve el track por ISRC (`/2.0/track/isrc:XXX`), fallback por título + artista. Deezer no necesita token.
-3. Descarga la preview de 30 s a `public/audio/<ISRC>.mp3`. **Hay que descargarla**: las URLs de preview de Deezer están firmadas y expiran.
-4. Escribe `public/catalog/<slug>.json`, `index.json` y `data/missing.json` (temas sin preview, para completar a mano bajando de YouTube).
+3. Descarga la preview de 30 s a `audio/<ISRC>.mp3`. **Hay que descargarla**: las URLs de preview de Deezer están firmadas y expiran.
+4. Escribe `data/catalog/<slug>.json`, `index.json` y `data/missing.json` (temas sin preview, para completar a mano bajando de YouTube).
 
 Es idempotente: no vuelve a bajar mp3 que ya existen y cachea los tracks de Spotify en `data/cache/`. Si se corta, `index.json` se reconstruye igual con lo que haya.
 
@@ -195,7 +224,7 @@ artista, el pool cuenta grabaciones.
 
 **Sin preview en Deezer: 12, todas de Tadu Vázquez** (ver `data/missing.json`): Bloque, Quererse,
 Diluvio, Me Conocen, Contigo, Sangre, Watch Out, MVP, Ambición, Sombras, Whisky a las Rocas,
-Tan Bien. Para sumarlas hay que conseguir el audio a mano y dejarlo en `public/audio/<ISRC>.mp3`.
+Tan Bien. Para sumarlas hay que conseguir el audio a mano y dejarlo en `audio/<ISRC>.mp3` y correr `npm run assets` (y recargar el seed en Supabase).
 
 El script deja los mp3 en 30 s stereo tal como vienen de Deezer. Correr `npm run compress-audio` y
 después `npm run peaks` (ver sección Audio).
@@ -254,7 +283,7 @@ En su lugar:
 
 1. `scripts/build-peaks.mjs` decodifica cada mp3 a PCM mono 8 kHz con ffmpeg y lo reduce a **64
    valores RMS** (0–255), normalizados contra el pico del propio tema para que los temas bajos
-   también llenen el anillo. Sale `public/catalog/peaks.json`: con 431 temas son 107 KB crudos / **39 KB gzip**.
+   también llenen el anillo. Sale `data/peaks.json` (por ISRC; `npm run assets` lo publica por clave de audio): con 431 temas son 107 KB crudos / **39 KB gzip**.
 2. **`loadPeaks()` es una función aparte y NO se espera junto al catálogo.** Con 431 temas,
    `peaks.json` pesa 39 KB gzip: la mitad de todo lo que se baja al arrancar, para decoración. Que
    eso se interponga entre el jugador y la primera ronda estaría mal. `GameContainer` dispara las
@@ -355,7 +384,7 @@ recortan a 16 s mono 96 kbps. Medido sobre los 431 temas: **~197 MB → 81 MB (-
 - **Es idempotente.** Detecta lo ya comprimido (mono y ≤ 16,5 s) y lo saltea. Correrlo de nuevo
   después de `npm run catalog` solo toca los temas nuevos.
 - Flags: `--dry`, `--force`, `--seconds=20`, `--bitrate=128k`.
-- **`public/audio/` ahora sí va a git.** Con 38 MB entra cómodo; el límite de static file uploads
+- **`audio/` (las fuentes, por ISRC) va a git.** `public/audio/` es generado y no. Con 38 MB entra cómodo; el límite de static file uploads
   de Vercel es 100 MB en Hobby y 1 GB en Pro, y el equipo es Pro.
 
 **Si algún día agregás una etapa de más de 16 s** en `STAGES`, los mp3 actuales se cortan
@@ -404,13 +433,35 @@ primera etapa dura 500 ms, así que subestima: encontraba 21 temas donde midiend
 
 ## Supabase
 
-Correr `supabase/schema.sql` en el SQL editor del proyecto y cargar las dos `VITE_SUPABASE_*`. Tablas `players`, `games`, `emails`; vista `leaderboard`. Acceso anónimo con RLS; el modelo de confianza está comentado arriba del archivo (el cliente manda su propio `playerId`, no hay auth). El adapter de Supabase **no se probó contra un proyecto real todavía**; el local sí. El schema usa
-`create table if not exists`: está pensado para un proyecto nuevo. Si ya existiera una tabla
-`games` vieja, no se modifica sola (hay que migrarla a mano).
+Puesta en marcha de un proyecto nuevo:
+
+1. Authentication → habilitar **Anonymous sign-ins**. Antes de lanzar, activar también el
+   **CAPTCHA** (Turnstile o hCaptcha) para esos logins: sin eso, un bot puede crear jugadores sin
+   límite. Supabase ya limita los logins anónimos por IP.
+2. SQL editor → correr `supabase/schema.sql`. Se puede volver a correr: todo es `if not exists` /
+   `create or replace`.
+3. Con `AUDIO_KEY_SECRET` en `.env`, `npm run assets` → pegar `supabase/.generated/tracks.sql` en
+   el SQL editor. **Ese archivo es la respuesta de todas las rondas: no se commitea ni se comparte.**
+   Hay que volver a cargarlo si cambia el catálogo o el secreto.
+4. Cargar `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` y `AUDIO_KEY_SECRET` en `.env` y en Vercel.
+
+Modelo de seguridad (detallado arriba de `schema.sql`): ninguna tabla es legible ni escribible
+desde el cliente (RLS sin políticas + `revoke`); todo pasa por funciones `security definer` que
+solo actúan sobre las filas del que llama; el puntaje es una columna generada; hay tope de 60
+rondas por hora, un mail por jugador, y alias validado (forma, palabras bloqueadas como palabra
+entera, único sin importar mayúsculas). Palabras bloqueadas: `insert into public.blocked_words`.
+
+`supabase/tests/run.sh` levanta un Postgres descartable, simula lo que Supabase provee
+(`auth.uid()`, roles `anon`/`authenticated` con sus grants por defecto) y prueba todo eso; también
+carga el seed generado. **Lo que no prueba:** el login anónimo real ni PostgREST. Eso se verifica
+recién con un proyecto (o `supabase start`, que necesita Docker).
+
+Límite aceptado: alguien que juegue los 431 temas puede reconocer cada mp3 por sus bytes y armarse
+una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **113/113** en 10 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
+1. `npm run test` — tiene que dar **141/141** en 13 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
 2. `npm run build` — tiene que compilar.
 3. Probar a mano en `npm run dev`: cargar, play, un guess incorrecto, un skip, llegar al reveal, share, alias, mail. El ranking en modo local se ve en localStorage.
 
@@ -442,7 +493,8 @@ Sobre audio específicamente: **Chrome no carga ni decodifica audio en pestañas
 - **El corte del fragmento no puede depender de `requestAnimationFrame`.** Se suspende en pestañas ocultas y el tema sigue sonando entero (spoiler). Ya está resuelto con timeout + `timeupdate`; no volver al esquema anterior.
 - **React StrictMode en dev** duplica efectos. El efecto que envía el score no tiene clave de idempotencia; en dev puede registrar la partida dos veces en el adapter local. En producción no pasa.
 - `GuessSearch` lleva `key={game.track.id}` para vaciar el texto al cambiar de ronda. Si lo sacás, el texto queda pegado entre rondas.
-- Los mp3 se llaman por ISRC a propósito: no revelan el título en la pestaña Network. No renombrarlos.
+- Los mp3 publicados se llaman por `HMAC(AUDIO_KEY_SECRET, ISRC)`: ni el nombre ni el catálogo dicen qué tema es. Nunca servir `audio/` ni `data/catalog/` directamente.
+- Cambiar `tailwind.config.js` (por ejemplo, un color nuevo) pide reiniciar `npm run dev`.
 - La carátula solo se muestra en el reveal. No mostrarla antes. En el reveal va recortada en círculo (es un disco): es a propósito.
 
 ## Backlog (avisos del review, no bloqueantes)
@@ -475,6 +527,6 @@ cuando `poolSize === 0` de verdad; si no, va un spinner.
 
 Está activado globalmente. Después de un cambio, el flujo es: `gentle-ai review status --cwd <raíz del repo Gaceta-web> --contract gentle-ai.review-integration/v2 --agent claude-code --next-transition` y seguir el `next_transition` que devuelve. Cosas que ya pasaron y conviene saber:
 
-- La raíz del repo git es `Gaceta-web/`, no `heardle-gaceta/`. Todo el subproyecto está sin trackear, así que el review pide una **selección de archivos untracked**: pasar `--untracked-scope select --expected-untracked-inventory <digest del status> --intended-untracked=<ruta> …`. Excluir `public/audio/` (va a git, pero no tiene sentido mandar 209 mp3 a un reviewer), `audio-raw/`, `.env`, `data/cache/`, `data/missing.json`, `package-lock.json` y el brief.
+- La raíz del repo git es `Gaceta-web/`, no `heardle-gaceta/`. Todo el subproyecto está sin trackear, así que el review pide una **selección de archivos untracked**: pasar `--untracked-scope select --expected-untracked-inventory <digest del status> --intended-untracked=<ruta> …`. Excluir `audio/` (va a git, pero no tiene sentido mandar 431 mp3 a un reviewer), `audio-raw/`, `.env`, `data/cache/`, `data/missing.json`, `package-lock.json` y el brief.
 - Si un fix agrega un archivo nuevo que no estaba en la selección congelada, el review responde `corrected_candidate_unavailable`. Se resuelve con `gentle-ai review recover --disposition scope_changed` (pide autorización del usuario) y una lineage sucesora.
 - El primer `status` con selección a veces da `operation_timeout` transitorio. Reportado en gentle-ai#1833. Un reintento idéntico suele andar.

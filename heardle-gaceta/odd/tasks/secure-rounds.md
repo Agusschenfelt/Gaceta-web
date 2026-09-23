@@ -52,7 +52,7 @@ them before a public launch.
 - [x] S3 — Client rounds port: local (engine) and Supabase (RPC) services, one round view shape.
 - [x] S4 — Wire the app: container, board, reveal, audio and peaks by key, filter on next round,
       errors; leaderboard adapter on auth.
-- [ ] S5 — `vercel.json` security headers.
+- [x] S5 — `vercel.json` security headers.
 - [ ] S6 — Verify: tests, build, local-mode round in the browser, SQL harness, native review.
 
 ## Checks
@@ -86,3 +86,7 @@ Started 2026-09-22.
   (resumed at stage 3 after skip + reload + skip), a lost round reveals the right track; with
   assets published under a secret, local mode refuses with a clear message.
   Not run: the Supabase path end to end (no project; Docker not running for a local stack).
+- S5: `vercel.json` with CSP, nosniff, frame denial, referrer and permissions policies, HSTS, and
+  cache rules for audio/catalog. Checked by serving `dist/` with those exact headers and playing a
+  round in headless Chrome: zero CSP violations, cover image, fonts and audio all load.
+  CLAUDE.md updated for the new architecture (flow, ports, sources vs published, Supabase setup).
