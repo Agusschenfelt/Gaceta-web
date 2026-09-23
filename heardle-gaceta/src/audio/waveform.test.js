@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { levelAt, barHeights, BAR_COUNT, ringTicks, unlockedTicks } from "./waveform.js";
+import { levelAt, barHeights, BAR_COUNT, ringTicks, unlockedTicks, levelFromBar, MIN_HEIGHT } from "./waveform.js";
 
 // Four buckets over a 4s clip: silent, half, loud, silent.
 const peaks = [0, 128, 255, 0];
@@ -106,5 +106,14 @@ describe("unlockedTicks", () => {
   it("never exceeds the ring and is zero for nothing", () => {
     expect(unlockedTicks(20, 8, 64)).toBe(64);
     expect(unlockedTicks(0, 8, 64)).toBe(0);
+  });
+});
+
+describe("levelFromBar", () => {
+  it("maps the floored bar height back to 0..1", () => {
+    expect(levelFromBar(MIN_HEIGHT)).toBe(0);
+    expect(levelFromBar(1)).toBe(1);
+    expect(levelFromBar(0)).toBe(0);
+    expect(levelFromBar(barHeights([255], 0, 1, 1)[0])).toBe(1);
   });
 });

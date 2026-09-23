@@ -4,12 +4,10 @@ import { Icon } from "../atoms/Icon.jsx";
 import { StageProgress } from "../molecules/StageProgress.jsx";
 import { WaveRing } from "../molecules/WaveRing.jsx";
 import { STATUS } from "../../game/engine.js";
+import { formatSeconds } from "../../game/format.js";
 import { buildShareText } from "../../game/share.js";
 import { CLIP_FILE_SECONDS, RING_TICKS, unlockedTicks } from "../../audio/waveform.js";
 
-function formatSeconds(s) {
-  return Number.isInteger(s) ? String(s) : s.toFixed(1);
-}
 
 /** Entrance delay for the n-th row, so the view assembles instead of appearing. */
 function stagger(n) {

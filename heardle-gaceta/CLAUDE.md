@@ -21,7 +21,8 @@ npm run catalog -- --dry                 # sin escribir nada
 npm run compress-audio                   # recorta los mp3 nuevos a 16 s mono 96k
 npm run compress-audio -- --dry          # sin escribir nada
 npm run peaks                            # envolventes de onda para el visualizador
-npm run assets                           # genera public/ desde las fuentes (corre solo antes de dev y build)
+npm run assets                           # publica catálogo (y audios en local/.published) desde las fuentes; corre solo antes de dev y build
+npm run upload-audio                     # sube .published/ al bucket "audio" de Supabase Storage (-- --prune borra lo viejo)
 supabase/tests/run.sh                    # prueba el schema contra un Postgres descartable
 ```
 
@@ -35,7 +36,9 @@ Variables en `.env` (no está en git, ver `.env.example`):
 |---|---|
 | `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` | Solo `npm run catalog`. Nunca llegan al browser. |
 | `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` | Rondas, ranking y mails. Vacías = modo local (solo desarrollo). |
-| `AUDIO_KEY_SECRET` | `npm run assets`: nombres opacos de los mp3. **Obligatoria en producción y con Supabase**; sin ella el build falla. Nunca llega al browser. Cambiarla renombra todos los audios (hay que volver a cargar el seed). |
+| `AUDIO_KEY_SECRET` | `npm run assets`: nombres opacos de los mp3. **Obligatoria en producción y con Supabase**; sin ella el build falla. Nunca llega al browser. Cambiarla renombra todos los audios (ver "Rotar el secreto"). |
+| `SUPABASE_SERVICE_ROLE_KEY` | Solo `npm run upload-audio`. Jamás con prefijo `VITE_`. |
+| `SUPABASE_DB_PASSWORD` | Correr SQL contra el proyecto con `psql` (ver sección Supabase). |
 
 ## Stack y reglas duras
 
@@ -62,6 +65,8 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Qué servicio se usa (Supabase o local), login anónimo | `src/services/gameServices.js`, `supabaseServices.js` |
 | Rondas: puerto y las dos implementaciones | `src/rounds/localRounds.js`, `supabaseRounds.js`; textos de error en `roundErrors.js` |
 | Qué ve el browser del catálogo y los audios | `scripts/publish-assets.mjs` + `scripts/lib/publish.mjs` |
+| Subida de audios y envolventes a Storage | `scripts/upload-audio.mjs`; el bucket lo crea `supabase/schema.sql` |
+| De dónde carga el browser audios y envolventes | `src/services/assetUrls.js` |
 | Headers de seguridad (CSP y demás) | `vercel.json` |
 | Ranking del buscador, cuántos resultados, normalización de acentos | `src/catalog/search.js` |
 | Cómo se cargan y mezclan los JSON del catálogo | `src/catalog/loadCatalog.js` |
@@ -114,10 +119,13 @@ sabe qué tema está sonando hasta que termina la ronda.
    attempts, status, score, answerId }`. `answerId` es `null` mientras se juega. Si hay una ronda
    abierta, devuelve esa: **nunca se reparte otra** (recargar para cambiar un tema difícil no
    sirve). Por eso cambiar los artistas a mitad de ronda aplica desde la próxima, y lo dice.
-4. Play: `useAudioPlayer("/audio/<audioKey>.mp3")` reproduce desde 0 hasta
+4. Play: `useAudioPlayer(audioUrl(audioKey))` (Storage con Supabase, `/audio/` en local) reproduce desde 0 hasta
    `currentClipSeconds(game)`. El corte lo hacen un `setTimeout` armado en `onplaying` y el evento
    `timeupdate`; el `requestAnimationFrame` solo dibuja el anillo (ver Gotchas).
-5. Guess → `rounds.guess(id, trackId)`; skip → `rounds.skip(id)`. Una acción por vez (`busy`); la
+5. Guess → `rounds.guess(id, trackId, attempt)`; skip → `rounds.skip(id, attempt)`, donde
+   `attempt` es cuántos intentos vio el cliente: si el servidor ya lo registró (se perdió la
+   respuesta), el reintento no cuenta doble. Los cortes de conexión se reintentan solos. Si el mp3
+   no carga, se avisa y tocar el círculo lo reintenta. Una acción por vez (`busy`); la
    ronda solo cambia con la respuesta del árbitro. Un error se muestra arriba del buscador.
 6. Al terminar, la ronda ya quedó registrada por quien la arbitró; el contenedor solo refresca el
    ranking. `ResultReveal` **reemplaza** al `GameBoard` y busca el tema en el catálogo por
@@ -157,10 +165,22 @@ Si alguien quiere reponerlos, que lea esto primero y resuelva lo del resultado c
 
 ## Contratos de datos
 
-**Fuentes vs. lo publicado.** `data/catalog/<slug>.json`, `audio/<ISRC>.mp3` y
-`data/peaks.json` son las **fuentes** (van a git, las escribe `npm run catalog`). `public/catalog/`,
-`public/audio/` y `supabase/.generated/tracks.sql` son **generados** por `npm run assets` y están en
-`.gitignore`. Las fuentes conectan ISRC con audio, que es la respuesta: nunca se sirven.
+**Fuentes vs. lo publicado.** `data/catalog/<slug>.json` va a git. `audio/<ISRC>.mp3` y
+`data/peaks.json` (por ISRC) son fuentes **locales, fuera de git**: el repo es público y, junto a
+los archivos publicados, darían todas las respuestas (el mp3 publicado es el mismo archivo; los
+picos publicados son los mismos números). Se sacaron también del historial de la rama antes del
+primer push (2026-09-23, `odd/tasks/review-followups.md`). Se regeneran con `npm run catalog` +
+`compress-audio` + `peaks`; conviene tener un backup propio.
+
+Lo generado por `npm run assets` (todo en `.gitignore`): `public/catalog/` siempre; con secreto,
+`.published/audio/<key>.mp3` + `.published/peaks.json` para subir a Storage; sin secreto (modo
+local), `public/audio/` y `public/catalog/peaks.json`; y `supabase/.generated/tracks.sql`. En
+Vercel no hay fuentes: solo se publica el catálogo.
+
+**Rotar el secreto** (invalida una tabla clave → respuesta armada entre jugadores; una tabla por
+hash de los bytes sobrevive, es el límite aceptado): nuevo `AUDIO_KEY_SECRET` → `npm run assets` →
+`npm run upload-audio` → cargar `tracks.sql` → `npm run upload-audio -- --prune`. Las rondas
+abiertas siguen andando: la vista toma la clave nueva de `tracks`.
 
 **Track en `data/catalog/<slug>.json`** (lo genera el script, no editar a mano salvo para corregir un dato puntual). La versión publicada es igual pero **sin `audio_file` ni `deezer_id`**, y con `audio_key` solo en modo local:
 
@@ -306,6 +326,7 @@ Dos detalles que no conviene deshacer:
   `scale`, para que la base del tick quede pegada al círculo. Reemplazó a un brillo que recorría
   los ticks bloqueados, que al usuario no le gustó. Barrido y respiración van juntos en el
   `animation` inline de cada tick: con dos clases, una pisaría a la otra.
+- `levelFromBar` (en `waveform.js`) deshace el piso `MIN_HEIGHT` de las barras para el latido.
 - `tick-unlock` usa `animation-fill-mode: backwards` **a propósito**: con `both` la animación se
   quedaría con el color final y taparía el acid gold del playhead en esos ticks.
 - Con `prefers-reduced-motion`: el isotipo no late, no hay sacudón, el anillo no respira y el grano queda quieto.
@@ -384,8 +405,9 @@ recortan a 16 s mono 96 kbps. Medido sobre los 431 temas: **~197 MB → 81 MB (-
 - **Es idempotente.** Detecta lo ya comprimido (mono y ≤ 16,5 s) y lo saltea. Correrlo de nuevo
   después de `npm run catalog` solo toca los temas nuevos.
 - Flags: `--dry`, `--force`, `--seconds=20`, `--bitrate=128k`.
-- **`audio/` (las fuentes, por ISRC) va a git.** `public/audio/` es generado y no. Con 38 MB entra cómodo; el límite de static file uploads
-  de Vercel es 100 MB en Hobby y 1 GB en Pro, y el equipo es Pro.
+- **`audio/` (las fuentes, por ISRC) NO va a git** (ver "Fuentes vs. lo publicado"). En producción
+  los mp3 se sirven desde Supabase Storage, no desde Vercel. Ojo con el egress del plan de
+  Supabase si juega mucha gente: cada ronda baja hasta ~190 KB.
 
 **Si algún día agregás una etapa de más de 16 s** en `STAGES`, los mp3 actuales se cortan
 antes de tiempo. Hay que correr `npm run compress-audio -- --force --seconds=<nuevo>`, que
@@ -447,9 +469,10 @@ Puesta en marcha de un proyecto nuevo:
    límite. Supabase ya limita los logins anónimos por IP.
 2. SQL editor → correr `supabase/schema.sql`. Se puede volver a correr: todo es `if not exists` /
    `create or replace`.
-3. Con `AUDIO_KEY_SECRET` en `.env`, `npm run assets` → pegar `supabase/.generated/tracks.sql` en
-   el SQL editor. **Ese archivo es la respuesta de todas las rondas: no se commitea ni se comparte.**
-   Hay que volver a cargarlo si cambia el catálogo o el secreto.
+3. Con `AUDIO_KEY_SECRET` en `.env`, `npm run assets` → `npm run upload-audio` (necesita
+   `SUPABASE_SERVICE_ROLE_KEY`) → pegar `supabase/.generated/tracks.sql` en el SQL editor. **Ese
+   archivo es la respuesta de todas las rondas: no se commitea ni se comparte.** Hay que volver a
+   cargarlo si cambia el catálogo o el secreto.
 4. Cargar `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` y `AUDIO_KEY_SECRET` en `.env` y en Vercel.
 
 Modelo de seguridad (detallado arriba de `schema.sql`): ninguna tabla es legible ni escribible
@@ -468,8 +491,12 @@ una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **141/141** en 13 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
+1. `npm run test` — tiene que dar **145/145** en 14 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
 2. `npm run build` — tiene que compilar.
+   Lint: el `eslint.config.js` de la raíz **ignora `heardle-gaceta/`**, así que un `eslint` común
+   no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts`.
+   Ojo que `no-unused-vars` deja pasar nombres en mayúsculas (`^[A-Z_]`).
+   SQL: `supabase/tests/run.sh`. Contra el proyecto real: `supabase/tests/smoke.mjs`.
 3. Probar a mano en `npm run dev`: cargar, play, un guess incorrecto, un skip, llegar al reveal, share, alias, mail. El ranking en modo local se ve en localStorage.
 
 Los tests corren en entorno `node`, sin jsdom. Lo que es lógica pura o va contra storage se

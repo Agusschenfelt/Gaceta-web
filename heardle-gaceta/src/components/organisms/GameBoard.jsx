@@ -6,6 +6,7 @@ import { GuessSearch } from "../molecules/GuessSearch.jsx";
 import { GuessHistory } from "../molecules/GuessHistory.jsx";
 import { Button } from "../atoms/Button.jsx";
 import { currentClipSeconds, isOver } from "../../game/engine.js";
+import { levelFromBar } from "../../audio/waveform.js";
 
 /** A miss knocks the circle sideways once. Decays so it reads as a hit, not a wobble. */
 const MISS_SHAKE = [
@@ -20,8 +21,7 @@ const MISS_SHAKE = [
 /** Level of the envelope right now, 0..1, from the middle bar the audio hook reports. */
 function currentLevel(levels) {
   const middle = levels?.[Math.floor((levels?.length ?? 0) / 2)] ?? 0;
-  // The hook floors bars at 0.18 so they never vanish; undo that for the beat.
-  return Math.max((middle - 0.18) / 0.82, 0);
+  return levelFromBar(middle);
 }
 
 /**

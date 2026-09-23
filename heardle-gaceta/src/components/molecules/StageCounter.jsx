@@ -1,6 +1,4 @@
-function formatSeconds(s) {
-  return Number.isInteger(s) ? String(s) : s.toFixed(1);
-}
+import { formatSeconds } from "../../game/format.js";
 
 /**
  * The seconds carry the whole tension of the round, so they get the system's

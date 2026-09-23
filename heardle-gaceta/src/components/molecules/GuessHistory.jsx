@@ -1,9 +1,7 @@
 import { trackLabel } from "../../catalog/loadCatalog.js";
 import { Icon } from "../atoms/Icon.jsx";
+import { formatSeconds } from "../../game/format.js";
 
-function formatSeconds(s) {
-  return Number.isInteger(s) ? String(s) : s.toFixed(1);
-}
 
 function attemptView(attempt, tracksById) {
   const isSkip = attempt.type === "skip";
@@ -76,25 +74,15 @@ export function GuessHistory({ attempts, tracksById, stages, stageIndex, variant
   return (
     <ol className="flex w-full shrink-0 flex-col gap-1" aria-label="Intentos anteriores">
       {attempts.map((a, i) => {
-        const isSkip = a.type === "skip";
-        const track = isSkip ? null : tracksById.get(a.trackId);
-        const tone = isSkip ? "text-muted" : a.correct ? "text-accent" : "text-danger";
+        const view = attemptView(a, tracksById);
         return (
           <li
             key={i}
             className="fade-up flex items-center gap-2.5 rounded border border-border px-2.5 py-1.5 text-xs"
           >
-            <Icon
-              name={isSkip ? "skip" : a.correct ? "check" : "close"}
-              size={13}
-              className={`shrink-0 ${tone}`}
-            />
-            <span className={`truncate ${isSkip ? "text-muted" : "text-fg"}`}>
-              {isSkip ? "Salteado" : track ? trackLabel(track) : a.trackId}
-            </span>
-            <span className="sr-only">
-              {isSkip ? "salteado" : a.correct ? "correcto" : "incorrecto"}
-            </span>
+            <Icon name={view.icon} size={13} className={`shrink-0 ${view.tone}`} />
+            <span className={`truncate ${view.textTone}`}>{view.text}</span>
+            <span className="sr-only">{view.srText}</span>
           </li>
         );
       })}

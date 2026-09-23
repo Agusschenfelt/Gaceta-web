@@ -34,14 +34,14 @@ locally), so its history can still be cleaned.
 
 ## Tasks
 
-- [ ] R1 — Purge audio sources and ISRC peaks from the branch history; git-ignore them.
-- [ ] R2 — Storage bucket + `upload-audio` script; publish tolerates missing sources (catalog only);
+- [x] R1 — Purge audio sources and ISRC peaks from the branch history; git-ignore them.
+- [x] R2 — Storage bucket + `upload-audio` script; publish tolerates missing sources (catalog only);
       client audio/peaks URLs by mode; CSP; content-hash comparison instead of size.
-- [ ] R3 — Idempotent attempts: `p_attempt` on `guess_round` / `skip_round`; retries on network.
-- [ ] R4 — Reveal never crashes: server returns the answer's title and artists when over; the
+- [x] R3 — Idempotent attempts: `p_attempt` on `guess_round` / `skip_round`; retries on network.
+- [x] R4 — Reveal never crashes: server returns the answer's title and artists when over; the
       client deals only from artists it loaded.
-- [ ] R5 — Audio load errors are reported and retryable.
-- [ ] R6 — Readability: README, stale 15 s comment, magic numbers, duplicated attempt mapping and
+- [x] R5 — Audio load errors are reported and retryable.
+- [x] R6 — Readability: README, stale 15 s comment, magic numbers, duplicated attempt mapping and
       `formatSeconds`, dead import, `SobreNosotrosPage` matchMedia guard.
 - [ ] R7 — Verify: tests, SQL harness, build, smoke against the real project, browser round.
 

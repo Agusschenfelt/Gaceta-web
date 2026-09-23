@@ -6,7 +6,7 @@
 //   delete from auth.users where is_anonymous and id in (<the two ids it prints>);
 import { createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 const req = createRequire(process.cwd() + "/package.json");
 const { createClient } = await import(pathToFileURL(req.resolve("@supabase/supabase-js")).href);
 const { audioKey } = await import(pathToFileURL(process.cwd() + "/scripts/lib/publish.mjs").href);
@@ -30,7 +30,11 @@ const { data: s1, error: e1 } = await a.auth.signInAnonymously();
 check(!e1 && s1.user?.is_anonymous, "anonymous sign-in works");
 const { data: r1, error: re1 } = await a.rpc("start_round", { p_artists: ["ramma"] });
 check(!re1 && r1?.audioKey && r1.answerId === null, `round dealt, answer hidden (${re1?.message ?? "ok"})`);
-check(existsSync(`public/audio/${r1?.audioKey}.mp3`), "its audio file is published under the opaque key");
+{ const res = await fetch(`${url}/storage/v1/object/public/audio/${encodeURIComponent(r1?.audioKey)}.mp3`);
+  check(res.ok && res.headers.get("content-type") === "audio/mpeg", "its audio streams from Storage under the opaque key"); }
+{ const res = await fetch(`${url}/storage/v1/object/list/audio`, { method: "POST", headers: { apikey: key, Authorization: `Bearer ${key}`, "content-type": "application/json" }, body: JSON.stringify({ prefix: "", limit: 5 }) });
+  const listed = res.ok ? await res.json() : [];
+  check(Array.isArray(listed) && listed.length === 0, "the bucket cannot be listed"); }
 const { data: again } = await a.rpc("start_round", { p_artists: ["ara"] });
 check(again?.id === r1?.id, "an open round is resumed, not rerolled");
 { const { data: t } = await a.from("rounds").select("track_id").eq("id", r1.id);
@@ -38,15 +42,18 @@ check(again?.id === r1?.id, "an open round is resumed, not rerolled");
 
 const b = createClient(url, key, opts);
 await b.auth.signInAnonymously();
-{ const { error } = await b.rpc("skip_round", { p_round: r1.id }); check(error?.message?.includes("round_not_found"), "another player cannot touch the round"); }
+{ const { error } = await b.rpc("skip_round", { p_round: r1.id, p_attempt: 0 }); check(error?.message?.includes("round_not_found"), "another player cannot touch the round"); }
 
-let view = r1;
-for (let i = 0; i < 4; i++) view = (await a.rpc("skip_round", { p_round: r1.id })).data;
+let view = (await a.rpc("skip_round", { p_round: r1.id, p_attempt: 0 })).data;
+{ const { data: replay } = await a.rpc("skip_round", { p_round: r1.id, p_attempt: 0 });
+  check(replay?.attempts?.length === 1, "a retried attempt is not recorded twice"); }
+for (let i = 1; i < 4; i++) view = (await a.rpc("skip_round", { p_round: r1.id, p_attempt: i })).data;
 check(view?.status === "lost" && view.score === 0 && view.answerId, "four skips lose and reveal the answer");
 check(audioKey(view.answerId, process.env.AUDIO_KEY_SECRET) === r1.audioKey, "the revealed answer matches the audio that played");
 const catalog = JSON.parse(readFileSync("public/catalog/ramma.json", "utf8"));
 check(catalog.tracks.some((t) => t.id === view.answerId), "the answer came from the chosen artist");
 check(!JSON.stringify(catalog).includes(r1.audioKey), "the public catalog does not contain the audio key");
+check(view?.answer?.title && view.answer.artistSlugs?.includes("ramma"), "the finished round carries the answer's title and artists");
 
 { const { error } = await a.rpc("set_alias", { p_alias: "el puto" }); check(error?.message?.includes("blocked_alias"), "blocked alias refused"); }
 { const { data, error } = await a.rpc("set_alias", { p_alias: "smoke test" }); check(!error && data === "smoke test", "valid alias saved"); }

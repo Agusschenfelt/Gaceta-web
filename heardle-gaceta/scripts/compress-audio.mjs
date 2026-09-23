@@ -1,9 +1,9 @@
 /**
  * Shrinks the catalog previews to what the game actually plays.
  *
- * Deezer previews are 30s stereo 128kbps, but the longest stage in
- * src/game/engine.js is 15s, so everything past CLIP_SECONDS is dead weight
- * on the user's connection.
+ * Deezer previews are 30s stereo 128kbps. The game plays at most 8s while
+ * guessing (the last of STAGES in src/game/engine.js) and 16s on the reveal,
+ * so everything past CLIP_SECONDS (16) is dead weight on the user's connection.
  *
  * Originals are moved to RAW_DIR (git-ignored) before re-encoding, so a
  * different clip length or bitrate can be produced later without hitting

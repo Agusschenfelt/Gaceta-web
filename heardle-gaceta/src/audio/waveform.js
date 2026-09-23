@@ -12,7 +12,12 @@
 export const BAR_COUNT = 5;
 
 /** Bars never fully collapse; a dead bar reads as a broken component. */
-const MIN_HEIGHT = 0.18;
+export const MIN_HEIGHT = 0.18;
+
+/** Undoes the MIN_HEIGHT floor: a bar height back to the plain level, 0..1. */
+export function levelFromBar(height) {
+  return Math.max((height - MIN_HEIGHT) / (1 - MIN_HEIGHT), 0);
+}
 
 /** Envelope value at a moment, 0..1. Returns 0 when there is nothing to read. */
 export function levelAt(peaks, time, duration) {
