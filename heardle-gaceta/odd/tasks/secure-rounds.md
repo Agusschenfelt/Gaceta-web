@@ -53,7 +53,7 @@ them before a public launch.
 - [x] S4 — Wire the app: container, board, reveal, audio and peaks by key, filter on next round,
       errors; leaderboard adapter on auth.
 - [x] S5 — `vercel.json` security headers.
-- [ ] S6 — Verify: tests, build, local-mode round in the browser, SQL harness, native review.
+- [x] S6 — Verify: tests, build, local-mode round in the browser, SQL harness, native review.
 
 ## Checks
 
@@ -90,3 +90,22 @@ Started 2026-09-22.
   cache rules for audio/catalog. Checked by serving `dist/` with those exact headers and playing a
   round in headless Chrome: zero CSP violations, cover image, fonts and audio all load.
   CLAUDE.md updated for the new architecture (flow, ports, sources vs published, Supabase setup).
+
+- S6: 141/141 tests, `npm run build`, SQL harness, CSP check, local-mode rounds in Chrome: all pass.
+  Native review over `a75d2b2..08f7640` (committed-only, unrelated untracked files excluded):
+  consent granted (high risk, 918 paths incl. 431 audio renames); the first bound STATUS then
+  timed out `pre_native` twice (~25 s, `mutation_outcome: not_started`). Provider defect: with
+  the user's consent, reported as an occurrence on Gentle AI #4655 (open, reproduces up to 3.6.1,
+  no published fix); candidate declined with the provider-issued decline, STATUS back to
+  `fresh_target_ready`. **This change has not been reviewed by the native reviewers.**
+
+## Not verified
+
+- The Supabase path end to end: real anonymous sign-in, PostgREST calling the functions, the
+  seed loaded into a hosted project. Needs a project (or `supabase start` with Docker).
+- `vercel.json` on Vercel itself (checked locally with an equivalent server).
+
+## Next step
+
+Create the Supabase project, follow the setup in CLAUDE.md (§ Supabase), set the three env vars
+in Vercel, and play a round end to end. Then retry the native review on a newer Gentle AI.
