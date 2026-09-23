@@ -201,6 +201,8 @@ Tres decisiones que conviene no deshacer sin querer:
 - **El lockup está repartido, no repetido.** El header lleva la palabra; el isotipo es el botón de
   play. Juntos forman el logo completo. Si volvés a meter el lockup entero en el header, el
   isotipo aparece dos veces en la misma pantalla.
+- **El isotipo nunca cambia de color: siempre blanco (`bg-fg`).** Es el logo de GACETA y no se
+  toca. Mientras suena solo late (escala); el acid gold va en el anillo, no en la marca.
 - **El isotipo se pinta como `mask-image`, no como `<img>`.** Así toma `currentColor` desde
   `bg-fg` y sigue los estados de disabled y loading. Un `<img>` no puede hacer eso. Está en
   `ISOTYPE_MASK` arriba de `PlayCircle.jsx`.

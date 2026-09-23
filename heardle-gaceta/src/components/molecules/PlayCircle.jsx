@@ -32,7 +32,7 @@ const REDUCED_MOTION =
  * own loudness envelope: the part the player has unlocked is lit, the rest
  * waits dim. Every miss unlocks more and the new ticks sweep on; while the clip
  * plays, the playhead turns the ticks it has passed acid gold and the isotype
- * beats with the level.
+ * beats with the level (it scales, it never changes colour: it is the logo).
  *
  * It is also the elastic element of the game screen. It takes the height its
  * parent has left over and derives its width from that (`aspect-square` with
@@ -90,9 +90,9 @@ export function PlayCircle({
             transform: `scale(${beat})`,
             transition: "transform 90ms linear",
           }}
-          className={`aspect-square w-[28%] transition-colors ${
-            isPlaying ? "bg-accent" : "bg-fg"
-          } ${loading ? "opacity-40" : ""}`}
+          /* Always the brand's white: the isotype is the GACETA mark and its
+             colour is not ours to change. Only the ring takes the accent. */
+          className={`aspect-square w-[28%] bg-fg ${loading ? "opacity-40" : ""}`}
         />
       </span>
     </button>
