@@ -36,7 +36,7 @@ know the ranking rules (average, 5-game minimum, 3+ artists, first play).
 - [x] T1 Server + local rule, backfill, tests (engine/ranking/localRounds tests, `supabase/tests/secure_rounds.test.sql`).
 - [x] T2 Reveal copy for a repeated track + leaderboard "how it works" explanation.
 - [x] T3 CLAUDE.md update.
-- [ ] T4 Apply schema to the live Supabase project (after review).
+- [x] T4 Apply schema to the live Supabase project (after review).
 
 ## Acceptance
 
@@ -116,3 +116,9 @@ TDD off (project config, see third-review-fixes.md). `npm run test`, `npm run bu
   the assignment → overlapping starts can orphan a round, local mode only) and
   R3-repeat-reveal-derivation-untested (reveal derives "repeat" client-side from dealtFilter; an
   open round dealt under another filter can mislabel the reason). Next: T4, pending user OK.
+- 2026-09-23: T4 done (user OK). Applied `supabase/schema.sql` to the live project via `psql` on the
+  pooler URL, `--single-transaction` + `ON_ERROR_STOP`, exit 0 (only the expected "does not exist,
+  skipping" notices for the old `guess_round`/`skip_round` signatures). Rounds before/after: 2 ranked
+  of 5, unchanged (no repeats to backfill). Verified live: `start_round` contains the first-play check
+  and `private.backfill_ranked_first_play` exists. `start_round` signature unchanged, so no client
+  deploy ordering needed. Feature complete; advisory follow-ups above remain open.
