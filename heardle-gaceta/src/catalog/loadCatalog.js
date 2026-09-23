@@ -73,9 +73,9 @@ export async function loadCatalog() {
  * sit between the player and the first round: fetch this alongside the catalog,
  * not inside it. A failure resolves to an empty map and the bars stay flat.
  */
-export async function loadPeaks() {
+export async function loadPeaks(url = `${BASE}/peaks.json`) {
   try {
-    return await fetchJson(`${BASE}/peaks.json`);
+    return await fetchJson(url);
   } catch (err) {
     console.warn("Catálogo: sin envolventes de onda", err);
     return {};

@@ -13,7 +13,8 @@
     "catalog": "node scripts/build-catalog.mjs",
     "compress-audio": "node scripts/compress-audio.mjs",
     "peaks": "node scripts/build-peaks.mjs",
-    "assets": "node scripts/publish-assets.mjs"
+    "assets": "node scripts/publish-assets.mjs",
+    "upload-audio": "node scripts/upload-audio.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",

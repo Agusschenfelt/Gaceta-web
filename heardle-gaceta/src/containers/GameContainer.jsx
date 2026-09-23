@@ -6,6 +6,7 @@ import { useAudioPlayer } from "../audio/useAudioPlayer.js";
 import { CLIP_FILE_SECONDS } from "../audio/waveform.js";
 import { getAlias, setAlias as persistAlias } from "../player/playerIdentity.js";
 import { getGameServices } from "../services/gameServices.js";
+import { audioUrl, PEAKS_URL } from "../services/assetUrls.js";
 import { withRetry } from "../leaderboard/retry.js";
 import { toRoundError } from "../rounds/roundErrors.js";
 import { GameBoard } from "../components/organisms/GameBoard.jsx";
@@ -73,7 +74,7 @@ export function GameContainer() {
       .catch((e) => setLoadError(`No pudimos cargar el catálogo: ${e.message}`));
     // Deliberately not awaited with the catalog: the bars can arrive late, the
     // round cannot.
-    loadPeaks().then(setPeaks);
+    loadPeaks(PEAKS_URL).then(setPeaks);
   }, []);
 
   useEffect(() => {
@@ -120,7 +121,7 @@ export function GameContainer() {
 
   const audioKey = game?.audioKey ?? null;
   const roundPeaks = audioKey ? (peaks[audioKey] ?? null) : null;
-  const audio = useAudioPlayer(audioKey ? `/audio/${audioKey}.mp3` : null, roundPeaks);
+  const audio = useAudioPlayer(audioKey ? audioUrl(audioKey) : null, roundPeaks);
 
   const refreshBoard = useCallback(async () => {
     if (!services) return;

@@ -85,6 +85,24 @@ insert into public.blocked_words (word) values
   ('forro'), ('nazi'), ('hitler'), ('gaceta'), ('admin')
 on conflict do nothing;
 
+-- ------------------------------------------------------------ audio files
+
+-- The mp3s and their envelopes live in Storage under opaque names
+-- (npm run upload-audio). Public so the browser can stream a round's audio by
+-- URL; no policy on storage.objects, so nobody can list the bucket and only a
+-- known key fetches a file. Skipped where Storage does not exist (tests).
+do $$
+begin
+  if to_regclass('storage.buckets') is not null then
+    insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+    values ('audio', 'audio', true, 1048576, array['audio/mpeg', 'application/json'])
+    on conflict (id) do update set
+      public = excluded.public,
+      file_size_limit = excluded.file_size_limit,
+      allowed_mime_types = excluded.allowed_mime_types;
+  end if;
+end $$;
+
 -- ------------------------------------------------------------ lock down
 
 alter table public.players enable row level security;
