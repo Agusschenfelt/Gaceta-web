@@ -122,3 +122,4 @@ TDD off (project config, see third-review-fixes.md). `npm run test`, `npm run bu
   of 5, unchanged (no repeats to backfill). Verified live: `start_round` contains the first-play check
   and `private.backfill_ranked_first_play` exists. `start_round` signature unchanged, so no client
   deploy ordering needed. Feature complete; advisory follow-ups above remain open.
+- 2026-09-23: checkbox had been left unticked; schema re-applied (idempotent) to `heardle-gaceta` with psql (exit 0, backfill ran); `supabase/tests/smoke.mjs` all ok; the two smoke users deleted.
