@@ -25,3 +25,5 @@ public/catalog
 supabase/.generated
 # Supabase CLI state
 supabase/.temp
+# Vercel CLI link (.env.local, which it also writes, is covered by .env.* above)
+.vercel

@@ -579,8 +579,15 @@ Los cuatro ítems de código se cerraron el 2026-09-18 (ver `odd/tasks/backlog-c
 Los assets de marca también se cerraron (2026-09-18): salieron de `Gaceta-web/public/assets/logos/`,
 ver la sección **Marca**.
 
-**Lo que sigue abierto, porque depende de vos:** dominio/subdominio y deploy — con eso hay que
-pasar `og:image` a URL absoluta —, configurar Supabase, y completar los temas sin preview.
+**Deploy (2026-09-23):** proyecto `heardle-gaceta` en el team **GACETA** de Vercel, en producción
+en `https://heardle-gaceta.vercel.app`. Se deploya por CLI desde `heardle-gaceta/`
+(`vercel deploy --prod --scope gaceta-97ec2001`); `.vercelignore` deja afuera `.env` y todo lo que
+conecta un tema con su audio. Sus rutas van ancladas con `/`: un `audio` suelto también excluía
+`src/audio/` y rompió el primer build. Variables cargadas en production y preview:
+`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `AUDIO_KEY_SECRET`.
+
+**Lo que sigue abierto, porque depende de vos:** dominio propio (con eso hay que pasar `og:image`
+a URL absoluta), el CAPTCHA del login anónimo y completar los temas sin preview.
 
 Encontrado y arreglado de paso: entre que cargaba el catálogo y arrancaba la ronda se veía un
 instante **"No hay temas para esa selección"** aunque había 209. Ese mensaje ahora solo aparece
