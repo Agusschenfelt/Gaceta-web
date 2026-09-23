@@ -47,7 +47,7 @@ them before a public launch.
 
 - [x] S1 — Asset pipeline: sources out of `public/`, scripts repointed, `publish.mjs` (HMAC keys,
       stripped catalog, peaks by key, guards, seed SQL). Pure helpers tested.
-- [ ] S2 — Schema rewrite: anon auth, `tracks`, `rounds`, RPCs, RLS, leaderboard/stat/alias/mail
+- [x] S2 — Schema rewrite: anon auth, `tracks`, `rounds`, RPCs, RLS, leaderboard/stat/alias/mail
       functions, rate limit. Tested against a local Postgres with a stubbed `auth` schema.
 - [ ] S3 — Client rounds port: local (engine) and Supabase (RPC) services, one round view shape.
 - [ ] S4 — Wire the app: container, board, reveal, audio and peaks by key, filter on next round,
@@ -69,3 +69,12 @@ Started 2026-09-22.
   opaque names and no `audio` field in the public catalog; without it, ISRC names and
   `audio_key` in the catalog; `VITE_SUPABASE_URL` without secret exits 1. 125/125 tests.
   Client bridged to `audioKey` so the game keeps working before S3/S4.
+- S2: `supabase/schema.sql` rewritten; `supabase/tests/run.sh` spins a throwaway Postgres 18,
+  stubs `auth` + roles with Supabase's default grants, applies the schema twice (re-runnable) and
+  runs `secure_rounds.test.sql`: no table readable or writable by anon/authenticated, private
+  helpers not callable, no session → `not_authenticated`, resume instead of reroll, answer
+  hidden until over, someone else's round → `round_not_found`, win/lose/score, generated score
+  and stage check refuse forged rows, `empty_pool`, `invalid_filter`, `rate_limited`, board
+  minimum, alias shape/blocked words (whole words)/case-insensitive uniqueness, one normalised
+  mail per player. Also loads the generated seed twice (431 tracks). All pass.
+  Supabase adapter in the client is now out of date until S3/S4 (local mode unaffected).
