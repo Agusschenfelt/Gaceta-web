@@ -3,7 +3,8 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight } from "lucide-react";
-import { showsData } from "../../data/showsData"; 
+import { showsData } from "../../data/showsData";
+import { isUpcoming, compareUpcoming } from "../../data/showsUtils";
 
 export default function SeccionProximosShows() {
   const container = useRef(null);
@@ -23,12 +24,8 @@ export default function SeccionProximosShows() {
 
   // === TRANSFORMACIÓN DE DATOS ===
   const processedShows = useMemo(() => {
-    const sortedShows = [...showsData].sort((a, b) => {
-      if (!a.date && b.date) return 1;   // mystery/TBA va al final
-      if (a.date && !b.date) return -1;  // fechas concretas primero
-      if (!a.date && !b.date) return 0;
-      return a.date.localeCompare(b.date); // ascendente = más próximo primero
-    });
+    // Solo fechas por venir: más próximo primero, mystery/TBA al final
+    const sortedShows = showsData.filter((show) => isUpcoming(show)).sort(compareUpcoming);
 
     return sortedShows.map((show) => {
       const isMystery = !show.date;
@@ -109,6 +106,28 @@ export default function SeccionProximosShows() {
 
             {/* LISTA DE SHOWS */}
             <div className="flex flex-col gap-2 pb-20">
+            {processedShows.length === 0 && (
+                <div className="show-row group relative flex flex-col md:flex-row md:items-center gap-4 md:gap-0 p-6 md:p-10 border border-white/10 bg-black/50 rounded-sm">
+                    <div className="w-full md:w-1/4 flex items-baseline gap-2">
+                        <span className="text-4xl md:text-5xl font-light tracking-tighter text-white/30">??</span>
+                        <span className="text-2xl font-mono text-white/40 uppercase">/SOON</span>
+                    </div>
+                    <div className="w-full md:w-2/4 flex flex-col">
+                        <p className="text-3xl md:text-4xl font-serif italic leading-none text-white">Nuevas fechas en camino</p>
+                        <p className="text-sm text-white/50 mt-2">Las anunciamos primero en Instagram.</p>
+                    </div>
+                    <div className="w-full md:w-1/4 flex justify-start md:justify-end items-center">
+                        <a
+                            href="https://www.instagram.com/esgaceta"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 px-6 py-3 min-h-[44px] bg-white text-black text-xs font-bold font-mono uppercase tracking-wider hover:bg-secundario transition-[background-color] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secundario focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                        >
+                            Seguinos <ArrowUpRight size={14} className="transition-transform duration-200 group-hover:translate-x-px group-hover:-translate-y-px" />
+                        </a>
+                    </div>
+                </div>
+            )}
             {processedShows.map((show) => (
                 <div
                 key={show.id}

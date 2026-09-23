@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { ARTISTS_DATA } from "../data/artistsData";
 import { showsData } from "../data/showsData";
+import { isUpcoming } from "../data/showsUtils";
 import SEO from "../SEO";
 
 // ICONOS
@@ -371,9 +372,9 @@ export default function ArtistPage() {
               {artistShows.map((show) => {
                 const [y, m, d] = show.date.split("-");
                 const dateStr = `${d}.${m}.${y}`;
-                const isUpcoming = new Date(show.date) >= new Date();
-                const Tag = show.ticketLink && isUpcoming ? "a" : "div";
-                const tagProps = show.ticketLink && isUpcoming
+                const upcoming = isUpcoming(show);
+                const Tag = show.ticketLink && upcoming ? "a" : "div";
+                const tagProps = show.ticketLink && upcoming
                   ? { href: show.ticketLink, target: "_blank", rel: "noopener noreferrer" }
                   : {};
                 return (
