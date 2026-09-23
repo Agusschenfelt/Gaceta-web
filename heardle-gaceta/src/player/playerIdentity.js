@@ -42,13 +42,23 @@ export function getAlias() {
   return read(ALIAS_KEY) || "";
 }
 
+/**
+ * Letters (any language), digits, spaces, dots, underscores and dashes. The
+ * same shape `set_alias` enforces in supabase/schema.sql; the database also
+ * refuses blocked words and taken names, which only it can know.
+ */
+const ALIAS_SHAPE = new RegExp(`^[\\p{L}\\p{N}._ -]{${ALIAS_MIN},${ALIAS_MAX}}$`, "u");
+
+export function normalizeAlias(alias) {
+  return (alias ?? "").trim().replace(/\s+/g, " ");
+}
+
 export function isValidAlias(alias) {
-  const a = (alias ?? "").trim();
-  return a.length >= ALIAS_MIN && a.length <= ALIAS_MAX;
+  return ALIAS_SHAPE.test(normalizeAlias(alias));
 }
 
 export function setAlias(alias) {
-  const a = alias.trim();
+  const a = normalizeAlias(alias);
   if (!isValidAlias(a)) throw new Error("Alias inválido");
   write(ALIAS_KEY, a);
   return a;

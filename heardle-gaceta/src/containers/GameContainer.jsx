@@ -1,20 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { loadCatalog, loadPeaks } from "../catalog/loadCatalog.js";
-import { pickTrack, filterPool } from "../catalog/pickTrack.js";
-import {
-  createGame,
-  guess as engineGuess,
-  skip as engineSkip,
-  currentClipSeconds,
-  isOver,
-  stageWon,
-  STATUS,
-} from "../game/engine.js";
+import { filterPool } from "../catalog/pickTrack.js";
+import { currentClipSeconds, isOver } from "../game/engine.js";
 import { useAudioPlayer } from "../audio/useAudioPlayer.js";
 import { CLIP_FILE_SECONDS } from "../audio/waveform.js";
-import { getPlayerId, getAlias, setAlias as persistAlias } from "../player/playerIdentity.js";
-import { getLeaderboardApi } from "../leaderboard/leaderboardApi.js";
+import { getAlias, setAlias as persistAlias } from "../player/playerIdentity.js";
+import { getGameServices } from "../services/gameServices.js";
 import { withRetry } from "../leaderboard/retry.js";
+import { toRoundError } from "../rounds/roundErrors.js";
 import { GameBoard } from "../components/organisms/GameBoard.jsx";
 import { ResultReveal } from "../components/organisms/ResultReveal.jsx";
 import { Leaderboard } from "../components/organisms/Leaderboard.jsx";
@@ -43,12 +36,21 @@ function writeStored(key, value) {
   }
 }
 
+const sameSet = (a, b) => a.length === b.length && a.every((x) => b.includes(x));
+
 export function GameContainer() {
   const [catalog, setCatalog] = useState(null);
   const [peaks, setPeaks] = useState({});
   const [loadError, setLoadError] = useState(null);
   const [artistFilter, setArtistFilter] = useState(() => readStored(FILTER_KEY, []));
+  // The filter the current round was dealt with. When the player changes the
+  // chips mid-round the new filter waits for the next round: see GameSettings.
+  const [dealtFilter, setDealtFilter] = useState(null);
+  // The round as the rounds service reports it; see gameServices.js for the
+  // shape. The answer (`answerId`) is only there once the round is over.
   const [game, setGame] = useState(null);
+  const [roundError, setRoundError] = useState(null);
+  const [busy, setBusy] = useState(false);
   const [alias, setAliasState] = useState(() => getAlias());
   // `me` is this player's own numbers, so the ranking can say how far they are
   // from appearing on it.
@@ -56,27 +58,30 @@ export function GameContainer() {
   const [emailPrompt, setEmailPrompt] = useState(() => readStored(EMAIL_FLAG_KEY, "pending"));
   // The ranking is a view of its own, reached from the result, never stacked under it.
   const [showRanking, setShowRanking] = useState(false);
-  // idle | saving | error — the round is only really recorded on idle.
-  const [submitState, setSubmitState] = useState("idle");
   // Drives the opening title: it clears on the first play of each round.
   const [hasPlayed, setHasPlayed] = useState(false);
 
-  const [api, setApi] = useState(null);
-  const playerId = useMemo(() => getPlayerId(), []);
+  const [services, setServices] = useState(null);
+  const dealing = useRef(false);
   // Wide screens have room on both sides of the board; use it instead of
   // leaving the game floating in empty margins.
   const isWide = useMediaQuery("(min-width: 1024px)");
 
   useEffect(() => {
-    getLeaderboardApi().then(setApi);
-  }, []);
-
-  useEffect(() => {
-    loadCatalog().then(setCatalog).catch((e) => setLoadError(e.message));
+    loadCatalog()
+      .then(setCatalog)
+      .catch((e) => setLoadError(`No pudimos cargar el catálogo: ${e.message}`));
     // Deliberately not awaited with the catalog: the bars can arrive late, the
     // round cannot.
     loadPeaks().then(setPeaks);
   }, []);
+
+  useEffect(() => {
+    if (!catalog) return;
+    getGameServices({ tracks: catalog.tracks })
+      .then(setServices)
+      .catch((e) => setLoadError(toRoundError(e).message));
+  }, [catalog]);
 
   const tracksById = useMemo(
     () => new Map(catalog?.tracks.map((t) => [t.id, t]) ?? []),
@@ -88,67 +93,59 @@ export function GameContainer() {
     [catalog, artistFilter]
   );
 
-  const startRound = useCallback(
-    (filter = artistFilter) => {
-      if (!catalog) return;
-      const track = pickTrack(catalog.tracks, filter);
-      setShowRanking(false);
-      setSubmitState("idle");
+  const startRound = useCallback(async () => {
+    if (!services || dealing.current) return;
+    dealing.current = true;
+    const filter = artistFilter;
+    setShowRanking(false);
+    setRoundError(null);
+    try {
+      // Only a dropped connection is worth retrying; a refusal is final.
+      const round = await withRetry(() => services.rounds.start(filter), {
+        shouldRetry: (e) => toRoundError(e).code === "network",
+      });
       setHasPlayed(false);
-      setGame(track ? createGame({ track }) : null);
-    },
-    [catalog, artistFilter]
-  );
+      setDealtFilter(filter);
+      setGame(round);
+    } catch (e) {
+      setRoundError(toRoundError(e).message);
+    } finally {
+      dealing.current = false;
+    }
+  }, [services, artistFilter]);
 
   useEffect(() => {
-    if (catalog && !game) startRound();
-  }, [catalog, game, startRound]);
+    if (services && !game && !roundError) startRound();
+  }, [services, game, roundError, startRound]);
 
-  const audioKey = game?.track.audioKey ?? null;
-  const audio = useAudioPlayer(
-    audioKey ? `/audio/${audioKey}.mp3` : null,
-    audioKey ? (peaks[audioKey] ?? null) : null
-  );
+  const audioKey = game?.audioKey ?? null;
+  const roundPeaks = audioKey ? (peaks[audioKey] ?? null) : null;
+  const audio = useAudioPlayer(audioKey ? `/audio/${audioKey}.mp3` : null, roundPeaks);
 
   const refreshBoard = useCallback(async () => {
-    if (!api) return;
+    if (!services) return;
     setBoard((b) => ({ ...b, loading: true, error: null }));
     try {
-      const [rows, me] = await Promise.all([api.getTop(20), api.getPlayerStats(playerId)]);
+      const [rows, me] = await Promise.all([
+        services.board.getTop(20),
+        services.board.getPlayerStats(),
+      ]);
       setBoard({ rows, me, loading: false, error: null });
+      // The server knows the alias better than this browser does.
+      if (me?.alias) {
+        setAliasState(me.alias);
+        persistAlias(me.alias);
+      }
     } catch (e) {
       setBoard({ rows: [], me: null, loading: false, error: e });
     }
-  }, [api, playerId]);
+  }, [services]);
 
-  const submitRound = useCallback(async () => {
-    if (!game || !api) return;
-    setSubmitState("saving");
-    try {
-      await withRetry(() =>
-        api.submitGame({
-          playerId,
-          trackId: game.track.id,
-          won: game.status === STATUS.WON,
-          stageWon: stageWon(game),
-          attempts: game.attempts.length,
-        }),
-      );
-      setSubmitState("idle");
-    } catch {
-      // Say it out loud rather than pretend the round was recorded.
-      setSubmitState("error");
-    } finally {
-      refreshBoard();
-    }
-  }, [game, api, playerId, refreshBoard]);
-
-  // Submit the round as soon as it ends, then refresh the ranking.
+  // A finished round is already recorded by whoever judged it; just refresh.
   useEffect(() => {
-    if (!game || !isOver(game) || !api) return;
-    submitRound();
+    if (game && isOver(game)) refreshBoard();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [game?.status, api]);
+  }, [game?.status]);
 
   // The reveal plays the song. The guess that ended the round was a click, so
   // the browser already counts the page as activated; if it still refuses, the
@@ -159,6 +156,20 @@ export function GameContainer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [game?.status]);
 
+  /** Sends one action to the judge. One at a time; the round only changes on its answer. */
+  async function act(run) {
+    if (!game || busy) return;
+    setBusy(true);
+    setRoundError(null);
+    try {
+      setGame(await run(game.id));
+    } catch (e) {
+      setRoundError(toRoundError(e).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   function onPlay() {
     if (!game) return;
     setHasPlayed(true);
@@ -166,35 +177,34 @@ export function GameContainer() {
   }
 
   function onGuess(track) {
-    setGame((g) => engineGuess(g, track.id));
+    act((id) => services.rounds.guess(id, track.id));
   }
 
   function onSkip() {
     audio.stop();
-    setGame((g) => engineSkip(g));
+    act((id) => services.rounds.skip(id));
   }
 
   function onChangeFilter(next) {
     setArtistFilter(next);
     writeStored(FILTER_KEY, next);
-    audio.stop();
-    startRound(next);
+  }
+
+  function onPlayAgain() {
+    setGame(null);
+    setRoundError(null);
   }
 
   async function onSetAlias(next) {
-    const saved = persistAlias(next);
-    setAliasState(saved);
-    try {
-      await api?.setAlias(playerId, saved);
-    } catch {
-      /* ranking stays local until it works */
-    }
+    // The judge validates and normalises; keep what it stored.
+    const saved = await services.board.setAlias(next.trim());
+    setAliasState(persistAlias(saved));
     refreshBoard();
   }
 
   async function onSubmitEmail(email) {
-    if (!api) throw new Error("Leaderboard not ready");
-    await api.subscribeEmail(email, playerId);
+    if (!services) throw new Error("Services not ready");
+    await services.board.subscribeEmail(email);
     setEmailPrompt("done");
     writeStored(EMAIL_FLAG_KEY, "done");
   }
@@ -207,11 +217,11 @@ export function GameContainer() {
   if (loadError) {
     return (
       <div className="flex flex-1 items-center justify-center">
-        <p className="text-sm text-danger">No pudimos cargar el catálogo: {loadError}</p>
+        <p className="text-sm text-danger">{loadError}</p>
       </div>
     );
   }
-  if (!catalog) {
+  if (!catalog || !services) {
     return (
       <div className="flex flex-1 items-center justify-center">
         <Spinner label="Cargando catálogo" />
@@ -244,15 +254,14 @@ export function GameContainer() {
     return (
       <ResultReveal
         game={game}
-        onPlayAgain={() => startRound()}
+        track={tracksById.get(game.answerId)}
+        onPlayAgain={onPlayAgain}
         onShowRanking={() => {
           audio.stop();
           setShowRanking(true);
         }}
-        peaks={audioKey ? (peaks[audioKey] ?? null) : null}
+        peaks={roundPeaks}
         audio={audio}
-        submitState={submitState}
-        onRetrySubmit={submitRound}
       />
     );
   }
@@ -264,6 +273,7 @@ export function GameContainer() {
       onChangeArtists={onChangeFilter}
       poolSize={poolSize}
       variant={isWide ? "panel" : "bar"}
+      pendingNextRound={Boolean(game && dealtFilter && !sameSet(dealtFilter, artistFilter))}
     />
   );
 
@@ -282,30 +292,55 @@ export function GameContainer() {
   const gameView = game ? (
     <GameBoard
       game={game}
-      peaks={audioKey ? (peaks[audioKey] ?? null) : null}
+      peaks={roundPeaks}
       tracks={catalog.tracks}
       tracksById={tracksById}
       audio={audio}
       hasPlayed={hasPlayed}
       left={isWide ? settings : null}
       right={isWide ? ladder : null}
+      busy={busy}
+      error={roundError}
       onPlay={onPlay}
       onGuess={onGuess}
       onSkip={onSkip}
     />
-  ) : poolSize === 0 ? (
-    <div className="flex flex-1 items-center justify-center">
-      <p className="text-sm text-muted">No hay temas para esa selección.</p>
+  ) : roundError ? (
+    // No round could be dealt: say why, and let them try again (for an empty
+    // selection, after changing the chips).
+    <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
+      <p role="alert" className="text-sm text-danger">
+        {roundError}
+      </p>
+      <button
+        type="button"
+        onClick={() => setRoundError(null)}
+        className="label transition-colors hover:text-fg"
+      >
+        Reintentar
+      </button>
     </div>
   ) : (
-    // There are tracks, the round just has not been built yet. Saying
-    // "no hay temas" here flashes a lie between catalog load and startRound.
+    // The round is on its way. Saying "no hay temas" here would flash a lie
+    // between loading and the first deal.
     <div className="flex flex-1 items-center justify-center">
       <Spinner label="Preparando la ronda" />
     </div>
   );
 
-  if (isWide) return gameView;
+  if (isWide) {
+    if (game) return gameView;
+    // No round on the board (loading, or refused): keep the chips reachable,
+    // since an empty selection is fixed by changing them.
+    return (
+      <div className="grid min-h-0 flex-1 grid-cols-[13rem_minmax(0,26rem)_13rem] justify-center gap-x-10">
+        <aside className="flex min-h-0 flex-col justify-center" aria-label="Ajustes">
+          {settings}
+        </aside>
+        <div className="flex min-h-0 flex-col">{gameView}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-0 w-full flex-1 flex-col gap-2">

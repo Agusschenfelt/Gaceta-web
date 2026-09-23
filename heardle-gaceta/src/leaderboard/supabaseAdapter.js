@@ -1,51 +1,23 @@
-import { createClient } from "@supabase/supabase-js";
-import { playerStats } from "./ranking.js";
+import { toRoundError } from "../rounds/roundErrors.js";
 
-/** Supabase adapter. Schema lives in supabase/schema.sql. */
-export function createSupabaseAdapter({ url, anonKey }) {
-  const client = createClient(url, anonKey, { auth: { persistSession: false } });
-
-  async function ensurePlayer(playerId) {
-    const { error } = await client
-      .from("players")
-      .upsert({ id: playerId }, { onConflict: "id", ignoreDuplicates: true });
-    if (error) throw error;
+/**
+ * The board over Supabase. Every call is a function in supabase/schema.sql
+ * acting as the signed-in (anonymous) player: no table is readable directly,
+ * and nothing here can name another player.
+ */
+export function createSupabaseAdapter(client) {
+  async function call(fn, args) {
+    const { data, error } = await client.rpc(fn, args);
+    if (error) throw toRoundError(error);
+    return data;
   }
 
   return {
     name: "supabase",
 
-    async submitGame(game) {
-      await ensurePlayer(game.playerId);
-      const { error } = await client.from("games").insert({
-        player_id: game.playerId,
-        track_id: game.trackId,
-        won: game.won,
-        stage_won: game.stageWon,
-        attempts: game.attempts,
-        // No score: the database computes it from the outcome and refuses one.
-      });
-      if (error) throw error;
-    },
-
-    async setAlias(playerId, alias) {
-      await ensurePlayer(playerId);
-      const { error } = await client.from("players").update({ alias }).eq("id", playerId);
-      if (error) throw error;
-    },
-
     async getTop(limit = 20) {
-      const { data, error } = await client
-        .from("leaderboard")
-        .select("alias, games_played, total_score, avg_score")
-        // The view already filters and orders; restated because PostgREST
-        // does not promise a view's ORDER BY survives the query.
-        .order("avg_score", { ascending: false })
-        .order("games_played", { ascending: false })
-        .order("alias")
-        .limit(limit);
-      if (error) throw error;
-      return (data ?? []).map((r) => ({
+      const rows = await call("get_leaderboard", { p_limit: limit });
+      return (rows ?? []).map((r) => ({
         alias: r.alias,
         gamesPlayed: r.games_played,
         totalScore: r.total_score,
@@ -53,17 +25,19 @@ export function createSupabaseAdapter({ url, anonKey }) {
       }));
     },
 
-    async getPlayerStats(playerId) {
-      const { data, error } = await client.from("games").select("score").eq("player_id", playerId);
-      if (error) throw error;
-      return playerStats((data ?? []).map((r) => r.score));
+    async getPlayerStats() {
+      const s = await call("my_stats");
+      return {
+        alias: s?.alias ?? null,
+        gamesPlayed: s?.gamesPlayed ?? 0,
+        totalScore: s?.totalScore ?? 0,
+        avgScore: Number(s?.avgScore ?? 0),
+      };
     },
 
-    async subscribeEmail(email, playerId) {
-      const { error } = await client
-        .from("emails")
-        .upsert({ email, player_id: playerId }, { onConflict: "email", ignoreDuplicates: true });
-      if (error) throw error;
-    },
+    /** Returns the alias as the database stored it (trimmed, spaces collapsed). */
+    setAlias: (alias) => call("set_alias", { p_alias: alias }),
+
+    subscribeEmail: (email) => call("subscribe_email", { p_email: email }),
   };
 }

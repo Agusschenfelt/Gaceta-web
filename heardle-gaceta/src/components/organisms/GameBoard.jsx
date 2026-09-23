@@ -42,6 +42,10 @@ export function GameBoard({
      attempt ladder on the right replaces both the list and the top bar. */
   left = null,
   right = null,
+  /* A guess or skip is on its way to the server: no second one until it lands. */
+  busy = false,
+  /* What went wrong with the last action, in words, or null. */
+  error = null,
   onPlay,
   onGuess,
   onSkip,
@@ -134,14 +138,19 @@ export function GameBoard({
 
       <div className={`flex shrink-0 items-end justify-between gap-3 ${at("col-start-2 row-start-3")}`}>
         <StageCounter seconds={seconds} stageIndex={game.stageIndex} total={game.stages.length} />
-        <Button variant="ghost" onClick={onSkip} disabled={over} className="-mr-4">
+        <Button variant="ghost" onClick={onSkip} disabled={over || busy} className="-mr-4">
           Saltar →
         </Button>
       </div>
 
-      {/* Keyed by track so the typed query resets whenever a new round starts. */}
-      <div className={`shrink-0 ${at("col-start-2 row-start-4")}`}>
-        <GuessSearch key={game.track.id} tracks={tracks} disabled={over} onSelect={onGuess} />
+      {/* Keyed by round so the typed query resets whenever a new round starts. */}
+      <div className={`flex shrink-0 flex-col gap-1.5 ${at("col-start-2 row-start-4")}`}>
+        {error && (
+          <p role="alert" className="text-xs text-danger">
+            {error}
+          </p>
+        )}
+        <GuessSearch key={game.id} tracks={tracks} disabled={over} onSelect={onGuess} />
       </div>
 
       {!wide && <GuessHistory attempts={game.attempts} tracksById={tracksById} />}

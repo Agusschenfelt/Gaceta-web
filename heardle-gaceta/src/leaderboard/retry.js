@@ -6,13 +6,18 @@ const defaultSleep = (ms) => new Promise((r) => setTimeout(r, ms));
  *
  * `sleep` is injectable so tests do not spend real time waiting.
  */
-export async function withRetry(fn, { attempts = 3, baseDelay = 400, sleep = defaultSleep } = {}) {
+export async function withRetry(
+  fn,
+  { attempts = 3, baseDelay = 400, sleep = defaultSleep, shouldRetry = () => true } = {}
+) {
   let lastError;
   for (let attempt = 0; attempt < attempts; attempt++) {
     try {
       return await fn(attempt);
     } catch (error) {
       lastError = error;
+      // A refusal (rate limit, empty selection…) will not change on retry.
+      if (!shouldRetry(error)) break;
       if (attempt < attempts - 1) await sleep(baseDelay * 2 ** attempt);
     }
   }

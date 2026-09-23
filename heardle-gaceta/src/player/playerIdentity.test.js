@@ -4,6 +4,7 @@ import {
   getAlias,
   setAlias,
   isValidAlias,
+  normalizeAlias,
   ALIAS_MIN,
   ALIAS_MAX,
 } from "./playerIdentity.js";
@@ -69,5 +70,21 @@ describe("setAlias", () => {
 describe("getAlias", () => {
   it("is an empty string before anyone chose one", () => {
     expect(getAlias()).toBe("");
+  });
+});
+
+describe("alias shape (mirrors set_alias in supabase/schema.sql)", () => {
+  it("accepts letters with accents, digits, spaces, dots, underscores and dashes", () => {
+    expect(isValidAlias("Tadu Vázquez")).toBe(true);
+    expect(isValidAlias("ñandú_22.b-c")).toBe(true);
+  });
+
+  it("refuses markup and symbols", () => {
+    expect(isValidAlias("<script>")).toBe(false);
+    expect(isValidAlias("a@b")).toBe(false);
+  });
+
+  it("collapses inner spaces before measuring", () => {
+    expect(normalizeAlias("  Agus   ok ")).toBe("Agus ok");
   });
 });

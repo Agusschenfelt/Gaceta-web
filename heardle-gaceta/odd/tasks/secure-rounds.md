@@ -49,8 +49,8 @@ them before a public launch.
       stripped catalog, peaks by key, guards, seed SQL). Pure helpers tested.
 - [x] S2 — Schema rewrite: anon auth, `tracks`, `rounds`, RPCs, RLS, leaderboard/stat/alias/mail
       functions, rate limit. Tested against a local Postgres with a stubbed `auth` schema.
-- [ ] S3 — Client rounds port: local (engine) and Supabase (RPC) services, one round view shape.
-- [ ] S4 — Wire the app: container, board, reveal, audio and peaks by key, filter on next round,
+- [x] S3 — Client rounds port: local (engine) and Supabase (RPC) services, one round view shape.
+- [x] S4 — Wire the app: container, board, reveal, audio and peaks by key, filter on next round,
       errors; leaderboard adapter on auth.
 - [ ] S5 — `vercel.json` security headers.
 - [ ] S6 — Verify: tests, build, local-mode round in the browser, SQL harness, native review.
@@ -78,3 +78,11 @@ Started 2026-09-22.
   minimum, alias shape/blocked words (whole words)/case-insensitive uniqueness, one normalised
   mail per player. Also loads the generated seed twice (431 tracks). All pass.
   Supabase adapter in the client is now out of date until S3/S4 (local mode unaffected).
+- S3/S4: `src/rounds/` (local + Supabase services, coded errors), `src/services/` (picks the
+  mode, anonymous sign-in with a persisted session), board adapter on RPCs, container on round
+  views (answer from `answerId`), one action in flight at a time, filter waits for the next
+  round with a visible note, retries only on connection errors, alias errors shown, client alias
+  shape aligned with the database. 141/141 tests. CDP in local mode: a round survives a reload
+  (resumed at stage 3 after skip + reload + skip), a lost round reveals the right track; with
+  assets published under a secret, local mode refuses with a clear message.
+  Not run: the Supabase path end to end (no project; Docker not running for a local stack).

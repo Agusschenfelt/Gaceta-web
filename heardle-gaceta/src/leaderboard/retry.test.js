@@ -48,3 +48,20 @@ describe("withRetry", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("withRetry shouldRetry", () => {
+  it("stops at once on an error that will not change on retry", async () => {
+    let calls = 0;
+    const refusal = new Error("rate_limited");
+    await expect(
+      withRetry(
+        async () => {
+          calls += 1;
+          throw refusal;
+        },
+        { sleep: async () => {}, shouldRetry: () => false }
+      )
+    ).rejects.toBe(refusal);
+    expect(calls).toBe(1);
+  });
+});

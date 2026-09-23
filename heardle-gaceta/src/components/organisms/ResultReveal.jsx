@@ -3,7 +3,7 @@ import { ActionButton } from "../atoms/ActionButton.jsx";
 import { Icon } from "../atoms/Icon.jsx";
 import { StageProgress } from "../molecules/StageProgress.jsx";
 import { WaveRing } from "../molecules/WaveRing.jsx";
-import { STATUS, score } from "../../game/engine.js";
+import { STATUS } from "../../game/engine.js";
 import { buildShareText } from "../../game/share.js";
 import { CLIP_FILE_SECONDS, RING_TICKS, unlockedTicks } from "../../audio/waveform.js";
 
@@ -27,14 +27,13 @@ function stagger(n) {
  */
 export function ResultReveal({
   game,
+  /* The answer, looked up in the catalog from the round's `answerId`. */
+  track,
   onPlayAgain,
   onShowRanking,
-  submitState = "idle",
-  onRetrySubmit,
   peaks = null,
   audio,
 }) {
-  const { track } = game;
   const won = game.status === STATUS.WON;
   const heard = game.stages[game.stageIndex];
   const isPlaying = audio?.isPlaying ?? false;
@@ -104,21 +103,13 @@ export function ResultReveal({
              there is no bigger one here than having got it right. */
           <span className="roll-in flex shrink-0 items-baseline gap-1" style={stagger(1)}>
             <span className="headline text-6xl !leading-none text-accent tabular-nums">
-              {score(game)}
+              {game.score}
             </span>
             <span className="font-display text-xl italic text-accent">pts</span>
           </span>
         ) : null}
       </div>
 
-      {submitState === "error" && (
-        <p className="flex shrink-0 items-center justify-between gap-2 text-xs text-danger">
-          No pudimos guardar esta partida en el ranking.
-          <button type="button" onClick={onRetrySubmit} className="underline hover:text-fg">
-            Reintentar
-          </button>
-        </p>
-      )}
 
       <div className="flex min-h-0 flex-1 basis-0 items-center justify-center">
         <button

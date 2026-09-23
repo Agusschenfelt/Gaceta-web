@@ -45,13 +45,18 @@ export function Leaderboard({
 }) {
   const [draft, setDraft] = useState("");
   const [saving, setSaving] = useState(false);
+  // The database has the last word on an alias (taken, blocked…): show why.
+  const [aliasError, setAliasError] = useState(null);
 
   async function submit(e) {
     e.preventDefault();
     if (!isValidAlias(draft)) return;
     setSaving(true);
+    setAliasError(null);
     try {
       await onSetAlias(draft.trim());
+    } catch (err) {
+      setAliasError(err.message);
     } finally {
       setSaving(false);
     }
@@ -140,6 +145,11 @@ export function Leaderboard({
               Listo
             </Button>
           </div>
+          {aliasError && (
+            <p role="alert" className="text-xs text-danger">
+              {aliasError}
+            </p>
+          )}
         </form>
       ) : emailPrompt === "pending" ? (
         <div className="shrink-0">

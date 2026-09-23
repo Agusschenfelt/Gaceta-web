@@ -11,7 +11,16 @@ import { Icon } from "../atoms/Icon.jsx";
  * - `panel` (wide screens): always open in the side column, where the space is
  *   free and hiding it would only add a click.
  */
-export function GameSettings({ artists, selected, onChangeArtists, poolSize, variant = "bar" }) {
+export function GameSettings({
+  artists,
+  selected,
+  onChangeArtists,
+  poolSize,
+  variant = "bar",
+  /* The selection changed mid-round. A round is never rerolled (that would let
+     you drop a song you do not know), so the new filter waits for the next one. */
+  pendingNextRound = false,
+}) {
   const [open, setOpen] = useState(false);
   const all = selected.length === 0;
 
@@ -47,6 +56,7 @@ export function GameSettings({ artists, selected, onChangeArtists, poolSize, var
         <span className="label">Artistas</span>
         {chips}
         <span className="label">{poolSize} temas en juego</span>
+        {pendingNextRound && <span className="label !text-fg">Se aplica en la próxima ronda</span>}
       </div>
     );
   }
@@ -60,7 +70,7 @@ export function GameSettings({ artists, selected, onChangeArtists, poolSize, var
         className="flex min-h-11 w-full items-center justify-between gap-3 text-left text-muted transition-colors hover:text-fg"
       >
         <span className="label truncate">
-          {summary} · {poolSize} temas
+          {summary} · {pendingNextRound ? "desde la próxima ronda" : `${poolSize} temas`}
         </span>
         <span className="flex shrink-0 items-center gap-1.5">
           <span className="label">Artistas</span>
