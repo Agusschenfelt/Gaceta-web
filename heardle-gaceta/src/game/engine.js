@@ -79,10 +79,20 @@ export function stageWon(state) {
   return state.stageIndex;
 }
 
-/** Points for a round: earlier win = more points; a loss scores 0. */
+/**
+ * Points for a finished round from its outcome alone: earlier win = more
+ * points, a loss scores 0. This is the one definition of the score. The
+ * database derives the same number in `supabase/schema.sql` (generated column
+ * on `games`) instead of trusting whatever the browser sends, so a change here
+ * has to be made there too. An impossible outcome scores 0.
+ */
+export function scoreFor(won, stageWon, stageCount = STAGES.length) {
+  if (!won || !Number.isInteger(stageWon) || stageWon < 0 || stageWon >= stageCount) return 0;
+  return stageCount - stageWon;
+}
+
 export function score(state) {
-  if (state.status !== STATUS.WON) return 0;
-  return state.stages.length - state.stageIndex;
+  return scoreFor(state.status === STATUS.WON, state.stageIndex, state.stages.length);
 }
 
 export function isOver(state) {

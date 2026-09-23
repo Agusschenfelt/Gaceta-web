@@ -2,8 +2,13 @@ import { createLocalAdapter } from "./localAdapter.js";
 
 /**
  * Port: { name, submitGame(game), setAlias(playerId, alias), getTop(limit),
- *         subscribeEmail(email, playerId) }
- * game = { playerId, trackId, won, stageWon, attempts, score }
+ *         getPlayerStats(playerId), subscribeEmail(email, playerId) }
+ * game = { playerId, trackId, won, stageWon, attempts }
+ *
+ * No score in `game`: each adapter derives it from the outcome (`scoreFor`),
+ * so a tampered client cannot post points. `getTop` returns only players with
+ * an alias and at least `MIN_GAMES` rounds, ranked by average (see
+ * ranking.js). `getPlayerStats` → { gamesPlayed, totalScore, avgScore }.
  *
  * Picks Supabase when both env vars exist (loaded lazily so the base bundle
  * never ships the client), otherwise the localStorage adapter.

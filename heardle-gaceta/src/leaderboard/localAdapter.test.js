@@ -1,15 +1,21 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { createLocalAdapter } from "./localAdapter.js";
+import { MIN_GAMES } from "./ranking.js";
 import { installLocalStorage } from "../test-utils/localStorage.js";
 
-const game = (playerId, score) => ({
+/** A finished round. `stageWon` null means lost. */
+const round = (playerId, stageWon, extra = {}) => ({
   playerId,
   trackId: "ISRC1",
-  won: score > 0,
-  stageWon: 1,
-  attempts: 1,
-  score,
+  won: stageWon !== null,
+  stageWon,
+  attempts: stageWon === null ? 4 : stageWon + 1,
+  ...extra,
 });
+
+async function play(api, playerId, stageWon, times = MIN_GAMES) {
+  for (let i = 0; i < times; i++) await api.submitGame(round(playerId, stageWon));
+}
 
 let api;
 beforeEach(() => {
@@ -23,42 +29,64 @@ describe("localAdapter", () => {
   });
 
   it("hides players who have no alias yet", async () => {
-    await api.submitGame(game("p1", 5));
+    await play(api, "p1", 0);
     expect(await api.getTop()).toEqual([]);
   });
 
-  it("aggregates a player's rounds once they have an alias", async () => {
-    await api.setAlias("p1", "Agus");
-    await api.submitGame(game("p1", 5));
-    await api.submitGame(game("p1", 3));
-
-    const [row] = await api.getTop();
-    expect(row).toMatchObject({ alias: "Agus", gamesPlayed: 2, totalScore: 8, avgScore: 4 });
+  it("derives the score from the outcome and ignores a score sent by the caller", async () => {
+    await api.submitGame(round("p1", 1, { score: 1000 }));
+    await api.submitGame(round("p1", null, { score: 1000 }));
+    expect(await api.getPlayerStats("p1")).toEqual({ gamesPlayed: 2, totalScore: 3, avgScore: 1.5 });
   });
 
-  it("orders by total score, highest first", async () => {
-    await api.setAlias("p1", "Uno");
-    await api.setAlias("p2", "Dos");
-    await api.submitGame(game("p1", 2));
-    await api.submitGame(game("p2", 9));
+  it("aggregates a player's rounds once they have an alias and the minimum", async () => {
+    await api.setAlias("p1", "Agus");
+    await play(api, "p1", 0, 3);
+    await play(api, "p1", 2, 2);
 
-    expect((await api.getTop()).map((r) => r.alias)).toEqual(["Dos", "Uno"]);
+    const [row] = await api.getTop();
+    expect(row).toMatchObject({ alias: "Agus", gamesPlayed: 5, totalScore: 16 });
+    expect(row.avgScore).toBeCloseTo(3.2);
+  });
+
+  it("keeps players below the minimum off the board but still counts them", async () => {
+    await api.setAlias("p1", "Nuevo");
+    await play(api, "p1", 0, MIN_GAMES - 1);
+    expect(await api.getTop()).toEqual([]);
+    expect((await api.getPlayerStats("p1")).gamesPlayed).toBe(MIN_GAMES - 1);
+  });
+
+  it("orders by average, so playing more does not beat guessing better", async () => {
+    await api.setAlias("p1", "Mucho");
+    await api.setAlias("p2", "Bien");
+    await play(api, "p1", 2, 20);
+    await play(api, "p2", 0);
+
+    expect((await api.getTop()).map((r) => r.alias)).toEqual(["Bien", "Mucho"]);
   });
 
   it("honours the limit", async () => {
     for (const id of ["p1", "p2", "p3"]) {
       await api.setAlias(id, `A${id}`);
-      await api.submitGame(game(id, 1));
+      await play(api, id, 0);
     }
     expect(await api.getTop(2)).toHaveLength(2);
   });
 
   it("counts a lost round as a played round worth zero", async () => {
     await api.setAlias("p1", "Agus");
-    await api.submitGame(game("p1", 0));
+    await play(api, "p1", null);
 
     const [row] = await api.getTop();
-    expect(row).toMatchObject({ gamesPlayed: 1, totalScore: 0, avgScore: 0 });
+    expect(row).toMatchObject({ gamesPlayed: MIN_GAMES, totalScore: 0, avgScore: 0 });
+  });
+
+  it("reports zeros for a player who has not played", async () => {
+    expect(await api.getPlayerStats("nobody")).toEqual({
+      gamesPlayed: 0,
+      totalScore: 0,
+      avgScore: 0,
+    });
   });
 
   it("stores an email once", async () => {
@@ -70,7 +98,7 @@ describe("localAdapter", () => {
   it("keeps the latest alias for a player", async () => {
     await api.setAlias("p1", "Viejo");
     await api.setAlias("p1", "Nuevo");
-    await api.submitGame(game("p1", 1));
+    await play(api, "p1", 0);
     expect((await api.getTop())[0].alias).toBe("Nuevo");
   });
 });

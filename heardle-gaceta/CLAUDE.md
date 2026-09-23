@@ -100,7 +100,23 @@ Variables en `.env` (no está en git, ver `.env.example`):
 6. Cuando `isOver(game)`, un efecto en `GameContainer` llama a `api.submitGame(...)` y refresca el ranking. `ResultReveal` **reemplaza** al `GameBoard` (no se apila debajo). Desde ahí se llega al `Leaderboard`, que es otra vista y se come el formulario de alias y `EmailCapture`.
 
 Score: si ganás, `stages.length - índice del stage ganador` (acertar de una = 4 puntos, en el
-último intento = 1). Perder = 0. El ranking suma puntos por jugador y solo muestra jugadores con alias.
+último intento = 1). Perder = 0. La definición única es `scoreFor(won, stageWon)` en el motor.
+
+**El puntaje nunca viene del cliente** (desde 2026-09-22, `odd/tasks/fair-ranking.md`). El
+browser manda solo el resultado (`won`, `stageWon`, `attempts`). En Supabase `games.score` es
+una **columna generada** y hay checks que rechazan una ronda imposible; mandar `score` en el
+insert da error. El adapter local lo deriva igual con `scoreFor`. Si cambiás `STAGES` o la
+fórmula, cambiala también en `supabase/schema.sql` (el 4 está escrito ahí).
+
+**El ranking es por promedio, con mínimo de 5 partidas** (`rankPlayers`, `MIN_GAMES` en
+`src/leaderboard/ranking.js`; la vista SQL `leaderboard` repite la misma regla con `having`).
+Por total ganaba el que más jugaba, no el que mejor adivinaba. Empate de promedio: primero el que
+tiene más partidas. Solo aparecen jugadores con alias. Debajo del mínimo, la vista del ranking
+dice cuántas partidas faltan (`getPlayerStats`).
+
+Lo que sigue abierto: sin auth, alguien puede cargar muchas rondas "legítimas" de 4 puntos
+directo contra la API. Frenarlo pide una regla de producto (por ejemplo, que solo cuente la
+primera vez que jugás cada tema) que no se decidió.
 
 **No hay niveles de dificultad, y es a propósito.** Había tres (`DIFFICULTIES`) y se sacaron el
 2026-09-18. Una sola escalera `STAGES = [0.5, 1, 3, 8]` para todos, porque:
@@ -139,7 +155,7 @@ Si alguien quiere reponerlos, que lea esto primero y resuelva lo del resultado c
 
 **Track en memoria** (lo que ven los componentes, sale de `loadCatalog`): `{ id, title, artists, artistSlugs, audioFile, coverUrl, spotifyUrl, release, releaseDate }`. Ojo con el camelCase: el JSON usa snake_case, la app camelCase, la conversión está en `loadCatalog.js`.
 
-**Interfaz del leaderboard** (`leaderboardApi.js`): `submitGame({ playerId, trackId, won, stageWon, attempts, score })`, `getTop(limit)` → `[{ alias, gamesPlayed, totalScore, avgScore }]`, `setAlias(playerId, alias)`, `subscribeEmail(email, playerId)`. Los dos adapters implementan exactamente eso.
+**Interfaz del leaderboard** (`leaderboardApi.js`): `submitGame({ playerId, trackId, won, stageWon, attempts })` (sin `score`), `getTop(limit)` → `[{ alias, gamesPlayed, totalScore, avgScore }]` ya filtrado y ordenado, `getPlayerStats(playerId)` → `{ gamesPlayed, totalScore, avgScore }`, `setAlias(playerId, alias)`, `subscribeEmail(email, playerId)`. Los dos adapters implementan exactamente eso.
 
 **localStorage** (todas las claves con prefijo `heardle:`): `playerId`, `alias`, `artistFilter`, `recent`, `emailPrompt` (`pending | done | dismissed`), y `local:games`, `local:aliases`, `local:emails` cuando no hay Supabase. Quien jugó antes del 2026-09-18 puede tener todavía un `heardle:difficulty` huérfano; no se lee más y no molesta.
 
@@ -388,11 +404,13 @@ primera etapa dura 500 ms, así que subestima: encontraba 21 temas donde midiend
 
 ## Supabase
 
-Correr `supabase/schema.sql` en el SQL editor del proyecto y cargar las dos `VITE_SUPABASE_*`. Tablas `players`, `games`, `emails`; vista `leaderboard`. Acceso anónimo con RLS; el modelo de confianza está comentado arriba del archivo (el cliente manda su propio `playerId`, no hay auth). El adapter de Supabase **no se probó contra un proyecto real todavía**; el local sí.
+Correr `supabase/schema.sql` en el SQL editor del proyecto y cargar las dos `VITE_SUPABASE_*`. Tablas `players`, `games`, `emails`; vista `leaderboard`. Acceso anónimo con RLS; el modelo de confianza está comentado arriba del archivo (el cliente manda su propio `playerId`, no hay auth). El adapter de Supabase **no se probó contra un proyecto real todavía**; el local sí. El schema usa
+`create table if not exists`: está pensado para un proyecto nuevo. Si ya existiera una tabla
+`games` vieja, no se modifica sola (hay que migrarla a mano).
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **99/99** en 9 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
+1. `npm run test` — tiene que dar **113/113** en 10 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
 2. `npm run build` — tiene que compilar.
 3. Probar a mano en `npm run dev`: cargar, play, un guess incorrecto, un skip, llegar al reveal, share, alias, mail. El ranking en modo local se ve en localStorage.
 

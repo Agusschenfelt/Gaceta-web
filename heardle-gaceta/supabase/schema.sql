@@ -5,6 +5,12 @@
 -- Trust model: this is a friends-scale game. The anon key can insert games
 -- for any player id and rename any player whose id it knows. Player ids are
 -- random UUIDs that never leave the owner's device, which is enough here.
+--
+-- What the database does NOT trust: the score. `games.score` is a generated
+-- column computed from the outcome, and the check constraints refuse a round
+-- that could not have happened. Sending a `score` in the insert is an error.
+-- Without auth a player can still post many legitimate-looking rounds; the
+-- ranking is by average, which at least stops volume alone from winning.
 
 create table if not exists players (
   id uuid primary key,
@@ -13,6 +19,8 @@ create table if not exists players (
   constraint alias_length check (alias is null or char_length(alias) between 2 and 16)
 );
 
+-- The 4 below is the number of stages: `STAGES` in src/game/engine.js. The
+-- score formula mirrors `scoreFor` there. Change one, change the other.
 create table if not exists games (
   id bigserial primary key,
   player_id uuid not null references players (id) on delete cascade,
@@ -20,8 +28,16 @@ create table if not exists games (
   won boolean not null,
   stage_won int,
   attempts int not null,
-  score int not null,
-  created_at timestamptz not null default now()
+  score int generated always as (case when won then 4 - stage_won else 0 end) stored,
+  created_at timestamptz not null default now(),
+  -- A win names the stage it happened on; a loss names none.
+  constraint stage_matches_outcome check (
+    (won and stage_won between 0 and 3) or (not won and stage_won is null)
+  ),
+  -- Every stage before the winning one was used; a loss used all four.
+  constraint attempts_match_outcome check (
+    (won and attempts = stage_won + 1) or (not won and attempts = 4)
+  )
 );
 
 create index if not exists games_player_id_idx on games (player_id);
@@ -33,17 +49,20 @@ create table if not exists emails (
   created_at timestamptz not null default now()
 );
 
+-- Ranked by average points per game, with a minimum of 5 games to appear.
+-- Same rule as `rankPlayers` / `MIN_GAMES` in src/leaderboard/ranking.js.
 create or replace view leaderboard as
 select
   p.alias,
   count(g.id)::int as games_played,
-  coalesce(sum(g.score), 0)::int as total_score,
-  coalesce(round(avg(g.score), 2), 0) as avg_score
+  sum(g.score)::int as total_score,
+  avg(g.score)::float8 as avg_score
 from players p
 join games g on g.player_id = p.id
 where p.alias is not null
 group by p.id, p.alias
-order by total_score desc, games_played asc;
+having count(g.id) >= 5
+order by avg_score desc, games_played desc, p.alias;
 
 -- Row level security -------------------------------------------------------
 

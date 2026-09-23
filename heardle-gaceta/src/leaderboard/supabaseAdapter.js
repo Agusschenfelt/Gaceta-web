@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { playerStats } from "./ranking.js";
 
 /** Supabase adapter. Schema lives in supabase/schema.sql. */
 export function createSupabaseAdapter({ url, anonKey }) {
@@ -22,7 +23,7 @@ export function createSupabaseAdapter({ url, anonKey }) {
         won: game.won,
         stage_won: game.stageWon,
         attempts: game.attempts,
-        score: game.score,
+        // No score: the database computes it from the outcome and refuses one.
       });
       if (error) throw error;
     },
@@ -37,7 +38,11 @@ export function createSupabaseAdapter({ url, anonKey }) {
       const { data, error } = await client
         .from("leaderboard")
         .select("alias, games_played, total_score, avg_score")
-        .order("total_score", { ascending: false })
+        // The view already filters and orders; restated because PostgREST
+        // does not promise a view's ORDER BY survives the query.
+        .order("avg_score", { ascending: false })
+        .order("games_played", { ascending: false })
+        .order("alias")
         .limit(limit);
       if (error) throw error;
       return (data ?? []).map((r) => ({
@@ -46,6 +51,12 @@ export function createSupabaseAdapter({ url, anonKey }) {
         totalScore: r.total_score,
         avgScore: Number(r.avg_score),
       }));
+    },
+
+    async getPlayerStats(playerId) {
+      const { data, error } = await client.from("games").select("score").eq("player_id", playerId);
+      if (error) throw error;
+      return playerStats((data ?? []).map((r) => r.score));
     },
 
     async subscribeEmail(email, playerId) {

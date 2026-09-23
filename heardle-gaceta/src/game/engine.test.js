@@ -8,6 +8,7 @@ import {
   skip,
   currentClipSeconds,
   score,
+  scoreFor,
   attemptsUsed,
   stageWon,
   isOver,
@@ -122,5 +123,31 @@ describe("share", () => {
     expect(buildShareText({ state: g })).toBe(
       `GACETA Heardle X/${STAGES.length}\n${"⬛".repeat(STAGES.length)}`,
     );
+  });
+});
+
+describe("scoreFor", () => {
+  it("pays more for an earlier win", () => {
+    expect(scoreFor(true, 0)).toBe(4);
+    expect(scoreFor(true, 1)).toBe(3);
+    expect(scoreFor(true, 3)).toBe(1);
+  });
+
+  it("scores a loss as zero, whatever stage it names", () => {
+    expect(scoreFor(false, null)).toBe(0);
+    expect(scoreFor(false, 0)).toBe(0);
+  });
+
+  it("scores an impossible outcome as zero instead of trusting it", () => {
+    expect(scoreFor(true, 4)).toBe(0);
+    expect(scoreFor(true, -1)).toBe(0);
+    expect(scoreFor(true, 1.5)).toBe(0);
+    expect(scoreFor(true, null)).toBe(0);
+    expect(scoreFor(true, "0")).toBe(0);
+  });
+
+  it("agrees with score() on a finished game", () => {
+    const won = guess(createGame({ track: { id: "A" } }), "A");
+    expect(score(won)).toBe(scoreFor(true, 0));
   });
 });

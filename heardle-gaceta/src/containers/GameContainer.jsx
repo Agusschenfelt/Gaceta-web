@@ -7,7 +7,6 @@ import {
   skip as engineSkip,
   currentClipSeconds,
   isOver,
-  score,
   stageWon,
   STATUS,
 } from "../game/engine.js";
@@ -51,7 +50,9 @@ export function GameContainer() {
   const [artistFilter, setArtistFilter] = useState(() => readStored(FILTER_KEY, []));
   const [game, setGame] = useState(null);
   const [alias, setAliasState] = useState(() => getAlias());
-  const [board, setBoard] = useState({ rows: [], loading: false, error: null });
+  // `me` is this player's own numbers, so the ranking can say how far they are
+  // from appearing on it.
+  const [board, setBoard] = useState({ rows: [], me: null, loading: false, error: null });
   const [emailPrompt, setEmailPrompt] = useState(() => readStored(EMAIL_FLAG_KEY, "pending"));
   // The ranking is a view of its own, reached from the result, never stacked under it.
   const [showRanking, setShowRanking] = useState(false);
@@ -112,12 +113,12 @@ export function GameContainer() {
     if (!api) return;
     setBoard((b) => ({ ...b, loading: true, error: null }));
     try {
-      const rows = await api.getTop(20);
-      setBoard({ rows, loading: false, error: null });
+      const [rows, me] = await Promise.all([api.getTop(20), api.getPlayerStats(playerId)]);
+      setBoard({ rows, me, loading: false, error: null });
     } catch (e) {
-      setBoard({ rows: [], loading: false, error: e });
+      setBoard({ rows: [], me: null, loading: false, error: e });
     }
-  }, [api]);
+  }, [api, playerId]);
 
   const submitRound = useCallback(async () => {
     if (!game || !api) return;
@@ -130,7 +131,6 @@ export function GameContainer() {
           won: game.status === STATUS.WON,
           stageWon: stageWon(game),
           attempts: game.attempts.length,
-          score: score(game),
         }),
       );
       setSubmitState("idle");
@@ -226,6 +226,7 @@ export function GameContainer() {
     return (
       <Leaderboard
         rows={board.rows}
+        me={board.me}
         loading={board.loading}
         error={board.error}
         alias={alias}

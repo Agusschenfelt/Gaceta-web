@@ -1,3 +1,6 @@
+import { scoreFor } from "../game/engine.js";
+import { rankPlayers, playerStats } from "./ranking.js";
+
 /**
  * localStorage adapter. Used when Supabase is not configured so the game is
  * fully playable. The "ranking" only ever contains this device's player.
@@ -29,7 +32,10 @@ export function createLocalAdapter() {
 
     async submitGame(game) {
       const games = readJson(GAMES_KEY, []);
-      games.push({ ...game, createdAt: Date.now() });
+      // Same rule as the database: the score comes from the outcome, never
+      // from the caller.
+      const { score: _ignored, ...outcome } = game;
+      games.push({ ...outcome, score: scoreFor(game.won, game.stageWon), createdAt: Date.now() });
       writeJson(GAMES_KEY, games);
     },
 
@@ -44,17 +50,21 @@ export function createLocalAdapter() {
       const aliases = readJson(ALIASES_KEY, {});
       const byPlayer = new Map();
       for (const g of games) {
-        const alias = aliases[g.playerId];
-        if (!alias) continue;
-        const row = byPlayer.get(g.playerId) ?? { alias, gamesPlayed: 0, totalScore: 0 };
+        const row = byPlayer.get(g.playerId) ?? {
+          alias: aliases[g.playerId],
+          gamesPlayed: 0,
+          totalScore: 0,
+        };
         row.gamesPlayed += 1;
         row.totalScore += g.score;
         byPlayer.set(g.playerId, row);
       }
-      return [...byPlayer.values()]
-        .map((r) => ({ ...r, avgScore: r.gamesPlayed ? r.totalScore / r.gamesPlayed : 0 }))
-        .sort((a, b) => b.totalScore - a.totalScore)
-        .slice(0, limit);
+      return rankPlayers([...byPlayer.values()]).slice(0, limit);
+    },
+
+    async getPlayerStats(playerId) {
+      const games = readJson(GAMES_KEY, []);
+      return playerStats(games.filter((g) => g.playerId === playerId).map((g) => g.score));
     },
 
     async subscribeEmail(email, playerId) {
