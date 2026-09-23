@@ -39,6 +39,26 @@ function writeStored(key, value) {
 
 const sameSet = (a, b) => a.length === b.length && a.every((x) => b.includes(x));
 
+const isConnectionError = (e) => toRoundError(e).code === "network";
+
+/**
+ * The finished round's track: from the catalog when this browser has it, else
+ * from what the judge returned, so the reveal never depends on a catalog file
+ * having loaded.
+ */
+function answerTrack(game, tracksById, artists) {
+  const known = tracksById.get(game.answerId);
+  if (known) return known;
+  const names = new Map(artists.map((a) => [a.slug, a.name]));
+  return {
+    id: game.answerId,
+    title: game.answer?.title ?? "Tema del catálogo",
+    artists: (game.answer?.artistSlugs ?? []).map((slug) => names.get(slug) ?? slug),
+    coverUrl: null,
+    spotifyUrl: null,
+  };
+}
+
 export function GameContainer() {
   const [catalog, setCatalog] = useState(null);
   const [peaks, setPeaks] = useState({});
@@ -98,12 +118,15 @@ export function GameContainer() {
     if (!services || dealing.current) return;
     dealing.current = true;
     const filter = artistFilter;
+    // "All" means all the artists this browser loaded: a track whose catalog
+    // file failed could not be searched, so it must not be dealt either.
+    const dealFrom = filter.length ? filter : catalog.artists.map((a) => a.slug);
     setShowRanking(false);
     setRoundError(null);
     try {
       // Only a dropped connection is worth retrying; a refusal is final.
-      const round = await withRetry(() => services.rounds.start(filter), {
-        shouldRetry: (e) => toRoundError(e).code === "network",
+      const round = await withRetry(() => services.rounds.start(dealFrom), {
+        shouldRetry: isConnectionError,
       });
       setHasPlayed(false);
       setDealtFilter(filter);
@@ -113,7 +136,7 @@ export function GameContainer() {
     } finally {
       dealing.current = false;
     }
-  }, [services, artistFilter]);
+  }, [services, artistFilter, catalog]);
 
   useEffect(() => {
     if (services && !game && !roundError) startRound();
@@ -157,13 +180,18 @@ export function GameContainer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [game?.status]);
 
-  /** Sends one action to the judge. One at a time; the round only changes on its answer. */
+  /**
+   * Sends one action to the judge. One at a time; the round only changes on
+   * its answer. Retrying a dropped connection is safe: the action carries the
+   * attempt count it was made on, so the judge never records it twice.
+   */
   async function act(run) {
     if (!game || busy) return;
     setBusy(true);
     setRoundError(null);
+    const { id, attempts } = game;
     try {
-      setGame(await run(game.id));
+      setGame(await withRetry(() => run(id, attempts.length), { shouldRetry: isConnectionError }));
     } catch (e) {
       setRoundError(toRoundError(e).message);
     } finally {
@@ -173,17 +201,22 @@ export function GameContainer() {
 
   function onPlay() {
     if (!game) return;
+    // A failed file gets another try instead of a silent play() rejection.
+    if (audio.failed) {
+      audio.reload();
+      return;
+    }
     setHasPlayed(true);
     audio.play(currentClipSeconds(game));
   }
 
   function onGuess(track) {
-    act((id) => services.rounds.guess(id, track.id));
+    act((id, attempt) => services.rounds.guess(id, track.id, attempt));
   }
 
   function onSkip() {
     audio.stop();
-    act((id) => services.rounds.skip(id));
+    act((id, attempt) => services.rounds.skip(id, attempt));
   }
 
   function onChangeFilter(next) {
@@ -255,7 +288,7 @@ export function GameContainer() {
     return (
       <ResultReveal
         game={game}
-        track={tracksById.get(game.answerId)}
+        track={answerTrack(game, tracksById, catalog.artists)}
         onPlayAgain={onPlayAgain}
         onShowRanking={() => {
           audio.stop();
@@ -301,7 +334,10 @@ export function GameContainer() {
       left={isWide ? settings : null}
       right={isWide ? ladder : null}
       busy={busy}
-      error={roundError}
+      error={
+        roundError ??
+        (audio.failed ? "No pudimos cargar el fragmento. Tocá el círculo para reintentar." : null)
+      }
       onPlay={onPlay}
       onGuess={onGuess}
       onSkip={onSkip}

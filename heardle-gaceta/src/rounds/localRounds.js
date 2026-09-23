@@ -37,6 +37,9 @@ function view(id, game) {
     status: game.status,
     score: score(game),
     answerId: over ? game.track.id : null,
+    answer: over
+      ? { id: game.track.id, title: game.track.title, artistSlugs: game.track.artistSlugs }
+      : null,
   };
 }
 
@@ -84,9 +87,11 @@ export function createLocalRounds({ tracks, recordRound }) {
     );
   }
 
-  async function act(roundId, transition) {
+  async function act(roundId, attempt, transition) {
     if (!open || open.id !== roundId) throw new RoundError("round_not_found");
-    if (isOver(open.game)) return view(open.id, open.game);
+    // Same rule as the server: an attempt count that is not the current one is
+    // a replay, and a replay changes nothing.
+    if (isOver(open.game) || attempt !== open.game.attempts.length) return view(open.id, open.game);
     open = { ...open, game: transition(open.game) };
     persist();
     if (isOver(open.game)) {
@@ -112,13 +117,13 @@ export function createLocalRounds({ tracks, recordRound }) {
       return view(open.id, open.game);
     },
 
-    guess(roundId, trackId) {
+    guess(roundId, trackId, attempt) {
       if (!byId.has(trackId)) return Promise.reject(new RoundError("unknown_track"));
-      return act(roundId, (g) => guess(g, trackId));
+      return act(roundId, attempt, (g) => guess(g, trackId));
     },
 
-    skip(roundId) {
-      return act(roundId, (g) => skip(g));
+    skip(roundId, attempt) {
+      return act(roundId, attempt, (g) => skip(g));
     },
   };
 }

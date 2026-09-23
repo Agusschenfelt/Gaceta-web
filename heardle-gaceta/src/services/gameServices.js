@@ -5,9 +5,11 @@ import { getPlayerId } from "../player/playerIdentity.js";
 /**
  * The two ports the game talks to, picked once:
  *
- *   rounds: { mode, start(artistSlugs), guess(roundId, trackId), skip(roundId) }
+ *   rounds: { mode, start(artistSlugs), guess(roundId, trackId, attempt), skip(roundId, attempt) }
  *           each resolving to a round view
- *           { id, audioKey, stages, stageIndex, attempts, status, score, answerId }
+ *           { id, audioKey, stages, stageIndex, attempts, status, score, answerId, answer }
+ *           `attempt` is attempts.length as the client saw it (makes retries safe);
+ *           `answer` = { id, title, artistSlugs } once the round is over.
  *   board:  { getTop(limit), getPlayerStats(), setAlias(alias), subscribeEmail(email) }
  *
  * With both VITE_SUPABASE_* set, everything goes through Postgres as an

@@ -9,12 +9,12 @@ describe("supabaseRounds", () => {
     const client = fakeClient({ data: { id: "r1" }, error: null });
     const rounds = createSupabaseRounds(client);
     await rounds.start(["ramma"]);
-    await rounds.guess("r1", "ISRC");
-    await rounds.skip("r1");
+    await rounds.guess("r1", "ISRC", 2);
+    await rounds.skip("r1", 3);
     expect(client.rpc.mock.calls).toEqual([
       ["start_round", { p_artists: ["ramma"] }],
-      ["guess_round", { p_round: "r1", p_track: "ISRC" }],
-      ["skip_round", { p_round: "r1" }],
+      ["guess_round", { p_round: "r1", p_track: "ISRC", p_attempt: 2 }],
+      ["skip_round", { p_round: "r1", p_attempt: 3 }],
     ]);
   });
 

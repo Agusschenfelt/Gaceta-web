@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { barHeights, BAR_COUNT } from "./waveform.js";
+import { barHeights } from "./waveform.js";
 
 const FLAT_BARS = barHeights(null, 0, 1);
 
@@ -22,6 +22,10 @@ export function useAudioPlayer(src, peaks = null) {
   // Bar heights for the circle, read from the track's precomputed envelope.
   const [levels, setLevels] = useState(FLAT_BARS);
   const [ready, setReady] = useState(false);
+  // The file failed to load (404 after a key change, dropped connection…).
+  // Without this the ring would pulse "loading" forever and play would fail
+  // silently.
+  const [failed, setFailed] = useState(false);
 
   const stop = useCallback(() => {
     playIdRef.current += 1; // invalidate any play still in flight
@@ -42,18 +46,28 @@ export function useAudioPlayer(src, peaks = null) {
   useEffect(() => {
     stop();
     setReady(false);
+    setFailed(false);
     if (!src) {
       audioRef.current = null;
       return undefined;
     }
     const audio = new Audio(src);
     audio.preload = "auto";
-    const onReady = () => setReady(true);
+    const onReady = () => {
+      setReady(true);
+      setFailed(false);
+    };
+    const onError = () => {
+      setReady(false);
+      setFailed(true);
+    };
     audio.addEventListener("canplaythrough", onReady);
+    audio.addEventListener("error", onError);
     audio.load();
     audioRef.current = audio;
     return () => {
       audio.removeEventListener("canplaythrough", onReady);
+      audio.removeEventListener("error", onError);
       audio.pause();
       audio.src = "";
       audioRef.current = null;
@@ -121,7 +135,15 @@ export function useAudioPlayer(src, peaks = null) {
     [stop, peaks]
   );
 
+  /** Tries the same file again after a failed load. */
+  const reload = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    setFailed(false);
+    audio.load();
+  }, []);
+
   useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
 
-  return { play, stop, isPlaying, progress, ready, levels };
+  return { play, stop, reload, isPlaying, progress, ready, failed, levels };
 }

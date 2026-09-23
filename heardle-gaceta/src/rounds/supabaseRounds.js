@@ -14,7 +14,10 @@ export function createSupabaseRounds(client) {
   return {
     mode: "supabase",
     start: (artistSlugs = []) => call("start_round", { p_artists: artistSlugs }),
-    guess: (roundId, trackId) => call("guess_round", { p_round: roundId, p_track: trackId }),
-    skip: (roundId) => call("skip_round", { p_round: roundId }),
+    // `attempt` = attempts the client has seen; lets the server ignore a retry
+    // of an attempt it already recorded.
+    guess: (roundId, trackId, attempt) =>
+      call("guess_round", { p_round: roundId, p_track: trackId, p_attempt: attempt }),
+    skip: (roundId, attempt) => call("skip_round", { p_round: roundId, p_attempt: attempt }),
   };
 }

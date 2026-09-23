@@ -121,7 +121,7 @@ export function GameBoard({
           isPlaying={audio.isPlaying}
           progress={audio.progress}
           disabled={over}
-          loading={!audio.ready}
+          loading={!audio.ready && !audio.failed}
           level={currentLevel(audio.levels)}
           peaks={peaks}
           seconds={seconds}

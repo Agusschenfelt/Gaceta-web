@@ -68,6 +68,7 @@ select set_config('t.r1', public.start_round('{a}')->>'id', false);
 select t.check(public.start_round('{c}')->>'id' = current_setting('t.r1'),
   'an open round is resumed, and a new filter does not reroll it');
 select t.check((public.start_round()->>'answerId') is null, 'the answer is hidden while playing');
+select t.check((public.start_round()->'answer') = 'null'::jsonb, 'no answer details while playing');
 select t.check((public.start_round()->>'audioKey') like 'k%', 'the round carries its audio key');
 reset role;
 select t.check((select track_id from public.rounds where id = current_setting('t.r1')::uuid) in ('T1','T2','T3'),
@@ -79,26 +80,32 @@ select set_config('t.wrong', (select id from public.tracks where id <> current_s
 
 set role authenticated;
 select t.act_as('00000000-0000-0000-0000-000000000002');
-select t.fails(format('select public.guess_round(%L, %L)', current_setting('t.r1'), current_setting('t.answer')), 'round_not_found');
-select t.fails(format('select public.skip_round(%L)', current_setting('t.r1')), 'round_not_found');
+select t.fails(format('select public.guess_round(%L, %L, 0)', current_setting('t.r1'), current_setting('t.answer')), 'round_not_found');
+select t.fails(format('select public.skip_round(%L, 0)', current_setting('t.r1')), 'round_not_found');
 
 -- ------------------------------------------------ playing a round
 
 select t.act_as('00000000-0000-0000-0000-000000000001');
-select t.fails(format('select public.guess_round(%L, %L)', current_setting('t.r1'), 'NOPE'), 'unknown_track');
+select t.fails(format('select public.guess_round(%L, %L, 0)', current_setting('t.r1'), 'NOPE'), 'unknown_track');
 select t.check(
-  (public.guess_round(current_setting('t.r1')::uuid, current_setting('t.wrong'))->>'stageIndex')::int = 1,
+  (public.guess_round(current_setting('t.r1')::uuid, current_setting('t.wrong'), 0)->>'stageIndex')::int = 1,
   'a wrong guess advances one stage');
 select t.check(
-  (public.skip_round(current_setting('t.r1')::uuid)->>'stageIndex')::int = 2,
+  jsonb_array_length(public.guess_round(current_setting('t.r1')::uuid, current_setting('t.wrong'), 0)->'attempts') = 1,
+  'a replayed attempt (lost reply, retried) is not recorded twice');
+select t.check(
+  (public.skip_round(current_setting('t.r1')::uuid, 1)->>'stageIndex')::int = 2,
   'a skip advances one stage');
-select set_config('t.win', public.guess_round(current_setting('t.r1')::uuid, current_setting('t.answer'))::text, false);
+select set_config('t.win', public.guess_round(current_setting('t.r1')::uuid, current_setting('t.answer'), 2)::text, false);
 select t.check(current_setting('t.win')::jsonb->>'status' = 'won', 'the right guess wins');
 select t.check((current_setting('t.win')::jsonb->>'score')::int = 2, 'won on stage 2 scores 2');
 select t.check(current_setting('t.win')::jsonb->>'answerId' = current_setting('t.answer'), 'the answer shows once over');
 select t.check(jsonb_array_length(current_setting('t.win')::jsonb->'attempts') = 3, 'three attempts recorded');
+select t.check(current_setting('t.win')::jsonb->'answer'->>'title' is not null
+  and jsonb_array_length(current_setting('t.win')::jsonb->'answer'->'artistSlugs') >= 1,
+  'the finished round carries the answer title and artists');
 select t.check(
-  public.guess_round(current_setting('t.r1')::uuid, current_setting('t.wrong'))->>'status' = 'won',
+  public.guess_round(current_setting('t.r1')::uuid, current_setting('t.wrong'), 3)->>'status' = 'won',
   'a finished round cannot be changed');
 select t.check(public.start_round()->>'id' <> current_setting('t.r1'), 'a finished round makes room for a new one');
 reset role;
@@ -109,8 +116,8 @@ select set_config('t.r2', public.start_round()->>'id', false);
 reset role;
 select set_config('t.answer2', (select track_id from public.rounds where id = current_setting('t.r2')::uuid), false);
 set role authenticated;
-select public.skip_round(current_setting('t.r2')::uuid) from generate_series(1, 3);
-select set_config('t.loss', public.skip_round(current_setting('t.r2')::uuid)::text, false);
+select public.skip_round(current_setting('t.r2')::uuid, n) from generate_series(0, 2) n;
+select set_config('t.loss', public.skip_round(current_setting('t.r2')::uuid, 3)::text, false);
 select t.check(current_setting('t.loss')::jsonb->>'status' = 'lost', 'four misses lose');
 select t.check((current_setting('t.loss')::jsonb->>'score')::int = 0, 'a loss scores 0');
 select t.check((current_setting('t.loss')::jsonb->>'stageIndex')::int = 3, 'a loss stays on the last stage');
@@ -150,7 +157,7 @@ begin
   for i in 1..3 loop
     r := public.start_round();
     for j in 1..4 loop
-      r := public.skip_round((r->>'id')::uuid);
+      r := public.skip_round((r->>'id')::uuid, j - 1);
     end loop;
   end loop;
 end $$;
@@ -184,3 +191,7 @@ select t.act_as('00000000-0000-0000-0000-000000000002');
 select public.set_alias('dos');
 select t.check((select count(*) from public.get_leaderboard() where alias = 'dos') = 0, 'under 5 games, off the board');
 reset role;
+
+-- Old signatures are gone, so no client can reach the non-idempotent versions.
+select t.check(to_regprocedure('public.guess_round(uuid,text)') is null
+  and to_regprocedure('public.skip_round(uuid)') is null, 'old attempt signatures dropped');

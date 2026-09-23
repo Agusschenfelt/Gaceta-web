@@ -136,7 +136,9 @@ begin
 end;
 $$;
 
--- What the client may see of a round. The answer only once it is over.
+-- What the client may see of a round. The answer only once it is over, with
+-- its title and artists: the reveal must not depend on the browser having
+-- loaded that track's catalog file.
 create or replace function private.round_view(r public.rounds)
 returns jsonb
 language sql
@@ -146,14 +148,18 @@ set search_path = ''
 as $$
   select jsonb_build_object(
     'id', r.id,
-    'audioKey', (select t.audio_key from public.tracks t where t.id = r.track_id),
+    'audioKey', t.audio_key,
     'stages', '[0.5, 1, 3, 8]'::jsonb,
     'stageIndex', r.stage_index,
     'attempts', r.attempts,
     'status', r.status,
     'score', r.score,
-    'answerId', case when r.status <> 'playing' then r.track_id end
-  );
+    'answerId', case when r.status <> 'playing' then r.track_id end,
+    'answer', case when r.status <> 'playing'
+      then jsonb_build_object('id', t.id, 'title', t.title, 'artistSlugs', t.artist_slugs) end
+  )
+  from public.tracks t
+  where t.id = r.track_id;
 $$;
 
 -- The caller's round (open or not), locked, or an error. Never someone else's.
@@ -261,7 +267,12 @@ begin
 end;
 $$;
 
-create or replace function public.guess_round(p_round uuid, p_track text)
+-- `p_attempt` is how many attempts the client had seen when it acted. A retry
+-- of an attempt the server already recorded (the reply was lost) carries the
+-- old count, finds it stale and just gets the current round back: an attempt
+-- is never recorded twice.
+drop function if exists public.guess_round(uuid, text);
+create or replace function public.guess_round(p_round uuid, p_track text, p_attempt int)
 returns jsonb
 language plpgsql
 security definer
@@ -271,7 +282,7 @@ declare
   r public.rounds := private.own_round(p_round);
   correct boolean;
 begin
-  if r.status <> 'playing' then
+  if r.status <> 'playing' or p_attempt is distinct from jsonb_array_length(r.attempts) then
     return private.round_view(r);
   end if;
   if not exists (select 1 from public.tracks t where t.id = p_track) then
@@ -286,7 +297,8 @@ begin
 end;
 $$;
 
-create or replace function public.skip_round(p_round uuid)
+drop function if exists public.skip_round(uuid);
+create or replace function public.skip_round(p_round uuid, p_attempt int)
 returns jsonb
 language plpgsql
 security definer
@@ -295,7 +307,7 @@ as $$
 declare
   r public.rounds := private.own_round(p_round);
 begin
-  if r.status <> 'playing' then
+  if r.status <> 'playing' or p_attempt is distinct from jsonb_array_length(r.attempts) then
     return private.round_view(r);
   end if;
   return private.record_attempt(r, jsonb_build_object('type', 'skip'), false);
@@ -393,14 +405,14 @@ revoke all on schema private from public, anon, authenticated;
 revoke execute on all functions in schema private from public, anon, authenticated;
 
 revoke execute on function
-  public.start_round(text[]), public.guess_round(uuid, text), public.skip_round(uuid),
+  public.start_round(text[]), public.guess_round(uuid, text, int), public.skip_round(uuid, int),
   public.get_leaderboard(int), public.my_stats(), public.set_alias(text),
   public.subscribe_email(text)
   from public, anon, authenticated;
 
 -- Anonymous sign-ins get the `authenticated` role: that is every player.
 grant execute on function
-  public.start_round(text[]), public.guess_round(uuid, text), public.skip_round(uuid),
+  public.start_round(text[]), public.guess_round(uuid, text, int), public.skip_round(uuid, int),
   public.my_stats(), public.set_alias(text), public.subscribe_email(text)
   to authenticated;
 grant execute on function public.get_leaderboard(int) to anon, authenticated;
