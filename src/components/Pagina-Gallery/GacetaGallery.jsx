@@ -1,5 +1,4 @@
-import React, { useState, useCallback, useLayoutEffect, useMemo, useRef, Suspense, useEffect, lazy } from "react";
-import gsap from "gsap";
+import React, { useState, useCallback, useMemo, useRef, Suspense, useEffect, lazy } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const FocusLightbox = lazy(() => import("./FocusLightbox"));

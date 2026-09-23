@@ -17,8 +17,7 @@ function useIsMobile(breakpoint = 768) {
   const [isMobile, setIsMobile] = useState(() => getMq()?.matches ?? false);
 
   useEffect(() => {
-    const mq = getMq();
-    if (!mq) return;
+    const mq = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
     const onChange = (e) => setIsMobile(e.matches);
     mq.addEventListener('change', onChange);
     return () => mq.removeEventListener('change', onChange);
