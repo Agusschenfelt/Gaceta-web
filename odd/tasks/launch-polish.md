@@ -33,6 +33,8 @@ Out of scope: P2/minor findings (reduced-motion, 404, intro skip, h1, tap target
 - T3 `02f9ee9`: 41 files 75 MB -> 12.5 MB (photos max 2000px, covers 1600px). Dev-server transfer: /artistas/ramma 12.0 -> 3.3 MB, /sobre-nosotros 41 -> 20.8 MB desktop / 33 -> 16 MB mobile, /gallery 6.4 -> 1.6 MB desktop. No horizontal overflow, no page errors.
 - Checks: `npm run build` OK. `npm run lint` fails with 10 errors that already exist on main in untouched files (FooterGaceta, MusicPlayer, PageTransitionProvider, gallery, SobreNosotros...); none are in files this feature changed.
 
+- Review: RDD assess `medium` (executable change in index.html). The user granted review, lineage `review-10c1dba6e4a5f6c2`, reliability lens: **approved**, acknowledged, authority burned. Two informational suggestions, not applied: R3-001, no automated test for the `showsUtils` boundaries (the project has no test runner); R3-002, `todayISO` uses the visitor's timezone, not the venue's, which is an edge case and still better than the old UTC behavior.
+
 ## Next step
 
 User decision: push the branch and open a PR. Remaining weight on /sobre-nosotros comes from ~40 images under 300 KB each, not lazy-loaded. That would be a follow-up (srcset/lazy loading), together with the P2 findings.
