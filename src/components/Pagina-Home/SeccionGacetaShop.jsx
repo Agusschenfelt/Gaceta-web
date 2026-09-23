@@ -6,27 +6,27 @@ import { useGSAP } from "@gsap/react";
 const products = [
   {
     id: "1",
-    title: "Black Gaceta Tee",
-    price: 20000,
-    image: "/assets/gaceta-negra.webp",
-    href: "https://gaceta.shop/productos/black-gaceta-tee/",
-    soldOut: true,
+    title: "Con el Uniforme Puesto Cap",
+    price: 19990,
+    image: "/assets/gorra-valuto.webp",
+    href: "https://gaceta.shop/productos/gorra-valuto-1rdh3/",
+    soldOut: false,
   },
   {
     id: "2",
     title: "White RV Oversize Tee",
-    price: 29999,
+    price: 29990,
     image: "/assets/rv-tee.webp",
-    href: "https://gaceta.shop/productos/white-rv-oversize-tee/",
-    soldOut: true,
+    href: "https://gaceta.shop/productos/white-rv-oversize-tee-9sebj/",
+    soldOut: false,
   },
   {
     id: "3",
     title: "Black Backstage Cover Tee",
-    price: 29999,
+    price: 29990,
     image: "/assets/bc-negra.webp",
-    href: "https://gaceta.shop/productos/white-backstagecover-tee/",
-    soldOut: true,
+    href: "https://gaceta.shop/productos/remera-backstagecover-negra-cs21d/",
+    soldOut: false,
   },
 ];
 
