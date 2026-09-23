@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { ringTicks, unlockedTicks, RING_TICKS } from "../../audio/waveform.js";
+import { unlockedTicks, RING_TICKS } from "../../audio/waveform.js";
+import { WaveRing } from "./WaveRing.jsx";
 
 /**
  * The GACETA isotype is a folded G that already reads as a play triangle, so
@@ -18,17 +18,6 @@ const ISOTYPE_MASK = {
   WebkitMaskPosition: "center",
 };
 
-/* Ring geometry, in viewBox units. Ticks grow outwards from TICK_BASE. */
-const SIZE = 100;
-const CENTER = SIZE / 2;
-const TICK_BASE = 37;
-const TICK_REACH = 12;
-const TICK_WIDTH = 1.5;
-const DISC_R = 33;
-
-/** Delay between two neighbouring ticks of an unlock sweep. */
-const SWEEP_STEP_MS = 14;
-
 /**
  * Read once: a viewer who asked for less motion should not get the isotype
  * pumping every frame. Toggling the OS setting mid-session is rare enough that
@@ -37,20 +26,6 @@ const SWEEP_STEP_MS = 14;
 const REDUCED_MOTION =
   typeof window !== "undefined" &&
   window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-
-function tickLine(i, length) {
-  // Clockwise from twelve o'clock, like the song reads.
-  const angle = ((i + 0.5) / RING_TICKS) * 2 * Math.PI - Math.PI / 2;
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
-  const outer = TICK_BASE + length * TICK_REACH;
-  return {
-    x1: CENTER + TICK_BASE * cos,
-    y1: CENTER + TICK_BASE * sin,
-    x2: CENTER + outer * cos,
-    y2: CENTER + outer * sin,
-  };
-}
 
 /**
  * The ring is the song. Its ticks are the first `span` seconds of the track's
@@ -76,17 +51,8 @@ export function PlayCircle({
   span,
   onPlay,
 }) {
-  const ticks = useMemo(() => ringTicks(peaks, span), [peaks, span]);
   const unlocked = unlockedTicks(seconds, span);
   const played = isPlaying ? (progress * seconds * RING_TICKS) / span : 0;
-
-  // The ticks that just became playable, for the sweep. Derived during render
-  // (not in an effect) so the sweep starts on the same frame as the unlock. A
-  // ring that shrinks means a new round: it sweeps on from the top again.
-  const [sweep, setSweep] = useState({ from: 0, to: unlocked });
-  if (sweep.to !== unlocked) {
-    setSweep({ from: unlocked > sweep.to ? sweep.to : 0, to: unlocked });
-  }
 
   const beat = isPlaying && !REDUCED_MOTION ? 1 + level * 0.14 : 1;
   const label = isPlaying
@@ -104,38 +70,18 @@ export function PlayCircle({
       aria-label={label}
       className="group relative aspect-square h-full max-h-[26rem] w-auto max-w-full rounded-full transition-transform duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40"
     >
-      <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="absolute inset-0 h-full w-full" aria-hidden="true">
-        <circle
-          cx={CENTER}
-          cy={CENTER}
-          r={DISC_R}
-          strokeWidth={0.4}
-          className="fill-bg stroke-border transition-colors duration-200 group-hover:fill-surface"
+      {/* The ring leans in on hover: the whole button is the target. */}
+      <span className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-[1.03] group-disabled:scale-100">
+        <WaveRing
+          peaks={peaks}
+          span={span}
+          unlocked={unlocked}
+          lit={played}
+          shimmer={!isPlaying}
+          loading={loading}
         />
-        {/* The ring itself reports loading, so it costs no layout height. */}
-        <g className={loading ? "animate-[ring-pulse_1.4s_ease-in-out_infinite]" : undefined}>
-          {ticks.map((length, i) => {
-            const open = i < unlocked;
-            const sweeping = open && i >= sweep.from && i < sweep.to;
-            return (
-              <line
-                key={i}
-                {...tickLine(i, length)}
-                strokeWidth={TICK_WIDTH}
-                className={sweeping ? "tick-unlock" : undefined}
-                style={{
-                  stroke: !open
-                    ? "var(--color-border)"
-                    : i < played
-                      ? "var(--color-accent)"
-                      : "var(--color-fg)",
-                  animationDelay: sweeping ? `${(i - sweep.from) * SWEEP_STEP_MS}ms` : undefined,
-                }}
-              />
-            );
-          })}
-        </g>
-      </svg>
+      </span>
+      <span className="absolute inset-[17%] rounded-full border border-border bg-bg transition-colors duration-200 group-hover:bg-surface" />
       <span className="absolute inset-0 flex items-center justify-center">
         <span
           aria-hidden="true"

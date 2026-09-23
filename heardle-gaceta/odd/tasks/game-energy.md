@@ -39,6 +39,20 @@ ranking untouched. No engine rule changes.
       filled in with each attempt.
 - [x] E6 — Verify: tests, build, detector, one-screen check at 360×640 and desktop.
 
+### Round 2 — "le falta dinamismo, muy duras" (both screens)
+
+The user, after round 1: the result screen is too plain, and both screens feel stiff.
+
+- [x] E7 — Extract the ring into `WaveRing`, shared by game and reveal.
+- [x] E8 — Game: headline words rise in, the seconds roll on each new stage, a slow shimmer runs
+      through the locked ticks while idle, the ring leans in on hover, the ladder's current row
+      gets an accent tick.
+- [x] E9 — Reveal as a record: the song plays on arrival, the cover spins inside the ring (16 s),
+      the part you needed stays acid gold; tap to stop/restart. Big verdict + acid gold score,
+      staggered entrance. The on-screen emoji pattern is replaced by the app's own stage bars
+      (the shared text keeps the emoji).
+- [x] E10 — Verify both screens at 1440×900 and 360×640.
+
 ## Checks
 
 TDD: not configured for this project (source: no project/session setting); ordinary checks.
@@ -60,9 +74,14 @@ Started and closed 2026-09-22.
   (`executable_change` on CLAUDE.md), 524 changed lines → deferred to slice; the native review
   runs when the user signs off on the look, so a design iteration does not burn a review.
 
+- Round 2: CDP-driven headless Chrome (`--autoplay-policy=no-user-gesture-required`) skipped
+  through a round: result screen caught mid-spin with the accent playhead running, so autoplay and
+  the record work; game screen after two skips shows the shimmer and the ladder marker. Overflow
+  check `[]` at both sizes, both screens. 99/99 tests, build, eslint, detector `[]`.
+
 ## Not verified
 
-- Audio-driven states (accent playhead, beating isotype) and the miss shake: headless Chrome does
+- Beating isotype and the miss shake (playhead and record spin were seen in round 2): headless Chrome does
   not load audio and the Claude in Chrome extension was not connected. Needs a human round.
 
 ## Next step

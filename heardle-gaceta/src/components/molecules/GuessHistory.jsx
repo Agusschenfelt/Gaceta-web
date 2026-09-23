@@ -49,7 +49,11 @@ function Ladder({ attempts, tracksById, stages, stageIndex }) {
                 <span className="sr-only">{view.srText}</span>
               </span>
             ) : isCurrent ? (
-              <span className="label !text-fg">Ahora</span>
+              <span className="rise flex items-center gap-2">
+                {/* One tick of the ring, in the colour of the playhead. */}
+                <span aria-hidden="true" className="h-3 w-[3px] bg-accent" />
+                <span className="label !text-fg">Ahora</span>
+              </span>
             ) : null}
           </li>
         );

@@ -12,6 +12,7 @@ import {
   STATUS,
 } from "../game/engine.js";
 import { useAudioPlayer } from "../audio/useAudioPlayer.js";
+import { CLIP_FILE_SECONDS } from "../audio/waveform.js";
 import { getPlayerId, getAlias, setAlias as persistAlias } from "../player/playerIdentity.js";
 import { getLeaderboardApi } from "../leaderboard/leaderboardApi.js";
 import { withRetry } from "../leaderboard/retry.js";
@@ -144,10 +145,18 @@ export function GameContainer() {
   // Submit the round as soon as it ends, then refresh the ranking.
   useEffect(() => {
     if (!game || !isOver(game) || !api) return;
-    audio.stop();
     submitRound();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [game?.status, api]);
+
+  // The reveal plays the song. The guess that ended the round was a click, so
+  // the browser already counts the page as activated; if it still refuses, the
+  // record just waits for a tap.
+  useEffect(() => {
+    if (!game || !isOver(game)) return;
+    audio.play(CLIP_FILE_SECONDS);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [game?.status]);
 
   function onPlay() {
     if (!game) return;
@@ -234,7 +243,12 @@ export function GameContainer() {
       <ResultReveal
         game={game}
         onPlayAgain={() => startRound()}
-        onShowRanking={() => setShowRanking(true)}
+        onShowRanking={() => {
+          audio.stop();
+          setShowRanking(true);
+        }}
+        peaks={peaks[game.track.id] ?? null}
+        audio={audio}
         submitState={submitState}
         onRetrySubmit={submitRound}
       />

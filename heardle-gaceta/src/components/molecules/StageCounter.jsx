@@ -11,7 +11,10 @@ export function StageCounter({ seconds, stageIndex, total }) {
   return (
     <div className="flex flex-col gap-0.5" aria-live="polite">
       <span className="headline !leading-none text-[3.5rem] tabular-nums">
-        {formatSeconds(seconds)}
+        {/* Keyed by the value so every new stage rolls in instead of swapping. */}
+        <span key={seconds} className="roll-in">
+          {formatSeconds(seconds)}
+        </span>
         <span className="ml-1 align-baseline text-xl tracking-normal text-muted">s</span>
       </span>
       <span className="label">

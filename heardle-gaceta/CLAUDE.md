@@ -59,7 +59,9 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Reproducción: cuándo arranca, cuándo corta, anillo de progreso | `src/audio/useAudioPlayer.js` |
 | Flujo general, qué se muestra cuando, orden de paneles, localStorage de filtros | `src/containers/GameContainer.jsx` |
 | Pantalla de juego (círculo, contador, buscador, skip, historial) | `src/components/organisms/GameBoard.jsx` y las moléculas que usa |
-| Círculo de play, anillo de onda, barrido al desbloquear, latido del isotipo | `src/components/molecules/PlayCircle.jsx` (geometría arriba: `TICK_BASE`, `TICK_REACH`, `SWEEP_STEP_MS`) |
+| Círculo de play, latido del isotipo | `src/components/molecules/PlayCircle.jsx` |
+| Anillo de onda (compartido por juego y reveal): geometría, barrido al desbloquear, brillo ocioso | `src/components/molecules/WaveRing.jsx` (`TICK_BASE`, `TICK_REACH`, `SWEEP_STEP_MS`, `SHIMMER_MS`) |
+| Animaciones (entrada de palabras, contador que rueda, disco, stagger) | `src/index.css` (`word-rise`, `roll-in`, `rise`, `disc-in`, `disc-spin`, `--ease-out-expo`) |
 | Cómo se calculan los ticks del anillo y cuántos están desbloqueados | `src/audio/waveform.js` (`ringTicks`, `unlockedTicks`, `RING_TICKS`, `CLIP_FILE_SECONDS`) + `waveform.test.js` |
 | Sacudón al errar, grano animado del fondo | `GameBoard.jsx` (`MISS_SHAKE`) · `src/index.css` (`grain`, `body::before`) |
 | Escalera de intentos en la columna derecha (layout ancho) | `src/components/molecules/GuessHistory.jsx` (`variant="ladder"`) |
@@ -68,7 +70,7 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Barra de segmentos arriba | `src/components/molecules/StageProgress.jsx` + `atoms/Segment.jsx` |
 | Historial de intentos (cruz roja, "Salteado") | `src/components/molecules/GuessHistory.jsx` |
 | Chips de artistas, línea de ajustes colapsable | `src/components/molecules/GameSettings.jsx` |
-| Reveal final (carátula, título, Spotify, share, jugar otra vez) | `src/components/organisms/ResultReveal.jsx` |
+| Reveal final (disco girando, anillo, puntaje, share, jugar otra vez) | `src/components/organisms/ResultReveal.jsx`; el autoplay del tema está en `GameContainer.jsx` |
 | Ranking, formulario de alias, cuántas filas entran (`TOP_ROWS`) | `src/components/organisms/Leaderboard.jsx` |
 | Captura de mail | `src/components/organisms/EmailCapture.jsx` |
 | Validación de alias, id anónimo | `src/player/playerIdentity.js` (`ALIAS_MIN`, `ALIAS_MAX`) |
@@ -255,6 +257,13 @@ Dos detalles que no conviene deshacer:
   quedaría con el color final y taparía el acid gold del playhead en esos ticks.
 - Con `prefers-reduced-motion`: el isotipo no late, no hay sacudón y el grano queda quieto.
 
+**El reveal es un disco.** Al terminar la ronda suena el tema (16 s, el clip entero) y la carátula
+gira como un vinilo dentro del mismo anillo, ahora con los 16 s; lo que necesitaste para acertar
+queda en acid gold. Tocar el disco lo pausa o lo vuelve a arrancar. El giro usa
+`animation-play-state: paused` para que el disco se quede en su ángulo al parar en vez de volver a
+cero. Ir al ranking corta el audio. El autoplay depende de que el navegador cuente la página como
+activada (el guess fue un click); si igual lo rechaza, el disco queda quieto esperando un toque.
+
 ## Layout: una sola pantalla (regla dura)
 
 **Nada scrollea, nunca, en ninguna vista.** Es un pedido explícito del usuario, no una preferencia.
@@ -397,7 +406,7 @@ Sobre audio específicamente: **Chrome no carga ni decodifica audio en pestañas
 - **React StrictMode en dev** duplica efectos. El efecto que envía el score no tiene clave de idempotencia; en dev puede registrar la partida dos veces en el adapter local. En producción no pasa.
 - `GuessSearch` lleva `key={game.track.id}` para vaciar el texto al cambiar de ronda. Si lo sacás, el texto queda pegado entre rondas.
 - Los mp3 se llaman por ISRC a propósito: no revelan el título en la pestaña Network. No renombrarlos.
-- La carátula solo se muestra en el reveal. No mostrarla antes.
+- La carátula solo se muestra en el reveal. No mostrarla antes. En el reveal va recortada en círculo (es un disco): es a propósito.
 
 ## Backlog (avisos del review, no bloqueantes)
 

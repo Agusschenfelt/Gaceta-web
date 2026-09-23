@@ -98,6 +98,112 @@ body {
   animation: tick-unlock 0.7s ease-out backwards;
 }
 
+/* Idle shimmer through the locked ticks: a light runs round the part of the
+   song you have not unlocked yet. Each tick is delayed by its place in the ring. */
+@keyframes tick-shimmer {
+  0%,
+  14%,
+  100% {
+    stroke: var(--color-border);
+  }
+  6% {
+    stroke: var(--color-fg-muted);
+  }
+}
+
+.tick-shimmer {
+  animation: tick-shimmer 2.6s linear infinite;
+}
+
+/* The house ease: fast out, long settle. */
+:root {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Headline words rise out of their own line box, one after the other. */
+@keyframes word-rise {
+  from {
+    transform: translateY(105%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  /* Room for Instrument Serif's italic descenders inside the mask. */
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.word-rise {
+  display: inline-block;
+  animation: word-rise 0.9s var(--ease-out-expo) both;
+}
+
+/* A new stage's number rolls up into place, like a counter clicking over. */
+@keyframes roll-in {
+  from {
+    transform: translateY(70%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.roll-in {
+  display: inline-block;
+  animation: roll-in 0.6s var(--ease-out-expo) both;
+}
+
+/* Staggered entrance for the rows of a view. Delay set inline. */
+@keyframes rise {
+  from {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.rise {
+  animation: rise 0.7s var(--ease-out-expo) both;
+}
+
+/* The reveal: the record opens out of the ring's centre and settles. */
+@keyframes disc-in {
+  from {
+    clip-path: circle(0% at 50% 50%);
+    transform: rotate(-40deg) scale(0.9);
+  }
+  to {
+    clip-path: circle(50% at 50% 50%);
+    transform: rotate(0) scale(1);
+  }
+}
+
+.disc-in {
+  animation: disc-in 1.1s var(--ease-out-expo) 0.15s both;
+}
+
+/* The record turns while the song plays and holds its angle when it stops. */
+@keyframes disc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.disc-spin {
+  animation: disc-spin 6s linear infinite;
+}
+
 /* Film grain: the page noise jumps between offsets in steps, like a projector.
    Lives on a fixed layer so it never touches layout. */
 @keyframes grain {

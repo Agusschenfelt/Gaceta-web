@@ -71,8 +71,21 @@ export function GameBoard({
           so the screen still gets its display type without paying for it the
           whole round. The circle takes the space back. */}
       {!hasPlayed && game.attempts.length === 0 && (
-        <p className="headline fade-up shrink-0 pt-1 text-4xl lg:text-5xl !leading-[1.2]">
-          Adiviná el <em>tema</em>
+        <p className="headline shrink-0 pt-1 text-4xl lg:text-5xl !leading-[1.2]">
+          {/* Words rise out of their own line, one after the other. */}
+          <span className="word-mask">
+            <span className="word-rise">Adiviná</span>
+          </span>{" "}
+          <span className="word-mask">
+            <span className="word-rise" style={{ animationDelay: "70ms" }}>
+              el
+            </span>
+          </span>{" "}
+          <span className="word-mask">
+            <em className="word-rise" style={{ animationDelay: "140ms" }}>
+              tema
+            </em>
+          </span>
         </p>
       )}
 
