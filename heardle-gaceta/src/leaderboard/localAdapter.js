@@ -35,7 +35,12 @@ export function createLocalAdapter() {
       // Same rule as the database: the score comes from the outcome, never
       // from the caller.
       const { score: _ignored, ...outcome } = game;
-      games.push({ ...outcome, score: scoreFor(game.won, game.stageWon), createdAt: Date.now() });
+      games.push({
+        ...outcome,
+        ranked: game.ranked !== false,
+        score: scoreFor(game.won, game.stageWon),
+        createdAt: Date.now(),
+      });
       writeJson(GAMES_KEY, games);
     },
 
@@ -49,7 +54,8 @@ export function createLocalAdapter() {
       const games = readJson(GAMES_KEY, []);
       const aliases = readJson(ALIASES_KEY, {});
       const byPlayer = new Map();
-      for (const g of games) {
+      // Only ranked rounds feed the board (see isRankedSelection).
+      for (const g of games.filter((x) => x.ranked !== false)) {
         const row = byPlayer.get(g.playerId) ?? {
           alias: aliases[g.playerId],
           gamesPlayed: 0,
@@ -64,7 +70,9 @@ export function createLocalAdapter() {
 
     async getPlayerStats(playerId) {
       const games = readJson(GAMES_KEY, []);
-      return playerStats(games.filter((g) => g.playerId === playerId).map((g) => g.score));
+      return playerStats(
+        games.filter((g) => g.playerId === playerId && g.ranked !== false).map((g) => g.score)
+      );
     },
 
     async subscribeEmail(email, playerId) {

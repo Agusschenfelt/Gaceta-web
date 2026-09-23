@@ -218,18 +218,19 @@ async function processFile(name) {
   // The original is the encoding source, so it has to reach RAW_DIR first.
   if (!hasRaw) await fs.rename(target, raw);
 
-  // The cut is measured on the original: the served file may already be a
-  // trimmed copy, and trimming a trim would walk into the song.
-  const startAt = trimStart(await onsetOf(raw));
-
+  // From here on the served file may be gone (just moved to RAW_DIR), so any
+  // failure, including decoding the original to measure it, puts the original
+  // back rather than leave the track missing from audio/.
   try {
+    // The cut is measured on the original: the served file may already be a
+    // trimmed copy, and trimming a trim would walk into the song.
+    const startAt = trimStart(await onsetOf(raw));
     await encode(raw, target, startAt);
+    return { name, before, after: await sizeOf(target), startAt };
   } catch (err) {
     await fs.copyFile(raw, target);
     throw err;
   }
-
-  return { name, before, after: await sizeOf(target), startAt };
 }
 
 async function pool(items, worker) {

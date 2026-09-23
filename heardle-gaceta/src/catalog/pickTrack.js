@@ -1,5 +1,7 @@
 const RECENT_KEY = "heardle:recent";
-const RECENT_LIMIT = 10;
+// Same as start_round in supabase/schema.sql: the local mode plays by the
+// server's rules.
+const RECENT_LIMIT = 20;
 
 function readRecent() {
   try {

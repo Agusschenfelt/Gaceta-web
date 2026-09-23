@@ -1,6 +1,7 @@
 import { createGame, getStages, guess, skip, isOver, score, stageWon, STATUS } from "../game/engine.js";
 import { pickTrack } from "../catalog/pickTrack.js";
 import { RoundError } from "./roundErrors.js";
+import { isRankedSelection } from "../leaderboard/ranking.js";
 
 const OPEN_KEY = "heardle:local:round";
 
@@ -26,7 +27,7 @@ function writeOpen(value) {
 }
 
 /** The same shape `private.round_view` returns in supabase/schema.sql. */
-function view(id, game) {
+function view(id, game, ranked) {
   const over = isOver(game);
   return {
     id,
@@ -36,6 +37,7 @@ function view(id, game) {
     attempts: game.attempts,
     status: game.status,
     score: score(game),
+    ranked,
     answerId: over ? game.track.id : null,
     answer: over
       ? { id: game.track.id, title: game.track.title, artistSlugs: game.track.artistSlugs }
@@ -57,13 +59,15 @@ export function createLocalRounds({ tracks, recordRound }) {
   const playable = tracks.filter((t) => t.audioKey);
   if (playable.length === 0) throw new RoundError("local_unavailable");
   const byId = new Map(tracks.map((t) => [t.id, t]));
+  const knownSlugs = [...new Set(tracks.flatMap((t) => t.artistSlugs))];
 
-  let open = null; // { id, game }
+  let open = null; // { id, game, ranked }
   const saved = readOpen();
   const savedTrack = saved && byId.get(saved.trackId);
   if (savedTrack?.audioKey) {
     open = {
       id: saved.id,
+      ranked: saved.ranked !== false,
       game: {
         track: savedTrack,
         stages: getStages(),
@@ -79,6 +83,7 @@ export function createLocalRounds({ tracks, recordRound }) {
       open && !isOver(open.game)
         ? {
             id: open.id,
+            ranked: open.ranked,
             trackId: open.game.track.id,
             stageIndex: open.game.stageIndex,
             attempts: open.game.attempts,
@@ -93,7 +98,9 @@ export function createLocalRounds({ tracks, recordRound }) {
     if (!Number.isInteger(attempt) || attempt < 0) throw new RoundError("invalid_attempt");
     // Same rule as the server: an attempt count that is not the current one is
     // a replay, and a replay changes nothing.
-    if (isOver(open.game) || attempt !== open.game.attempts.length) return view(open.id, open.game);
+    if (isOver(open.game) || attempt !== open.game.attempts.length) {
+      return view(open.id, open.game, open.ranked);
+    }
     open = { ...open, game: transition(open.game) };
     persist();
     if (isOver(open.game)) {
@@ -102,21 +109,26 @@ export function createLocalRounds({ tracks, recordRound }) {
         won: open.game.status === STATUS.WON,
         stageWon: stageWon(open.game),
         attempts: open.game.attempts.length,
+        ranked: open.ranked,
       });
     }
-    return view(open.id, open.game);
+    return view(open.id, open.game, open.ranked);
   }
 
   return {
     mode: "local",
 
     async start(artistSlugs = []) {
-      if (open && !isOver(open.game)) return view(open.id, open.game);
+      if (open && !isOver(open.game)) return view(open.id, open.game, open.ranked);
       const track = pickTrack(playable, artistSlugs);
       if (!track) throw new RoundError("empty_pool");
-      open = { id: newId(), game: createGame({ track }) };
+      open = {
+        id: newId(),
+        game: createGame({ track }),
+        ranked: isRankedSelection(artistSlugs, knownSlugs),
+      };
       persist();
-      return view(open.id, open.game);
+      return view(open.id, open.game, open.ranked);
     },
 
     guess(roundId, trackId, attempt) {

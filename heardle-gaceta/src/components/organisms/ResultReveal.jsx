@@ -94,6 +94,7 @@ export function ResultReveal({
             {won
               ? `Con ${formatSeconds(heard)} s · intento ${game.stageIndex + 1} de ${game.stages.length}`
               : "Era este tema"}
+            {game.ranked === false && " · no suma al ranking"}
           </span>
         </div>
         {won ? (

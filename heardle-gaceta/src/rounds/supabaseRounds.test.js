@@ -32,6 +32,11 @@ describe("toRoundError", () => {
     expect(e.message).toMatch(/conectar/);
   });
 
+  it("reads a deleted anonymous user as a lost session", () => {
+    const e = toRoundError({ message: 'insert or update on table "players" violates foreign key constraint "players_id_fkey"' });
+    expect(e.code).toBe("not_authenticated");
+  });
+
   it("passes a RoundError through untouched", () => {
     const e = new RoundError("alias_taken");
     expect(toRoundError(e)).toBe(e);

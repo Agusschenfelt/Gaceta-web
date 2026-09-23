@@ -43,11 +43,13 @@ export function getAlias() {
 }
 
 /**
- * Letters (any language), digits, spaces, dots, underscores and dashes. The
- * same shape `set_alias` enforces in supabase/schema.sql; the database also
- * refuses blocked words and taken names, which only it can know.
+ * ASCII letters and digits, the Latin-1 and Latin Extended-A letters (á, é,
+ * ñ, ü…), spaces, dots, underscores and dashes. Spelled out rather than
+ * \p{L} so it is exactly the set `set_alias` enforces in supabase/schema.sql,
+ * whatever the database locale. The database also refuses blocked words and
+ * taken names, which only it can know.
  */
-const ALIAS_SHAPE = new RegExp(`^[\\p{L}\\p{N}._ -]{${ALIAS_MIN},${ALIAS_MAX}}$`, "u");
+export const ALIAS_SHAPE = new RegExp(`^[A-Za-z0-9À-ÖØ-öø-ÿĀ-ž._ -]{${ALIAS_MIN},${ALIAS_MAX}}$`, "u");
 
 export function normalizeAlias(alias) {
   return (alias ?? "").trim().replace(/\s+/g, " ");

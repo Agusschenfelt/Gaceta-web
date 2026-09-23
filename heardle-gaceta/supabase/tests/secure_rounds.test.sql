@@ -70,6 +70,7 @@ select t.check(public.start_round('{c}')->>'id' = current_setting('t.r1'),
 select t.check((public.start_round()->>'answerId') is null, 'the answer is hidden while playing');
 select t.check((public.start_round()->'answer') = 'null'::jsonb, 'no answer details while playing');
 select t.check((public.start_round()->>'audioKey') like 'k%', 'the round carries its audio key');
+select t.check((public.start_round()->>'ranked')::boolean = false, 'a one-artist round is not ranked');
 reset role;
 select t.check((select track_id from public.rounds where id = current_setting('t.r1')::uuid) in ('T1','T2','T3'),
   'the artist filter picked from artist a');
@@ -110,6 +111,7 @@ select t.check(
   public.guess_round(current_setting('t.r1')::uuid, current_setting('t.wrong'), 3)->>'status' = 'won',
   'a finished round cannot be changed');
 select t.check(public.start_round()->>'id' <> current_setting('t.r1'), 'a finished round makes room for a new one');
+select t.check((public.start_round()->>'ranked')::boolean, 'an all-artists round is ranked');
 reset role;
 
 -- A loss: four misses.
@@ -150,20 +152,21 @@ reset role;
 
 -- ------------------------------------------------ board, alias, mail
 
--- Player 1 has 2 finished rounds; play 3 more to reach the minimum of 5.
+-- Player 1 has 1 unranked (artist a only) and 1 ranked finished round; 4 more
+-- ranked rounds reach the minimum of 5, and the unranked one never counts.
 set role authenticated;
 select t.act_as('00000000-0000-0000-0000-000000000001');
 do $$
 declare r jsonb;
 begin
-  for i in 1..3 loop
+  for i in 1..4 loop
     r := public.start_round();
     for j in 1..4 loop
       r := public.skip_round((r->>'id')::uuid, j - 1);
     end loop;
   end loop;
 end $$;
-select t.check((public.my_stats()->>'gamesPlayed')::int = 5, 'my_stats counts finished rounds only');
+select t.check((public.my_stats()->>'gamesPlayed')::int = 5, 'my_stats counts finished ranked rounds only');
 select t.check((select count(*) from public.get_leaderboard()) = 0, 'no alias, not on the board');
 
 select t.fails($$select public.set_alias('a')$$, 'invalid_alias');
@@ -171,6 +174,8 @@ select t.fails($$select public.set_alias('<script>')$$, 'invalid_alias');
 select t.fails($$select public.set_alias('el_puto')$$, 'blocked_alias');
 select t.fails($$select public.set_alias('GACETA oficial')$$, 'blocked_alias');
 select t.check(public.set_alias('  computadora  ') = 'computadora', 'a word merely containing a blocked one is fine');
+select t.check(public.set_alias('Tadu Vázquez') = 'Tadu Vázquez', 'accented letters are valid in any locale');
+select t.check(public.set_alias('ñandú_22.b-c') = 'ñandú_22.b-c', 'ñ, digits and punctuation are valid');
 select t.check(public.set_alias('Agus  ok') = 'Agus ok', 'spaces are trimmed and collapsed');
 select t.check((select alias from public.get_leaderboard()) = 'Agus ok', 'with alias and 5 games, on the board');
 select t.check((public.my_stats()->>'alias') = 'Agus ok', 'my_stats returns the alias');
@@ -206,3 +211,13 @@ delete from public.tracks where id = 'GONE';
 select t.check(
   (select private.round_view(r) from public.rounds r where r.track_id = 'GONE') ->> 'id' is not null,
   'the view survives a missing track');
+
+-- Ranked needs "all" or 3+ artists that exist in the catalog.
+set role authenticated;
+select t.act_as('00000000-0000-0000-0000-000000000002');
+select t.check((public.start_round('{a,b,c}')->>'ranked')::boolean, 'three real artists are ranked');
+reset role;
+update public.rounds set status = 'lost' where player_id = '00000000-0000-0000-0000-000000000002' and status = 'playing';
+set role authenticated;
+select t.check(not (public.start_round('{a,b,nobody}')->>'ranked')::boolean, 'an unknown artist does not count towards three');
+reset role;

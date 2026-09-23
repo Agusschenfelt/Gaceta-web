@@ -23,7 +23,8 @@
 -- Mirrors of the client rules, change both together:
 --   stages [0.5, 1, 3, 8] and score = 4 - stage  ↔ STAGES / scoreFor in src/game/engine.js
 --   5 games minimum, ranked by average           ↔ MIN_GAMES / rankPlayers in src/leaderboard/ranking.js
---   alias 2–16 chars                             ↔ ALIAS_MIN / ALIAS_MAX in src/player/playerIdentity.js
+--   alias 2–16 chars, explicit letter set          ↔ ALIAS_SHAPE in src/player/playerIdentity.js
+--   ranked = all artists or at least 3            ↔ isRankedSelection in src/leaderboard/ranking.js
 --
 -- Known limit: someone who plays every song can fingerprint the audio files by
 -- their bytes. Not stoppable in code; accepted.
@@ -37,8 +38,17 @@ create table if not exists public.players (
   alias text,
   created_at timestamptz not null default now(),
   constraint alias_shape check (
-    alias is null or (alias ~ '^[[:alnum:]._ -]{2,16}$' and alias = btrim(alias))
+    alias is null or (alias ~ '^[A-Za-z0-9À-ÖØ-öø-ÿĀ-ž._ -]{2,16}$' and alias = btrim(alias))
   )
+);
+
+-- Alias letters are spelled out (ASCII plus the Latin-1 and Latin Extended-A
+-- letters: á, é, ñ, ü…) instead of [[:alnum:]], whose meaning depends on the
+-- database locale. Same set as ALIAS_SHAPE in src/player/playerIdentity.js.
+-- Re-created so a project made with the older, locale-dependent check updates.
+alter table public.players drop constraint if exists alias_shape;
+alter table public.players add constraint alias_shape check (
+  alias is null or (alias ~ '^[A-Za-z0-9À-ÖØ-öø-ÿĀ-ž._ -]{2,16}$' and alias = btrim(alias))
 );
 
 -- Case-insensitive: "Agus" and "agus" are the same name on a board.
@@ -62,6 +72,11 @@ create table if not exists public.rounds (
   created_at timestamptz not null default now(),
   finished_at timestamptz
 );
+
+-- Whether the round counts for the board: dealt from every artist, or from at
+-- least 3 of them. A narrow pool (one artist with 9 songs) makes guessing far
+-- easier, so its rounds are played and scored but kept out of the average.
+alter table public.rounds add column if not exists ranked boolean not null default true;
 
 -- One open round per player: the rule that makes rerolling impossible.
 create unique index if not exists rounds_one_open_per_player
@@ -156,6 +171,7 @@ as $$
     'attempts', r.attempts,
     'status', r.status,
     'score', r.score,
+    'ranked', r.ranked,
     'answerId', case when r.status <> 'playing' then r.track_id end,
     'answer', case when r.status <> 'playing'
       then jsonb_build_object('id', r.track_id, 'title', t.title, 'artistSlugs', t.artist_slugs) end
@@ -209,7 +225,8 @@ $$;
 
 -- Deals a round, or hands back the one still open. The artist filter only
 -- applies to a new round. Avoids the player's last 20 songs when it can.
--- At most 60 new rounds per player per hour.
+-- At most 60 new rounds per player per hour. The round is ranked when dealt
+-- from every artist (empty filter) or from at least 3 artists that exist.
 create or replace function public.start_round(p_artists text[] default '{}')
 returns jsonb
 language plpgsql
@@ -221,6 +238,7 @@ declare
   r public.rounds;
   picked text;
   artists text[] := coalesce(p_artists, '{}');
+  is_ranked boolean;
 begin
   select * into r from public.rounds where player_id = uid and status = 'playing';
   if found then
@@ -259,8 +277,16 @@ begin
     raise exception 'empty_pool' using errcode = 'P0002';
   end if;
 
+  is_ranked := cardinality(artists) = 0 or (
+    select count(distinct a)
+    from unnest(artists) a
+    where exists (select 1 from public.tracks t where a = any(t.artist_slugs))
+  ) >= 3;
+
   begin
-    insert into public.rounds (player_id, track_id) values (uid, picked) returning * into r;
+    insert into public.rounds (player_id, track_id, ranked)
+    values (uid, picked, is_ranked)
+    returning * into r;
   exception when unique_violation then
     -- A concurrent call opened one first: hand that one back.
     select * into r from public.rounds where player_id = uid and status = 'playing';
@@ -329,7 +355,7 @@ $$;
 
 -- ------------------------------------------------------------ the board
 
--- Players with an alias and at least 5 finished rounds, by average points.
+-- Players with an alias and at least 5 finished ranked rounds, by average points.
 create or replace function public.get_leaderboard(p_limit int default 20)
 returns table (alias text, games_played int, total_score int, avg_score float8)
 language sql
@@ -340,14 +366,14 @@ as $$
   select p.alias, count(*)::int, sum(r.score)::int, avg(r.score)::float8
   from public.rounds r
   join public.players p on p.id = r.player_id
-  where p.alias is not null and r.status <> 'playing'
+  where p.alias is not null and r.status <> 'playing' and r.ranked
   group by p.id, p.alias
   having count(*) >= 5
   order by avg(r.score) desc, count(*) desc, p.alias
   limit least(greatest(coalesce(p_limit, 20), 1), 50);
 $$;
 
--- The caller's own numbers and alias.
+-- The caller's own numbers (ranked rounds, the ones the board counts) and alias.
 create or replace function public.my_stats()
 returns jsonb
 language sql
@@ -362,7 +388,7 @@ as $$
     'avgScore', coalesce(avg(r.score), 0)::float8
   )
   from public.rounds r
-  where r.player_id = auth.uid() and r.status <> 'playing';
+  where r.player_id = auth.uid() and r.status <> 'playing' and r.ranked;
 $$;
 
 create or replace function public.set_alias(p_alias text)
@@ -375,12 +401,12 @@ declare
   uid uuid := private.require_player();
   clean text := regexp_replace(btrim(coalesce(p_alias, '')), '\s+', ' ', 'g');
 begin
-  if clean !~ '^[[:alnum:]._ -]{2,16}$' then
+  if clean !~ '^[A-Za-z0-9À-ÖØ-öø-ÿĀ-ž._ -]{2,16}$' then
     raise exception 'invalid_alias' using errcode = '22023';
   end if;
   if exists (
     select 1
-    from regexp_split_to_table(lower(clean), '[^[:alnum:]]+') token
+    from regexp_split_to_table(lower(clean), '[^a-z0-9à-öø-ÿā-ž]+') token
     join public.blocked_words b on b.word = token
   ) then
     raise exception 'blocked_alias' using errcode = '22023';

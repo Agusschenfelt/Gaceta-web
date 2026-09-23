@@ -7,9 +7,10 @@ import { CLIP_FILE_SECONDS } from "../audio/waveform.js";
 import { getAlias, setAlias as persistAlias } from "../player/playerIdentity.js";
 import { getGameServices } from "../services/gameServices.js";
 import { audioUrl, PEAKS_URL } from "../services/assetUrls.js";
-import { withRetry } from "../leaderboard/retry.js";
+import { withRetry } from "../shared/retry.js";
 import { toRoundError } from "../rounds/roundErrors.js";
 import { answerTrack } from "../rounds/answerTrack.js";
+import { isRankedSelection } from "../leaderboard/ranking.js";
 import { GameBoard } from "../components/organisms/GameBoard.jsx";
 import { ResultReveal } from "../components/organisms/ResultReveal.jsx";
 import { Leaderboard } from "../components/organisms/Leaderboard.jsx";
@@ -194,8 +195,11 @@ export function GameContainer() {
     audio.play(currentClipSeconds(game));
   }
 
+  /** Returns false when a previous action is still in flight, so the search keeps the pick. */
   function onGuess(track) {
+    if (busy) return false;
     act((id, attempt) => services.rounds.guess(id, track.id, attempt));
+    return true;
   }
 
   function onSkip() {
@@ -292,6 +296,7 @@ export function GameContainer() {
       poolSize={poolSize}
       variant={isWide ? "panel" : "bar"}
       pendingNextRound={Boolean(game && dealtFilter && !sameSet(dealtFilter, artistFilter))}
+      ranked={isRankedSelection(artistFilter)}
     />
   );
 

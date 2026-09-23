@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { rankPlayers, playerStats, gamesMissing, MIN_GAMES } from "./ranking.js";
+import { rankPlayers, playerStats, gamesMissing, isRankedSelection, MIN_GAMES } from "./ranking.js";
 
 const p = (alias, gamesPlayed, totalScore) => ({ alias, gamesPlayed, totalScore });
 
@@ -41,5 +41,22 @@ describe("gamesMissing", () => {
     expect(gamesMissing(0)).toBe(MIN_GAMES);
     expect(gamesMissing(MIN_GAMES - 1)).toBe(1);
     expect(gamesMissing(MIN_GAMES + 3)).toBe(0);
+  });
+});
+
+describe("isRankedSelection", () => {
+  it("ranks every artist (empty selection) and three or more", () => {
+    expect(isRankedSelection([])).toBe(true);
+    expect(isRankedSelection(["ramma", "ara", "valuto"])).toBe(true);
+  });
+
+  it("does not rank one or two artists", () => {
+    expect(isRankedSelection(["dazen"])).toBe(false);
+    expect(isRankedSelection(["ramma", "ara"])).toBe(false);
+  });
+
+  it("counts only distinct, known artists", () => {
+    expect(isRankedSelection(["ramma", "ramma", "ara"])).toBe(false);
+    expect(isRankedSelection(["ramma", "ara", "nobody"], ["ramma", "ara", "valuto"])).toBe(false);
   });
 });

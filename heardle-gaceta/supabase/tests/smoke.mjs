@@ -59,7 +59,11 @@ check(view?.answer?.title && view.answer.artistSlugs?.includes("ramma"), "the fi
 // Unique per run: aliases are unique, and an earlier run may not be cleaned up yet.
 const alias = `smoke ${Math.random().toString(36).slice(2, 8)}`;
 { const { data, error } = await a.rpc("set_alias", { p_alias: alias }); check(!error && data === alias, "valid alias saved"); }
-{ const { data } = await a.rpc("my_stats"); check(data?.gamesPlayed === 1 && data.alias === alias, "my_stats reflects the round"); }
+// The round above was dealt from one artist: played and scored, but not ranked.
+check(r1.ranked === false, "a one-artist round is not ranked");
+{ const { data } = await a.rpc("my_stats"); check(data?.gamesPlayed === 0 && data.alias === alias, "my_stats counts only ranked rounds"); }
+{ const { data: r2 } = await a.rpc("start_round", { p_artists: ["ramma", "ara", "valuto"] });
+  check(r2?.ranked === true, "a three-artist round is ranked"); }
 
 console.log(`ids ${s1.user.id} ${(await b.auth.getUser()).data.user.id}`);
 process.exit(failures ? 1 : 0);

@@ -16,8 +16,16 @@ export function GuessSearch({ tracks, disabled, onSelect }) {
     setActive(results.length ? 0 : -1);
   }, [results]);
 
+  /**
+   * `onSelect` returns false when it could not take the guess (another one is
+   * still on its way): the text stays, so the pick is not lost and can be
+   * confirmed again a moment later.
+   */
   function choose(track) {
-    onSelect(track);
+    if (onSelect(track) === false) {
+      inputRef.current?.focus();
+      return;
+    }
     setQuery("");
     setOpen(false);
     inputRef.current?.focus();

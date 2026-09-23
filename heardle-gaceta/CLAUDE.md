@@ -101,7 +101,9 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Qué vista se muestra (juego / resultado / ranking) | `src/containers/GameContainer.jsx` (estado `showRanking`) |
 | Lista de artistas y sus IDs de Spotify | `data/artists.json` |
 | Cómo se arma el catálogo | `scripts/build-catalog.mjs` |
-| Reintentos al guardar la partida (cuántos, backoff) | `src/leaderboard/retry.js` |
+| Reintentos ante cortes de conexión (cuántos, backoff, qué se reintenta) | `src/shared/retry.js` (`withRetry`, `shouldRetry`) |
+| Qué rondas suman al ranking (todos o 3+ artistas) | `src/leaderboard/ranking.js` (`MIN_ARTISTS_RANKED`, `isRankedSelection`) + `start_round` en `supabase/schema.sql` |
+| Sesión anónima vencida o usuario borrado | `src/services/supabaseServices.js` + `src/services/session.js` |
 | Stub de localStorage para los tests | `src/test-utils/localStorage.js` |
 
 ## Flujo de datos (leer una vez)
@@ -139,6 +141,13 @@ browser manda solo el resultado (`won`, `stageWon`, `attempts`). En Supabase `ga
 una **columna generada** y hay checks que rechazan una ronda imposible; mandar `score` en el
 insert da error. El adapter local lo deriva igual con `scoreFor`. Si cambiás `STAGES` o la
 fórmula, cambiala también en `supabase/schema.sql` (el 4 está escrito ahí).
+
+**Solo suman al ranking las rondas con todos los artistas o con 3 o más** (desde 2026-09-23,
+`odd/tasks/third-review-fixes.md`). Con un solo artista (Dazen tiene 9 temas) adivinar es mucho
+más fácil e inflaba el promedio. Las otras rondas se juegan y se puntúan igual, pero no entran al
+promedio ni a "te faltan N partidas"; el panel de artistas y el reveal lo avisan. Tres porque los
+principales del sello son tres (Ramma, ARA, Valuto) y la gente escucha a los tres. Lo decide el
+servidor (`rounds.ranked` en `start_round`; solo cuentan slugs que existen); el modo local lo imita.
 
 **El ranking es por promedio, con mínimo de 5 partidas** (`rankPlayers`, `MIN_GAMES` en
 `src/leaderboard/ranking.js`; la vista SQL `leaderboard` repite la misma regla con `having`).
@@ -204,7 +213,7 @@ abiertas siguen andando: la vista toma la clave nueva de `tracks`.
 
 **Track en memoria** (lo que ven los componentes, sale de `loadCatalog`): `{ id, title, artists, artistSlugs, audioFile, coverUrl, spotifyUrl, release, releaseDate }`. Ojo con el camelCase: el JSON usa snake_case, la app camelCase, la conversión está en `loadCatalog.js`.
 
-**Puertos** (`src/services/gameServices.js`): `rounds` = `start(artistSlugs)`, `guess(roundId, trackId)`, `skip(roundId)`, todos devuelven la vista de la ronda. `board` = `getTop(limit)` → `[{ alias, gamesPlayed, totalScore, avgScore }]` ya filtrado y ordenado, `getPlayerStats()` → `{ alias?, gamesPlayed, totalScore, avgScore }`, `setAlias(alias)` → el alias tal como quedó guardado, `subscribeEmail(email)`. Nadie manda puntaje ni `playerId`: en Supabase el jugador es `auth.uid()`.
+**Puertos** (`src/services/gameServices.js`): `rounds` = `start(artistSlugs)`, `guess(roundId, trackId, attempt)`, `skip(roundId, attempt)`, todos devuelven la vista de la ronda (`{ id, audioKey, stages, stageIndex, attempts, status, score, ranked, answerId, answer }`). `attempt` es `attempts.length` como lo vio el cliente: obligatorio (sin él, `invalid_attempt`), y es lo que hace seguro reintentar. `board` = `getTop(limit)` → `[{ alias, gamesPlayed, totalScore, avgScore }]` ya filtrado y ordenado, `getPlayerStats()` → `{ alias?, gamesPlayed, totalScore, avgScore }`, `setAlias(alias)` → el alias tal como quedó guardado, `subscribeEmail(email)`. Nadie manda puntaje ni `playerId`: en Supabase el jugador es `auth.uid()`.
 
 **localStorage** (todas las claves con prefijo `heardle:`): `auth` (sesión anónima de Supabase), `alias` (copia del servidor), `artistFilter`, `emailPrompt` (`pending | done | dismissed`); en modo local además `playerId`, `recent`, `local:round` (la ronda abierta), `local:games`, `local:aliases`, `local:emails`. Quien jugó antes del 2026-09-18 puede tener todavía un `heardle:difficulty` huérfano; no se lee más y no molesta.
 
@@ -496,7 +505,7 @@ una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **149/149** en 15 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
+1. `npm run test` — tiene que dar **158/158** en 16 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
 2. `npm run build` — tiene que compilar.
    Lint: el `eslint.config.js` de la raíz **ignora `heardle-gaceta/`**, así que un `eslint` común
    no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts`.
@@ -530,8 +539,9 @@ Sobre audio específicamente: **Chrome no carga ni decodifica audio en pestañas
 
 - **Vite devuelve `index.html` con 200 para cualquier ruta inexistente**, incluso `/catalog/algo.json`. Un `fetch` de un JSON que falta no da 404: falla al parsear. Si "no carga el catálogo", verificá que el archivo exista en `public/`.
 - **El corte del fragmento no puede depender de `requestAnimationFrame`.** Se suspende en pestañas ocultas y el tema sigue sonando entero (spoiler). Ya está resuelto con timeout + `timeupdate`; no volver al esquema anterior.
-- **React StrictMode en dev** duplica efectos. El efecto que envía el score no tiene clave de idempotencia; en dev puede registrar la partida dos veces en el adapter local. En producción no pasa.
-- `GuessSearch` lleva `key={game.track.id}` para vaciar el texto al cambiar de ronda. Si lo sacás, el texto queda pegado entre rondas.
+- **React StrictMode en dev** duplica efectos. Ya no hay efecto que registre partidas: la ronda la registra quien la arbitra, y cada intento viaja con su `attempt`, así que un duplicado no cuenta doble.
+- `GuessSearch` lleva `key={game.id}` (el id de la ronda) para vaciar el texto al cambiar de ronda. Si lo sacás, el texto queda pegado entre rondas.
+- Si elegís un tema mientras el intento anterior todavía viaja, `onGuess` devuelve `false` y el buscador conserva el texto: el tema no se pierde.
 - Los mp3 publicados se llaman por `HMAC(AUDIO_KEY_SECRET, ISRC)`: ni el nombre ni el catálogo dicen qué tema es. Nunca servir `audio/` ni `data/catalog/` directamente.
 - Cambiar `tailwind.config.js` (por ejemplo, un color nuevo) pide reiniciar `npm run dev`.
 - La carátula solo se muestra en el reveal. No mostrarla antes. En el reveal va recortada en círculo (es un disco): es a propósito.
@@ -547,7 +557,7 @@ Los cuatro ítems de código se cerraron el 2026-09-18 (ver `odd/tasks/backlog-c
   e invalida cualquier play en vuelo; el loop de `requestAnimationFrame` huérfano se retira solo.
   Además `ready` ahora llega a `PlayCircle` como `loading`: anillo pulsando, glifo atenuado y
   `aria-busy`, sin costar una fila de alto.
-- ~~Errores de `submitGame` silenciados~~ → `withRetry` (`src/leaderboard/retry.js`), 3 intentos con
+- ~~Errores de `submitGame` silenciados~~ → `withRetry` (hoy en `src/shared/retry.js`), 3 intentos con
   backoff exponencial, y si igual falla lo dice en el reveal con un botón de reintento.
 - ~~Faltan tests~~ → 62 tests en 7 archivos. Nuevos: `loadCatalog`, `search`, `pickTrack`,
   `playerIdentity`, `localAdapter`, `retry`.

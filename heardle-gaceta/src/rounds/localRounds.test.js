@@ -46,7 +46,7 @@ describe("localRounds", () => {
     const won = await rounds.guess(r.id, "C", 1);
     expect(won).toMatchObject({ status: "won", score: 3, answerId: "C" });
     expect(won.answer).toEqual({ id: "C", title: "Tres", artistSlugs: ["ara"] });
-    expect(recordRound).toHaveBeenCalledWith({ trackId: "C", won: true, stageWon: 1, attempts: 2 });
+    expect(recordRound).toHaveBeenCalledWith({ trackId: "C", won: true, stageWon: 1, attempts: 2, ranked: false });
   });
 
   it("records a loss after four misses and then deals a new round", async () => {
@@ -55,7 +55,7 @@ describe("localRounds", () => {
     let last;
     for (let i = 0; i < 4; i++) last = await rounds.skip(r.id, i);
     expect(last).toMatchObject({ status: "lost", score: 0, answerId: "C" });
-    expect(recordRound).toHaveBeenCalledWith({ trackId: "C", won: false, stageWon: null, attempts: 4 });
+    expect(recordRound).toHaveBeenCalledWith({ trackId: "C", won: false, stageWon: null, attempts: 4, ranked: false });
     expect((await rounds.start(["ara"])).id).not.toBe(r.id);
   });
 
@@ -87,6 +87,15 @@ describe("localRounds", () => {
     const rounds = make();
     const r = await rounds.start(["ara"]);
     await expect(rounds.skip(r.id)).rejects.toMatchObject({ code: "invalid_attempt" });
+  });
+
+  it("marks a round ranked only for every artist or three or more", async () => {
+    const one = make();
+    const r1 = await one.start(["ara"]);
+    expect(r1.ranked).toBe(false);
+    for (let i = 0; i < 4; i++) await one.skip(r1.id, i);
+    expect(recordRound).toHaveBeenLastCalledWith(expect.objectContaining({ ranked: false }));
+    expect((await one.start([])).ranked).toBe(true);
   });
 
   it("hides the answer details while playing", async () => {

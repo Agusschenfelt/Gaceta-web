@@ -20,6 +20,9 @@ export function GameSettings({
   /* The selection changed mid-round. A round is never rerolled (that would let
      you drop a song you do not know), so the new filter waits for the next one. */
   pendingNextRound = false,
+  /* One or two artists: easier to guess, so those rounds do not feed the
+     ranking. Said before playing, not discovered afterwards. */
+  ranked = true,
 }) {
   const [open, setOpen] = useState(false);
   const all = selected.length === 0;
@@ -57,6 +60,7 @@ export function GameSettings({
         {chips}
         <span className="label">{poolSize} temas en juego</span>
         {pendingNextRound && <span className="label !text-fg">Se aplica en la próxima ronda</span>}
+        {!ranked && <span className="label">No suma al ranking: elegí 3 artistas o más</span>}
       </div>
     );
   }
@@ -71,6 +75,7 @@ export function GameSettings({
       >
         <span className="label truncate">
           {summary} · {pendingNextRound ? "desde la próxima ronda" : `${poolSize} temas`}
+          {!ranked && " · sin ranking"}
         </span>
         <span className="flex shrink-0 items-center gap-1.5">
           <span className="label">Artistas</span>

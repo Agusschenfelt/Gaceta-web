@@ -32,6 +32,9 @@ export class RoundError extends Error {
 export function toRoundError(error) {
   if (error instanceof RoundError) return error;
   const text = `${error?.message ?? ""} ${error?.details ?? ""}`;
+  // A session whose user was deleted still signs requests until it expires;
+  // the database then refuses to register it as a player.
+  if (text.includes("players_id_fkey")) return new RoundError("not_authenticated", error);
   const code = Object.keys(ROUND_ERRORS).find((c) => text.includes(c));
   return new RoundError(code ?? "network", error);
 }

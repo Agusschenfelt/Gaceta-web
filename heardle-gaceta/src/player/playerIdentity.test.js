@@ -73,10 +73,14 @@ describe("getAlias", () => {
   });
 });
 
-describe("alias shape (mirrors set_alias in supabase/schema.sql)", () => {
+describe("alias shape (same set as set_alias in supabase/schema.sql)", () => {
   it("accepts letters with accents, digits, spaces, dots, underscores and dashes", () => {
     expect(isValidAlias("Tadu Vázquez")).toBe(true);
     expect(isValidAlias("ñandú_22.b-c")).toBe(true);
+  });
+
+  it("refuses letters the server does not accept", () => {
+    expect(isValidAlias("Борис")).toBe(false);
   });
 
   it("refuses markup and symbols", () => {

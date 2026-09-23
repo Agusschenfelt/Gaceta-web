@@ -54,9 +54,10 @@ describe("pickTrack", () => {
   });
 
   it("caps the recent list", () => {
-    const many = Array.from({ length: 30 }, (_, i) => t(`T${i}`, ["ramma"]));
-    for (let i = 0; i < 20; i++) pickTrack(many, [], () => i / 20);
-    expect(JSON.parse(localStorage.getItem("heardle:recent")).length).toBeLessThanOrEqual(10);
+    const many = Array.from({ length: 60 }, (_, i) => t(`T${i}`, ["ramma"]));
+    for (let i = 0; i < 40; i++) pickTrack(many, [], () => i / 40);
+    // 20, like start_round on the server.
+    expect(JSON.parse(localStorage.getItem("heardle:recent")).length).toBe(20);
   });
 
   it("still picks when storage throws", () => {

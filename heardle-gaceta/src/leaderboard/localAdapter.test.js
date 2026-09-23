@@ -89,6 +89,15 @@ describe("localAdapter", () => {
     });
   });
 
+  it("leaves unranked rounds out of the board and the stats", async () => {
+    await api.setAlias("p1", "Agus");
+    await play(api, "p1", 0);
+    for (let i = 0; i < 5; i++) await api.submitGame(round("p1", null, { ranked: false }));
+    const [row] = await api.getTop();
+    expect(row).toMatchObject({ gamesPlayed: MIN_GAMES, avgScore: 4 });
+    expect((await api.getPlayerStats("p1")).gamesPlayed).toBe(MIN_GAMES);
+  });
+
   it("stores an email once", async () => {
     await api.subscribeEmail("a@b.com", "p1");
     await api.subscribeEmail("a@b.com", "p1");
