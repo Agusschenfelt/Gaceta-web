@@ -44,6 +44,14 @@ export function createLocalAdapter() {
       writeJson(GAMES_KEY, games);
     },
 
+    /** Whether this player has any earlier recorded round (won, lost, or
+     * either kind of repeat) for this track. Used to keep a track's second
+     * play out of the ranking; see isRankedRound in ranking.js. */
+    async hasPlayed(playerId, trackId) {
+      const games = readJson(GAMES_KEY, []);
+      return games.some((g) => g.playerId === playerId && g.trackId === trackId);
+    },
+
     async setAlias(playerId, alias) {
       const aliases = readJson(ALIASES_KEY, {});
       aliases[playerId] = alias;

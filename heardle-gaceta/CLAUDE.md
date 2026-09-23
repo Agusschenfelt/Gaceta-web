@@ -102,7 +102,8 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Lista de artistas y sus IDs de Spotify | `data/artists.json` |
 | Cómo se arma el catálogo | `scripts/build-catalog.mjs` |
 | Reintentos ante cortes de conexión (cuántos, backoff, qué se reintenta) | `src/shared/retry.js` (`withRetry`, `shouldRetry`) |
-| Qué rondas suman al ranking (todos o 3+ artistas) | `src/leaderboard/ranking.js` (`MIN_ARTISTS_RANKED`, `isRankedSelection`) + `start_round` en `supabase/schema.sql` |
+| Qué rondas suman al ranking (todos o 3+ artistas, primera vez por tema) | `src/leaderboard/ranking.js` (`MIN_ARTISTS_RANKED`, `isRankedSelection`, `isRankedRound`) + `start_round` en `supabase/schema.sql` |
+| Explicación del ranking en la UI ("Cómo funciona") | `src/components/organisms/Leaderboard.jsx` (`RULES`) |
 | Sesión anónima vencida o usuario borrado | `src/services/supabaseServices.js` + `src/services/session.js` |
 | Stub de localStorage para los tests | `src/test-utils/localStorage.js` |
 
@@ -150,14 +151,27 @@ principales del sello son tres (Ramma, ARA, Valuto) y la gente escucha a los tre
 servidor (`rounds.ranked` en `start_round`; solo cuentan slugs que existen); el modo local lo imita.
 
 **El ranking es por promedio, con mínimo de 5 partidas** (`rankPlayers`, `MIN_GAMES` en
-`src/leaderboard/ranking.js`; la vista SQL `leaderboard` repite la misma regla con `having`).
+`src/leaderboard/ranking.js`; la función SQL `get_leaderboard` repite la misma regla con `having`).
 Por total ganaba el que más jugaba, no el que mejor adivinaba. Empate de promedio: primero el que
 tiene más partidas. Solo aparecen jugadores con alias. Debajo del mínimo, la vista del ranking
 dice cuántas partidas faltan (`getPlayerStats`).
 
-Lo que sigue abierto: sin auth, alguien puede cargar muchas rondas "legítimas" de 4 puntos
-directo contra la API. Frenarlo pide una regla de producto (por ejemplo, que solo cuente la
-primera vez que jugás cada tema) que no se decidió.
+**Cada tema suma al ranking solo la primera vez que lo jugás** (desde 2026-09-23,
+`odd/tasks/ranking-first-play.md`). Perder revela el tema: la próxima vez que te toca lo acertás
+de una, y eso inflaba el promedio sin haber adivinado nada — era el ítem abierto de más abajo.
+`start_round` en `supabase/schema.sql` exige, además de la regla de selección, que el jugador no
+tenga ya una ronda (cualquier estado) con ese `track_id`; hay un backfill idempotente
+(`private.backfill_ranked_first_play`) para las filas que quedaron marcadas antes de esta regla.
+El modo local lo imita: `hasPlayed` en `localAdapter.js` mira `heardle:local:games`, y
+`isRankedRound` en `ranking.js` combina las dos condiciones. El reveal recién dice que un tema no
+suma por ser repetido **al terminar la ronda**, nunca antes: avisarlo mientras jugás delataría que
+ya la escuchaste. El ranking tiene un panel "Cómo funciona" (`Leaderboard.jsx`) que explica las
+reglas sin scrollear, con un toggle que reemplaza la tabla.
+
+Lo que sigue abierto: el login anónimo no tiene CAPTCHA todavía (ver "Puesta en marcha" en
+Supabase), así que alguien podría crear muchas cuentas para seguir sumando primeras veces. La
+regla de arriba cierra el abuso dentro de una misma cuenta; entre cuentas, el freno pendiente es
+ese CAPTCHA.
 
 **No hay niveles de dificultad, y es a propósito.** Había tres (`DIFFICULTIES`) y se sacaron el
 2026-09-18. Una sola escalera `STAGES = [0.5, 1, 3, 8]` para todos, porque:
@@ -505,7 +519,7 @@ una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **160/160** en 16 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
+1. `npm run test` — tiene que dar **168/168** en 16 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
 2. `npm run build` — tiene que compilar.
    Lint: el `eslint.config.js` de la raíz **ignora `heardle-gaceta/`**, así que un `eslint` común
    no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts`.

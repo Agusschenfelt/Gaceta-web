@@ -34,6 +34,7 @@ export function createLocalServices({ tracks }) {
     rounds: createLocalRounds({
       tracks,
       recordRound: (round) => store.submitGame({ playerId, ...round }),
+      hasPlayed: (trackId) => store.hasPlayed(playerId, trackId),
     }),
     board: {
       getTop: (limit) => store.getTop(limit),

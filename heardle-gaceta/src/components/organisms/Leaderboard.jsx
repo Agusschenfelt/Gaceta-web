@@ -31,6 +31,17 @@ function Row({ rank, alias, gamesPlayed, avgScore, mine }) {
  */
 const TOP_ROWS = 10;
 
+const RULES_PANEL_ID = "ranking-rules";
+
+const RULES = [
+  "Se ordena por promedio de puntos por partida, no por el total.",
+  "Acertar al primer intento da 4 puntos; al último, 1. Perder da 0.",
+  `Necesitás ${MIN_GAMES} partidas para aparecer en la tabla.`,
+  "Cuentan las rondas con todos los artistas, o con 3 o más.",
+  "Cada tema suma solo la primera vez que lo jugás.",
+  "Si hay empate en el promedio, va primero quien jugó más partidas.",
+];
+
 export function Leaderboard({
   rows,
   me = null,
@@ -45,6 +56,7 @@ export function Leaderboard({
 }) {
   const [draft, setDraft] = useState("");
   const [saving, setSaving] = useState(false);
+  const [showRules, setShowRules] = useState(false);
   // The database has the last word on an alias (taken, blocked…): show why.
   const [aliasError, setAliasError] = useState(null);
 
@@ -76,7 +88,20 @@ export function Leaderboard({
           <h2 className="headline text-xl !leading-snug">
             Ranking <em>global</em>
           </h2>
-          <span className="label">Promedio · mín. {MIN_GAMES} partidas</span>
+          <button
+            type="button"
+            onClick={() => setShowRules((v) => !v)}
+            aria-expanded={showRules}
+            aria-controls={RULES_PANEL_ID}
+            className="label flex items-center gap-1 transition-colors hover:text-fg"
+          >
+            {showRules ? "Volver al ranking" : "Cómo funciona"}
+            <Icon
+              name="chevronDown"
+              size={11}
+              className={`transition-transform duration-200 ${showRules ? "rotate-180" : ""}`}
+            />
+          </button>
         </div>
         <button
           type="button"
@@ -88,44 +113,55 @@ export function Leaderboard({
         </button>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col justify-start overflow-hidden">
-        {loading && <Spinner label="Cargando ranking" />}
-        {error && <p className="text-sm text-danger">No pudimos cargar el ranking.</p>}
-        {!loading && !error && top.length === 0 && (
-          <p className="text-sm text-muted">Todavía no hay nadie. Sé el primero.</p>
-        )}
-        {top.length > 0 && (
-          <ol className="flex flex-col divide-y divide-border">
-            <li className="label flex items-center gap-3 pb-1.5" aria-hidden="true">
-              <span className="w-5 shrink-0" />
-              <span className="flex-1" />
-              <span className="w-16 shrink-0 text-right">Partidas</span>
-              <span className="w-12 shrink-0 text-right">Prom</span>
+      {showRules ? (
+        <ul id={RULES_PANEL_ID} className="flex min-h-0 flex-1 flex-col justify-start gap-2 overflow-hidden text-sm text-muted">
+          {RULES.map((rule) => (
+            <li key={rule} className="flex gap-2">
+              <span aria-hidden="true">·</span>
+              {rule}
             </li>
-            {top.map((r, i) => (
-              <li key={r.alias} className="flex items-center gap-3 py-1.5 text-sm">
-                <Row rank={i + 1} {...r} mine={r.alias === alias} />
+          ))}
+        </ul>
+      ) : (
+        <div id={RULES_PANEL_ID} className="flex min-h-0 flex-1 flex-col justify-start overflow-hidden">
+          {loading && <Spinner label="Cargando ranking" />}
+          {error && <p className="text-sm text-danger">No pudimos cargar el ranking.</p>}
+          {!loading && !error && top.length === 0 && (
+            <p className="text-sm text-muted">Todavía no hay nadie. Sé el primero.</p>
+          )}
+          {top.length > 0 && (
+            <ol className="flex flex-col divide-y divide-border">
+              <li className="label flex items-center gap-3 pb-1.5" aria-hidden="true">
+                <span className="w-5 shrink-0" />
+                <span className="flex-1" />
+                <span className="w-16 shrink-0 text-right">Partidas</span>
+                <span className="w-12 shrink-0 text-right">Prom</span>
               </li>
-            ))}
-          </ol>
-        )}
-        {belowCut && (
-          <div className="mt-2 flex items-center gap-3 border-t border-border pt-2 text-sm">
-            <Row rank={myRow + 1} {...rows[myRow]} mine />
-          </div>
-        )}
-        {offBoard && (
-          <div className="mt-2 flex items-center gap-3 border-t border-border pt-2 text-sm">
-            <Row rank="—" alias={alias} gamesPlayed={me.gamesPlayed} avgScore={me.avgScore} mine />
-          </div>
-        )}
-        {!loading && !error && missing > 0 && (
-          <p className="mt-3 text-sm text-muted">
-            {missing === 1 ? "Te falta 1 partida" : `Te faltan ${missing} partidas`} para entrar al
-            ranking.
-          </p>
-        )}
-      </div>
+              {top.map((r, i) => (
+                <li key={r.alias} className="flex items-center gap-3 py-1.5 text-sm">
+                  <Row rank={i + 1} {...r} mine={r.alias === alias} />
+                </li>
+              ))}
+            </ol>
+          )}
+          {belowCut && (
+            <div className="mt-2 flex items-center gap-3 border-t border-border pt-2 text-sm">
+              <Row rank={myRow + 1} {...rows[myRow]} mine />
+            </div>
+          )}
+          {offBoard && (
+            <div className="mt-2 flex items-center gap-3 border-t border-border pt-2 text-sm">
+              <Row rank="—" alias={alias} gamesPlayed={me.gamesPlayed} avgScore={me.avgScore} mine />
+            </div>
+          )}
+          {!loading && !error && missing > 0 && (
+            <p className="mt-3 text-sm text-muted">
+              {missing === 1 ? "Te falta 1 partida" : `Te faltan ${missing} partidas`} para entrar al
+              ranking.
+            </p>
+          )}
+        </div>
+      )}
 
       {!alias ? (
         <form onSubmit={submit} className="flex shrink-0 flex-col gap-2" aria-label="Elegí tu alias">

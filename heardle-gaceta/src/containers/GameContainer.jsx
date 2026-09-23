@@ -281,6 +281,14 @@ export function GameContainer() {
   }
 
   if (game && over) {
+    // game.ranked only says whether the round counts; it does not say why
+    // not, and it must not: a repeat is only revealed here, never mid-round.
+    // If the selection itself would have qualified, ranked=false can only
+    // mean this track was already played before.
+    const dealtSlugs = dealtFilter ? dealSlugs(dealtFilter, catalog.artists) : [];
+    const repeatUnranked =
+      game.ranked === false &&
+      isRankedSelection(dealtSlugs, catalog.artists.map((a) => a.slug));
     return (
       <ResultReveal
         game={game}
@@ -292,6 +300,7 @@ export function GameContainer() {
         }}
         peaks={roundPeaks}
         audio={audio}
+        repeatUnranked={repeatUnranked}
       />
     );
   }

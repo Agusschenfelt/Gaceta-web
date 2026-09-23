@@ -223,3 +223,49 @@ update public.rounds set status = 'lost' where player_id = '00000000-0000-0000-0
 set role authenticated;
 select t.check(not (public.start_round('{a,b,nobody}')->>'ranked')::boolean, 'an unknown artist does not count towards three');
 reset role;
+
+-- ------------------------------------------------ ranked only on first play
+
+-- A track credited to three artist slugs that exist nowhere else: filtering
+-- by exactly those three always deals this one track, so a repeat can be
+-- forced deterministically instead of relying on start_round's random pick.
+insert into public.tracks (id, audio_key, artist_slugs, title) values
+  ('SOLO', 'ksolo', '{solo1,solo2,solo3}', 'Solito');
+insert into auth.users (id) values ('00000000-0000-0000-0000-000000000004');
+
+set role authenticated;
+select t.act_as('00000000-0000-0000-0000-000000000004');
+select set_config('t.r3', public.start_round('{solo1,solo2,solo3}')->>'id', false);
+select t.check((public.start_round('{solo1,solo2,solo3}')->>'ranked')::boolean,
+  'a three-real-artist selection is ranked on the first play');
+select public.skip_round(current_setting('t.r3')::uuid, n) from generate_series(0, 2) n;
+select public.skip_round(current_setting('t.r3')::uuid, 3);
+
+-- Same filter, same only-matching track: the next round is a repeat.
+select set_config('t.r4', public.start_round('{solo1,solo2,solo3}')->>'id', false);
+reset role;
+
+select t.check(current_setting('t.r4') <> current_setting('t.r3'), 'the repeat is dealt as a new round');
+select t.check(not (select ranked from public.rounds where id = current_setting('t.r4')::uuid),
+  'replaying the same track is not ranked, even though the selection alone would qualify');
+
+set role authenticated;
+select public.skip_round(current_setting('t.r4')::uuid, n) from generate_series(0, 2) n;
+select public.skip_round(current_setting('t.r4')::uuid, 3);
+select t.check((public.my_stats()->>'gamesPlayed')::int = 1,
+  'the repeat is finished and scored, but excluded from my_stats');
+reset role;
+
+-- Simulate a row written before this rule existed, then fix it with the
+-- backfill. Idempotent: running it twice changes nothing the second time.
+update public.rounds set ranked = true where id = current_setting('t.r4')::uuid;
+select t.check((select ranked from public.rounds where id = current_setting('t.r4')::uuid),
+  'set back to true to simulate a pre-migration row');
+select private.backfill_ranked_first_play();
+select t.check(not (select ranked from public.rounds where id = current_setting('t.r4')::uuid),
+  'the backfill flips a repeat back to unranked');
+select private.backfill_ranked_first_play();
+select t.check(not (select ranked from public.rounds where id = current_setting('t.r4')::uuid),
+  'running the backfill again changes nothing (idempotent)');
+select t.check((select ranked from public.rounds where id = current_setting('t.r3')::uuid),
+  'the first play is untouched by the backfill');

@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { rankPlayers, playerStats, gamesMissing, isRankedSelection, MIN_GAMES } from "./ranking.js";
+import {
+  rankPlayers,
+  playerStats,
+  gamesMissing,
+  isRankedSelection,
+  isRankedRound,
+  MIN_GAMES,
+} from "./ranking.js";
 
 const p = (alias, gamesPlayed, totalScore) => ({ alias, gamesPlayed, totalScore });
 
@@ -58,5 +65,20 @@ describe("isRankedSelection", () => {
   it("counts only distinct, known artists", () => {
     expect(isRankedSelection(["ramma", "ramma", "ara"])).toBe(false);
     expect(isRankedSelection(["ramma", "ara", "nobody"], ["ramma", "ara", "valuto"])).toBe(false);
+  });
+});
+
+describe("isRankedRound", () => {
+  it("ranks a qualifying selection's first play of a track", () => {
+    expect(isRankedRound(true, false)).toBe(true);
+  });
+
+  it("does not rank a repeat even when the selection qualifies", () => {
+    expect(isRankedRound(true, true)).toBe(false);
+  });
+
+  it("does not rank a disqualifying selection, played or not", () => {
+    expect(isRankedRound(false, false)).toBe(false);
+    expect(isRankedRound(false, true)).toBe(false);
   });
 });

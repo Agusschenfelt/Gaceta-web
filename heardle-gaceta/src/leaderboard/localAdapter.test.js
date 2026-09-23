@@ -98,6 +98,14 @@ describe("localAdapter", () => {
     expect((await api.getPlayerStats("p1")).gamesPlayed).toBe(MIN_GAMES);
   });
 
+  it("reports whether a player has an earlier round for a track, of any outcome", async () => {
+    expect(await api.hasPlayed("p1", "ISRC1")).toBe(false);
+    await api.submitGame(round("p1", null)); // a loss still counts as having played it
+    expect(await api.hasPlayed("p1", "ISRC1")).toBe(true);
+    expect(await api.hasPlayed("p1", "OTHER")).toBe(false);
+    expect(await api.hasPlayed("p2", "ISRC1")).toBe(false);
+  });
+
   it("stores an email once", async () => {
     await api.subscribeEmail("a@b.com", "p1");
     await api.subscribeEmail("a@b.com", "p1");

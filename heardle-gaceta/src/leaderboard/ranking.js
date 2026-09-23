@@ -26,6 +26,17 @@ export function isRankedSelection(slugs, knownSlugs = null) {
   return real.size >= MIN_ARTISTS_RANKED;
 }
 
+/**
+ * Whether a dealt round counts for the board: the selection qualifies AND the
+ * player has no earlier round (any status: won, lost, or a repeat of either)
+ * with that same track. Losing reveals the answer, so replaying it is a free
+ * 4-point round — only the first time a track is played can prove anything.
+ * Same rule as `start_round` in supabase/schema.sql (`is_ranked`).
+ */
+export function isRankedRound(selectionRanked, alreadyPlayed) {
+  return selectionRanked && !alreadyPlayed;
+}
+
 /** Per-player totals → the ordered board. Rows without an alias never show. */
 export function rankPlayers(stats, minGames = MIN_GAMES) {
   return stats

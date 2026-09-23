@@ -98,6 +98,37 @@ describe("localRounds", () => {
     expect((await one.start([])).ranked).toBe(true);
   });
 
+  it("keeps a repeated track unranked even though the selection alone would qualify", async () => {
+    const hasPlayed = vi.fn(async () => true);
+    const rounds = createLocalRounds({ tracks, recordRound, hasPlayed });
+    const r = await rounds.start([]);
+    expect(r.ranked).toBe(false);
+    expect(hasPlayed).toHaveBeenCalledTimes(1);
+    for (let i = 0; i < 4; i++) await rounds.skip(r.id, i);
+    expect(recordRound).toHaveBeenLastCalledWith(expect.objectContaining({ ranked: false }));
+  });
+
+  it("does not ask about history when the selection alone already disqualifies the round", async () => {
+    const hasPlayed = vi.fn(async () => false);
+    const rounds = createLocalRounds({ tracks, recordRound, hasPlayed });
+    const r = await rounds.start(["ara"]);
+    expect(r.ranked).toBe(false);
+    expect(hasPlayed).not.toHaveBeenCalled();
+  });
+
+  it("ranks a qualifying selection's first play of a track", async () => {
+    const hasPlayed = vi.fn(async () => false);
+    const rounds = createLocalRounds({ tracks, recordRound, hasPlayed });
+    const r = await rounds.start([]);
+    expect(r.ranked).toBe(true);
+    expect(hasPlayed).toHaveBeenCalledTimes(1);
+  });
+
+  it("defaults to a first play when no history check is wired in", async () => {
+    const rounds = createLocalRounds({ tracks, recordRound });
+    expect((await rounds.start([])).ranked).toBe(true);
+  });
+
   it("keeps the round open when recording it fails, so a retry records it", async () => {
     let fail = true;
     const flaky = vi.fn(async () => {

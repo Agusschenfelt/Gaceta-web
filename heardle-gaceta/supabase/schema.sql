@@ -25,6 +25,8 @@
 --   5 games minimum, ranked by average           ↔ MIN_GAMES / rankPlayers in src/leaderboard/ranking.js
 --   alias 2–16 chars, explicit letter set          ↔ ALIAS_SHAPE in src/player/playerIdentity.js
 --   ranked = all artists or at least 3            ↔ isRankedSelection in src/leaderboard/ranking.js
+--   ranked = ... AND the player's first round with  ↔ isRankedRound in src/leaderboard/ranking.js,
+--     that track (a loss reveals the answer)          mirrored in src/rounds/localRounds.js
 --
 -- Known limit: someone who plays every song can fingerprint the audio files by
 -- their bytes. Not stoppable in code; accepted.
@@ -221,12 +223,38 @@ begin
 end;
 $$;
 
+-- ------------------------------------------------------ ranking backfill
+
+-- One-time fix for rows written before the first-play rule above existed: a
+-- round is not ranked if the same player already had an earlier round (any
+-- status) for that track. Idempotent — once a row flips to false it stays
+-- false, so `where r.ranked` finds nothing left to change on a later run.
+create or replace function private.backfill_ranked_first_play()
+returns void
+language sql
+security definer
+set search_path = ''
+as $$
+  update public.rounds r
+  set ranked = false
+  where r.ranked
+    and exists (
+      select 1 from public.rounds x
+      where x.player_id = r.player_id
+        and x.track_id = r.track_id
+        and (x.created_at, x.id) < (r.created_at, r.id)
+    );
+$$;
+
+select private.backfill_ranked_first_play();
+
 -- -------------------------------------------------------------- the game
 
 -- Deals a round, or hands back the one still open. The artist filter only
 -- applies to a new round. Avoids the player's last 20 songs when it can.
 -- At most 60 new rounds per player per hour. The round is ranked when dealt
--- from every artist (empty filter) or from at least 3 artists that exist.
+-- from every artist (empty filter) or from at least 3 artists that exist,
+-- and only if the player has never had a round for that track before.
 create or replace function public.start_round(p_artists text[] default '{}')
 returns jsonb
 language plpgsql
@@ -277,11 +305,19 @@ begin
     raise exception 'empty_pool' using errcode = 'P0002';
   end if;
 
-  is_ranked := cardinality(artists) = 0 or (
-    select count(distinct a)
-    from unnest(artists) a
-    where exists (select 1 from public.tracks t where a = any(t.artist_slugs))
-  ) >= 3;
+  -- Ranked needs the selection to qualify AND this to be the player's first
+  -- round ever dealt with `picked` (any status: a loss already revealed the
+  -- answer, so a repeat is not a fresh guess). Checked before the insert
+  -- below, so `picked`'s own row is not yet in the table.
+  is_ranked := (
+    cardinality(artists) = 0 or (
+      select count(distinct a)
+      from unnest(artists) a
+      where exists (select 1 from public.tracks t where a = any(t.artist_slugs))
+    ) >= 3
+  ) and not exists (
+    select 1 from public.rounds x where x.player_id = uid and x.track_id = picked
+  );
 
   begin
     insert into public.rounds (player_id, track_id, ranked)

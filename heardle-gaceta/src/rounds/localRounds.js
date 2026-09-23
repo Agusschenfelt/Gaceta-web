@@ -1,7 +1,7 @@
 import { createGame, getStages, guess, skip, isOver, score, stageWon, STATUS } from "../game/engine.js";
 import { pickTrack } from "../catalog/pickTrack.js";
 import { RoundError } from "./roundErrors.js";
-import { isRankedSelection } from "../leaderboard/ranking.js";
+import { isRankedSelection, isRankedRound } from "../leaderboard/ranking.js";
 
 const OPEN_KEY = "heardle:local:round";
 
@@ -54,8 +54,12 @@ function view(id, game, ranked) {
  * Needs a catalog that carries audio keys, i.e. assets published without
  * AUDIO_KEY_SECRET. With the secret the browser cannot know which audio is
  * which song, which is the point, and only the server can deal.
+ *
+ * `hasPlayed(trackId)` reports whether this player has an earlier round for
+ * that track (see isRankedRound in ranking.js); omitted, every deal behaves
+ * as a first play.
  */
-export function createLocalRounds({ tracks, recordRound }) {
+export function createLocalRounds({ tracks, recordRound, hasPlayed = async () => false }) {
   const playable = tracks.filter((t) => t.audioKey);
   if (playable.length === 0) throw new RoundError("local_unavailable");
   const byId = new Map(tracks.map((t) => [t.id, t]));
@@ -126,10 +130,12 @@ export function createLocalRounds({ tracks, recordRound }) {
       if (open && !isOver(open.game)) return view(open.id, open.game, open.ranked);
       const track = pickTrack(playable, artistSlugs);
       if (!track) throw new RoundError("empty_pool");
+      const selectionRanked = isRankedSelection(artistSlugs, knownSlugs);
+      const played = selectionRanked && (await hasPlayed(track.id));
       open = {
         id: newId(),
         game: createGame({ track }),
-        ranked: isRankedSelection(artistSlugs, knownSlugs),
+        ranked: isRankedRound(selectionRanked, played),
       };
       persist();
       return view(open.id, open.game, open.ranked);

@@ -31,6 +31,11 @@ export function ResultReveal({
   onShowRanking,
   peaks = null,
   audio,
+  /* game.ranked is false and the selection alone would have qualified: the
+     real reason is that this track was already played before. Derived by
+     the caller (see GameContainer), not carried by the round itself, so a
+     repeat is only ever known once the round is over. */
+  repeatUnranked = false,
 }) {
   const won = game.status === STATUS.WON;
   const heard = game.stages[game.stageIndex];
@@ -94,7 +99,10 @@ export function ResultReveal({
             {won
               ? `Con ${formatSeconds(heard)} s · intento ${game.stageIndex + 1} de ${game.stages.length}`
               : "Era este tema"}
-            {game.ranked === false && " · no suma al ranking"}
+            {game.ranked === false &&
+              (repeatUnranked
+                ? " · ya jugaste este tema, no suma al ranking"
+                : " · no suma al ranking")}
           </span>
         </div>
         {won ? (
