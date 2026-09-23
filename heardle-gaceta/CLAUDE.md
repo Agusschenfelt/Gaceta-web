@@ -70,6 +70,7 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Barra de segmentos arriba | `src/components/molecules/StageProgress.jsx` + `atoms/Segment.jsx` |
 | Historial de intentos (cruz roja, "Salteado") | `src/components/molecules/GuessHistory.jsx` |
 | Chips de artistas, línea de ajustes colapsable | `src/components/molecules/GameSettings.jsx` |
+| Botones grandes del reveal (relleno que barre, ícono que se mueve) | `src/components/atoms/ActionButton.jsx` |
 | Reveal final (disco girando, anillo, puntaje, share, jugar otra vez) | `src/components/organisms/ResultReveal.jsx`; el autoplay del tema está en `GameContainer.jsx` |
 | Ranking, formulario de alias, cuántas filas entran (`TOP_ROWS`) | `src/components/organisms/Leaderboard.jsx` |
 | Captura de mail | `src/components/organisms/EmailCapture.jsx` |
@@ -256,6 +257,11 @@ Dos detalles que no conviene deshacer:
 - `.tick-unlock` usa `animation-fill-mode: backwards` **a propósito**: con `both` la animación se
   quedaría con el color final y taparía el acid gold del playhead en esos ticks.
 - Con `prefers-reduced-motion`: el isotipo no late, no hay sacudón y el grano queda quieto.
+
+**Jerarquía de acciones del reveal:** primero "Jugar otra vez" (acid gold, más ancho), después
+Spotify (contorno), y compartir como link chico abajo. Es pedido del usuario: lo que tiene que
+invitar es volver a jugar y escuchar el tema. `hoverOnlyWhenSupported` está prendido en
+`tailwind.config.js` para que en celular el hover no quede pegado después de un toque.
 
 **El reveal es un disco.** Al terminar la ronda suena el tema (16 s, el clip entero) y la carátula
 gira como un vinilo dentro del mismo anillo, ahora con los 16 s; lo que necesitaste para acertar

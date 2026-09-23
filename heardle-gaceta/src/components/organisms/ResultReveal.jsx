@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "../atoms/Button.jsx";
+import { ActionButton } from "../atoms/ActionButton.jsx";
 import { Icon } from "../atoms/Icon.jsx";
 import { StageProgress } from "../molecules/StageProgress.jsx";
 import { WaveRing } from "../molecules/WaveRing.jsx";
@@ -169,25 +169,45 @@ export function ResultReveal({
         </button>
       </div>
 
-      <div className="rise flex shrink-0 flex-col gap-2" style={stagger(4)}>
-        <Button variant="primary" onClick={share}>
-          {copied ? "Copiado" : "Compartí el resultado"}
-        </Button>
+      {/* Play again first, then the song on Spotify: the two things worth
+          doing next. Sharing is still one tap away, just quieter. */}
+      <div className="rise flex shrink-0 flex-col gap-1" style={stagger(4)}>
         <div className="flex gap-2">
-          <Button variant="accent" onClick={onPlayAgain} className="flex-1">
+          <ActionButton
+            tone="accent"
+            icon="replay"
+            iconMotion="group-hover:-rotate-180"
+            onClick={onPlayAgain}
+            className="flex-[1.5]"
+          >
             Jugar otra vez
-          </Button>
+          </ActionButton>
           {track.spotifyUrl && (
-            <a
+            <ActionButton
+              tone="outline"
+              icon="arrowUpRight"
+              iconMotion="group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
               href={track.spotifyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex flex-1 items-center justify-center rounded border border-border px-4 py-2.5 text-sm font-medium tracking-tight text-fg transition-colors hover:border-fg"
+              className="flex-1"
             >
               Spotify
-            </a>
+            </ActionButton>
           )}
         </div>
+        <button
+          type="button"
+          onClick={share}
+          className="group flex min-h-11 items-center justify-center gap-2 text-sm text-muted transition-colors hover:text-fg"
+        >
+          <Icon
+            name={copied ? "check" : "share"}
+            size={15}
+            className={`transition-transform duration-300 group-hover:-translate-y-0.5 ${copied ? "text-accent" : ""}`}
+          />
+          <span className="underline decoration-border underline-offset-4 transition-colors group-hover:decoration-fg">
+            {copied ? "Copiado, pegalo donde quieras" : "Compartí tu resultado"}
+          </span>
+        </button>
       </div>
     </section>
   );

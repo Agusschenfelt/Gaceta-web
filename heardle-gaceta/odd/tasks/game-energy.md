@@ -53,6 +53,16 @@ The user, after round 1: the result screen is too plain, and both screens feel s
       (the shared text keeps the emoji).
 - [x] E10 — Verify both screens at 1440×900 and 360×640.
 
+### Round 3 — action hierarchy
+
+The user: the buttons should invite to play again and to Spotify first, then share, "con más onda".
+
+- [x] E11 — `ActionButton`: display type, 56px tall, white fill wiping across on hover, icon that
+      moves (replay turns, arrow lifts). Play again (accent, 1.5× wide) + Spotify (outline) on one
+      row; share demoted to a small underlined link with an icon. Tailwind
+      `hoverOnlyWhenSupported` so touch screens do not keep the wipe stuck. Verified at 360×640
+      and 1440×900 with hover driven over CDP; overflow `[]`, 99/99, build, detector `[]`.
+
 ## Checks
 
 TDD: not configured for this project (source: no project/session setting); ordinary checks.

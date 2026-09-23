@@ -19,6 +19,19 @@ const PATHS = {
     </>
   ),
   settings: <path d="M4 7h16M4 12h16M4 17h16" />,
+  replay: (
+    <>
+      <path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3" />
+      <path d="M4.5 4.5v4h4" />
+    </>
+  ),
+  arrowUpRight: <path d="M7 17 17 7M8.5 7H17v8.5" />,
+  share: (
+    <>
+      <path d="M12 15V4M7.5 8.5 12 4l4.5 4.5" />
+      <path d="M5 13v5.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V13" />
+    </>
+  ),
 };
 
 export function Icon({ name, size = 16, className = "", ...props }) {
