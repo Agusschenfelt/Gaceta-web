@@ -22,14 +22,17 @@ Out of scope: P2/minor findings (reduced-motion, 404, intro skip, h1, tap target
 
 ## Tasks
 
-- [ ] T1 Shows: upcoming-only filter, empty state, shared sort helper (home + artist page).
-- [ ] T2 Share card: generate `public/assets/og/gaceta-share.jpg` 1200x630, update `index.html` meta.
-- [ ] T3 Images: cap oversized rasters in `public/assets` (long edge 1600px, re-encode), verify transfer size per route.
+- [x] T1 Shows: upcoming-only filter, empty state, shared sort helper (home + artist page).
+- [x] T2 Share card: generate `public/assets/og/gaceta-share.jpg` 1200x630, update `index.html` meta.
+- [x] T3 Images: cap oversized rasters in `public/assets` (long edge 1600px, re-encode), verify transfer size per route.
 
 ## Progress / evidence
 
-(filled per task)
+- T1 `85af753`: home lists only upcoming dates (none today, so the empty state shows: "Nuevas fechas en camino" + Instagram CTA); artist page uses the same local-date `isUpcoming`. Screenshots checked at 1440 and 390.
+- T2 `6f104c5`: `public/assets/og/gaceta-share.jpg` 1200x630 sRGB 18 KB; og + twitter image and alt point to it; served 200 locally.
+- T3 `02f9ee9`: 41 files 75 MB -> 12.5 MB (photos max 2000px, covers 1600px). Dev-server transfer: /artistas/ramma 12.0 -> 3.3 MB, /sobre-nosotros 41 -> 20.8 MB desktop / 33 -> 16 MB mobile, /gallery 6.4 -> 1.6 MB desktop. No horizontal overflow, no page errors.
+- Checks: `npm run build` OK. `npm run lint` fails with 10 errors that already exist on main in untouched files (FooterGaceta, MusicPlayer, PageTransitionProvider, gallery, SobreNosotros...); none are in files this feature changed.
 
 ## Next step
 
-T1.
+User decision: push the branch and open a PR. Remaining weight on /sobre-nosotros comes from ~40 images under 300 KB each, not lazy-loaded. That would be a follow-up (srcset/lazy loading), together with the P2 findings.
