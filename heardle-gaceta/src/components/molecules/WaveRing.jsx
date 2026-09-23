@@ -14,8 +14,9 @@ export const INNER_RATIO = 0.66;
 /** Delay between two neighbouring ticks of an unlock sweep. */
 const SWEEP_STEP_MS = 14;
 
-/** One lap of the idle shimmer running through the locked ticks. */
-const SHIMMER_MS = 2600;
+/** One breath of a tick. Two waves travel round the ring per breath. */
+const BREATH_MS = 3200;
+const BREATH_WAVES = 2;
 
 function tickLine(i, length) {
   // Clockwise from twelve o'clock, like the song reads.
@@ -39,12 +40,13 @@ function tickLine(i, length) {
  *   grows, the new ticks sweep on (dim → acid gold → white).
  * - The first `lit` ticks are acid gold: the playhead while it plays, or the
  *   part the player needed on the reveal.
- * - `shimmer` runs a slow light through the locked ticks, outwards from the
- *   unlocked edge: there is more song here, press play.
+ * - Every tick breathes: its tip retracts and returns, offset from its
+ *   neighbours so a slow wave keeps travelling round. The ring is never still,
+ *   but the envelope's shape stays readable.
  *
  * Shared by the play button and the reveal so both screens speak one motif.
  */
-export function WaveRing({ peaks, span, unlocked, lit = 0, shimmer = false, loading = false }) {
+export function WaveRing({ peaks, span, unlocked, lit = 0, loading = false }) {
   const ticks = useMemo(() => ringTicks(peaks, span), [peaks, span]);
 
   // The ticks that just became playable, for the sweep. Derived during render
@@ -54,8 +56,6 @@ export function WaveRing({ peaks, span, unlocked, lit = 0, shimmer = false, load
   if (sweep.to !== unlocked) {
     setSweep({ from: unlocked > sweep.to ? sweep.to : 0, to: unlocked });
   }
-
-  const shimmerStep = SHIMMER_MS / RING_TICKS;
 
   return (
     <svg
@@ -68,24 +68,30 @@ export function WaveRing({ peaks, span, unlocked, lit = 0, shimmer = false, load
         {ticks.map((length, i) => {
           const open = i < unlocked;
           const sweeping = open && i >= sweep.from && i < sweep.to;
-          const shimmering = !open && shimmer && !loading;
+          // Negative delay: every tick starts mid-breath, so the wave is
+          // already travelling on the first frame instead of all starting flat.
+          const breath = `tick-breathe ${BREATH_MS}ms ease-in-out ${
+            -((i * BREATH_WAVES) / RING_TICKS) * BREATH_MS
+          }ms infinite`;
+          const unlock = sweeping
+            ? `, tick-unlock 0.7s ease-out ${(i - sweep.from) * SWEEP_STEP_MS}ms backwards`
+            : "";
           return (
             <line
               key={i}
               {...tickLine(i, length)}
               strokeWidth={TICK_WIDTH}
-              className={sweeping ? "tick-unlock" : shimmering ? "tick-shimmer" : undefined}
+              // Dash maths in units of the tick's own length: offsetting the
+              // single dash retracts the tip while the base stays put.
+              pathLength={1}
+              strokeDasharray="1 1"
               style={{
                 stroke: !open
                   ? "var(--color-border)"
                   : i < lit
                     ? "var(--color-accent)"
                     : "var(--color-fg)",
-                animationDelay: sweeping
-                  ? `${(i - sweep.from) * SWEEP_STEP_MS}ms`
-                  : shimmering
-                    ? `${(i - unlocked) * shimmerStep}ms`
-                    : undefined,
+                animation: breath + unlock,
               }}
             />
           );

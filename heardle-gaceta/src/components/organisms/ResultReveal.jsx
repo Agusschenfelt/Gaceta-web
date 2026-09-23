@@ -184,7 +184,7 @@ export function ResultReveal({
           </ActionButton>
           {track.spotifyUrl && (
             <ActionButton
-              tone="outline"
+              tone="spotify"
               icon="arrowUpRight"
               iconMotion="group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
               href={track.spotifyUrl}

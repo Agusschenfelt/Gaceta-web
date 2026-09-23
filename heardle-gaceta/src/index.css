@@ -80,8 +80,8 @@ body {
 }
 
 /* Unlock sweep on the play ring: a tick lands dim, flashes acid gold, settles
-   white. `backwards` only, so once it ends the inline stroke (and with it the
-   playhead colour) owns the tick again. */
+   white. Applied inline by WaveRing next to the breath, with `backwards` only,
+   so once it ends the inline stroke (and the playhead colour) owns the tick. */
 @keyframes tick-unlock {
   0% {
     stroke: var(--color-border);
@@ -94,25 +94,17 @@ body {
   }
 }
 
-.tick-unlock {
-  animation: tick-unlock 0.7s ease-out backwards;
-}
-
-/* Idle shimmer through the locked ticks: a light runs round the part of the
-   song you have not unlocked yet. Each tick is delayed by its place in the ring. */
-@keyframes tick-shimmer {
+/* Constant breath of the ring's ticks: the tip retracts and comes back.
+   Works on the dash offset (the line uses pathLength=1), so the base of every
+   tick stays on the circle. */
+@keyframes tick-breathe {
   0%,
-  14%,
   100% {
-    stroke: var(--color-border);
+    stroke-dashoffset: 0;
   }
-  6% {
-    stroke: var(--color-fg-muted);
+  50% {
+    stroke-dashoffset: 0.28;
   }
-}
-
-.tick-shimmer {
-  animation: tick-shimmer 2.6s linear infinite;
 }
 
 /* The house ease: fast out, long settle. */

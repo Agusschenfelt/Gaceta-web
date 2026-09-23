@@ -77,7 +77,6 @@ export function PlayCircle({
           span={span}
           unlocked={unlocked}
           lit={played}
-          shimmer={!isPlaying}
           loading={loading}
         />
       </span>

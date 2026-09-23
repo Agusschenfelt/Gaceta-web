@@ -3,6 +3,8 @@ import { Icon } from "./Icon.jsx";
 const TONES = {
   // Acid gold at rest; white floods in from the left on hover.
   accent: "bg-accent text-bg",
+  // Spotify's green: the button is a door to their app, so it wears their colour.
+  spotify: "bg-spotify text-bg",
   // Outline at rest; the same white flood turns it solid and the text flips.
   outline: "border border-fg text-fg hover:text-bg focus-visible:text-bg",
 };

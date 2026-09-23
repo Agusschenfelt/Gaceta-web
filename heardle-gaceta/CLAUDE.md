@@ -60,7 +60,7 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Flujo general, qué se muestra cuando, orden de paneles, localStorage de filtros | `src/containers/GameContainer.jsx` |
 | Pantalla de juego (círculo, contador, buscador, skip, historial) | `src/components/organisms/GameBoard.jsx` y las moléculas que usa |
 | Círculo de play, latido del isotipo | `src/components/molecules/PlayCircle.jsx` |
-| Anillo de onda (compartido por juego y reveal): geometría, barrido al desbloquear, brillo ocioso | `src/components/molecules/WaveRing.jsx` (`TICK_BASE`, `TICK_REACH`, `SWEEP_STEP_MS`, `SHIMMER_MS`) |
+| Anillo de onda (compartido por juego y reveal): geometría, barrido al desbloquear, respiración constante | `src/components/molecules/WaveRing.jsx` (`TICK_BASE`, `TICK_REACH`, `SWEEP_STEP_MS`, `BREATH_MS`, `BREATH_WAVES`) + `tick-breathe` en `index.css` |
 | Animaciones (entrada de palabras, contador que rueda, disco, stagger) | `src/index.css` (`word-rise`, `roll-in`, `rise`, `disc-in`, `disc-spin`, `--ease-out-expo`) |
 | Cómo se calculan los ticks del anillo y cuántos están desbloqueados | `src/audio/waveform.js` (`ringTicks`, `unlockedTicks`, `RING_TICKS`, `CLIP_FILE_SECONDS`) + `waveform.test.js` |
 | Sacudón al errar, grano animado del fondo | `GameBoard.jsx` (`MISS_SHAKE`) · `src/index.css` (`grain`, `body::before`) |
@@ -254,12 +254,18 @@ Dos detalles que no conviene deshacer:
 
 - El latido es **`scale`, no tamaño**: nada hace reflow a 60fps. El sacudón es Web Animations
   (`element.animate`) sobre el contenedor del círculo, no una clase, para no remontar nada.
-- `.tick-unlock` usa `animation-fill-mode: backwards` **a propósito**: con `both` la animación se
+- Los ticks **respiran siempre**: la punta se retrae y vuelve, desfasada entre vecinos, así una
+  onda lenta recorre el anillo. Se hace con `stroke-dashoffset` sobre `pathLength={1}`, no con
+  `scale`, para que la base del tick quede pegada al círculo. Reemplazó a un brillo que recorría
+  los ticks bloqueados, que al usuario no le gustó. Barrido y respiración van juntos en el
+  `animation` inline de cada tick: con dos clases, una pisaría a la otra.
+- `tick-unlock` usa `animation-fill-mode: backwards` **a propósito**: con `both` la animación se
   quedaría con el color final y taparía el acid gold del playhead en esos ticks.
-- Con `prefers-reduced-motion`: el isotipo no late, no hay sacudón y el grano queda quieto.
+- Con `prefers-reduced-motion`: el isotipo no late, no hay sacudón, el anillo no respira y el grano queda quieto.
 
 **Jerarquía de acciones del reveal:** primero "Jugar otra vez" (acid gold, más ancho), después
-Spotify (contorno), y compartir como link chico abajo. Es pedido del usuario: lo que tiene que
+Spotify (en el verde de Spotify, `--color-spotify`, la única excepción a la paleta y solo en ese
+botón: lo pidió el usuario), y compartir como link chico abajo. Es pedido del usuario: lo que tiene que
 invitar es volver a jugar y escuchar el tema. `hoverOnlyWhenSupported` está prendido en
 `tailwind.config.js` para que en celular el hover no quede pegado después de un toque.
 

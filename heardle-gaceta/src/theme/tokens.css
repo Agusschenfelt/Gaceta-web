@@ -9,6 +9,8 @@
   --color-fg-muted: rgba(255, 255, 255, 0.6);
   --color-accent: #dee5a0;
   --color-danger: #911e1e;
+  /* Spotify's own green, only on the button that takes you there. */
+  --color-spotify: #1ed760;
   --color-surface: rgba(255, 255, 255, 0.05);
   --color-border: rgba(255, 255, 255, 0.12);
 

@@ -63,6 +63,16 @@ The user: the buttons should invite to play again and to Spotify first, then sha
       `hoverOnlyWhenSupported` so touch screens do not keep the wipe stuck. Verified at 360×640
       and 1440×900 with hover driven over CDP; overflow `[]`, 99/99, build, detector `[]`.
 
+### Round 4
+
+The user: the Spotify button should be green; the light running round the ring is not liked, but
+something giving constant motion should replace it.
+
+- [x] E12 — `--color-spotify: #1ed760`, only on the Spotify button (the one exception to the
+      palette, requested). Shimmer removed; every tick now breathes (tip retracts via
+      `stroke-dashoffset` on `pathLength=1`), two slow waves per 3.2 s lap, on both screens.
+      Dev server had to be restarted to pick up the Tailwind config change.
+
 ## Checks
 
 TDD: not configured for this project (source: no project/session setting); ordinary checks.

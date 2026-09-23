@@ -14,6 +14,7 @@ export default {
         muted: "var(--color-fg-muted)",
         accent: "var(--color-accent)",
         danger: "var(--color-danger)",
+        spotify: "var(--color-spotify)",
         surface: "var(--color-surface)",
         border: "var(--color-border)",
       },
