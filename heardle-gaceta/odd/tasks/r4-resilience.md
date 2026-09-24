@@ -46,3 +46,4 @@ TDD off (project config). `npm run test`, `npm run build`,
   anonymous sessions racing for one storage key) was caused by this change, so the init now uses
   withRetry without withTimeout. Game actions keep the timeout (repeating them is safe).
   Open advisories: R3-remembered-filter-unvalidated, R3-container-wiring-untested.
+- 2026-09-24: fix `6230f37` deployed; review `review-f0451846`-successor approved. Advisories: R3-init-imports-unverified is a false positive (both identifiers present, build+lint ok); R3-init-hang-no-escape is the accepted tradeoff (a stalled sign-in waits for the browser fetch error, then shows Reintentar); R3-init-no-timeout-untested open (needs jsdom or an extracted init helper). Feature done.
