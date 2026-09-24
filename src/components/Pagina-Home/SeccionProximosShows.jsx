@@ -113,8 +113,8 @@ export default function SeccionProximosShows() {
                         <span className="text-2xl font-mono text-white/40 uppercase">/SOON</span>
                     </div>
                     <div className="w-full md:w-2/4 flex flex-col">
-                        <p className="text-3xl md:text-4xl font-serif italic leading-none text-white">Nuevas fechas en camino</p>
-                        <p className="text-sm text-white/50 mt-2">Las anunciamos primero en Instagram.</p>
+                        <p className="text-3xl md:text-4xl font-serif italic leading-none text-white">Nuevas fechas pronto</p>
+                        <p className="text-sm text-white/50 mt-2">Seguinos en Instagram para enterarte apenas anunciemos.</p>
                     </div>
                     <div className="w-full md:w-1/4 flex justify-start md:justify-end items-center">
                         <a
