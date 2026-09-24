@@ -1,6 +1,6 @@
 /**
  * How the board is ordered, as one pure function both adapters share. The
- * Supabase view in `supabase/schema.sql` implements the same rule in SQL, so a
+ * function `get_leaderboard` in `supabase/schema.sql` implements the same rule in SQL, so a
  * change here has to be made there too.
  *
  * Players are ranked by their average points per game, not their total: a

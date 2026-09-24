@@ -83,7 +83,7 @@ export function stageWon(state) {
  * Points for a finished round from its outcome alone: earlier win = more
  * points, a loss scores 0. This is the one definition of the score. The
  * database derives the same number in `supabase/schema.sql` (generated column
- * on `games`) instead of trusting whatever the browser sends, so a change here
+ * on `rounds`) instead of trusting whatever the browser sends, so a change here
  * has to be made there too. An impossible outcome scores 0.
  */
 export function scoreFor(won, stageWon, stageCount = STAGES.length) {

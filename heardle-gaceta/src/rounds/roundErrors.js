@@ -1,7 +1,8 @@
 /**
  * Errors a round or the board can end in, by the code the database raises
- * (supabase/schema.sql) or the local service mirrors. Anything unrecognised is
- * treated as a connection problem, which is what it almost always is.
+ * (supabase/schema.sql) or the local service mirrors. Only a real fetch
+ * failure becomes `network`, the one error worth retrying; anything else
+ * unrecognised is `unexpected`.
  */
 export const ROUND_ERRORS = Object.freeze({
   not_authenticated: "No pudimos conectarte. Recargá la página.",
