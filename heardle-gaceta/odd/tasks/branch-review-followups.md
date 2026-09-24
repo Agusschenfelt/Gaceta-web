@@ -56,3 +56,8 @@ TDD off (project config, see third-review-fixes.md). `npm run test`, `npm run bu
   treated as dealt from the current chips.
   Checks: `npm run test` 171/171 (17 files); `npm run build` ok; eslint clean.
   Commits: 7d7237a 2218c99 (newest first).
+- 2026-09-24: native review (medium, reliability lens, base 51967ae) approved and acknowledged
+  (lineage review-bfcda9a2c3f7b731). Non-blocking follow-ups: R3-reveal-null-guard-untested,
+  R3-dealt-storage-wiring-untested (container wiring has no test; no component test harness yet),
+  R3-remembered-filter-unvalidated (a corrupted stored filter is returned as-is; validate it's an
+  array), R3-board-retry-untested.
