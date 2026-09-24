@@ -101,7 +101,7 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Qué vista se muestra (juego / resultado / ranking) | `src/containers/GameContainer.jsx` (estado `showRanking`) |
 | Lista de artistas y sus IDs de Spotify | `data/artists.json` |
 | Cómo se arma el catálogo | `scripts/build-catalog.mjs` |
-| Reintentos ante cortes de conexión (cuántos, backoff, qué se reintenta) | `src/shared/retry.js` (`withRetry`, `shouldRetry`) |
+| Reintentos ante cortes de conexión (cuántos, backoff, qué se reintenta) y timeout por pedido | `src/shared/retry.js` (`withRetry`, `shouldRetry`, `withTimeout`) + `callJudge` y `REQUEST_TIMEOUT_MS` en `GameContainer.jsx` |
 | Qué rondas suman al ranking (todos o 3+ artistas, primera vez por tema) | `src/leaderboard/ranking.js` (`MIN_ARTISTS_RANKED`, `isRankedSelection`, `isRankedRound`) + `start_round` en `supabase/schema.sql` |
 | Explicación del ranking en la UI ("Cómo funciona") | `src/components/organisms/Leaderboard.jsx` (`RULES`) |
 | Sesión anónima vencida o usuario borrado | `src/services/supabaseServices.js` + `src/services/session.js` |
@@ -127,7 +127,10 @@ sabe qué tema está sonando hasta que termina la ronda.
    `timeupdate`; el `requestAnimationFrame` solo dibuja el anillo (ver Gotchas).
 5. Guess → `rounds.guess(id, trackId, attempt)`; skip → `rounds.skip(id, attempt)`, donde
    `attempt` es cuántos intentos vio el cliente: si el servidor ya lo registró (se perdió la
-   respuesta), el reintento no cuenta doble. Los cortes de conexión se reintentan solos. Si el mp3
+   respuesta), el reintento no cuenta doble. Los cortes de conexión se reintentan solos, y un
+   pedido que no contesta en 10 s cuenta como corte (`callJudge`: timeout + reintento, también
+   para arrancar la ronda, el ranking y el login inicial). Si igual falla la carga, la pantalla de
+   error tiene un botón "Reintentar". Si el mp3
    no carga, se avisa y tocar el círculo lo reintenta. Una acción por vez (`busy`); la
    ronda solo cambia con la respuesta del árbitro. Un error se muestra arriba del buscador.
 6. Al terminar, la ronda ya quedó registrada por quien la arbitró; el contenedor solo refresca el
@@ -519,7 +522,7 @@ una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **168/168** en 16 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
+1. `npm run test` — tiene que dar **175/175** en 17 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
 2. `npm run build` — tiene que compilar.
    Lint: el `eslint.config.js` de la raíz **ignora `heardle-gaceta/`**, así que un `eslint` común
    no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts`.

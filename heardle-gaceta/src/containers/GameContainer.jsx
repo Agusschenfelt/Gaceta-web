@@ -7,7 +7,7 @@ import { CLIP_FILE_SECONDS } from "../audio/waveform.js";
 import { getAlias, setAlias as persistAlias } from "../player/playerIdentity.js";
 import { getGameServices } from "../services/gameServices.js";
 import { audioUrl, PEAKS_URL } from "../services/assetUrls.js";
-import { withRetry } from "../shared/retry.js";
+import { withRetry, withTimeout } from "../shared/retry.js";
 import { resolveDealtFilter } from "../rounds/dealtFilter.js";
 import { toRoundError } from "../rounds/roundErrors.js";
 import { answerTrack } from "../rounds/answerTrack.js";
@@ -18,6 +18,7 @@ import { Leaderboard } from "../components/organisms/Leaderboard.jsx";
 import { GameSettings } from "../components/molecules/GameSettings.jsx";
 import { GuessHistory } from "../components/molecules/GuessHistory.jsx";
 import { Spinner } from "../components/atoms/Spinner.jsx";
+import { Button } from "../components/atoms/Button.jsx";
 import { useMediaQuery } from "../hooks/useMediaQuery.js";
 
 const FILTER_KEY = "heardle:artistFilter";
@@ -46,6 +47,17 @@ const sameSet = (a, b) => a.length === b.length && a.every((x) => b.includes(x))
 
 const isConnectionError = (e) => toRoundError(e).code === "network";
 
+// A request that has not answered by then is treated as a dropped connection
+// and retried; on a flaky mobile network one can hang for minutes otherwise.
+const REQUEST_TIMEOUT_MS = 10_000;
+
+/**
+ * Every call to the judge: bounded in time, retried only on a dropped
+ * connection. Only for calls that are safe to repeat (see act()).
+ */
+const callJudge = (run) =>
+  withRetry(() => withTimeout(run(), REQUEST_TIMEOUT_MS), { shouldRetry: isConnectionError });
+
 /**
  * The artists a round is dealt from. "All" means all the artists this browser
  * loaded: a track whose catalog file failed could not be searched, so it must
@@ -61,6 +73,8 @@ export function GameContainer() {
   const [catalog, setCatalog] = useState(null);
   const [peaks, setPeaks] = useState({});
   const [loadError, setLoadError] = useState(null);
+  // Bumped by the retry button on the load error view to run loading again.
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const [artistFilter, setArtistFilter] = useState(() => readStored(FILTER_KEY, []));
   // The filter the current round was dealt with, or null if this browser does
   // not know it (see dealtFilter.js). When the player changes the chips
@@ -88,20 +102,25 @@ export function GameContainer() {
   const isWide = useMediaQuery("(min-width: 1024px)");
 
   useEffect(() => {
+    if (catalog) return;
     loadCatalog()
       .then(setCatalog)
       .catch((e) => setLoadError(`No pudimos cargar el catálogo: ${e.message}`));
     // Deliberately not awaited with the catalog: the bars can arrive late, the
     // round cannot.
     loadPeaks(PEAKS_URL).then(setPeaks);
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadAttempt]);
 
+  // Signing in is one request on a possibly flaky connection: retry it before
+  // giving up, and even then leave the player a way to try again.
   useEffect(() => {
-    if (!catalog) return;
-    getGameServices({ tracks: catalog.tracks })
+    if (!catalog || services) return;
+    callJudge(() => getGameServices({ tracks: catalog.tracks }))
       .then(setServices)
       .catch((e) => setLoadError(toRoundError(e).message));
-  }, [catalog]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [catalog, loadAttempt]);
 
   const tracksById = useMemo(
     () => new Map(catalog?.tracks.map((t) => [t.id, t]) ?? []),
@@ -122,9 +141,8 @@ export function GameContainer() {
     setRoundError(null);
     try {
       // Only a dropped connection is worth retrying; a refusal is final.
-      const round = await withRetry(() => services.rounds.start(dealFrom), {
-        shouldRetry: isConnectionError,
-      });
+      // Safe to repeat: an open round is resumed, never dealt twice.
+      const round = await callJudge(() => services.rounds.start(dealFrom));
       setHasPlayed(false);
       const dealt = resolveDealtFilter(round, filter, readStored(DEALT_KEY, null));
       if (dealt) writeStored(DEALT_KEY, { roundId: round.id, filter: dealt });
@@ -149,9 +167,8 @@ export function GameContainer() {
     if (!services) return;
     setBoard((b) => ({ ...b, loading: true, error: null }));
     try {
-      const [rows, me] = await withRetry(
-        () => Promise.all([services.board.getTop(20), services.board.getPlayerStats()]),
-        { shouldRetry: isConnectionError }
+      const [rows, me] = await callJudge(() =>
+        Promise.all([services.board.getTop(20), services.board.getPlayerStats()])
       );
       setBoard({ rows, me, loading: false, error: null });
       // The server knows the alias better than this browser does.
@@ -190,7 +207,7 @@ export function GameContainer() {
     setRoundError(null);
     const { id, attempts } = game;
     try {
-      setGame(await withRetry(() => run(id, attempts.length), { shouldRetry: isConnectionError }));
+      setGame(await callJudge(() => run(id, attempts.length)));
     } catch (e) {
       setRoundError(toRoundError(e).message);
     } finally {
@@ -250,10 +267,16 @@ export function GameContainer() {
     writeStored(EMAIL_FLAG_KEY, "dismissed");
   }
 
+  function onRetryLoad() {
+    setLoadError(null);
+    setLoadAttempt((n) => n + 1);
+  }
+
   if (loadError) {
     return (
-      <div className="flex flex-1 items-center justify-center">
+      <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
         <p className="text-sm text-danger">{loadError}</p>
+        <Button onClick={onRetryLoad}>Reintentar</Button>
       </div>
     );
   }

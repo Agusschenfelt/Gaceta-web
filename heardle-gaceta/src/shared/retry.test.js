@@ -1,5 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
-import { withRetry } from "./retry.js";
+import { afterEach, describe, it, expect, vi } from "vitest";
+import { withRetry, withTimeout } from "./retry.js";
+import { toRoundError } from "../rounds/roundErrors.js";
 
 const noSleep = () => Promise.resolve();
 
@@ -63,5 +64,44 @@ describe("withRetry shouldRetry", () => {
       )
     ).rejects.toBe(refusal);
     expect(calls).toBe(1);
+  });
+});
+
+describe("withTimeout", () => {
+  afterEach(() => vi.useRealTimers());
+
+  it("resolves with the value when the promise settles in time", async () => {
+    expect(await withTimeout(Promise.resolve("ok"), 1000)).toBe("ok");
+  });
+
+  it("passes through the promise's own rejection", async () => {
+    const refusal = new Error("rate_limited");
+    await expect(withTimeout(Promise.reject(refusal), 1000)).rejects.toBe(refusal);
+  });
+
+  it("rejects a hung request as a connection error, so withRetry retries it", async () => {
+    vi.useFakeTimers();
+    const hung = withTimeout(new Promise(() => {}), 10_000);
+    const settled = hung.catch((e) => e);
+    await vi.advanceTimersByTimeAsync(10_000);
+    const error = await settled;
+    expect(error.message).toMatch(/timed out/);
+    expect(toRoundError(error).code).toBe("network");
+  });
+
+  it("retries a request that hangs once and then answers", async () => {
+    vi.useFakeTimers();
+    let calls = 0;
+    const run = () => {
+      calls++;
+      return calls === 1 ? new Promise(() => {}) : Promise.resolve("round");
+    };
+    const result = withRetry(() => withTimeout(run(), 5000), {
+      shouldRetry: (e) => toRoundError(e).code === "network",
+      sleep: () => Promise.resolve(),
+    });
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(await result).toBe("round");
+    expect(calls).toBe(2);
   });
 });
