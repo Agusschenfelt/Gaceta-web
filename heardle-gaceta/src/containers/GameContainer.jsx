@@ -8,6 +8,7 @@ import { getAlias, setAlias as persistAlias } from "../player/playerIdentity.js"
 import { getGameServices } from "../services/gameServices.js";
 import { audioUrl, PEAKS_URL } from "../services/assetUrls.js";
 import { withRetry } from "../shared/retry.js";
+import { resolveDealtFilter } from "../rounds/dealtFilter.js";
 import { toRoundError } from "../rounds/roundErrors.js";
 import { answerTrack } from "../rounds/answerTrack.js";
 import { isRankedSelection } from "../leaderboard/ranking.js";
@@ -21,6 +22,8 @@ import { useMediaQuery } from "../hooks/useMediaQuery.js";
 
 const FILTER_KEY = "heardle:artistFilter";
 const EMAIL_FLAG_KEY = "heardle:emailPrompt";
+// { roundId, filter } of the last round this browser dealt; see dealtFilter.js.
+const DEALT_KEY = "heardle:dealtFilter";
 
 function readStored(key, fallback) {
   try {
@@ -59,8 +62,9 @@ export function GameContainer() {
   const [peaks, setPeaks] = useState({});
   const [loadError, setLoadError] = useState(null);
   const [artistFilter, setArtistFilter] = useState(() => readStored(FILTER_KEY, []));
-  // The filter the current round was dealt with. When the player changes the
-  // chips mid-round the new filter waits for the next round: see GameSettings.
+  // The filter the current round was dealt with, or null if this browser does
+  // not know it (see dealtFilter.js). When the player changes the chips
+  // mid-round the new filter waits for the next round: see GameSettings.
   const [dealtFilter, setDealtFilter] = useState(null);
   // The round as the rounds service reports it; see gameServices.js for the
   // shape. The answer (`answerId`) is only there once the round is over.
@@ -122,7 +126,9 @@ export function GameContainer() {
         shouldRetry: isConnectionError,
       });
       setHasPlayed(false);
-      setDealtFilter(filter);
+      const dealt = resolveDealtFilter(round, filter, readStored(DEALT_KEY, null));
+      if (dealt) writeStored(DEALT_KEY, { roundId: round.id, filter: dealt });
+      setDealtFilter(dealt);
       setGame(round);
     } catch (e) {
       setRoundError(toRoundError(e).message);
@@ -143,10 +149,10 @@ export function GameContainer() {
     if (!services) return;
     setBoard((b) => ({ ...b, loading: true, error: null }));
     try {
-      const [rows, me] = await Promise.all([
-        services.board.getTop(20),
-        services.board.getPlayerStats(),
-      ]);
+      const [rows, me] = await withRetry(
+        () => Promise.all([services.board.getTop(20), services.board.getPlayerStats()]),
+        { shouldRetry: isConnectionError }
+      );
       setBoard({ rows, me, loading: false, error: null });
       // The server knows the alias better than this browser does.
       if (me?.alias) {
@@ -284,11 +290,15 @@ export function GameContainer() {
     // game.ranked only says whether the round counts; it does not say why
     // not, and it must not: a repeat is only revealed here, never mid-round.
     // If the selection itself would have qualified, ranked=false can only
-    // mean this track was already played before.
-    const dealtSlugs = dealtFilter ? dealSlugs(dealtFilter, catalog.artists) : [];
+    // mean this track was already played before. An unknown dealt filter
+    // (null) proves nothing, so it falls back to the generic copy.
     const repeatUnranked =
       game.ranked === false &&
-      isRankedSelection(dealtSlugs, catalog.artists.map((a) => a.slug));
+      dealtFilter !== null &&
+      isRankedSelection(
+        dealSlugs(dealtFilter, catalog.artists),
+        catalog.artists.map((a) => a.slug)
+      );
     return (
       <ResultReveal
         game={game}
