@@ -129,8 +129,9 @@ sabe qué tema está sonando hasta que termina la ronda.
    `attempt` es cuántos intentos vio el cliente: si el servidor ya lo registró (se perdió la
    respuesta), el reintento no cuenta doble. Los cortes de conexión se reintentan solos, y un
    pedido que no contesta en 10 s cuenta como corte (`callJudge`: timeout + reintento, también
-   para arrancar la ronda, el ranking y el login inicial). Si igual falla la carga, la pantalla de
-   error tiene un botón "Reintentar". Si el mp3
+   para arrancar la ronda y el ranking). El login inicial se reintenta pero **sin timeout**: un login
+   lento que sigue corriendo mientras otro reintenta crearía dos jugadores anónimos peleando por la
+   misma sesión guardada. Si igual falla la carga, la pantalla de error tiene un botón "Reintentar". Si el mp3
    no carga, se avisa y tocar el círculo lo reintenta. Una acción por vez (`busy`); la
    ronda solo cambia con la respuesta del árbitro. Un error se muestra arriba del buscador.
 6. Al terminar, la ronda ya quedó registrada por quien la arbitró; el contenedor solo refresca el

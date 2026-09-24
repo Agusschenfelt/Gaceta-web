@@ -113,10 +113,12 @@ export function GameContainer() {
   }, [loadAttempt]);
 
   // Signing in is one request on a possibly flaky connection: retry it before
-  // giving up, and even then leave the player a way to try again.
+  // giving up, and even then leave the player a way to try again. No timeout
+  // here, unlike callJudge: a slow sign-in left running while a retry signs in
+  // again would create two anonymous players racing for the same stored session.
   useEffect(() => {
     if (!catalog || services) return;
-    callJudge(() => getGameServices({ tracks: catalog.tracks }))
+    withRetry(() => getGameServices({ tracks: catalog.tracks }), { shouldRetry: isConnectionError })
       .then(setServices)
       .catch((e) => setLoadError(toRoundError(e).message));
     // eslint-disable-next-line react-hooks/exhaustive-deps

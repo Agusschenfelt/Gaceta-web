@@ -41,4 +41,8 @@ TDD off (project config). `npm run test`, `npm run build`,
   errors only; worst case ~31 s instead of the browser's fetch timeout). Load error view gained
   a "Reintentar" button that bumps `loadAttempt` and reruns whichever load failed. Tests: 4 new in
   `retry.test.js` (fake timers), suite 175/175 in 17 files; build ok; eslint clean.
-  Advisory: a timed-out init leaves its Supabase client orphaned; harmless (same storage key).
+- 2026-09-24: review `review-f0451846c3a0b952` approved; its R3-init-timeout-concurrent-signin
+  (a slow, not dead, sign-in keeps running while the timed-out retry signs in again: two
+  anonymous sessions racing for one storage key) was caused by this change, so the init now uses
+  withRetry without withTimeout. Game actions keep the timeout (repeating them is safe).
+  Open advisories: R3-remembered-filter-unvalidated, R3-container-wiring-untested.
