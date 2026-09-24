@@ -123,3 +123,8 @@ TDD off (project config, see third-review-fixes.md). `npm run test`, `npm run bu
   and `private.backfill_ranked_first_play` exists. `start_round` signature unchanged, so no client
   deploy ordering needed. Feature complete; advisory follow-ups above remain open.
 - 2026-09-23: checkbox had been left unticked; schema re-applied (idempotent) to `heardle-gaceta` with psql (exit 0, backfill ran); `supabase/tests/smoke.mjs` all ok; the two smoke users deleted.
+- 2026-09-24: full-branch native review (base d7395a7, 121 files, high, 4 lenses) approved and
+  acknowledged (lineage review-62eb4b69b6c1b224). Non-blocking follow-ups: R1-cross-account-answer-farming,
+  R4-board-refresh-no-retry, R4-services-init-fatal, R2-dealt-filter-misnamed,
+  R2-round-errors-doc-contradicts-code, R2-score-comment-wrong-table, R2-ranking-comment-says-view,
+  R3-dealt-filter-on-resume, R3-silent-file-never-converges.
