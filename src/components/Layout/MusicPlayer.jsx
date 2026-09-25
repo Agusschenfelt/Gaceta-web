@@ -46,7 +46,7 @@ export default function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
-  const [volume, setVolume] = useState(0.5);
+  const [volume] = useState(0.5);
 
   const currentTrack = tracks[trackIndex];
 
@@ -105,8 +105,6 @@ export default function MusicPlayer() {
     }
   }, []);
 
-  const handleEnded = useCallback(() => handleNext(), []);
-
   // Volumen aplicado por ref — el atributo HTML volume={} no funciona
   useEffect(() => {
     if (audioRef.current) audioRef.current.volume = volume;
@@ -127,7 +125,7 @@ export default function MusicPlayer() {
         src={currentTrack.src}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
-        onEnded={handleEnded}
+        onEnded={handleNext}
       />
 
       {/* ---- DESKTOP PLAYERS ---- */}

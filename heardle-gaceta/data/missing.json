@@ -1,0 +1,220 @@
+[
+  {
+    "id": "QZHZ62202614",
+    "title": "Bloque",
+    "artist": "Tadu Vázquez",
+    "artists": [
+      "Ramma",
+      "Tadu Vázquez"
+    ],
+    "audio_file": "/audio/QZHZ62202614.mp3",
+    "cover_url": "https://i.scdn.co/image/ab67616d0000b273ff31449f2cb20445c4ab4959",
+    "spotify_url": "https://open.spotify.com/track/1JzaRRZ0b6WMMXaffakAWr",
+    "release": "Bloque",
+    "release_date": "2022-06-03",
+    "duration_ms": 136004,
+    "deezer_id": null,
+    "reason": "not_on_deezer",
+    "artist_slug": "tadu"
+  },
+  {
+    "id": "UYT142100016",
+    "title": "Quererse",
+    "artist": "Tadu Vázquez",
+    "artists": [
+      "Tadu Vázquez",
+      "Santi Mostaffa"
+    ],
+    "audio_file": "/audio/UYT142100016.mp3",
+    "cover_url": "https://i.scdn.co/image/ab67616d0000b2733c056af6cf88327e78d07efc",
+    "spotify_url": "https://open.spotify.com/track/3fn7gk0RqakcDunMsJGtIG",
+    "release": "Quererse",
+    "release_date": "2021-12-23",
+    "duration_ms": 210038,
+    "deezer_id": null,
+    "reason": "no_preview",
+    "artist_slug": "tadu"
+  },
+  {
+    "id": "UYT142100015",
+    "title": "Diluvio",
+    "artist": "Tadu Vázquez",
+    "artists": [
+      "Tadu Vázquez",
+      "Pipe"
+    ],
+    "audio_file": "/audio/UYT142100015.mp3",
+    "cover_url": "https://i.scdn.co/image/ab67616d0000b2739faf43a95e992bd4bf741bb6",
+    "spotify_url": "https://open.spotify.com/track/3aF2kiDSQrOWpSQG77hffC",
+    "release": "Diluvio",
+    "release_date": "2021-12-20",
+    "duration_ms": 178480,
+    "deezer_id": null,
+    "reason": "no_preview",
+    "artist_slug": "tadu"
+  },
+  {
+    "id": "UYT142100013",
+    "title": "Me Conocen",
+    "artist": "Tadu Vázquez",
+    "artists": [
+      "Tadu Vázquez",
+      "Mili Milanss"
+    ],
+    "audio_file": "/audio/UYT142100013.mp3",
+    "cover_url": "https://i.scdn.co/image/ab67616d0000b2736d451d24b32d0da60a98e1d5",
+    "spotify_url": "https://open.spotify.com/track/4ZMGpmSAktBywOmb7Lwjck",
+    "release": "Me Conocen",
+    "release_date": "2021-12-10",
+    "duration_ms": 183384,
+    "deezer_id": null,
+    "reason": "no_preview",
+    "artist_slug": "tadu"
+  },
+  {
+    "id": "UYT142100012",
+    "title": "Contigo",
+    "artist": "Tadu Vázquez",
+    "artists": [
+      "Tadu Vázquez",
+      "Eli Almic"
+    ],
+    "audio_file": "/audio/UYT142100012.mp3",
+    "cover_url": "https://i.scdn.co/image/ab67616d0000b273f31a792bc92e8a5ce6aa219d",
+    "spotify_url": "https://open.spotify.com/track/4BDpBSSJILiq2m9kUsXP4I",
+    "release": "Contigo",
+    "release_date": "2021-12-06",
+    "duration_ms": 170725,
+    "deezer_id": null,
+    "reason": "no_preview",
+    "artist_slug": "tadu"
+  },
+  {
+    "id": "UYT142100010",
+    "title": "Sangre",
+    "artist": "Tadu Vázquez",
+    "artists": [
+      "Tadu Vázquez",
+      "JT"
+    ],
+    "audio_file": "/audio/UYT142100010.mp3",
+    "cover_url": "https://i.scdn.co/image/ab67616d0000b273748a779fe671e5a181dd7542",
+    "spotify_url": "https://open.spotify.com/track/3BBTO9UYozFbmXVVMfLGvE",
+    "release": "Sangre",
+    "release_date": "2021-11-26",
+    "duration_ms": 148456,
+    "deezer_id": null,
+    "reason": "no_preview",
+    "artist_slug": "tadu"
+  },
+  {
+    "id": "UYT142100007",
+    "title": "Watch Out",
+    "artist": "Tadu Vázquez",
+    "artists": [
+      "Tadu Vázquez",
+      "Ailimé"
+    ],
+    "audio_file": "/audio/UYT142100007.mp3",
+    "cover_url": "https://i.scdn.co/image/ab67616d0000b273fc8a20ec40aa1fbd9866055f",
+    "spotify_url": "https://open.spotify.com/track/3UNwo1LQFEctW0zIhKYzUg",
+    "release": "Watch Out",
+    "release_date": "2021-11-12",
+    "duration_ms": 180730,
+    "deezer_id": null,
+    "reason": "no_preview",
+    "artist_slug": "tadu"
+  },
+  {
+    "id": "GX3Q92093762",
+    "title": "MVP",
+    "artist": "Tadu Vázquez",
+    "artists": [
+      "JT",
+      "Tadu Vázquez"
+    ],
+    "audio_file": "/audio/GX3Q92093762.mp3",
+    "cover_url": "https://i.scdn.co/image/ab67616d0000b2735d667924a145916a1a62cf9e",
+    "spotify_url": "https://open.spotify.com/track/5s6olCQwnbQkpDk9WXVGrP",
+    "release": "MVP",
+    "release_date": "2021-10-01",
+    "duration_ms": 140312,
+    "deezer_id": null,
+    "reason": "no_preview",
+    "artist_slug": "tadu"
+  },
+  {
+    "id": "GX3Q92090023",
+    "title": "Ambicion",
+    "artist": "Tadu Vázquez",
+    "artists": [
+      "JT",
+      "Tadu Vázquez"
+    ],
+    "audio_file": "/audio/GX3Q92090023.mp3",
+    "cover_url": "https://i.scdn.co/image/ab67616d0000b273f5473daa9235ea1907382116",
+    "spotify_url": "https://open.spotify.com/track/0qyuMySWdSJBY3shwKISOy",
+    "release": "Ambicion",
+    "release_date": "2021-07-17",
+    "duration_ms": 170197,
+    "deezer_id": null,
+    "reason": "no_preview",
+    "artist_slug": "tadu"
+  },
+  {
+    "id": "QZNJY2147434",
+    "title": "Sombras",
+    "artist": "Tadu Vázquez",
+    "artists": [
+      "Pipe",
+      "Tadu Vázquez"
+    ],
+    "audio_file": "/audio/QZNJY2147434.mp3",
+    "cover_url": "https://i.scdn.co/image/ab67616d0000b27365b05efd7400482b64023f5d",
+    "spotify_url": "https://open.spotify.com/track/7eg4XfkkqL6D5lAaMUftVi",
+    "release": "Sombras",
+    "release_date": "2021-11-25",
+    "duration_ms": 199766,
+    "deezer_id": null,
+    "reason": "no_preview",
+    "artist_slug": "tadu"
+  },
+  {
+    "id": "QZTAS2257081",
+    "title": "Whisky a las Rocas",
+    "artist": "Tadu Vázquez",
+    "artists": [
+      "Suda",
+      "Cronin",
+      "Tadu Vázquez"
+    ],
+    "audio_file": "/audio/QZTAS2257081.mp3",
+    "cover_url": "https://i.scdn.co/image/ab67616d0000b27301b2c78011620fd974b576d0",
+    "spotify_url": "https://open.spotify.com/track/3prSuf6C7hpAtXVc1G0iQz",
+    "release": "Whisky a las Rocas",
+    "release_date": "2022-11-04",
+    "duration_ms": 152000,
+    "deezer_id": null,
+    "reason": "no_preview",
+    "artist_slug": "tadu"
+  },
+  {
+    "id": "SE66N2216283",
+    "title": "Tan Bien",
+    "artist": "Tadu Vázquez",
+    "artists": [
+      "Marto Apardian",
+      "Nano Montyear",
+      "Tadu Vázquez"
+    ],
+    "audio_file": "/audio/SE66N2216283.mp3",
+    "cover_url": "https://i.scdn.co/image/ab67616d0000b27305be54baaabcc736a6740cf3",
+    "spotify_url": "https://open.spotify.com/track/2K8lsnM8qjX2opoJqvO306",
+    "release": "Tan Bien",
+    "release_date": "2022-12-02",
+    "duration_ms": 164318,
+    "deezer_id": null,
+    "reason": "no_preview",
+    "artist_slug": "tadu"
+  }
+]

@@ -8,17 +8,20 @@ import SEO from "../SEO.jsx";
 const TimelineHorizontal = lazy(() => import('../components/Pagina-SobreGaceta/TimeLineHorizontal'));
 const TimelineMobile = lazy(() => import('../components/Pagina-SobreGaceta/TimelineMobile'));
 
-function useIsMobile(breakpoint = 768) {
-  const getMq = () =>
-    typeof window !== 'undefined'
-      ? window.matchMedia(`(max-width: ${breakpoint - 1}px)`)
-      : null;
+// Module-level, so the hook's effect has no function dependency to track and
+// both uses share one guarded construction (null where matchMedia is missing).
+function mobileQuery(breakpoint) {
+  return typeof window !== 'undefined' && window.matchMedia
+    ? window.matchMedia(`(max-width: ${breakpoint - 1}px)`)
+    : null;
+}
 
-  const [isMobile, setIsMobile] = useState(() => getMq()?.matches ?? false);
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(() => mobileQuery(breakpoint)?.matches ?? false);
 
   useEffect(() => {
-    const mq = getMq();
-    if (!mq) return;
+    const mq = mobileQuery(breakpoint);
+    if (!mq) return undefined;
     const onChange = (e) => setIsMobile(e.matches);
     mq.addEventListener('change', onChange);
     return () => mq.removeEventListener('change', onChange);

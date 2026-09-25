@@ -1,0 +1,238 @@
+@import "./theme/tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  background-color: var(--color-bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background-color: var(--color-bg);
+  /* The noise lives on body::before, where it can move. */
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Editorial headline: tight Inter with one italic serif word. */
+.headline {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+}
+
+.headline em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* Small uppercase meta labels. */
+.label {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-fg-muted);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fade-up 0.35s ease-out both;
+}
+
+/* Play circle ring while the clip is still loading. */
+@keyframes ring-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/* Unlock sweep on the play ring: a tick lands dim, flashes acid gold, settles
+   white. Applied inline by WaveRing next to the breath, with `backwards` only,
+   so once it ends the inline stroke (and the playhead colour) owns the tick. */
+@keyframes tick-unlock {
+  0% {
+    stroke: var(--color-border);
+  }
+  25% {
+    stroke: var(--color-accent);
+  }
+  100% {
+    stroke: var(--color-fg);
+  }
+}
+
+/* Constant breath of the ring's ticks: the tip retracts and comes back.
+   Works on the dash offset (the line uses pathLength=1), so the base of every
+   tick stays on the circle. */
+@keyframes tick-breathe {
+  0%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dashoffset: 0.28;
+  }
+}
+
+/* The house ease: fast out, long settle. */
+:root {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Headline words rise out of their own line box, one after the other. */
+@keyframes word-rise {
+  from {
+    transform: translateY(105%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  /* Room for Instrument Serif's italic descenders inside the mask. */
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.word-rise {
+  display: inline-block;
+  animation: word-rise 0.9s var(--ease-out-expo) both;
+}
+
+/* A new stage's number rolls up into place, like a counter clicking over. */
+@keyframes roll-in {
+  from {
+    transform: translateY(70%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.roll-in {
+  display: inline-block;
+  animation: roll-in 0.6s var(--ease-out-expo) both;
+}
+
+/* Staggered entrance for the rows of a view. Delay set inline. */
+@keyframes rise {
+  from {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.rise {
+  animation: rise 0.7s var(--ease-out-expo) both;
+}
+
+/* The reveal: the record opens out of the ring's centre and settles. */
+@keyframes disc-in {
+  from {
+    clip-path: circle(0% at 50% 50%);
+    transform: rotate(-40deg) scale(0.9);
+  }
+  to {
+    clip-path: circle(50% at 50% 50%);
+    transform: rotate(0) scale(1);
+  }
+}
+
+.disc-in {
+  animation: disc-in 1.1s var(--ease-out-expo) 0.15s both;
+}
+
+/* The record turns while the song plays and holds its angle when it stops. */
+@keyframes disc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.disc-spin {
+  animation: disc-spin 6s linear infinite;
+}
+
+/* Film grain: the page noise jumps between offsets in steps, like a projector.
+   Lives on a fixed layer so it never touches layout. */
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -4%); }
+  60% { transform: translate(-4%, -1%); }
+  80% { transform: translate(3%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: -10%;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--noise);
+  animation: grain 0.8s steps(5) infinite;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

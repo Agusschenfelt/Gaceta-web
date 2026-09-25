@@ -1,0 +1,1733 @@
+{
+  "artist": "Tadu Vázquez",
+  "slug": "tadu",
+  "tracks": [
+    {
+      "id": "UYB282673660",
+      "title": "escuchándote",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYB282673660.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273197f28b6391fa7f7baf1c3b6",
+      "spotify_url": "https://open.spotify.com/track/1M4Q9Jz8E6KI6cxGwLRYAs",
+      "release": "escuchándote",
+      "release_date": "2026-04-30",
+      "duration_ms": 136840,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UY01G2400130",
+      "title": "Sin Título",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Valuto",
+        "Barta",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UY01G2400130.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735ed203c03560dd6c05bab917",
+      "spotify_url": "https://open.spotify.com/track/1Ypa88NA1DK2YkLGXX1OUb",
+      "release": "Sin Título",
+      "release_date": "2026-01-15",
+      "duration_ms": 108972,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UY01G2400012",
+      "title": "mi único consuelo :(",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Valuto",
+        "Tadu Vázquez",
+        "Barta"
+      ],
+      "audio_file": "/audio/UY01G2400012.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2733f69b80471e8bd9a9d2d7e78",
+      "spotify_url": "https://open.spotify.com/track/4U149Cqm4ngZ9xFBKfvU9f",
+      "release": "mi único consuelo :(",
+      "release_date": "2025-02-14",
+      "duration_ms": 156841,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UY01G2400004",
+      "title": "Mainstream",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Valuto",
+        "Barta",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UY01G2400004.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b81eaf2cda150b077a61209f",
+      "spotify_url": "https://open.spotify.com/track/1ugZV3zuLjRIMKA1fADRIO",
+      "release": "Flashes",
+      "release_date": "2024-12-19",
+      "duration_ms": 125806,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "ARUM72400119",
+      "title": "Desde Hace Tanto",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Taiu",
+        "Agustin Ficarra",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/ARUM72400119.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732d3f425110cb150e109f6025",
+      "spotify_url": "https://open.spotify.com/track/4nn9EEQmDQGZ9mJCF5GP5T",
+      "release": "Desde Hace Tanto",
+      "release_date": "2024-11-29",
+      "duration_ms": 180640,
+      "deezer_id": 3105247661
+    },
+    {
+      "id": "USANG2459988",
+      "title": "DAILY - Remix",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "KHEA",
+        "Neo Pistea",
+        "Tadu Vázquez",
+        "Davus"
+      ],
+      "audio_file": "/audio/USANG2459988.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273e4eb3adbcedf54e4d9851819",
+      "spotify_url": "https://open.spotify.com/track/0AsdxTr9BJZfapk3NWFCgR",
+      "release": "DAILY (Remix)",
+      "release_date": "2024-10-08",
+      "duration_ms": 252250,
+      "deezer_id": 3326317411
+    },
+    {
+      "id": "UYT142400043",
+      "title": "Nostalgia",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142400043.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273791097088bc34611d75972c1",
+      "spotify_url": "https://open.spotify.com/track/6dkfSa5CFD3D11m5xjywO7",
+      "release": "Nostalgia",
+      "release_date": "2024-10-01",
+      "duration_ms": 136624,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142400040",
+      "title": "SOBRENATURAL",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142400040.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2731ef2a71ee2733523423001e8",
+      "spotify_url": "https://open.spotify.com/track/6Ud1bykFMloid52ezZyGou",
+      "release": "SOBRENATURAL",
+      "release_date": "2024-08-28",
+      "duration_ms": 138461,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142400034",
+      "title": "Somos el Show",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "ARA",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142400034.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273dc293a701a0dab046dfe183c",
+      "spotify_url": "https://open.spotify.com/track/7MmEpPerzJy7zzjBpGz2CR",
+      "release": "Somos el Show",
+      "release_date": "2024-07-18",
+      "duration_ms": 114014,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "USANG2407252",
+      "title": "aunque lo busque en mil",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/USANG2407252.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2737098659045f84a8960a2ca7b",
+      "spotify_url": "https://open.spotify.com/track/2KnJvID8NOS7daBN43qMd6",
+      "release": "aunque lo busque en mil",
+      "release_date": "2024-07-13",
+      "duration_ms": 123783,
+      "deezer_id": 3374708481
+    },
+    {
+      "id": "UYT142400032",
+      "title": "ICÓNICOS",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez",
+        "Dazen"
+      ],
+      "audio_file": "/audio/UYT142400032.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739f1dab8dfc7b1c9a62156a8a",
+      "spotify_url": "https://open.spotify.com/track/5cIXxxLrHVfUpHrWTAtSaB",
+      "release": "ICÓNICOS",
+      "release_date": "2024-06-27",
+      "duration_ms": 147216,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "US3DF2488693",
+      "title": "H2O - Live Session",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/US3DF2488693.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739beb1f36249e02f0d3ecc0cf",
+      "spotify_url": "https://open.spotify.com/track/2FSHORzhfPz31yuHsjwg8z",
+      "release": "Kápsula Live Session",
+      "release_date": "2024-06-14",
+      "duration_ms": 122790,
+      "deezer_id": 3369702461
+    },
+    {
+      "id": "US3DF2488692",
+      "title": "DAILY - Live Session",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/US3DF2488692.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739beb1f36249e02f0d3ecc0cf",
+      "spotify_url": "https://open.spotify.com/track/4BaF97xSHUq0wKYlYRwFiQ",
+      "release": "Kápsula Live Session",
+      "release_date": "2024-06-14",
+      "duration_ms": 143119,
+      "deezer_id": 3369702451
+    },
+    {
+      "id": "US3DF2488691",
+      "title": "SUAVE - Live Session",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/US3DF2488691.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739beb1f36249e02f0d3ecc0cf",
+      "spotify_url": "https://open.spotify.com/track/65iEyEFxvoqINvcwLnunBk",
+      "release": "Kápsula Live Session",
+      "release_date": "2024-06-14",
+      "duration_ms": 112444,
+      "deezer_id": 3369702441
+    },
+    {
+      "id": "UYT142400026",
+      "title": "Enfocarme en Mí",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Wave",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142400026.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27308e1628160152ae5874d847b",
+      "spotify_url": "https://open.spotify.com/track/5LxcBoLtsrmxT1Pb5eumn6",
+      "release": "Enfocarme en Mí",
+      "release_date": "2024-06-12",
+      "duration_ms": 158400,
+      "deezer_id": 2823122662
+    },
+    {
+      "id": "US3DF2462264",
+      "title": "TAN IGUAL",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/US3DF2462264.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736430f1bffa44ce63cbd278c1",
+      "spotify_url": "https://open.spotify.com/track/3MvU4P4PorcIoHbTWfqQun",
+      "release": "Kápsula",
+      "release_date": "2024-05-23",
+      "duration_ms": 123000,
+      "deezer_id": 3326325881
+    },
+    {
+      "id": "US3DF2462261",
+      "title": "24 DE DICIEMBRE",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/US3DF2462261.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736430f1bffa44ce63cbd278c1",
+      "spotify_url": "https://open.spotify.com/track/7I4jiWiMACmMaMsMKD95Cn",
+      "release": "Kápsula",
+      "release_date": "2024-05-23",
+      "duration_ms": 123750,
+      "deezer_id": 3326325871
+    },
+    {
+      "id": "US3DF2462259",
+      "title": "LUCES EN LA CITY",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Lucho SSJ",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/US3DF2462259.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736430f1bffa44ce63cbd278c1",
+      "spotify_url": "https://open.spotify.com/track/5z8eFVmTq27tv4cYp5sBj1",
+      "release": "Kápsula",
+      "release_date": "2024-05-23",
+      "duration_ms": 152000,
+      "deezer_id": 3326325861
+    },
+    {
+      "id": "US3DF2462257",
+      "title": "NO NOS HACE BIEN",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/US3DF2462257.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736430f1bffa44ce63cbd278c1",
+      "spotify_url": "https://open.spotify.com/track/568xsGh3VQNLLGCrPJcSn8",
+      "release": "Kápsula",
+      "release_date": "2024-05-23",
+      "duration_ms": 144014,
+      "deezer_id": 3326325841
+    },
+    {
+      "id": "US3DF2462256",
+      "title": "TU TU TU <3",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "COSMIC KID",
+        "AFTER",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/US3DF2462256.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736430f1bffa44ce63cbd278c1",
+      "spotify_url": "https://open.spotify.com/track/6bDzjJK8Ao6fqWSBH6RRiT",
+      "release": "Kápsula",
+      "release_date": "2024-05-23",
+      "duration_ms": 130000,
+      "deezer_id": 3326325831
+    },
+    {
+      "id": "US3DF2462255",
+      "title": "SUAVE",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/US3DF2462255.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736430f1bffa44ce63cbd278c1",
+      "spotify_url": "https://open.spotify.com/track/0UJ4Zq348eeFBYcZxYUWSv",
+      "release": "Kápsula",
+      "release_date": "2024-05-23",
+      "duration_ms": 112638,
+      "deezer_id": 3326325821
+    },
+    {
+      "id": "US3DF2462254",
+      "title": "CONJURO",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/US3DF2462254.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736430f1bffa44ce63cbd278c1",
+      "spotify_url": "https://open.spotify.com/track/1EUiCrbG8yJldntUvnwDdy",
+      "release": "Kápsula",
+      "release_date": "2024-05-23",
+      "duration_ms": 157000,
+      "deezer_id": 3326325811
+    },
+    {
+      "id": "US3DF2421237",
+      "title": "H2O",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/US3DF2421237.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736430f1bffa44ce63cbd278c1",
+      "spotify_url": "https://open.spotify.com/track/4ZeqwLykHgiJ62Sa1UQk6b",
+      "release": "Kápsula",
+      "release_date": "2024-05-23",
+      "duration_ms": 137000,
+      "deezer_id": 3326325801
+    },
+    {
+      "id": "US3DF2462252",
+      "title": "MI FUTURO AL AZAR",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Zeballos",
+        "Wave",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/US3DF2462252.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736430f1bffa44ce63cbd278c1",
+      "spotify_url": "https://open.spotify.com/track/46VvRGWVWSRVxvdw2kOKhX",
+      "release": "Kápsula",
+      "release_date": "2024-05-23",
+      "duration_ms": 152530,
+      "deezer_id": 3326325781
+    },
+    {
+      "id": "US3DF2444768",
+      "title": "DAILY",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/US3DF2444768.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736430f1bffa44ce63cbd278c1",
+      "spotify_url": "https://open.spotify.com/track/2qEYFmx8X5c9y9uJTKQ80V",
+      "release": "Kápsula",
+      "release_date": "2024-05-23",
+      "duration_ms": 144514,
+      "deezer_id": 3326325771
+    },
+    {
+      "id": "US3DF2462250",
+      "title": "NO ESTOY EN FLEX",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/US3DF2462250.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736430f1bffa44ce63cbd278c1",
+      "spotify_url": "https://open.spotify.com/track/5aVVorh8LbvLn8bddyFDGJ",
+      "release": "Kápsula",
+      "release_date": "2024-05-23",
+      "duration_ms": 92000,
+      "deezer_id": 3326325761
+    },
+    {
+      "id": "UYT142400013",
+      "title": "Delirio",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142400013.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27364cbedaa8a78b8d21a195c39",
+      "spotify_url": "https://open.spotify.com/track/34pPMTpjafWYo6WyIme1j8",
+      "release": "Delirio",
+      "release_date": "2024-04-24",
+      "duration_ms": 117079,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142400014",
+      "title": "x interes",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "ARA",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142400014.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273e295eeea1126dd8fcdc797e9",
+      "spotify_url": "https://open.spotify.com/track/0TGwFfD6OQAIDRw4Tsf49R",
+      "release": "x interes",
+      "release_date": "2024-04-23",
+      "duration_ms": 159553,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142400010",
+      "title": "No Soy Yo",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Valuto",
+        "Tadu Vázquez",
+        "Barta"
+      ],
+      "audio_file": "/audio/UYT142400010.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273f1e0129543f037223786216f",
+      "spotify_url": "https://open.spotify.com/track/0Jkpybs2BjKAofpfD97Hvg",
+      "release": "No Soy Yo",
+      "release_date": "2024-03-27",
+      "duration_ms": 164557,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142400007",
+      "title": "Naturaleza",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Wave",
+        "Ramma",
+        "Tadu Vázquez",
+        "Barta"
+      ],
+      "audio_file": "/audio/UYT142400007.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27383851bb0ec36089d3deadd18",
+      "spotify_url": "https://open.spotify.com/track/5RZcEer730387814PcecnN",
+      "release": "Naturaleza",
+      "release_date": "2024-03-14",
+      "duration_ms": 140600,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142400009",
+      "title": "Nunca Más",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Valuto",
+        "Tadu Vázquez",
+        "Fosse En El Track"
+      ],
+      "audio_file": "/audio/UYT142400009.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273978b9b4bd3b90c3cfabaff6e",
+      "spotify_url": "https://open.spotify.com/track/1Q0RnxJUA87npHsQ3oCNiQ",
+      "release": "Nunca Más",
+      "release_date": "2024-03-13",
+      "duration_ms": 94168,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYAS12300026",
+      "title": "Bullshit 2",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Zeballos",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYAS12300026.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2731cb39e0b231324ca93e61501",
+      "spotify_url": "https://open.spotify.com/track/2ExfbkiFf7WrBtDZKwjgIm",
+      "release": "Bullshit 2",
+      "release_date": "2024-01-19",
+      "duration_ms": 322826,
+      "deezer_id": 3617414692
+    },
+    {
+      "id": "ES71G2338084",
+      "title": "Qué bien que lo hacemos",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "ENEMY",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/ES71G2338084.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273f6dc279d86489b11cc2e9837",
+      "spotify_url": "https://open.spotify.com/track/39K24urq95H60q9gx9TE1F",
+      "release": "Pura Química",
+      "release_date": "2023-12-14",
+      "duration_ms": 137366,
+      "deezer_id": 3263146021
+    },
+    {
+      "id": "ESA092319637",
+      "title": "BEBA",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "BALTA",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/ESA092319637.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273af5d54f31036eae8e7e554c8",
+      "spotify_url": "https://open.spotify.com/track/781UySwbA2j6PPC5krMPsw",
+      "release": "TODO ANTES de iRME",
+      "release_date": "2023-12-08",
+      "duration_ms": 166158,
+      "deezer_id": 2396981265
+    },
+    {
+      "id": "UYT142300043",
+      "title": "No Es Casualidad",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Tadu Vázquez",
+        "Valuto"
+      ],
+      "audio_file": "/audio/UYT142300043.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732e1ba04eee7d3bc52bcf83c8",
+      "spotify_url": "https://open.spotify.com/track/2iL7vg4hxRnsXu25IqDnai",
+      "release": "No Es Casualidad",
+      "release_date": "2023-12-06",
+      "duration_ms": 130004,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "QMANG2211582",
+      "title": "Que sean 2",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Zeballos",
+        "Tadu Vázquez",
+        "Bruno Cammá"
+      ],
+      "audio_file": "/audio/QMANG2211582.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732e73341b52e8ce150d1f1d26",
+      "spotify_url": "https://open.spotify.com/track/0OrNbV1JOOja3mTW3ThcLz",
+      "release": "Ubi al privado",
+      "release_date": "2023-11-16",
+      "duration_ms": 169319,
+      "deezer_id": 3369601331
+    },
+    {
+      "id": "QMANG2211581",
+      "title": "Desce",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Zeballos",
+        "Tadu Vázquez",
+        "Bruno Cammá"
+      ],
+      "audio_file": "/audio/QMANG2211581.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732e73341b52e8ce150d1f1d26",
+      "spotify_url": "https://open.spotify.com/track/4Tch0dgm0T5W8SKrupi3am",
+      "release": "Ubi al privado",
+      "release_date": "2023-11-16",
+      "duration_ms": 162500,
+      "deezer_id": 3369601321
+    },
+    {
+      "id": "QMANG2211580",
+      "title": "Handy",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Zeballos",
+        "Tadu Vázquez",
+        "Bruno Cammá"
+      ],
+      "audio_file": "/audio/QMANG2211580.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732e73341b52e8ce150d1f1d26",
+      "spotify_url": "https://open.spotify.com/track/3md6g6FqHvg6elkOqFFmWF",
+      "release": "Ubi al privado",
+      "release_date": "2023-11-16",
+      "duration_ms": 160237,
+      "deezer_id": 3369601311
+    },
+    {
+      "id": "QMANG2212112",
+      "title": "un abrazo y se me pasa",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Tadu Vázquez",
+        "Bruno Cammá"
+      ],
+      "audio_file": "/audio/QMANG2212112.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2734b5f078f77aaab36e1b9f064",
+      "spotify_url": "https://open.spotify.com/track/1qEWZZIDvSSHxcQVNFWUUv",
+      "release": "un abrazo y se me pasa",
+      "release_date": "2023-10-17",
+      "duration_ms": 154475,
+      "deezer_id": 3369601131
+    },
+    {
+      "id": "QMANG2202051",
+      "title": "Rosalía",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Zeballos",
+        "Tadu Vázquez",
+        "Fosse",
+        "JDI",
+        "Pazos"
+      ],
+      "audio_file": "/audio/QMANG2202051.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27333baaea7e08bfeb81cc0935d",
+      "spotify_url": "https://open.spotify.com/track/62Omvq0OpstZNC1xoPbefq",
+      "release": "Rosalía",
+      "release_date": "2023-10-05",
+      "duration_ms": 170437,
+      "deezer_id": 3369601151
+    },
+    {
+      "id": "UYAS12300016",
+      "title": "Gloriax",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Zeballos",
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYAS12300016.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273acecca8d26357d674f7393e7",
+      "spotify_url": "https://open.spotify.com/track/78n1kpjcbOSal5A8MGCbCd",
+      "release": "Gloriax",
+      "release_date": "2023-09-08",
+      "duration_ms": 206000,
+      "deezer_id": 3615616102
+    },
+    {
+      "id": "QZNJZ2307368",
+      "title": "Costeros Session #2",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Costeros Crew",
+        "TREU210",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/QZNJZ2307368.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27372d2deec7183f82546a1a5e7",
+      "spotify_url": "https://open.spotify.com/track/7MYsnAOSms6byi20LFyYNs",
+      "release": "Costeros Sessions",
+      "release_date": "2023-09-02",
+      "duration_ms": 194747,
+      "deezer_id": 2404366465
+    },
+    {
+      "id": "QM3DF2283204",
+      "title": "Jumping",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Tadu Vázquez",
+        "Fosse",
+        "IceEyes"
+      ],
+      "audio_file": "/audio/QM3DF2283204.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273e83fdb1f1fb0b463c80e7af2",
+      "spotify_url": "https://open.spotify.com/track/6eHBbIKucWdmGfZmTtAy3I",
+      "release": "Jumping",
+      "release_date": "2023-08-29",
+      "duration_ms": 132000,
+      "deezer_id": 3369601361
+    },
+    {
+      "id": "UYAS12300015",
+      "title": "Ragazza",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Zeballos",
+        "Knak",
+        "Bruno Cammá",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYAS12300015.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735c8af6a63f00cb1619b6a5be",
+      "spotify_url": "https://open.spotify.com/track/0YgYaiMBR3jbqSUlSgKaEo",
+      "release": "Ragazza",
+      "release_date": "2023-08-11",
+      "duration_ms": 177000,
+      "deezer_id": 3617414892
+    },
+    {
+      "id": "SE6XW2365470",
+      "title": "Mi Raza",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "BERNA",
+        "JT",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/SE6XW2365470.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2733f6b968ddda83210a69eac25",
+      "spotify_url": "https://open.spotify.com/track/6uiy6fRLPVo1dF2ufKD9gO",
+      "release": "Mi Raza",
+      "release_date": "2023-08-04",
+      "duration_ms": 195291,
+      "deezer_id": 2378255605
+    },
+    {
+      "id": "QZNJW2392964",
+      "title": "Burukutrá",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Gula",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/QZNJW2392964.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273e6f7bb6f5059162c9579c0d3",
+      "spotify_url": "https://open.spotify.com/track/1fsCWYKucvwztboRvc4jQa",
+      "release": "SOL SALE",
+      "release_date": "2023-07-01",
+      "duration_ms": 166117,
+      "deezer_id": 2331400035
+    },
+    {
+      "id": "QZNJW2392963",
+      "title": "Nunca Es Tarde",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Gula",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/QZNJW2392963.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273e6f7bb6f5059162c9579c0d3",
+      "spotify_url": "https://open.spotify.com/track/3sr8S5O1ASiwBAHLUu3vCx",
+      "release": "SOL SALE",
+      "release_date": "2023-07-01",
+      "duration_ms": 187105,
+      "deezer_id": 2331400025
+    },
+    {
+      "id": "SE6TI2333816",
+      "title": "MI MUNDO",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Marto Apardian",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/SE6TI2333816.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273eb8e1da679bdf8875a76523d",
+      "spotify_url": "https://open.spotify.com/track/4lAIAwjPPVGCE1ID1psJR4",
+      "release": "MI MUNDO",
+      "release_date": "2023-06-23",
+      "duration_ms": 174306,
+      "deezer_id": 2329181535
+    },
+    {
+      "id": "USANG2298558",
+      "title": "ORGÁNIKO",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/USANG2298558.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b4c16cdbc8a558d0d1a8a330",
+      "spotify_url": "https://open.spotify.com/track/5dbV1sRjoEvgE1vS6sZW9V",
+      "release": "ORGÁNIKO",
+      "release_date": "2023-05-26",
+      "duration_ms": 146250,
+      "deezer_id": 3336905961
+    },
+    {
+      "id": "USANG2298565",
+      "title": "LEJOS DE MI",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Davus",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/USANG2298565.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b4c16cdbc8a558d0d1a8a330",
+      "spotify_url": "https://open.spotify.com/track/6p6q8AXvaFfSA8cmlPrdMS",
+      "release": "ORGÁNIKO",
+      "release_date": "2023-05-26",
+      "duration_ms": 169750,
+      "deezer_id": 3336905951
+    },
+    {
+      "id": "USANG2298564",
+      "title": "LO QUE NO Y LO QUE SI",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Lautaro Lopez",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/USANG2298564.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b4c16cdbc8a558d0d1a8a330",
+      "spotify_url": "https://open.spotify.com/track/2hYaUhdcx1DyXPBFcyIptL",
+      "release": "ORGÁNIKO",
+      "release_date": "2023-05-26",
+      "duration_ms": 161750,
+      "deezer_id": 3336905941
+    },
+    {
+      "id": "USANG2298563",
+      "title": "HABLANDO CON DIOS",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "SOYTURISTA",
+        "Tadu Vázquez",
+        "One Way"
+      ],
+      "audio_file": "/audio/USANG2298563.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b4c16cdbc8a558d0d1a8a330",
+      "spotify_url": "https://open.spotify.com/track/45i3u6GKYl7rq2rKApUEmn",
+      "release": "ORGÁNIKO",
+      "release_date": "2023-05-26",
+      "duration_ms": 142750,
+      "deezer_id": 3336905931
+    },
+    {
+      "id": "USANG2298562",
+      "title": "POR LA CITY",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "FRO!",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/USANG2298562.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b4c16cdbc8a558d0d1a8a330",
+      "spotify_url": "https://open.spotify.com/track/7gsqWlR4xN8lyFuw2XvDhv",
+      "release": "ORGÁNIKO",
+      "release_date": "2023-05-26",
+      "duration_ms": 153750,
+      "deezer_id": 3336905921
+    },
+    {
+      "id": "USANG2298561",
+      "title": "DINASTIA I",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Franux BB",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/USANG2298561.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b4c16cdbc8a558d0d1a8a330",
+      "spotify_url": "https://open.spotify.com/track/4LTNAEE9GAoGwQodLxCTxi",
+      "release": "ORGÁNIKO",
+      "release_date": "2023-05-26",
+      "duration_ms": 140250,
+      "deezer_id": 3336905911
+    },
+    {
+      "id": "USANG2298560",
+      "title": "PICASSO",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Lara91k",
+        "Tadu Vázquez",
+        "IceEyes"
+      ],
+      "audio_file": "/audio/USANG2298560.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b4c16cdbc8a558d0d1a8a330",
+      "spotify_url": "https://open.spotify.com/track/1FbTuoy796brMbAj8UwjGc",
+      "release": "ORGÁNIKO",
+      "release_date": "2023-05-26",
+      "duration_ms": 158750,
+      "deezer_id": 3336905901
+    },
+    {
+      "id": "USANG2298559",
+      "title": "THC",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Canals",
+        "Tadu Vázquez",
+        "Taiu"
+      ],
+      "audio_file": "/audio/USANG2298559.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b4c16cdbc8a558d0d1a8a330",
+      "spotify_url": "https://open.spotify.com/track/7zXQcwaShov0MdMn95CWBS",
+      "release": "ORGÁNIKO",
+      "release_date": "2023-05-26",
+      "duration_ms": 150750,
+      "deezer_id": 3336905891
+    },
+    {
+      "id": "QZNJV2314192",
+      "title": "Hice Lo Que Quise",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Nissa",
+        "Tadu Vázquez",
+        "Phontana"
+      ],
+      "audio_file": "/audio/QZNJV2314192.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27384fbb6d20402a791a9e03ab3",
+      "spotify_url": "https://open.spotify.com/track/396kLCfCYPErXk1DxhLiPM",
+      "release": "Hice Lo Que Quise",
+      "release_date": "2023-05-25",
+      "duration_ms": 147692,
+      "deezer_id": 2274483587
+    },
+    {
+      "id": "UYT142300016",
+      "title": "MISIÓN",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142300016.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273eb26091517646d6880421ef4",
+      "spotify_url": "https://open.spotify.com/track/0OKOR98mkBLVwfWYHnvUga",
+      "release": "MISIÓN",
+      "release_date": "2023-05-12",
+      "duration_ms": 179500,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "QZNJV2333157",
+      "title": "Poka Luz - Remix",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "AFTER",
+        "Knak",
+        "FMK",
+        "Bhavi",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/QZNJV2333157.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736e27bf32d1b2d74c0ef1bd8a",
+      "spotify_url": "https://open.spotify.com/track/6osUSmFuzJjKZXUeMuWpaw",
+      "release": "Poka Luz (Remix)",
+      "release_date": "2023-05-11",
+      "duration_ms": 225720,
+      "deezer_id": 2280790727
+    },
+    {
+      "id": "SE6I32326452",
+      "title": "MALA",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Arquero",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/SE6I32326452.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2730682d1d093ff38116bf93db7",
+      "spotify_url": "https://open.spotify.com/track/7oP7eAPNRey6iLu6sZeGgY",
+      "release": "MALA",
+      "release_date": "2023-04-21",
+      "duration_ms": 172571,
+      "deezer_id": 2238544027
+    },
+    {
+      "id": "UYT142300012",
+      "title": "MILLO",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142300012.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27337002dede1c2c7d7df1cb267",
+      "spotify_url": "https://open.spotify.com/track/2OIhVeEAtzjITeBzB18sWQ",
+      "release": "MILLO",
+      "release_date": "2023-04-06",
+      "duration_ms": 134480,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "FR96X2313417",
+      "title": "Mala Mía",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Davus",
+        "Akapellah",
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/FR96X2313417.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273178f8e335915e0351006129c",
+      "spotify_url": "https://open.spotify.com/track/1k3WKD6lpEpKSjaE897v90",
+      "release": "Mala Mía",
+      "release_date": "2023-03-03",
+      "duration_ms": 177418,
+      "deezer_id": 3590398551
+    },
+    {
+      "id": "QZGLM2313924",
+      "title": "Poka Luz",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "AFTER",
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/QZGLM2313924.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27336260586feccdfd51f3d6dde",
+      "spotify_url": "https://open.spotify.com/track/05h2p4OlGsBFNeVMLrKuJE",
+      "release": "Poka Luz",
+      "release_date": "2023-03-02",
+      "duration_ms": 106800,
+      "deezer_id": 2168924927
+    },
+    {
+      "id": "UYT142300004",
+      "title": "BANG!",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142300004.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273de12af82ea0b51fa740b4aec",
+      "spotify_url": "https://open.spotify.com/track/1fjt2pXcvfmkS0BzDxWYiv",
+      "release": "BANG!",
+      "release_date": "2023-02-23",
+      "duration_ms": 155403,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142300001",
+      "title": "VIBRAS",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142300001.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273caeb95acab7688c28aa3acd9",
+      "spotify_url": "https://open.spotify.com/track/5XSX0hfuSGnbqliXSFYJOX",
+      "release": "VIBRAS",
+      "release_date": "2023-02-04",
+      "duration_ms": 176987,
+      "deezer_id": 2110125317
+    },
+    {
+      "id": "QM3DF2206051",
+      "title": "un ratito +",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Knak",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/QM3DF2206051.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732a97ec2ef06d3f8214199e6e",
+      "spotify_url": "https://open.spotify.com/track/2C68Kdq8y5wMeNdh7nSdz8",
+      "release": "un ratito +",
+      "release_date": "2023-01-20",
+      "duration_ms": 126546,
+      "deezer_id": 3369601111
+    },
+    {
+      "id": "QZW9N2252987",
+      "title": "Insomnio",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Nissa",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/QZW9N2252987.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27356f6875e8893ae5dd58aaef1",
+      "spotify_url": "https://open.spotify.com/track/0DY3Odo08gwsL1FaV21X5N",
+      "release": "Insomnio",
+      "release_date": "2022-12-29",
+      "duration_ms": 140307,
+      "deezer_id": 2085621307
+    },
+    {
+      "id": "UYT142200047",
+      "title": "Acá Estoy",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Tadu Vázquez",
+        "Gavo"
+      ],
+      "audio_file": "/audio/UYT142200047.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273a0f46c17fb6701fd766dee33",
+      "spotify_url": "https://open.spotify.com/track/44LlC6uJUKpkX6k3eEWx22",
+      "release": "Formas, Vol. I",
+      "release_date": "2022-12-28",
+      "duration_ms": 142565,
+      "deezer_id": 2055921727
+    },
+    {
+      "id": "UYT142200046",
+      "title": "Noche",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Tadu Vázquez",
+        "Duarte G"
+      ],
+      "audio_file": "/audio/UYT142200046.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273a0f46c17fb6701fd766dee33",
+      "spotify_url": "https://open.spotify.com/track/3Mj9wdlJ74adn446E1HLdX",
+      "release": "Formas, Vol. I",
+      "release_date": "2022-12-28",
+      "duration_ms": 152941,
+      "deezer_id": 2055921717
+    },
+    {
+      "id": "UYT142200045",
+      "title": "Dinamita",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Tadu Vázquez",
+        "Delfina Dib"
+      ],
+      "audio_file": "/audio/UYT142200045.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273a0f46c17fb6701fd766dee33",
+      "spotify_url": "https://open.spotify.com/track/3Gf5vm9KkAiryanDnXtpih",
+      "release": "Formas, Vol. I",
+      "release_date": "2022-12-28",
+      "duration_ms": 173644,
+      "deezer_id": 2055921707
+    },
+    {
+      "id": "UYT142200044",
+      "title": "Lunáticos",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Tadu Vázquez",
+        "Ramma"
+      ],
+      "audio_file": "/audio/UYT142200044.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273a0f46c17fb6701fd766dee33",
+      "spotify_url": "https://open.spotify.com/track/0GcPRaGpskm27ReiB3D5SR",
+      "release": "Formas, Vol. I",
+      "release_date": "2022-12-28",
+      "duration_ms": 172500,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142200043",
+      "title": "Brujerías",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Tadu Vázquez",
+        "Knak"
+      ],
+      "audio_file": "/audio/UYT142200043.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273a0f46c17fb6701fd766dee33",
+      "spotify_url": "https://open.spotify.com/track/2Asi6XEVrEIqzwfWZGCuQ3",
+      "release": "Formas, Vol. I",
+      "release_date": "2022-12-28",
+      "duration_ms": 127844,
+      "deezer_id": 2055921687
+    },
+    {
+      "id": "UYT142200013",
+      "title": "Siempre",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Tadu Vázquez",
+        "BALTA"
+      ],
+      "audio_file": "/audio/UYT142200013.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273a0f46c17fb6701fd766dee33",
+      "spotify_url": "https://open.spotify.com/track/1RCMb9HdHdNRnAKBPZgw18",
+      "release": "Formas, Vol. I",
+      "release_date": "2022-12-28",
+      "duration_ms": 160173,
+      "deezer_id": 1753743627
+    },
+    {
+      "id": "QZW9K2287240",
+      "title": "Impala",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Nissa",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/QZW9K2287240.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735ce7d004855411cd245f4c36",
+      "spotify_url": "https://open.spotify.com/track/3TYAP8JTrp84JQuk6Z5Gkm",
+      "release": "Impala",
+      "release_date": "2022-11-04",
+      "duration_ms": 149571,
+      "deezer_id": 1974285137
+    },
+    {
+      "id": "QZTAT2226090",
+      "title": "Wacha",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Wave",
+        "Tadu Vázquez",
+        "One Way"
+      ],
+      "audio_file": "/audio/QZTAT2226090.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273c992b8e1c67f8f61b812dc37",
+      "spotify_url": "https://open.spotify.com/track/6z76OEfKtrKp5k56ZpwY9h",
+      "release": "Wacha",
+      "release_date": "2022-10-22",
+      "duration_ms": 143586,
+      "deezer_id": 2202092127
+    },
+    {
+      "id": "UYT142200018",
+      "title": "Cómo Te Va?",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Cronin",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142200018.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739c1457824f0a31f3772a8c46",
+      "spotify_url": "https://open.spotify.com/track/6j0WXQNGz4SCyKR1UlNCRy",
+      "release": "Cómo Te Va?",
+      "release_date": "2022-08-26",
+      "duration_ms": 196923,
+      "deezer_id": 1848209727
+    },
+    {
+      "id": "AR8TN2200200",
+      "title": "Contemporánea",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Martin Fraga",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/AR8TN2200200.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273dd6596686f93b0a66cb83895",
+      "spotify_url": "https://open.spotify.com/track/6lv1tYC7kZxserWm5zelUP",
+      "release": "Contemporánea",
+      "release_date": "2022-07-22",
+      "duration_ms": 168000,
+      "deezer_id": 3234113551
+    },
+    {
+      "id": "UYT142200016",
+      "title": "Miradas",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142200016.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736fa6fb8e9f428ef0bdafc658",
+      "spotify_url": "https://open.spotify.com/track/2NonARuwqFU82qpDbj4bNq",
+      "release": "Miradas",
+      "release_date": "2022-07-22",
+      "duration_ms": 143091,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142200015",
+      "title": "Ni un Motivo",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez",
+        "Mariano Joaquín"
+      ],
+      "audio_file": "/audio/UYT142200015.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2731f76d823a200ab5eb843daff",
+      "spotify_url": "https://open.spotify.com/track/3VPF0PqSlScpo7PBq10utL",
+      "release": "Ni un Motivo",
+      "release_date": "2022-07-01",
+      "duration_ms": 137158,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "QZMZ92221059",
+      "title": "Otro Plan",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Prina",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/QZMZ92221059.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2733a7261ab5a2e1fcf95795db4",
+      "spotify_url": "https://open.spotify.com/track/3j2iVLsdus6oQ1GgklP1GJ",
+      "release": "Otro Plan",
+      "release_date": "2022-06-16",
+      "duration_ms": 138000,
+      "deezer_id": 1790725017
+    },
+    {
+      "id": "UYT142200007",
+      "title": "Sino Pa Qué Estamos",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142200007.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273229400d99e62bbc6823d4f92",
+      "spotify_url": "https://open.spotify.com/track/2KuKzaWk84Z8RE4EB2Rtmy",
+      "release": "Sino Pa Qué Estamos",
+      "release_date": "2022-05-20",
+      "duration_ms": 155384,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142200006",
+      "title": "Sé Muy Bien a Dónde Voy",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez",
+        "Mariano Joaquín"
+      ],
+      "audio_file": "/audio/UYT142200006.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273d8ac16faa50f7a45d698ac1b",
+      "spotify_url": "https://open.spotify.com/track/7FPOctZdkIbAYEfH4x4q9x",
+      "release": "Sé Muy Bien a Dónde Voy",
+      "release_date": "2022-05-06",
+      "duration_ms": 160076,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "QZHZ42246731",
+      "title": "Condenado",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Gavo",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/QZHZ42246731.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27300c854f1ac593051d9bbdca3",
+      "spotify_url": "https://open.spotify.com/track/1ENz41cI3ecUhxxz0Rc9QY",
+      "release": "Condenado",
+      "release_date": "2022-04-29",
+      "duration_ms": 136754,
+      "deezer_id": 1738769967
+    },
+    {
+      "id": "UYT142200001",
+      "title": "Foto de Perfil",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142200001.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273c49cd486f0d4b8ab0504d766",
+      "spotify_url": "https://open.spotify.com/track/38rcIxPvpMbQenGbyYU6cN",
+      "release": "Foto de Perfil",
+      "release_date": "2022-04-22",
+      "duration_ms": 111663,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "QZHZ42236436",
+      "title": "Como Si Na",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Miranda Diaz",
+        "Delfina Dib",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/QZHZ42236436.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2730257a9b1f91911fd164e43bf",
+      "spotify_url": "https://open.spotify.com/track/6h4LEKCkDPGqLcM7HN9e0F",
+      "release": "Como Si Na",
+      "release_date": "2022-04-22",
+      "duration_ms": 167346,
+      "deezer_id": 1719746667
+    },
+    {
+      "id": "UYT142100019",
+      "title": "Ring Ring",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez",
+        "Ryfth3r"
+      ],
+      "audio_file": "/audio/UYT142100019.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27389e369f6f7ec881fc6aea1e8",
+      "spotify_url": "https://open.spotify.com/track/0NKl7VEsgbAJ3kKYQTsAG9",
+      "release": "Ring Ring",
+      "release_date": "2022-04-08",
+      "duration_ms": 170812,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "QZES62282083",
+      "title": "Tuvimos Suerte",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Pipo",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/QZES62282083.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739756dd9a2a317558c29c52b9",
+      "spotify_url": "https://open.spotify.com/track/5ASt7LMxpmzj2GZw0PB0b8",
+      "release": "Tuvimos Suerte",
+      "release_date": "2022-03-31",
+      "duration_ms": 150893,
+      "deezer_id": 3833367991
+    },
+    {
+      "id": "USCGH2238668",
+      "title": "Bangers",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Pipo",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/USCGH2238668.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273179e1bd0fa468ff4629cdc94",
+      "spotify_url": "https://open.spotify.com/track/6ZI1M75gYAypqxk4PYo7FE",
+      "release": "Bangers",
+      "release_date": "2022-01-20",
+      "duration_ms": 166339,
+      "deezer_id": 3833368391
+    },
+    {
+      "id": "QZTPX2138253",
+      "title": "Jóvenes Campeones",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Gavo",
+        "Gula",
+        "Cronin",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/QZTPX2138253.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273791d3d55809860bef90930e3",
+      "spotify_url": "https://open.spotify.com/track/3bo4n9UdUlRYnTBiTjqKjn",
+      "release": "Jóvenes Campeones",
+      "release_date": "2021-12-24",
+      "duration_ms": 213434,
+      "deezer_id": 1578819582
+    },
+    {
+      "id": "UYT142100017",
+      "title": "Estoy Aquí",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142100017.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273224667c1ac217a14796cae30",
+      "spotify_url": "https://open.spotify.com/track/2hxWLmehmkv5wcRt19iD94",
+      "release": "Estoy Aquí",
+      "release_date": "2021-12-16",
+      "duration_ms": 166855,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142100014",
+      "title": "Fo' Real",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Tadu Vázquez",
+        "Jomson"
+      ],
+      "audio_file": "/audio/UYT142100014.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735b0cccb035f509a295403de4",
+      "spotify_url": "https://open.spotify.com/track/68AJHgloyAUJDYJ7zlLO7b",
+      "release": "Fo' Real",
+      "release_date": "2021-12-15",
+      "duration_ms": 148649,
+      "deezer_id": 1717399407
+    },
+    {
+      "id": "UYM122105087",
+      "title": "La Foto",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Zeballos",
+        "Tadu Vázquez",
+        "Lauro"
+      ],
+      "audio_file": "/audio/UYM122105087.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2730a8ad90dbaf0a4c228d3544c",
+      "spotify_url": "https://open.spotify.com/track/40dEoqfplfAau3NBVImJke",
+      "release": "La Foto",
+      "release_date": "2021-12-10",
+      "duration_ms": 223080,
+      "deezer_id": 1578926362
+    },
+    {
+      "id": "UYT142100011",
+      "title": "Suave Danza",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Tadu Vázquez",
+        "Gabino"
+      ],
+      "audio_file": "/audio/UYT142100011.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738a1e8a0df684204c89bdbca0",
+      "spotify_url": "https://open.spotify.com/track/4ANHisfrwfoczOEZQvrboK",
+      "release": "Suave Danza",
+      "release_date": "2021-12-06",
+      "duration_ms": 166081,
+      "deezer_id": 1717399957
+    },
+    {
+      "id": "UYT142100009",
+      "title": "Alma Bohemia",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Tadu Vázquez",
+        "Gula"
+      ],
+      "audio_file": "/audio/UYT142100009.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739fb982298248161ad65aad1e",
+      "spotify_url": "https://open.spotify.com/track/4536qdiuyeY2anh8tX4z0y",
+      "release": "Alma Bohemia",
+      "release_date": "2021-11-22",
+      "duration_ms": 191500,
+      "deezer_id": 1717398837
+    },
+    {
+      "id": "UYT142100008",
+      "title": "Simuladores",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Tadu Vázquez",
+        "Zeballos"
+      ],
+      "audio_file": "/audio/UYT142100008.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2737bdabc577123e08b4d0327ad",
+      "spotify_url": "https://open.spotify.com/track/1lFfEBNE7y4yvFCkcfscc0",
+      "release": "Simuladores",
+      "release_date": "2021-11-17",
+      "duration_ms": 190394,
+      "deezer_id": 1694686567
+    },
+    {
+      "id": "UYT142100006",
+      "title": "Plan B",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Tadu Vázquez",
+        "Cronin"
+      ],
+      "audio_file": "/audio/UYT142100006.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732785ef820fc4df31fd8541ac",
+      "spotify_url": "https://open.spotify.com/track/5DcX05PYtfPvkINWj6h0ex",
+      "release": "Plan B",
+      "release_date": "2021-11-08",
+      "duration_ms": 187874,
+      "deezer_id": 1717399097
+    },
+    {
+      "id": "UYT142100005",
+      "title": "Paradise",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Tadu Vázquez",
+        "Gavo"
+      ],
+      "audio_file": "/audio/UYT142100005.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2730300dd1cd7d91f3be41955f9",
+      "spotify_url": "https://open.spotify.com/track/0MlFkyGdQ9G2FJCSV71Ziv",
+      "release": "Paradise",
+      "release_date": "2021-11-03",
+      "duration_ms": 192091,
+      "deezer_id": 1717399987
+    },
+    {
+      "id": "UYM122104512",
+      "title": "La Luna",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Zeballos",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYM122104512.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735d5e1825959527b16e5b2b2b",
+      "spotify_url": "https://open.spotify.com/track/1fYbPSNJqueMgjOvPuPDRL",
+      "release": "La Luna",
+      "release_date": "2021-10-22",
+      "duration_ms": 173706,
+      "deezer_id": 1529234322
+    },
+    {
+      "id": "QZMER2148690",
+      "title": "Odio",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Cronin",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/QZMER2148690.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2737da8c61df8443aa9e33ca5b3",
+      "spotify_url": "https://open.spotify.com/track/62wqhGnvXmPcfndrbCbZ2A",
+      "release": "Amor & Odio",
+      "release_date": "2021-10-07",
+      "duration_ms": 201235,
+      "deezer_id": 1932851267
+    },
+    {
+      "id": "QZMER2148689",
+      "title": "Linea Divisoria",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Cronin",
+        "Tadu Vázquez",
+        "Gavo"
+      ],
+      "audio_file": "/audio/QZMER2148689.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2737da8c61df8443aa9e33ca5b3",
+      "spotify_url": "https://open.spotify.com/track/7r1rq0Kfs8UPcCWzXl0lOy",
+      "release": "Amor & Odio",
+      "release_date": "2021-10-07",
+      "duration_ms": 243956,
+      "deezer_id": 1932851257
+    },
+    {
+      "id": "QZMER2148688",
+      "title": "Olvidarte",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Cronin",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/QZMER2148688.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2737da8c61df8443aa9e33ca5b3",
+      "spotify_url": "https://open.spotify.com/track/6ZvuHQlGKe7jZPCyEHYOtW",
+      "release": "Amor & Odio",
+      "release_date": "2021-10-07",
+      "duration_ms": 258730,
+      "deezer_id": 1932851247
+    },
+    {
+      "id": "UYT142100003",
+      "title": "Dónde Estás?",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142100003.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2734dd77cbf74a629324ff0e370",
+      "spotify_url": "https://open.spotify.com/track/1YAi5xkeuZZ15YenXiNDSk",
+      "release": "Dónde Estás?",
+      "release_date": "2021-09-02",
+      "duration_ms": 125557,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142100002",
+      "title": "Honey",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142100002.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273ef7823eb011ac3fff052c270",
+      "spotify_url": "https://open.spotify.com/track/5eakuPgJ49cyhPzzfmtbRz",
+      "release": "Honey",
+      "release_date": "2021-07-21",
+      "duration_ms": 122211,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "QZHNA2194859",
+      "title": "Only Love",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Cronin",
+        "Gula",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/QZHNA2194859.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273ffdcd4a2a5c57dade1f79b8a",
+      "spotify_url": "https://open.spotify.com/track/3b8Sq5kNS9QAKsNXSufP8Q",
+      "release": "Only Love",
+      "release_date": "2021-06-13",
+      "duration_ms": 192408,
+      "deezer_id": 1946288037
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+.env
+.env.*
+!.env.example
+node_modules
+dist
+.DS_Store
+
+# Audio sources and their envelopes stay local: the repository is public, and
+# together with the published files they would give away every answer.
+# Rebuild with npm run catalog + compress-audio + peaks. See CLAUDE.md, "Fuentes".
+audio-raw
+audio
+data/peaks.json
+
+# Caché de respuestas de Spotify, se regenera solo
+data/cache
+
+# Generated from audio/ and data/ by scripts/publish-assets.mjs (npm run assets).
+# Never commit them: with the secret off they map ISRC to audio.
+public/audio
+public/catalog
+# Audio and peaks under opaque keys, staged for Supabase Storage (npm run upload-audio)
+.published
+# Contains the answer key (ISRC -> audio key)
+supabase/.generated
+# Supabase CLI state
+supabase/.temp
+# Vercel CLI link (.env.local, which it also writes, is covered by .env.* above)
+.vercel

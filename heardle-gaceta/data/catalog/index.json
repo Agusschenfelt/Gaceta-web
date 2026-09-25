@@ -1,0 +1,42 @@
+[
+  {
+    "slug": "ramma",
+    "name": "Ramma",
+    "tracks": 116
+  },
+  {
+    "slug": "valuto",
+    "name": "Valuto",
+    "tracks": 41
+  },
+  {
+    "slug": "ara",
+    "name": "ARA",
+    "tracks": 62
+  },
+  {
+    "slug": "tadu",
+    "name": "Tadu Vázquez",
+    "tracks": 104
+  },
+  {
+    "slug": "fosse",
+    "name": "Fosse",
+    "tracks": 30
+  },
+  {
+    "slug": "barta",
+    "name": "Barta",
+    "tracks": 22
+  },
+  {
+    "slug": "dazen",
+    "name": "Dazen",
+    "tracks": 9
+  },
+  {
+    "slug": "lonzo",
+    "name": "Lonzo",
+    "tracks": 114
+  }
+]

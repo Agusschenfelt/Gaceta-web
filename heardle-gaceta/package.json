@@ -1,0 +1,32 @@
+{
+  "name": "heardle-gaceta",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/publish-assets.mjs",
+    "dev": "vite",
+    "prebuild": "node scripts/publish-assets.mjs",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "catalog": "node scripts/build-catalog.mjs",
+    "compress-audio": "node scripts/compress-audio.mjs",
+    "peaks": "node scripts/build-peaks.mjs",
+    "assets": "node scripts/publish-assets.mjs",
+    "upload-audio": "node scripts/upload-audio.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
+    "vite": "^6.0.0",
+    "vitest": "^2.1.0"
+  }
+}

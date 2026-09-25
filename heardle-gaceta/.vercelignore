@@ -1,0 +1,20 @@
+# CLI deploys upload this folder as-is. Keep secrets and every file that maps a track
+# to its audio off Vercel: the build only needs data/catalog/ to publish the catalog.
+# Paths are anchored with "/": a bare "audio" would also drop src/audio/.
+.env
+.env.*
+!.env.example
+.DS_Store
+/node_modules
+/dist
+/audio-raw
+/audio
+/data/peaks.json
+/data/cache
+/data/missing.json
+/public/audio
+/public/catalog
+/.published
+/supabase/.generated
+/supabase/.temp
+/brief-heardle-gaceta.md

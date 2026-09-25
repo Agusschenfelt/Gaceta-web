@@ -1,0 +1,1894 @@
+{
+  "artist": "Lonzo",
+  "slug": "lonzo",
+  "tracks": [
+    {
+      "id": "QZNJW2671088",
+      "title": "losDos",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZNJW2671088.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273cba0484cb86a7279c9521384",
+      "spotify_url": "https://open.spotify.com/track/2XBPfTaVlCkJrsIP2if7P5",
+      "release": "losDos",
+      "release_date": "2026-09-16",
+      "duration_ms": 104870,
+      "deezer_id": 4247187931
+    },
+    {
+      "id": "QT3F22604542",
+      "title": "Controla",
+      "artist": "Lonzo",
+      "artists": [
+        "JD7",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QT3F22604542.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2731d97937cda51f4bb8f285962",
+      "spotify_url": "https://open.spotify.com/track/34FZI6olk70bgAQD2e0lyi",
+      "release": "Lagrimas de Oro",
+      "release_date": "2026-06-04",
+      "duration_ms": 115645,
+      "deezer_id": 4051184861
+    },
+    {
+      "id": "QZHZ32614510",
+      "title": "amigos y enemigos",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZHZ32614510.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2734eb5154dd66eb87373d319be",
+      "spotify_url": "https://open.spotify.com/track/4M4KkiHMkLSBdLUygsy2e6",
+      "release": "amigos y enemigos",
+      "release_date": "2026-05-28",
+      "duration_ms": 108024,
+      "deezer_id": 3993243051
+    },
+    {
+      "id": "GBWUL2620720",
+      "title": "puaj",
+      "artist": "Lonzo",
+      "artists": [
+        "Divz",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/GBWUL2620720.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273ea27129e677f948050def78c",
+      "spotify_url": "https://open.spotify.com/track/5pdACkPf6GjJ0j9uEZtIJf",
+      "release": "puaj",
+      "release_date": "2026-05-22",
+      "duration_ms": 70912,
+      "deezer_id": 4036220701
+    },
+    {
+      "id": "QZWFR2675854",
+      "title": "Malas decisiones",
+      "artist": "Lonzo",
+      "artists": [
+        "Jans",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZWFR2675854.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27337365e0750f1a4935e47976b",
+      "spotify_url": "https://open.spotify.com/track/7pKYkBBTZpLH6atQHxDeSF",
+      "release": "AVL",
+      "release_date": "2026-05-08",
+      "duration_ms": 123947,
+      "deezer_id": 3988105061
+    },
+    {
+      "id": "QT3FF2508559",
+      "title": "Sonoridad",
+      "artist": "Lonzo",
+      "artists": [
+        "Jans",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QT3FF2508559.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27337365e0750f1a4935e47976b",
+      "spotify_url": "https://open.spotify.com/track/0P7k6VxZP49u7oxmxSfzq6",
+      "release": "AVL",
+      "release_date": "2026-05-08",
+      "duration_ms": 148363,
+      "deezer_id": 3604904482
+    },
+    {
+      "id": "QZWFR2675852",
+      "title": "AVL",
+      "artist": "Lonzo",
+      "artists": [
+        "Jans",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZWFR2675852.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27337365e0750f1a4935e47976b",
+      "spotify_url": "https://open.spotify.com/track/2LzUXtBwPuTZ5RL91UQCNe",
+      "release": "AVL",
+      "release_date": "2026-05-08",
+      "duration_ms": 144761,
+      "deezer_id": 3988105011
+    },
+    {
+      "id": "SE6I32638335",
+      "title": "saHara",
+      "artist": "Lonzo",
+      "artists": [
+        "KevTK",
+        "Lonzo",
+        "Gott"
+      ],
+      "audio_file": "/audio/SE6I32638335.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273e6e24b346f5460b42dad8c6a",
+      "spotify_url": "https://open.spotify.com/track/5kmiBrBZTaHkOkQdftVJnj",
+      "release": "viviendomucho",
+      "release_date": "2026-04-23",
+      "duration_ms": 129732,
+      "deezer_id": 3968130731
+    },
+    {
+      "id": "UY01G2400138",
+      "title": "vicevərsa",
+      "artist": "Lonzo",
+      "artists": [
+        "Valuto",
+        "Barta",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/UY01G2400138.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273f6345e4171c1c8ba204b4113",
+      "spotify_url": "https://open.spotify.com/track/09vr23uYlL1VwM2T9O0hGK",
+      "release": "vicevərsa",
+      "release_date": "2026-02-19",
+      "duration_ms": 172576,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "QZVEM2610242",
+      "title": "Moet",
+      "artist": "Lonzo",
+      "artists": [
+        "Naxy",
+        "Lthelizard",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZVEM2610242.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273af138449d40367431e4f206b",
+      "spotify_url": "https://open.spotify.com/track/3aUewkltsim7z5VA9lbKQM",
+      "release": "YRMINE",
+      "release_date": "2026-02-18",
+      "duration_ms": 100335,
+      "deezer_id": 3861495421
+    },
+    {
+      "id": "QZVEM2610241",
+      "title": "Intro",
+      "artist": "Lonzo",
+      "artists": [
+        "Naxy",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZVEM2610241.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273af138449d40367431e4f206b",
+      "spotify_url": "https://open.spotify.com/track/1BfqFW2aiLxZYqyvEnEZsU",
+      "release": "YRMINE",
+      "release_date": "2026-02-18",
+      "duration_ms": 28717,
+      "deezer_id": 3861495411
+    },
+    {
+      "id": "US7VG2684440",
+      "title": "Zetta 09 Cypher Verse",
+      "artist": "Lonzo",
+      "artists": [
+        "EN LA MIRA",
+        "Zetta 09",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/US7VG2684440.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739cbc1464d976ff536553b8b6",
+      "spotify_url": "https://open.spotify.com/track/6lujr1r7Z9ju3EZLDGulzI",
+      "release": "Udg Cypher Uruguay",
+      "release_date": "2026-02-17",
+      "duration_ms": 100274,
+      "deezer_id": 3867434861
+    },
+    {
+      "id": "US7VG2684432",
+      "title": "Franco Rm Cypher Verse",
+      "artist": "Lonzo",
+      "artists": [
+        "EN LA MIRA",
+        "Franco.rm",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/US7VG2684432.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739cbc1464d976ff536553b8b6",
+      "spotify_url": "https://open.spotify.com/track/3VM9pyq07XarBMYygo3nQI",
+      "release": "Udg Cypher Uruguay",
+      "release_date": "2026-02-17",
+      "duration_ms": 60692,
+      "deezer_id": 3867434781
+    },
+    {
+      "id": "QZDA72615823",
+      "title": "Amor",
+      "artist": "Lonzo",
+      "artists": [
+        "PanchitoLeFleur",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZDA72615823.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2733549733e9ddc0b1e8ac71081",
+      "spotify_url": "https://open.spotify.com/track/4jiP8QmL18KRYxMbfvwVDj",
+      "release": "STONER LIFE",
+      "release_date": "2026-01-28",
+      "duration_ms": 142226,
+      "deezer_id": 3776851162
+    },
+    {
+      "id": "UYD802500006",
+      "title": "Flipo Con el Tio",
+      "artist": "Lonzo",
+      "artists": [
+        "Davus",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/UYD802500006.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736cf7fad718b3666385f4ff4b",
+      "spotify_url": "https://open.spotify.com/track/4Kx21WyhGjNCcmWmUYbsrD",
+      "release": "Flipo Con el Tio",
+      "release_date": "2026-01-15",
+      "duration_ms": 138556,
+      "deezer_id": 3681576732
+    },
+    {
+      "id": "UYD802500005",
+      "title": "Fetty",
+      "artist": "Lonzo",
+      "artists": [
+        "Davus",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/UYD802500005.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273f3f8d37d2bcc733e8291f48b",
+      "spotify_url": "https://open.spotify.com/track/5nFPmJxuKEObxGGXI2ChT1",
+      "release": "Fetty",
+      "release_date": "2026-01-05",
+      "duration_ms": 123700,
+      "deezer_id": 3681576092
+    },
+    {
+      "id": "UYD802500004",
+      "title": "Triple X",
+      "artist": "Lonzo",
+      "artists": [
+        "Davus",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/UYD802500004.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273747def518f0cad3487803306",
+      "spotify_url": "https://open.spotify.com/track/1Tq2BVnUfUkUaBGzTHqZgV",
+      "release": "Triple X",
+      "release_date": "2025-12-18",
+      "duration_ms": 104470,
+      "deezer_id": 3681583302
+    },
+    {
+      "id": "QT6FZ2524143",
+      "title": "#pinkkk",
+      "artist": "Lonzo",
+      "artists": [
+        "nahhhh",
+        "vema",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QT6FZ2524143.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27374d4153d6c97d07addf74fb4",
+      "spotify_url": "https://open.spotify.com/track/4POhuUYAmlYjIvLwMxSM5u",
+      "release": "#2026",
+      "release_date": "2025-12-09",
+      "duration_ms": 177743,
+      "deezer_id": 3720907942
+    },
+    {
+      "id": "QT6EY2570331",
+      "title": "oki",
+      "artist": "Lonzo",
+      "artists": [
+        "cero",
+        "pabloxo",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QT6EY2570331.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273fcd7ab29487051592a4f4e15",
+      "spotify_url": "https://open.spotify.com/track/6h39jBknYg1zdk7pWoe4H3",
+      "release": "MecÆ",
+      "release_date": "2025-11-20",
+      "duration_ms": 174543,
+      "deezer_id": 3661184102
+    },
+    {
+      "id": "SE6I32576482",
+      "title": "swing!",
+      "artist": "Lonzo",
+      "artists": [
+        "Nagee",
+        "Akuaforte",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/SE6I32576482.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27300405233fb681548b031f2c2",
+      "spotify_url": "https://open.spotify.com/track/4InmpuEGnF2nKDy9DzVimg",
+      "release": "ANTES DE LOS 15",
+      "release_date": "2025-11-02",
+      "duration_ms": 115374,
+      "deezer_id": 3612876612
+    },
+    {
+      "id": "SE6I32576480",
+      "title": "GRINDER",
+      "artist": "Lonzo",
+      "artists": [
+        "Nagee",
+        "Lonzo",
+        "Matrixx"
+      ],
+      "audio_file": "/audio/SE6I32576480.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27300405233fb681548b031f2c2",
+      "spotify_url": "https://open.spotify.com/track/1TCUe93sKLQaFM4OEb30q4",
+      "release": "ANTES DE LOS 15",
+      "release_date": "2025-11-02",
+      "duration_ms": 126167,
+      "deezer_id": 3612876592
+    },
+    {
+      "id": "SE6I32576479",
+      "title": "vapor!",
+      "artist": "Lonzo",
+      "artists": [
+        "Nagee",
+        "TylaZz",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/SE6I32576479.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27300405233fb681548b031f2c2",
+      "spotify_url": "https://open.spotify.com/track/2BmihwUDtuBL3L6Nrj0Okr",
+      "release": "ANTES DE LOS 15",
+      "release_date": "2025-11-02",
+      "duration_ms": 100115,
+      "deezer_id": 3612876582
+    },
+    {
+      "id": "GX53U2689712",
+      "title": "vas re voy revoleas y vos rey le has fallado al trono",
+      "artist": "Lonzo",
+      "artists": [
+        "AYRTON",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/GX53U2689712.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27316a44ea328255591201608e2",
+      "spotify_url": "https://open.spotify.com/track/7yaYSTtvanjFl09ROe4016",
+      "release": "flatlight in the darknes",
+      "release_date": "2025-10-10",
+      "duration_ms": 90206,
+      "deezer_id": 3588953701
+    },
+    {
+      "id": "GX53U2689707",
+      "title": "ludopa",
+      "artist": "Lonzo",
+      "artists": [
+        "AYRTON",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/GX53U2689707.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27316a44ea328255591201608e2",
+      "spotify_url": "https://open.spotify.com/track/5hColly8o43s8F8cYAgTB5",
+      "release": "flatlight in the darknes",
+      "release_date": "2025-10-10",
+      "duration_ms": 110000,
+      "deezer_id": 3588953651
+    },
+    {
+      "id": "QT3F22563232",
+      "title": "La Purga",
+      "artist": "Lonzo",
+      "artists": [
+        "Tom",
+        "Geronimo",
+        "Leohachee",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QT3F22563232.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735133aa3a067d6f0dbd508d7e",
+      "spotify_url": "https://open.spotify.com/track/4wkAUjD6x02XiLl4XxlrXy",
+      "release": "La Vuelta Del Año",
+      "release_date": "2025-10-04",
+      "duration_ms": 165230,
+      "deezer_id": 3570846021
+    },
+    {
+      "id": "QZTPX2567353",
+      "title": "Nueva Religión",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZTPX2567353.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738e2b0c8f46b7c994f3565669",
+      "spotify_url": "https://open.spotify.com/track/2HngPIrzWaw6gO9IxB7NQD",
+      "release": "Nueva Religión",
+      "release_date": "2025-09-28",
+      "duration_ms": 149341,
+      "deezer_id": 3577848091
+    },
+    {
+      "id": "QZTPX2567352",
+      "title": "underwear",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZTPX2567352.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738e2b0c8f46b7c994f3565669",
+      "spotify_url": "https://open.spotify.com/track/5q2KlYuBc342bh2qyONuZ4",
+      "release": "Nueva Religión",
+      "release_date": "2025-09-28",
+      "duration_ms": 115350,
+      "deezer_id": 3577848081
+    },
+    {
+      "id": "QZTPX2567351",
+      "title": "No Quiero Saber",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Valuto",
+        "Barta",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZTPX2567351.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738e2b0c8f46b7c994f3565669",
+      "spotify_url": "https://open.spotify.com/track/207Wcx2PENNa3zwRNMpgE2",
+      "release": "Nueva Religión",
+      "release_date": "2025-09-28",
+      "duration_ms": 124288,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "QZTPX2567350",
+      "title": "lonely..",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Barta",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZTPX2567350.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738e2b0c8f46b7c994f3565669",
+      "spotify_url": "https://open.spotify.com/track/4C97mLbm4hNOvlbUZwhRci",
+      "release": "Nueva Religión",
+      "release_date": "2025-09-28",
+      "duration_ms": 107062,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "QZTPX2567349",
+      "title": "All Day",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZTPX2567349.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738e2b0c8f46b7c994f3565669",
+      "spotify_url": "https://open.spotify.com/track/2VmkwJTXgqHNiWFOsaH2jF",
+      "release": "Nueva Religión",
+      "release_date": "2025-09-28",
+      "duration_ms": 142084,
+      "deezer_id": 3577848051
+    },
+    {
+      "id": "QZTPX2567348",
+      "title": "Me Voy (Leave Me Alone)",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZTPX2567348.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738e2b0c8f46b7c994f3565669",
+      "spotify_url": "https://open.spotify.com/track/3zj9HrdpVnSlcm4IV0xALT",
+      "release": "Nueva Religión",
+      "release_date": "2025-09-28",
+      "duration_ms": 108923,
+      "deezer_id": 3577848041
+    },
+    {
+      "id": "QM3DF2592016",
+      "title": "Tengo que hacerlo",
+      "artist": "Lonzo",
+      "artists": [
+        "JuicyNise",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QM3DF2592016.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2731ba4129d7585c26e679e667c",
+      "spotify_url": "https://open.spotify.com/track/5l8k7Yb3pmKqEipCSHYLzv",
+      "release": "Sentimental Gangster 2",
+      "release_date": "2025-09-28",
+      "duration_ms": 122548,
+      "deezer_id": 3570118001
+    },
+    {
+      "id": "QMANG2513099",
+      "title": "Zafiros",
+      "artist": "Lonzo",
+      "artists": [
+        "JuicyNise",
+        "turrobaby",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QMANG2513099.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738c2a871541f43a9f2e090784",
+      "spotify_url": "https://open.spotify.com/track/4mu2ug3qhdJUhl9LKhwnZU",
+      "release": "Zafiros",
+      "release_date": "2025-09-20",
+      "duration_ms": 176000,
+      "deezer_id": 3554294801
+    },
+    {
+      "id": "QZWFR2538993",
+      "title": "Me Voy",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Davus",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZWFR2538993.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273673a0e8cbedae9df102cafcf",
+      "spotify_url": "https://open.spotify.com/track/28hHN87ZdCn56fKYtNglYN",
+      "release": "ROSTRUDO",
+      "release_date": "2025-08-20",
+      "duration_ms": 140187,
+      "deezer_id": 3488769771
+    },
+    {
+      "id": "QZWFR2538992",
+      "title": "Divina",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZWFR2538992.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273673a0e8cbedae9df102cafcf",
+      "spotify_url": "https://open.spotify.com/track/0v5xYFyxTIelhr6UWdYCPF",
+      "release": "ROSTRUDO",
+      "release_date": "2025-08-20",
+      "duration_ms": 111618,
+      "deezer_id": 3488769761
+    },
+    {
+      "id": "QZWFR2538989",
+      "title": "Siempre Me Llama",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo",
+        "Camacho"
+      ],
+      "audio_file": "/audio/QZWFR2538989.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273673a0e8cbedae9df102cafcf",
+      "spotify_url": "https://open.spotify.com/track/28e7uuZpV7gEATawz9xnyV",
+      "release": "ROSTRUDO",
+      "release_date": "2025-08-20",
+      "duration_ms": 122500,
+      "deezer_id": 3488769731
+    },
+    {
+      "id": "QZTBA2585122",
+      "title": "Sali jodido + Kisses 4 me",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo",
+        "Camacho"
+      ],
+      "audio_file": "/audio/QZTBA2585122.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273673a0e8cbedae9df102cafcf",
+      "spotify_url": "https://open.spotify.com/track/50bX1S9UT1QZil0JKCA1Bf",
+      "release": "ROSTRUDO",
+      "release_date": "2025-08-20",
+      "duration_ms": 212744,
+      "deezer_id": 3435351651
+    },
+    {
+      "id": "QZNJX2595824",
+      "title": "No Voy a Cambiar",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZNJX2595824.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27345d1bb26ea4374f3e4e4c24c",
+      "spotify_url": "https://open.spotify.com/track/3CCQMzPZUCWShgd2uEJZA9",
+      "release": "No Voy a Cambiar",
+      "release_date": "2025-08-05",
+      "duration_ms": 132711,
+      "deezer_id": 3463835501
+    },
+    {
+      "id": "QMANG2572346",
+      "title": "Maradona",
+      "artist": "Lonzo",
+      "artists": [
+        "JuicyNise",
+        "Chiru!",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QMANG2572346.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273993a1f95c92bf8ec17302701",
+      "spotify_url": "https://open.spotify.com/track/0HEY7qwR5xbVWPuOq9RUN8",
+      "release": "Maradona",
+      "release_date": "2025-07-31",
+      "duration_ms": 164571,
+      "deezer_id": 3490263961
+    },
+    {
+      "id": "QZNJX2537060",
+      "title": "Dior",
+      "artist": "Lonzo",
+      "artists": [
+        "GALO",
+        "Luk-s",
+        "Young Broken",
+        "artero",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZNJX2537060.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735a82fa16cb0c34d7414501f6",
+      "spotify_url": "https://open.spotify.com/track/0WDoTrjN6uP436iGDWzT3a",
+      "release": "Galo",
+      "release_date": "2025-07-10",
+      "duration_ms": 179076,
+      "deezer_id": 3438709651
+    },
+    {
+      "id": "QZTB72553995",
+      "title": "Chaleco Antibalas",
+      "artist": "Lonzo",
+      "artists": [
+        "8ctava",
+        "Fercesito",
+        "Martin Leib",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZTB72553995.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b8643388b09d18fd70be72a0",
+      "spotify_url": "https://open.spotify.com/track/2WRBqFvSzJDJiUCVy2Qhw8",
+      "release": "La Octava Maravilla",
+      "release_date": "2025-07-08",
+      "duration_ms": 153626,
+      "deezer_id": 3424141431
+    },
+    {
+      "id": "QZNJW2589090",
+      "title": "Wake Up",
+      "artist": "Lonzo",
+      "artists": [
+        "Rain SWK",
+        "Mateoplugg",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZNJW2589090.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27350730b90986055c0dbdef47e",
+      "spotify_url": "https://open.spotify.com/track/7HaAUeNGivHrpMozVehCXW",
+      "release": "The Life of Rain",
+      "release_date": "2025-06-16",
+      "duration_ms": 95223,
+      "deezer_id": 3420285911
+    },
+    {
+      "id": "FRX282567161",
+      "title": "La Ziploc",
+      "artist": "Lonzo",
+      "artists": [
+        "Davus",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/FRX282567161.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273fe817a4e0a909918a67f59a6",
+      "spotify_url": "https://open.spotify.com/track/4gxXUYuBoztK3Fkr0PqE5b",
+      "release": "La Ziploc",
+      "release_date": "2025-06-04",
+      "duration_ms": 104692,
+      "deezer_id": 3592863912
+    },
+    {
+      "id": "QZNJV2517559",
+      "title": "vivienne",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZNJV2517559.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273103d16adbc35a8ff65ee3fa0",
+      "spotify_url": "https://open.spotify.com/track/1xV363EUU0rJ5LQFngcVNJ",
+      "release": "vivienne",
+      "release_date": "2025-05-14",
+      "duration_ms": 115204,
+      "deezer_id": 3345275761
+    },
+    {
+      "id": "USANG2523394",
+      "title": "Perdiendo el control",
+      "artist": "Lonzo",
+      "artists": [
+        "JuicyNise",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/USANG2523394.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2731060fcb8c5a7cdf297ef157b",
+      "spotify_url": "https://open.spotify.com/track/53D1VJsgDNhthq3rRfwOPm",
+      "release": "Surferland 3",
+      "release_date": "2025-05-10",
+      "duration_ms": 95227,
+      "deezer_id": 3339527621
+    },
+    {
+      "id": "SE6XY2554470",
+      "title": "No te entiendo",
+      "artist": "Lonzo",
+      "artists": [
+        "DRIX JK",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/SE6XY2554470.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273599f0b9407755994692ece74",
+      "spotify_url": "https://open.spotify.com/track/0AyY43QuREB1FidR7Zaj88",
+      "release": "No te entiendo",
+      "release_date": "2025-04-13",
+      "duration_ms": 119171,
+      "deezer_id": 3314852711
+    },
+    {
+      "id": "QZHN72573388",
+      "title": "VAIVEN",
+      "artist": "Lonzo",
+      "artists": [
+        "Jans",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZHN72573388.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273ad0254d7a850b098e68dc741",
+      "spotify_url": "https://open.spotify.com/track/4OnPf7U3mLxCzkK34TF3EE",
+      "release": "VAIVEN",
+      "release_date": "2025-03-01",
+      "duration_ms": 143749,
+      "deezer_id": 3255930991
+    },
+    {
+      "id": "QZPEW2560332",
+      "title": "lincoln prk intrlde",
+      "artist": "Lonzo",
+      "artists": [
+        "myekehl",
+        "I.C.y",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZPEW2560332.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273be449a860cd60eec32e9dff2",
+      "spotify_url": "https://open.spotify.com/track/6XKGVuOwcR6nGistJXBYJ3",
+      "release": "earthstrong",
+      "release_date": "2025-02-28",
+      "duration_ms": 142615,
+      "deezer_id": 3221993161
+    },
+    {
+      "id": "QZGLM2594575",
+      "title": "Galaxy Gas",
+      "artist": "Lonzo",
+      "artists": [
+        "Tussiwarriors",
+        "Venen",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZGLM2594575.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2731d6573ca326ef68bc1cee80a",
+      "spotify_url": "https://open.spotify.com/track/4I074cQGJY0s65whdzXrLj",
+      "release": "Tonkiclub",
+      "release_date": "2025-02-28",
+      "duration_ms": 188044,
+      "deezer_id": 3250592611
+    },
+    {
+      "id": "ARMSV2500004",
+      "title": "SAUL GOODMAN (LONZO)",
+      "artist": "Lonzo",
+      "artists": [
+        "Heskasie",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/ARMSV2500004.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2736a148d7db7adf0e07d3926ea",
+      "spotify_url": "https://open.spotify.com/track/6E9lYoJdWqI7VG1bT1ll6t",
+      "release": "MOPSEP",
+      "release_date": "2025-02-27",
+      "duration_ms": 104442,
+      "deezer_id": 3242091371
+    },
+    {
+      "id": "QZGLM2518015",
+      "title": "Mary Jane",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZGLM2518015.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273da91c087e4fa7acb8d59e672",
+      "spotify_url": "https://open.spotify.com/track/1v49CR69X554jkm8jmckOz",
+      "release": "Mary Jane",
+      "release_date": "2025-02-25",
+      "duration_ms": 118200,
+      "deezer_id": 3216707331
+    },
+    {
+      "id": "QZES62532272",
+      "title": "Mami Xq Yo",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZES62532272.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27376c0635468fc4c16069e8564",
+      "spotify_url": "https://open.spotify.com/track/1zrosLs49YUOjTI0DbERGX",
+      "release": "Mami Xq Yo",
+      "release_date": "2025-02-05",
+      "duration_ms": 139591,
+      "deezer_id": 3222176551
+    },
+    {
+      "id": "UYT142400083",
+      "title": "ALTURA - Remix",
+      "artist": "Lonzo",
+      "artists": [
+        "Fosse",
+        "Valuto",
+        "Davus",
+        "Wave",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/UYT142400083.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27307c519b41da4748c323a60f9",
+      "spotify_url": "https://open.spotify.com/track/3sMdkiQTmuI3UyYIBjFmrT",
+      "release": "ALTURA (Remix)",
+      "release_date": "2025-01-23",
+      "duration_ms": 245538,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "QZFZ62533730",
+      "title": "Desmo",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo",
+        "Camacho"
+      ],
+      "audio_file": "/audio/QZFZ62533730.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273d3ea95e65af40e0beed748f3",
+      "spotify_url": "https://open.spotify.com/track/6aiICj5dIGvStLboRXGGjn",
+      "release": "Desmo",
+      "release_date": "2025-01-15",
+      "duration_ms": 134062,
+      "deezer_id": 3189441801
+    },
+    {
+      "id": "QZFYZ2588364",
+      "title": "PLAN B",
+      "artist": "Lonzo",
+      "artists": [
+        "Jans",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZFYZ2588364.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27337f74c5ef51cfb002fabc188",
+      "spotify_url": "https://open.spotify.com/track/1hVixQB6gKGAzwHoBBWxfe",
+      "release": "PLAN B",
+      "release_date": "2025-01-10",
+      "duration_ms": 125217,
+      "deezer_id": 3174554101
+    },
+    {
+      "id": "PLI292400905",
+      "title": "WSZYSTKO MIJA",
+      "artist": "Lonzo",
+      "artists": [
+        "Otsochodzi",
+        "lohleq",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/PLI292400905.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273558aa07261c7d3b2ae7690ef",
+      "spotify_url": "https://open.spotify.com/track/6XK2NHIhrIaS7rexbiiiq7",
+      "release": "WSZYSTKO MIJA",
+      "release_date": "2024-12-09",
+      "duration_ms": 199069,
+      "deezer_id": 3124405621
+    },
+    {
+      "id": "QZWFV2471092",
+      "title": "Sinsol",
+      "artist": "Lonzo",
+      "artists": [
+        "JuicyNise",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZWFV2471092.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273a6977fdd26eb4f926012ad98",
+      "spotify_url": "https://open.spotify.com/track/09aYxPXl3ntqVBUxYCmTwX",
+      "release": "Sentimental Gangster",
+      "release_date": "2024-10-23",
+      "duration_ms": 101052,
+      "deezer_id": 3175408461
+    },
+    {
+      "id": "QZWFV2471091",
+      "title": "Raket",
+      "artist": "Lonzo",
+      "artists": [
+        "JuicyNise",
+        "Lonzo",
+        "Tobi"
+      ],
+      "audio_file": "/audio/QZWFV2471091.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273a6977fdd26eb4f926012ad98",
+      "spotify_url": "https://open.spotify.com/track/0B3tyBt9AH714yDwi7iBwq",
+      "release": "Sentimental Gangster",
+      "release_date": "2024-10-23",
+      "duration_ms": 175040,
+      "deezer_id": 3175408451
+    },
+    {
+      "id": "QZWFV2471090",
+      "title": "Dentro de ti",
+      "artist": "Lonzo",
+      "artists": [
+        "JuicyNise",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZWFV2471090.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273a6977fdd26eb4f926012ad98",
+      "spotify_url": "https://open.spotify.com/track/5Ipmw3sjSduF9cdyJYaYMF",
+      "release": "Sentimental Gangster",
+      "release_date": "2024-10-23",
+      "duration_ms": 119108,
+      "deezer_id": 3175408441
+    },
+    {
+      "id": "QZTVM2479447",
+      "title": "Que Somos?",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZTVM2479447.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273ebd5c45571fe38119da19aea",
+      "spotify_url": "https://open.spotify.com/track/6yUKNOZEYHekAWrpvT5Et9",
+      "release": "Que Somos?",
+      "release_date": "2024-10-23",
+      "duration_ms": 110973,
+      "deezer_id": 3031772171
+    },
+    {
+      "id": "UYT142400041",
+      "title": "BRENT.",
+      "artist": "Lonzo",
+      "artists": [
+        "Fosse",
+        "Lonzo",
+        "Barta"
+      ],
+      "audio_file": "/audio/UYT142400041.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273aee6c592cd768a13177cd442",
+      "spotify_url": "https://open.spotify.com/track/1Jf7HgbH5CXPzAPzAbRzkJ",
+      "release": "BRENT.",
+      "release_date": "2024-09-10",
+      "duration_ms": 140000,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "QZTBA2441913",
+      "title": "All Right",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZTBA2441913.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2737a8695a43f9d53aab4c1e120",
+      "spotify_url": "https://open.spotify.com/track/4LvgD1Zei4FQsqi9yrb9HY",
+      "release": "All Right",
+      "release_date": "2024-08-26",
+      "duration_ms": 106729,
+      "deezer_id": 2969289411
+    },
+    {
+      "id": "UYT142400033",
+      "title": "X Amor",
+      "artist": "Lonzo",
+      "artists": [
+        "Wave",
+        "Fosse En El Track",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/UYT142400033.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2730038984fb13a8d642519648d",
+      "spotify_url": "https://open.spotify.com/track/3ojaZBP6GLPU40ik97666v",
+      "release": "NO PIENSO DEJARLO A LA SUERTE",
+      "release_date": "2024-07-19",
+      "duration_ms": 127086,
+      "deezer_id": 2878371852
+    },
+    {
+      "id": "UYT142400031",
+      "title": "Como Estas?",
+      "artist": "Lonzo",
+      "artists": [
+        "Wave",
+        "Knak",
+        "Lonzo",
+        "Fosse En El Track"
+      ],
+      "audio_file": "/audio/UYT142400031.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2730038984fb13a8d642519648d",
+      "spotify_url": "https://open.spotify.com/track/47NOaSPIYKIj1CiRnWLjkr",
+      "release": "NO PIENSO DEJARLO A LA SUERTE",
+      "release_date": "2024-07-19",
+      "duration_ms": 157664,
+      "deezer_id": 2878371842
+    },
+    {
+      "id": "QZNJY2411334",
+      "title": "Beyblade",
+      "artist": "Lonzo",
+      "artists": [
+        "nau",
+        "hellcat.",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZNJY2411334.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27354d7bb39a01c8e893c119cc0",
+      "spotify_url": "https://open.spotify.com/track/0OUyMl9uQkiYFLuqNjLK4K",
+      "release": "Beyblade",
+      "release_date": "2024-07-05",
+      "duration_ms": 139619,
+      "deezer_id": 2873491952
+    },
+    {
+      "id": "QZNJW2492617",
+      "title": "Loko",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Knak",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZNJW2492617.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273c3e564eb0f0f3e2d8ed78ba6",
+      "spotify_url": "https://open.spotify.com/track/7codT1UfgPVVCFyVmTN5ah",
+      "release": "#SLN",
+      "release_date": "2024-06-27",
+      "duration_ms": 162838,
+      "deezer_id": 2833683702
+    },
+    {
+      "id": "QZNJW2492616",
+      "title": "Geeked",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Lonzo",
+        "hellcat."
+      ],
+      "audio_file": "/audio/QZNJW2492616.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273c3e564eb0f0f3e2d8ed78ba6",
+      "spotify_url": "https://open.spotify.com/track/0XQriiFNxuuiNBslh4mq9T",
+      "release": "#SLN",
+      "release_date": "2024-06-27",
+      "duration_ms": 101333,
+      "deezer_id": 2833683692
+    },
+    {
+      "id": "QZNJW2492615",
+      "title": "Bonjour",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Jaymee",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZNJW2492615.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273c3e564eb0f0f3e2d8ed78ba6",
+      "spotify_url": "https://open.spotify.com/track/1OdbbcAEMn60yFMkkqh6M4",
+      "release": "#SLN",
+      "release_date": "2024-06-27",
+      "duration_ms": 143320,
+      "deezer_id": 2833683682
+    },
+    {
+      "id": "QZNJW2492614",
+      "title": "Hago Que No Pasa Nada",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Lonzo",
+        "hellcat."
+      ],
+      "audio_file": "/audio/QZNJW2492614.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273c3e564eb0f0f3e2d8ed78ba6",
+      "spotify_url": "https://open.spotify.com/track/0QvUyJYKsqGVGKtpdOFKmz",
+      "release": "#SLN",
+      "release_date": "2024-06-27",
+      "duration_ms": 126545,
+      "deezer_id": 2833683672
+    },
+    {
+      "id": "QZNJW2492612",
+      "title": "Aparte",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Wave",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZNJW2492612.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273c3e564eb0f0f3e2d8ed78ba6",
+      "spotify_url": "https://open.spotify.com/track/6HzGtUBs9BSz3QDyvaamhu",
+      "release": "#SLN",
+      "release_date": "2024-06-27",
+      "duration_ms": 147644,
+      "deezer_id": 2833683652
+    },
+    {
+      "id": "QZNJW2492611",
+      "title": "Me Haces Dudar",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Ramma",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZNJW2492611.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273c3e564eb0f0f3e2d8ed78ba6",
+      "spotify_url": "https://open.spotify.com/track/6IaNGdDD88r7AZfN0S3UNY",
+      "release": "#SLN",
+      "release_date": "2024-06-27",
+      "duration_ms": 161482,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYD802400014",
+      "title": "URUWACHA",
+      "artist": "Lonzo",
+      "artists": [
+        "Davus",
+        "turrobaby",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/UYD802400014.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273115babcc0d48b421c31e8e0a",
+      "spotify_url": "https://open.spotify.com/track/0OJXw3cVuN4JkaSUxSamJ9",
+      "release": "URUWACHA",
+      "release_date": "2024-06-21",
+      "duration_ms": 176197,
+      "deezer_id": 3592856162
+    },
+    {
+      "id": "UYT142400020",
+      "title": "ALTURA",
+      "artist": "Lonzo",
+      "artists": [
+        "Fosse",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/UYT142400020.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2737bdc01170d04b9d256a752c3",
+      "spotify_url": "https://open.spotify.com/track/1x4xUyec4llMhfCdAqZmkG",
+      "release": "ALTURA",
+      "release_date": "2024-05-15",
+      "duration_ms": 89076,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "QZK6P2403782",
+      "title": "Cuando Estamos Solos",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "hellcat.",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZK6P2403782.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27354b0e7e036c0d77316d45348",
+      "spotify_url": "https://open.spotify.com/track/6QmfVVOIWuTnDQGnWQnDju",
+      "release": "Cuando Estamos Solos",
+      "release_date": "2024-04-25",
+      "duration_ms": 159060,
+      "deezer_id": 2808566462
+    },
+    {
+      "id": "UYD802400007",
+      "title": "Carta a Tu Novia",
+      "artist": "Lonzo",
+      "artists": [
+        "Davus",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/UYD802400007.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739a6c963e01a873c9bc5ad349",
+      "spotify_url": "https://open.spotify.com/track/41Oi8ksvfGhnM9GwHGNSr6",
+      "release": "Carta a Tu Novia",
+      "release_date": "2024-04-24",
+      "duration_ms": 139084,
+      "deezer_id": 3592863532
+    },
+    {
+      "id": "UYT142400005",
+      "title": "Molly",
+      "artist": "Lonzo",
+      "artists": [
+        "Wave",
+        "Barta",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/UYT142400005.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273e6b8808c3e1e98f6f709b311",
+      "spotify_url": "https://open.spotify.com/track/4QzERhBtzxUVSjud4pikHG",
+      "release": "Molly",
+      "release_date": "2024-04-09",
+      "duration_ms": 116846,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "QZGLS2410827",
+      "title": "Y3@H",
+      "artist": "Lonzo",
+      "artists": [
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZGLS2410827.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2733624a60652a0d7979f1824a6",
+      "spotify_url": "https://open.spotify.com/track/65WJvf7fQgyC24zY49ecdC",
+      "release": "Y3@H",
+      "release_date": "2024-04-02",
+      "duration_ms": 104336,
+      "deezer_id": 2703303142
+    },
+    {
+      "id": "UYD802400005",
+      "title": "Un Par de Secuencias",
+      "artist": "Lonzo",
+      "artists": [
+        "Davus",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/UYD802400005.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273757d1c8945d99791c75836c1",
+      "spotify_url": "https://open.spotify.com/track/77HciUptJuS0ZvUpy0NJvE",
+      "release": "Un Par de Secuencias",
+      "release_date": "2024-04-02",
+      "duration_ms": 165805,
+      "deezer_id": 3592863522
+    },
+    {
+      "id": "QZGLM2464753",
+      "title": "Lowkey",
+      "artist": "Lonzo",
+      "artists": [
+        "nau",
+        "Davus",
+        "hellcat.",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZGLM2464753.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27375173553029217264f233620",
+      "spotify_url": "https://open.spotify.com/track/6zWv5O2BCCkhBOhjCOP0Fr",
+      "release": "Lowkey",
+      "release_date": "2024-03-08",
+      "duration_ms": 176000,
+      "deezer_id": 2686459882
+    },
+    {
+      "id": "QZES72489113",
+      "title": "3 veces Jerk",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "nau",
+        "Lonzo",
+        "Hell cat"
+      ],
+      "audio_file": "/audio/QZES72489113.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27349e3d5cf4da300f853ad31f8",
+      "spotify_url": "https://open.spotify.com/track/70v988pjZJS5csRohh0ADK",
+      "release": "Evidenchimenchi Vol2",
+      "release_date": "2024-02-23",
+      "duration_ms": 150357,
+      "deezer_id": 2677694842
+    },
+    {
+      "id": "QZES72489112",
+      "title": "Shorty si vos queres",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZES72489112.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27349e3d5cf4da300f853ad31f8",
+      "spotify_url": "https://open.spotify.com/track/3sdrC5wficljqJIDACEzSf",
+      "release": "Evidenchimenchi Vol2",
+      "release_date": "2024-02-23",
+      "duration_ms": 130563,
+      "deezer_id": 2677694832
+    },
+    {
+      "id": "QZES72489111",
+      "title": "X vos dejo la mari",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Sanner",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZES72489111.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27349e3d5cf4da300f853ad31f8",
+      "spotify_url": "https://open.spotify.com/track/0mvB5nuXt6jPaSb2hvV9Du",
+      "release": "Evidenchimenchi Vol2",
+      "release_date": "2024-02-23",
+      "duration_ms": 146004,
+      "deezer_id": 2677694822
+    },
+    {
+      "id": "QZES72489110",
+      "title": "Fantasia",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZES72489110.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27349e3d5cf4da300f853ad31f8",
+      "spotify_url": "https://open.spotify.com/track/7LLVEhzykiE9zBukY5B5b8",
+      "release": "Evidenchimenchi Vol2",
+      "release_date": "2024-02-23",
+      "duration_ms": 66951,
+      "deezer_id": 2677694812
+    },
+    {
+      "id": "QZES72489109",
+      "title": "EN LA CAMA O EL SILLON",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZES72489109.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27349e3d5cf4da300f853ad31f8",
+      "spotify_url": "https://open.spotify.com/track/1VqZqRDNkYoDheGnqtb8ax",
+      "release": "Evidenchimenchi Vol2",
+      "release_date": "2024-02-23",
+      "duration_ms": 151013,
+      "deezer_id": 2677694802
+    },
+    {
+      "id": "QZDA82486332",
+      "title": "Gordo Jerk",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZDA82486332.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27349e3d5cf4da300f853ad31f8",
+      "spotify_url": "https://open.spotify.com/track/6Q3khPhBhyNz1lKSnKiG9v",
+      "release": "Evidenchimenchi Vol2",
+      "release_date": "2024-02-23",
+      "duration_ms": 127686,
+      "deezer_id": 2663781562
+    },
+    {
+      "id": "UYD802400001",
+      "title": "Nobody!",
+      "artist": "Lonzo",
+      "artists": [
+        "Davus",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/UYD802400001.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273bab8a2ff86a3877613c57d9b",
+      "spotify_url": "https://open.spotify.com/track/2OILb2JR2IbqAuZBWx3lHw",
+      "release": "Nobody!",
+      "release_date": "2024-02-20",
+      "duration_ms": 147062,
+      "deezer_id": 3593104382
+    },
+    {
+      "id": "QZDA62401325",
+      "title": "G Wagon",
+      "artist": "Lonzo",
+      "artists": [
+        "gagonzzz",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZDA62401325.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738265dc548d4a3506851f6d07",
+      "spotify_url": "https://open.spotify.com/track/1jIEL52kLKKkQIpbahsHA9",
+      "release": "The Poison Cream",
+      "release_date": "2024-02-15",
+      "duration_ms": 109254,
+      "deezer_id": 2650268952
+    },
+    {
+      "id": "QZ5AB2442491",
+      "title": "Ataque!",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "Moodie!",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZ5AB2442491.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27362a572ea4cbd527cca59210f",
+      "spotify_url": "https://open.spotify.com/track/4ujZGRtVZiDvpxGki2gOdT",
+      "release": "Ataque!",
+      "release_date": "2024-02-15",
+      "duration_ms": 85133,
+      "deezer_id": 2648042722
+    },
+    {
+      "id": "QZFYZ2450678",
+      "title": "Blue Label",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZFYZ2450678.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738e5daf62b53dec4bc9b64fe2",
+      "spotify_url": "https://open.spotify.com/track/110Ajp8f1jKL7ZVmmNLaCZ",
+      "release": "Blue Label",
+      "release_date": "2024-01-05",
+      "duration_ms": 123620,
+      "deezer_id": 2613843492
+    },
+    {
+      "id": "ARMSV2300084",
+      "title": "MEU PACKS",
+      "artist": "Lonzo",
+      "artists": [
+        "Heskasie",
+        "tuw4",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/ARMSV2300084.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273f3d6409e12c46e74577c6d5c",
+      "spotify_url": "https://open.spotify.com/track/53RlVrB20mOaW6aWrKpJbf",
+      "release": "MEU PACKS",
+      "release_date": "2023-12-29",
+      "duration_ms": 109852,
+      "deezer_id": 2595480762
+    },
+    {
+      "id": "GX5MY2329993",
+      "title": "Off This Drugs",
+      "artist": "Lonzo",
+      "artists": [
+        "dreiko estrada",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/GX5MY2329993.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273247f61a9aefdccc91c473c5c",
+      "spotify_url": "https://open.spotify.com/track/3KSn3YujzPYjPM1i5xAyAX",
+      "release": "APLENOSKI",
+      "release_date": "2023-12-23",
+      "duration_ms": 103694,
+      "deezer_id": 2654341882
+    },
+    {
+      "id": "QZW9K2372457",
+      "title": "Emocionado",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "hellcat.",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZW9K2372457.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273646e48b39f27c8e345f3a421",
+      "spotify_url": "https://open.spotify.com/track/6KrHPHVroZjB4OYfAb9J3a",
+      "release": "Nineworld I I",
+      "release_date": "2023-11-29",
+      "duration_ms": 130227,
+      "deezer_id": 2531571861
+    },
+    {
+      "id": "QZW9K2372456",
+      "title": "Punto Final",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "hellcat.",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZW9K2372456.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273646e48b39f27c8e345f3a421",
+      "spotify_url": "https://open.spotify.com/track/0xrIPRRVYZVuQpF3H3UxQo",
+      "release": "Nineworld I I",
+      "release_date": "2023-11-29",
+      "duration_ms": 159839,
+      "deezer_id": 2531571851
+    },
+    {
+      "id": "QZW9K2372455",
+      "title": "Mal V2",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "hellcat.",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZW9K2372455.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273646e48b39f27c8e345f3a421",
+      "spotify_url": "https://open.spotify.com/track/2LABlwlREFoQxd3N3Z2fsC",
+      "release": "Nineworld I I",
+      "release_date": "2023-11-29",
+      "duration_ms": 135789,
+      "deezer_id": 2531571841
+    },
+    {
+      "id": "QZW9K2372454",
+      "title": "Bocado",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "hellcat.",
+        "Lonzo",
+        "Knak"
+      ],
+      "audio_file": "/audio/QZW9K2372454.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273646e48b39f27c8e345f3a421",
+      "spotify_url": "https://open.spotify.com/track/1Vbn6Z51PHTzWrqHZmPUUE",
+      "release": "Nineworld I I",
+      "release_date": "2023-11-29",
+      "duration_ms": 135763,
+      "deezer_id": 2531571831
+    },
+    {
+      "id": "QZW9K2372453",
+      "title": "No Me Arrepiento",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "hellcat.",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZW9K2372453.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273646e48b39f27c8e345f3a421",
+      "spotify_url": "https://open.spotify.com/track/1Ep7Og3hhs6JGzzVRjmGJx",
+      "release": "Nineworld I I",
+      "release_date": "2023-11-29",
+      "duration_ms": 122358,
+      "deezer_id": 2531571821
+    },
+    {
+      "id": "QZW9K2372452",
+      "title": "Con La Bix Encima",
+      "artist": "Lonzo",
+      "artists": [
+        "Zetta 09",
+        "hellcat.",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZW9K2372452.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273646e48b39f27c8e345f3a421",
+      "spotify_url": "https://open.spotify.com/track/3CRFgh6CM4Zt2ykz3YR0Ht",
+      "release": "Nineworld I I",
+      "release_date": "2023-11-29",
+      "duration_ms": 96000,
+      "deezer_id": 2531571811
+    },
+    {
+      "id": "QZWFG2349115",
+      "title": "Me llaman Romeo",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZWFG2349115.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2730f9b6dd0e651c263f42d7f32",
+      "spotify_url": "https://open.spotify.com/track/3iU0ozxkHGjFUoF0f88IQU",
+      "release": "Me llaman Romeo",
+      "release_date": "2023-11-22",
+      "duration_ms": 110106,
+      "deezer_id": 2558443382
+    },
+    {
+      "id": "QZTB82381738",
+      "title": "Linda",
+      "artist": "Lonzo",
+      "artists": [
+        "AGUMUYFAST",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZTB82381738.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2737531ede217ce5060245a6eb1",
+      "spotify_url": "https://open.spotify.com/track/5oqJKJbrQJRA09Uo7btcrX",
+      "release": "INTERNET",
+      "release_date": "2023-10-16",
+      "duration_ms": 150000,
+      "deezer_id": 2502996361
+    },
+    {
+      "id": "QZTB82381724",
+      "title": "pOrtal",
+      "artist": "Lonzo",
+      "artists": [
+        "AGUMUYFAST",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZTB82381724.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2737531ede217ce5060245a6eb1",
+      "spotify_url": "https://open.spotify.com/track/3xj0pYKWAZ4FH979ekTD9v",
+      "release": "INTERNET",
+      "release_date": "2023-10-16",
+      "duration_ms": 56000,
+      "deezer_id": 2502996221
+    },
+    {
+      "id": "QZTB52376778",
+      "title": "Jerseycore",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZTB52376778.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732f12c970031f025d520e6085",
+      "spotify_url": "https://open.spotify.com/track/5pPC3esgsPadS15PKudXUo",
+      "release": "Jerseycore",
+      "release_date": "2023-10-05",
+      "duration_ms": 125701,
+      "deezer_id": 2485174281
+    },
+    {
+      "id": "QZTPX2361513",
+      "title": "Samba",
+      "artist": "Lonzo",
+      "artists": [
+        "nau",
+        "Lonzo",
+        "hellcat."
+      ],
+      "audio_file": "/audio/QZTPX2361513.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273d83b9cd2efb0667fd1d4fdaa",
+      "spotify_url": "https://open.spotify.com/track/0MlrxoBL1TRTN0SmT3O3Q4",
+      "release": "Milan / Samba",
+      "release_date": "2023-09-22",
+      "duration_ms": 93839,
+      "deezer_id": 2454015055
+    },
+    {
+      "id": "QZTPX2361512",
+      "title": "Milan",
+      "artist": "Lonzo",
+      "artists": [
+        "nau",
+        "Lonzo",
+        "hellcat."
+      ],
+      "audio_file": "/audio/QZTPX2361512.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273d83b9cd2efb0667fd1d4fdaa",
+      "spotify_url": "https://open.spotify.com/track/3O8MKY66fUS8U459j9oCGr",
+      "release": "Milan / Samba",
+      "release_date": "2023-09-22",
+      "duration_ms": 125883,
+      "deezer_id": 2454015045
+    },
+    {
+      "id": "QZTAY2333956",
+      "title": "TU ME ENKANTAS",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZTAY2333956.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27328ceb489c6f1ae9781a3031d",
+      "spotify_url": "https://open.spotify.com/track/1YvjvXHGIp3N8reDr2vBTI",
+      "release": "TU ME ENKANTAS",
+      "release_date": "2023-09-13",
+      "duration_ms": 141885,
+      "deezer_id": 2454655225
+    },
+    {
+      "id": "QZTPX2322171",
+      "title": "Silencio",
+      "artist": "Lonzo",
+      "artists": [
+        "Tawro",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZTPX2322171.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739705e7ecf05da16aed6e1c60",
+      "spotify_url": "https://open.spotify.com/track/3IfXrsTJ30dsunRKrNwiEW",
+      "release": "Silencio",
+      "release_date": "2023-09-08",
+      "duration_ms": 113383,
+      "deezer_id": 2440812575
+    },
+    {
+      "id": "QZPLS2315210",
+      "title": "Seguro lo que cuento",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZPLS2315210.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27311c6c6fb59c26f0d31333917",
+      "spotify_url": "https://open.spotify.com/track/4E6x3i7FfXjvKhA9qSLFGx",
+      "release": "Seguro lo que cuento",
+      "release_date": "2023-08-11",
+      "duration_ms": 135706,
+      "deezer_id": 2407177295
+    },
+    {
+      "id": "QZNWR2325571",
+      "title": "Voce ta llorando?",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZNWR2325571.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273c0c25e6c692c77a0725f034b",
+      "spotify_url": "https://open.spotify.com/track/60izHFVqgkXwQo5xmDBb3N",
+      "release": "Voce ta llorando?",
+      "release_date": "2023-07-03",
+      "duration_ms": 113841,
+      "deezer_id": 2354280555
+    },
+    {
+      "id": "QZK6G2327910",
+      "title": "Spliff",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZK6G2327910.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273e08da041869a5a3e375e0161",
+      "spotify_url": "https://open.spotify.com/track/2aTJ4toVzzmX1G1TUhJCBH",
+      "release": "Spliff",
+      "release_date": "2023-06-01",
+      "duration_ms": 128668,
+      "deezer_id": 2310498035
+    },
+    {
+      "id": "QZK6M2389110",
+      "title": "Vuelo a brasil - Lonzo Remix",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Sanner",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZK6M2389110.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2734ec205b613cc967bda2bc0a9",
+      "spotify_url": "https://open.spotify.com/track/2JV4vfpSFeB9Nw8xWLWmox",
+      "release": "Vuelo a brasil (Lonzo Remix)",
+      "release_date": "2023-05-13",
+      "duration_ms": 148920,
+      "deezer_id": 2285489927
+    },
+    {
+      "id": "QZHN72363273",
+      "title": "SAUCE",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZHN72363273.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735ba5d532da713d7d7dafdde5",
+      "spotify_url": "https://open.spotify.com/track/2nK6dkc0yrmBV6uULT6VFm",
+      "release": "SAUCE",
+      "release_date": "2023-04-06",
+      "duration_ms": 146808,
+      "deezer_id": 2226804567
+    },
+    {
+      "id": "QZES82343951",
+      "title": "hace tiempo",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZES82343951.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735c3836a89fa0835cb77bead3",
+      "spotify_url": "https://open.spotify.com/track/5rvNnOJrU0Qhin5WRGtgJC",
+      "release": "Evidenchimenchi",
+      "release_date": "2023-03-09",
+      "duration_ms": 171128,
+      "deezer_id": 2187125687
+    },
+    {
+      "id": "QZES82343950",
+      "title": "Disney plus",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZES82343950.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735c3836a89fa0835cb77bead3",
+      "spotify_url": "https://open.spotify.com/track/1cSObOCVA7KWQP0DLNnjSF",
+      "release": "Evidenchimenchi",
+      "release_date": "2023-03-09",
+      "duration_ms": 174227,
+      "deezer_id": 2187125677
+    },
+    {
+      "id": "QZDA52373315",
+      "title": "SIGMA",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZDA52373315.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735c3836a89fa0835cb77bead3",
+      "spotify_url": "https://open.spotify.com/track/6U8MOe8oMFPTHxqMYPGBpE",
+      "release": "Evidenchimenchi",
+      "release_date": "2023-03-09",
+      "duration_ms": 170024,
+      "deezer_id": 2187125667
+    },
+    {
+      "id": "QZES82343949",
+      "title": "3 veces plug",
+      "artist": "Lonzo",
+      "artists": [
+        "Fercesito",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZES82343949.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735c3836a89fa0835cb77bead3",
+      "spotify_url": "https://open.spotify.com/track/6FDqoN0BUZEksdjTn9pHcU",
+      "release": "Evidenchimenchi",
+      "release_date": "2023-03-09",
+      "duration_ms": 124076,
+      "deezer_id": 2187125657
+    }
+  ]
+}

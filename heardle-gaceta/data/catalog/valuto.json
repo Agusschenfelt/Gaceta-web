@@ -1,0 +1,690 @@
+{
+  "artist": "Valuto",
+  "slug": "valuto",
+  "tracks": [
+    {
+      "id": "UY01G2400138",
+      "title": "vicevərsa",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "Barta",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/UY01G2400138.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273f6345e4171c1c8ba204b4113",
+      "spotify_url": "https://open.spotify.com/track/09vr23uYlL1VwM2T9O0hGK",
+      "release": "vicevərsa",
+      "release_date": "2026-02-19",
+      "duration_ms": 172576,
+      "deezer_id": 3829359611
+    },
+    {
+      "id": "UY01G2400139",
+      "title": "NO ME QUERIA IR",
+      "artist": "Valuto",
+      "artists": [
+        "Luk-s",
+        "Valuto",
+        "Fosse En El Track"
+      ],
+      "audio_file": "/audio/UY01G2400139.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2730b771ccee6457098cad61ef3",
+      "spotify_url": "https://open.spotify.com/track/0NXT4MafFCXadQZEDZMwWz",
+      "release": "NO ME QUERIA IR",
+      "release_date": "2026-02-17",
+      "duration_ms": 178255,
+      "deezer_id": 3837964401
+    },
+    {
+      "id": "UY01G2400130",
+      "title": "Sin Título",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "Barta",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UY01G2400130.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735ed203c03560dd6c05bab917",
+      "spotify_url": "https://open.spotify.com/track/1Ypa88NA1DK2YkLGXX1OUb",
+      "release": "Sin Título",
+      "release_date": "2026-01-15",
+      "duration_ms": 108972,
+      "deezer_id": 3717583632
+    },
+    {
+      "id": "UY01G2400129",
+      "title": "No te Daría la Cara",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "Barta"
+      ],
+      "audio_file": "/audio/UY01G2400129.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2731f0b5952bb8b1396719a8dfc",
+      "spotify_url": "https://open.spotify.com/track/0UKQEI2oLvO6sVxKuAKHI3",
+      "release": "No te Daría la Cara",
+      "release_date": "2025-12-25",
+      "duration_ms": 137952,
+      "deezer_id": 3711438552
+    },
+    {
+      "id": "UY01G2400097",
+      "title": "5 cintas",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "Barta"
+      ],
+      "audio_file": "/audio/UY01G2400097.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738fca3078edea3e6ae5a56868",
+      "spotify_url": "https://open.spotify.com/track/7bmkrAZ50DpiMrRWoiRgvZ",
+      "release": "5 cintas",
+      "release_date": "2025-11-20",
+      "duration_ms": 131734,
+      "deezer_id": 3644809672
+    },
+    {
+      "id": "QZTPX2567351",
+      "title": "No Quiero Saber",
+      "artist": "Valuto",
+      "artists": [
+        "Zetta 09",
+        "Valuto",
+        "Barta",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/QZTPX2567351.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738e2b0c8f46b7c994f3565669",
+      "spotify_url": "https://open.spotify.com/track/207Wcx2PENNa3zwRNMpgE2",
+      "release": "Nueva Religión",
+      "release_date": "2025-09-28",
+      "duration_ms": 124288,
+      "deezer_id": 3577848071
+    },
+    {
+      "id": "UY01G2400079",
+      "title": "siento que no te encontré",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto"
+      ],
+      "audio_file": "/audio/UY01G2400079.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2734d680003abaf7268c30f3e2a",
+      "spotify_url": "https://open.spotify.com/track/591o1xuNlkRI8OFaXX7u2a",
+      "release": "siento que no te encontré",
+      "release_date": "2025-09-17",
+      "duration_ms": 132014,
+      "deezer_id": 3542676571
+    },
+    {
+      "id": "QZNJY2599916",
+      "title": "Cosas que están mal",
+      "artist": "Valuto",
+      "artists": [
+        "143leti",
+        "Valuto"
+      ],
+      "audio_file": "/audio/QZNJY2599916.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27315e14a70c7b65cd7bb9dd3b2",
+      "spotify_url": "https://open.spotify.com/track/11nBJ7BMPyZ3JucRjvTsPV",
+      "release": "Cosas que están mal",
+      "release_date": "2025-08-14",
+      "duration_ms": 127395,
+      "deezer_id": 3507455951
+    },
+    {
+      "id": "UYM122500576",
+      "title": "ROCKLIFE",
+      "artist": "Valuto",
+      "artists": [
+        "Elias Glz",
+        "Valuto"
+      ],
+      "audio_file": "/audio/UYM122500576.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738cdb9e95bbf1f3d00e02b564",
+      "spotify_url": "https://open.spotify.com/track/0vdOziDmhITESzhaBqcdxw",
+      "release": "ROCKLIFE",
+      "release_date": "2025-07-24",
+      "duration_ms": 177333,
+      "deezer_id": 3464031941
+    },
+    {
+      "id": "QZNJX2537058",
+      "title": "Fancy",
+      "artist": "Valuto",
+      "artists": [
+        "GALO",
+        "Valuto",
+        "Brus B"
+      ],
+      "audio_file": "/audio/QZNJX2537058.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735a82fa16cb0c34d7414501f6",
+      "spotify_url": "https://open.spotify.com/track/7xbPwg85EXaM63pwtvPkWt",
+      "release": "Galo",
+      "release_date": "2025-07-10",
+      "duration_ms": 123923,
+      "deezer_id": 3438709621
+    },
+    {
+      "id": "UYM122500290",
+      "title": "MVD",
+      "artist": "Valuto",
+      "artists": [
+        "Uri",
+        "Agus Padilla",
+        "La Deskarga",
+        "Jotape",
+        "Valuto",
+        "Lira",
+        "Lucauy",
+        "Zanto",
+        "Rodridi"
+      ],
+      "audio_file": "/audio/UYM122500290.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273f6b0512f8b926626179b358f",
+      "spotify_url": "https://open.spotify.com/track/0hir2XEqCMfJnkYw5QVwne",
+      "release": "MVD",
+      "release_date": "2025-07-03",
+      "duration_ms": 260411,
+      "deezer_id": 3440393321
+    },
+    {
+      "id": "UY01G2400022",
+      "title": "Hechicera",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "Wave",
+        "Fosse",
+        "Ramma"
+      ],
+      "audio_file": "/audio/UY01G2400022.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738b5360ef3675b1632e0f48f9",
+      "spotify_url": "https://open.spotify.com/track/42f7ax70eKweRpri5w4Nrz",
+      "release": "CON EL UNIFORME PUESTO",
+      "release_date": "2025-06-18",
+      "duration_ms": 176484,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UY01G2400045",
+      "title": "Back to 17",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto"
+      ],
+      "audio_file": "/audio/UY01G2400045.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738b5360ef3675b1632e0f48f9",
+      "spotify_url": "https://open.spotify.com/track/28NlKppNrVmj1BSHt4Zh1k",
+      "release": "CON EL UNIFORME PUESTO",
+      "release_date": "2025-06-18",
+      "duration_ms": 101298,
+      "deezer_id": 3396464721
+    },
+    {
+      "id": "UY01G2400046",
+      "title": "Chantas",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "ARA",
+        "Sixto Yegros"
+      ],
+      "audio_file": "/audio/UY01G2400046.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738b5360ef3675b1632e0f48f9",
+      "spotify_url": "https://open.spotify.com/track/73HJo11r4w1PSeZWgeFAC0",
+      "release": "CON EL UNIFORME PUESTO",
+      "release_date": "2025-06-18",
+      "duration_ms": 166800,
+      "deezer_id": 3396464711
+    },
+    {
+      "id": "UY01G2400014",
+      "title": "Antes de las 12",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto"
+      ],
+      "audio_file": "/audio/UY01G2400014.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738b5360ef3675b1632e0f48f9",
+      "spotify_url": "https://open.spotify.com/track/1oK4PTt9sGVw9ekZwYVLbV",
+      "release": "CON EL UNIFORME PUESTO",
+      "release_date": "2025-06-18",
+      "duration_ms": 133509,
+      "deezer_id": 3260790391
+    },
+    {
+      "id": "UY01G2400044",
+      "title": "Ya No Soy Así",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto"
+      ],
+      "audio_file": "/audio/UY01G2400044.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738b5360ef3675b1632e0f48f9",
+      "spotify_url": "https://open.spotify.com/track/7FTtlVfvf2Y6AitLfBdpqo",
+      "release": "CON EL UNIFORME PUESTO",
+      "release_date": "2025-06-18",
+      "duration_ms": 147346,
+      "deezer_id": 3396464691
+    },
+    {
+      "id": "UY01G2400043",
+      "title": "Con el Uniforme Puesto",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto"
+      ],
+      "audio_file": "/audio/UY01G2400043.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738b5360ef3675b1632e0f48f9",
+      "spotify_url": "https://open.spotify.com/track/5Z08wqm4VI3NHQN2WaqVDA",
+      "release": "CON EL UNIFORME PUESTO",
+      "release_date": "2025-06-18",
+      "duration_ms": 108033,
+      "deezer_id": 3396464681
+    },
+    {
+      "id": "ARIXB2501280",
+      "title": "CRY4ME",
+      "artist": "Valuto",
+      "artists": [
+        "R Flakkkk",
+        "Valuto",
+        "JCKC"
+      ],
+      "audio_file": "/audio/ARIXB2501280.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273e2352663ccf3ac6d90088bb7",
+      "spotify_url": "https://open.spotify.com/track/2sJooVjpngw6fZDZnoxvvL",
+      "release": "CRY4ME",
+      "release_date": "2025-05-15",
+      "duration_ms": 179393,
+      "deezer_id": 3631464092
+    },
+    {
+      "id": "QZGLM2591837",
+      "title": "Parka - Remix",
+      "artist": "Valuto",
+      "artists": [
+        "Saenzzz",
+        "Valuto"
+      ],
+      "audio_file": "/audio/QZGLM2591837.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2731e2a6a4135560f88aef566cb",
+      "spotify_url": "https://open.spotify.com/track/3vHVaxUpvbeFAQkA6J3A90",
+      "release": "Parka (Remix)",
+      "release_date": "2025-02-27",
+      "duration_ms": 248024,
+      "deezer_id": 3249215641
+    },
+    {
+      "id": "UY01G2400012",
+      "title": "mi único consuelo :(",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "Tadu Vázquez",
+        "Barta"
+      ],
+      "audio_file": "/audio/UY01G2400012.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2733f69b80471e8bd9a9d2d7e78",
+      "spotify_url": "https://open.spotify.com/track/4U149Cqm4ngZ9xFBKfvU9f",
+      "release": "mi único consuelo :(",
+      "release_date": "2025-02-14",
+      "duration_ms": 156841,
+      "deezer_id": 3226669641
+    },
+    {
+      "id": "UYT142400083",
+      "title": "ALTURA - Remix",
+      "artist": "Valuto",
+      "artists": [
+        "Fosse",
+        "Valuto",
+        "Davus",
+        "Wave",
+        "Lonzo"
+      ],
+      "audio_file": "/audio/UYT142400083.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27307c519b41da4748c323a60f9",
+      "spotify_url": "https://open.spotify.com/track/3sMdkiQTmuI3UyYIBjFmrT",
+      "release": "ALTURA (Remix)",
+      "release_date": "2025-01-23",
+      "duration_ms": 245538,
+      "deezer_id": 3175875681
+    },
+    {
+      "id": "UYB262400204",
+      "title": "Distancia",
+      "artist": "Valuto",
+      "artists": [
+        "Nicolas Ibarburu",
+        "Valuto"
+      ],
+      "audio_file": "/audio/UYB262400204.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b2ad4686c1a8a863a9e579a6",
+      "spotify_url": "https://open.spotify.com/track/7EyfEpZwKsSzO3LqDvMZwi",
+      "release": "La Ruta de la Seda",
+      "release_date": "2025-01-15",
+      "duration_ms": 225621,
+      "deezer_id": 3155641661
+    },
+    {
+      "id": "UYT142400071",
+      "title": "Wow Que Fina",
+      "artist": "Valuto",
+      "artists": [
+        "Luk-s",
+        "Valuto",
+        "Fosse En El Track"
+      ],
+      "audio_file": "/audio/UYT142400071.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273ba5d2651d26e071e7b89d735",
+      "spotify_url": "https://open.spotify.com/track/6tsiKbPAU0jAck8RJ7R9TT",
+      "release": "Wow Que Fina",
+      "release_date": "2025-01-02",
+      "duration_ms": 138064,
+      "deezer_id": 3119048521
+    },
+    {
+      "id": "QZZ7T2469470",
+      "title": "Moda",
+      "artist": "Valuto",
+      "artists": [
+        "Mirpo",
+        "Valuto",
+        "Fosse En El Track"
+      ],
+      "audio_file": "/audio/QZZ7T2469470.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273e6a48f1923cfe728db33968d",
+      "spotify_url": "https://open.spotify.com/track/45QLAlVARjEYIA1rTIYwmk",
+      "release": "DESPERTAR",
+      "release_date": "2024-12-19",
+      "duration_ms": 157361,
+      "deezer_id": 3133401081
+    },
+    {
+      "id": "UY01G2400004",
+      "title": "Mainstream",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "Barta",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UY01G2400004.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b81eaf2cda150b077a61209f",
+      "spotify_url": "https://open.spotify.com/track/1ugZV3zuLjRIMKA1fADRIO",
+      "release": "Flashes",
+      "release_date": "2024-12-19",
+      "duration_ms": 125806,
+      "deezer_id": 3146062861
+    },
+    {
+      "id": "UY01G2400002",
+      "title": "Interminables",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "Barta"
+      ],
+      "audio_file": "/audio/UY01G2400002.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b81eaf2cda150b077a61209f",
+      "spotify_url": "https://open.spotify.com/track/2a8QF2cI3C9GTLBZU1ABeI",
+      "release": "Flashes",
+      "release_date": "2024-12-19",
+      "duration_ms": 123387,
+      "deezer_id": 3146062851
+    },
+    {
+      "id": "UY01G2400001",
+      "title": "Mía",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "Barta"
+      ],
+      "audio_file": "/audio/UY01G2400001.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b81eaf2cda150b077a61209f",
+      "spotify_url": "https://open.spotify.com/track/5pzlfw2vBiKBbzhXghvTj3",
+      "release": "Flashes",
+      "release_date": "2024-12-19",
+      "duration_ms": 103903,
+      "deezer_id": 3146062841
+    },
+    {
+      "id": "QZW9L2462956",
+      "title": "Niño Roto",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "Barta"
+      ],
+      "audio_file": "/audio/QZW9L2462956.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b81eaf2cda150b077a61209f",
+      "spotify_url": "https://open.spotify.com/track/0WEomLjOC71aEfWm41JVRb",
+      "release": "Flashes",
+      "release_date": "2024-12-19",
+      "duration_ms": 97456,
+      "deezer_id": 3119099721
+    },
+    {
+      "id": "UYT142400045",
+      "title": "Cuantos Días",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "tuw4",
+        "Barta"
+      ],
+      "audio_file": "/audio/UYT142400045.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2739e24078ad1ca730efd6a2377",
+      "spotify_url": "https://open.spotify.com/track/3pSyRdCyV39OfAX6PZo30j",
+      "release": "Cuantos Días",
+      "release_date": "2024-10-21",
+      "duration_ms": 153105,
+      "deezer_id": 3045362991
+    },
+    {
+      "id": "UYT142400039",
+      "title": "Aromatik - Remix",
+      "artist": "Valuto",
+      "artists": [
+        "Young Broken",
+        "Valuto",
+        "SOYTURISTA",
+        "Barta",
+        "GALO"
+      ],
+      "audio_file": "/audio/UYT142400039.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273469c6be85c77070984a21916",
+      "spotify_url": "https://open.spotify.com/track/25h0OaUh7SLxTImEX8Dblk",
+      "release": "Aromatik (Remix)",
+      "release_date": "2024-08-01",
+      "duration_ms": 220009,
+      "deezer_id": 2912277331
+    },
+    {
+      "id": "UYT142400023",
+      "title": "Cerca",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "Davus",
+        "Barta"
+      ],
+      "audio_file": "/audio/UYT142400023.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273edcb93468905ea932c6355ca",
+      "spotify_url": "https://open.spotify.com/track/3mS4c7d5fOHblSPywKR7xQ",
+      "release": "Cerca",
+      "release_date": "2024-07-04",
+      "duration_ms": 165076,
+      "deezer_id": 2801092822
+    },
+    {
+      "id": "UYT142400027",
+      "title": "Me Estoy Desubicando",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto"
+      ],
+      "audio_file": "/audio/UYT142400027.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b049e1425ce8ecc6dba42a49",
+      "spotify_url": "https://open.spotify.com/track/7wAOz9iQA5SgZNO94p01Aq",
+      "release": "Me Estoy Desubicando",
+      "release_date": "2024-06-13",
+      "duration_ms": 108964,
+      "deezer_id": 2824092562
+    },
+    {
+      "id": "UYT142400021",
+      "title": "Sola",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "Ramma"
+      ],
+      "audio_file": "/audio/UYT142400021.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2734d23c3166da401199012e83e",
+      "spotify_url": "https://open.spotify.com/track/6EULqJexawoORZSekwW5bU",
+      "release": "Sola",
+      "release_date": "2024-05-14",
+      "duration_ms": 164571,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142400018",
+      "title": "Cada Vibración",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "ARA",
+        "GALO"
+      ],
+      "audio_file": "/audio/UYT142400018.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732052111e96b4575926c27212",
+      "spotify_url": "https://open.spotify.com/track/3bmAIVmWuAxekEYzT1qr7g",
+      "release": "Cada Vibración",
+      "release_date": "2024-04-30",
+      "duration_ms": 119211,
+      "deezer_id": 2759389641
+    },
+    {
+      "id": "UYT142400010",
+      "title": "No Soy Yo",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "Tadu Vázquez",
+        "Barta"
+      ],
+      "audio_file": "/audio/UYT142400010.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273f1e0129543f037223786216f",
+      "spotify_url": "https://open.spotify.com/track/0Jkpybs2BjKAofpfD97Hvg",
+      "release": "No Soy Yo",
+      "release_date": "2024-03-27",
+      "duration_ms": 164557,
+      "deezer_id": 2685358272
+    },
+    {
+      "id": "QZHN62454127",
+      "title": "Brusco, Innecesario",
+      "artist": "Valuto",
+      "artists": [
+        "GALO",
+        "Martín Gari",
+        "Valuto"
+      ],
+      "audio_file": "/audio/QZHN62454127.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2738bc2f340da4bd5651161856b",
+      "spotify_url": "https://open.spotify.com/track/1SwvwvKsSasH0vJrLXGzQs",
+      "release": "Dejame Crecer",
+      "release_date": "2024-03-20",
+      "duration_ms": 107857,
+      "deezer_id": 2707346102
+    },
+    {
+      "id": "UYT142400009",
+      "title": "Nunca Más",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "Tadu Vázquez",
+        "Fosse En El Track"
+      ],
+      "audio_file": "/audio/UYT142400009.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273978b9b4bd3b90c3cfabaff6e",
+      "spotify_url": "https://open.spotify.com/track/1Q0RnxJUA87npHsQ3oCNiQ",
+      "release": "Nunca Más",
+      "release_date": "2024-03-13",
+      "duration_ms": 94168,
+      "deezer_id": 2671037872
+    },
+    {
+      "id": "UYT142400001",
+      "title": "Dijiste",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "OhMyGon!"
+      ],
+      "audio_file": "/audio/UYT142400001.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2731dea25d275e280cc50d20234",
+      "spotify_url": "https://open.spotify.com/track/12a8IObWqdGZthrvtWFJDM",
+      "release": "Dijiste",
+      "release_date": "2024-02-20",
+      "duration_ms": 145860,
+      "deezer_id": 2622402532
+    },
+    {
+      "id": "UYT142300043",
+      "title": "No Es Casualidad",
+      "artist": "Valuto",
+      "artists": [
+        "Tadu Vázquez",
+        "Valuto"
+      ],
+      "audio_file": "/audio/UYT142300043.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2732e1ba04eee7d3bc52bcf83c8",
+      "spotify_url": "https://open.spotify.com/track/2iL7vg4hxRnsXu25IqDnai",
+      "release": "No Es Casualidad",
+      "release_date": "2023-12-06",
+      "duration_ms": 130004,
+      "deezer_id": 2508089421
+    },
+    {
+      "id": "QZTVM2355114",
+      "title": "El Primero",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "Rico IDB",
+        "Barta"
+      ],
+      "audio_file": "/audio/QZTVM2355114.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b2735b715003d88e246aba5b82ae",
+      "spotify_url": "https://open.spotify.com/track/0W3IV3xlFkyOmKDd9jUApv",
+      "release": "El Primero",
+      "release_date": "2023-10-10",
+      "duration_ms": 153333,
+      "deezer_id": 2486272901
+    },
+    {
+      "id": "US7VG2327195",
+      "title": "Drama",
+      "artist": "Valuto",
+      "artists": [
+        "Valuto",
+        "Fefo"
+      ],
+      "audio_file": "/audio/US7VG2327195.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273331291f82eb7add43dfdd6ec",
+      "spotify_url": "https://open.spotify.com/track/2C6b1j63J2rOSDM8XwJVjf",
+      "release": "Drama",
+      "release_date": "2023-01-15",
+      "duration_ms": 151620,
+      "deezer_id": 2103814877
+    }
+  ]
+}
