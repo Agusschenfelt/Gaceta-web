@@ -160,6 +160,14 @@ select t.check((select count(*) from public.emails where player_id = '00000000-0
 select t.check((select email from public.emails where player_id = '00000000-0000-0000-0000-000000000002') = 'fan@example.com',
   'addresses are stored normalised');
 
+-- The welcome trigger is installed, and it is a no-op here (no pg_net, no Vault):
+-- the subscriptions above went through and stored their rows.
+select t.check(exists (
+  select 1 from pg_trigger
+  where tgrelid = 'public.emails'::regclass and tgname = 'emails_welcome' and not tgisinternal
+), 'welcome trigger is installed on public.emails');
+select t.check((select count(*) from public.emails) >= 1, 'subscribing works without pg_net or Vault');
+
 -- Old signatures are gone, so no client can reach the non-idempotent versions;
 -- the ranking functions (dropped, odd/tasks/remove-ranking.md) are gone entirely.
 select t.check(to_regprocedure('public.guess_round(uuid,text)') is null

@@ -15,6 +15,6 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["src/**/*.test.js", "scripts/**/*.test.mjs"],
+    include: ["src/**/*.test.js", "scripts/**/*.test.mjs", "supabase/functions/**/*.test.js"],
   },
 });

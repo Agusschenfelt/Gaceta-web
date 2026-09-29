@@ -382,6 +382,57 @@ begin
 end;
 $$;
 
+-- Welcome email. Flow: insert on public.emails -> this trigger -> pg_net (async HTTP)
+-- -> Edge Function `welcome-email` -> Resend. pg_net queues the request and returns at
+-- once, so the insert is never slowed. A repeated address fires nothing because
+-- subscribe_email inserts with `on conflict do nothing`. Any failure (no pg_net, no Vault,
+-- missing secrets, an error) is swallowed: subscribing must never fail because of the
+-- welcome. Dynamic SQL keeps this compiling on a plain Postgres without those schemas.
+-- Rollout (enable pg_net, create the Vault secrets `welcome_email_url` and
+-- `welcome_email_secret`) is documented in CLAUDE.md.
+create or replace function private.request_welcome_email()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  fn_url text;
+  fn_secret text;
+begin
+  if to_regclass('vault.decrypted_secrets') is null
+     or not exists (
+       select 1 from pg_catalog.pg_proc p
+       join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+       where n.nspname = 'net' and p.proname = 'http_post'
+     ) then
+    return new;
+  end if;
+
+  execute 'select decrypted_secret from vault.decrypted_secrets where name = $1'
+    into fn_url using 'welcome_email_url';
+  execute 'select decrypted_secret from vault.decrypted_secrets where name = $1'
+    into fn_secret using 'welcome_email_secret';
+  if fn_url is null or fn_secret is null then
+    return new;
+  end if;
+
+  execute 'select net.http_post(url := $1, headers := $2, body := $3)'
+    using fn_url,
+          jsonb_build_object('Content-Type', 'application/json', 'x-welcome-secret', fn_secret),
+          jsonb_build_object('email', new.email);
+  return new;
+exception when others then
+  raise warning 'welcome email not requested: %', sqlerrm;
+  return new;
+end;
+$$;
+
+drop trigger if exists emails_welcome on public.emails;
+create trigger emails_welcome
+  after insert on public.emails
+  for each row execute function private.request_welcome_email();
+
 -- ------------------------------------------------------------ privileges
 
 revoke all on schema private from public, anon, authenticated;
