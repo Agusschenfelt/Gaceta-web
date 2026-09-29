@@ -4,8 +4,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Registered so it can transition: the reveal tints it with the cover's
+   colour (src/theme/useCoverTint.js) and it fades there and back. */
+@property --color-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #0a0a0a;
+}
+
 html {
   background-color: var(--color-bg);
+  transition: --color-bg 900ms var(--ease-out-expo, ease-out);
 }
 
 body {

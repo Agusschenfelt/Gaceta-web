@@ -89,6 +89,7 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Chips de artistas, línea de ajustes colapsable | `src/components/molecules/GameSettings.jsx` |
 | Botones grandes del reveal (relleno que barre, ícono que se mueve) | `src/components/atoms/ActionButton.jsx` |
 | Reveal final (disco girando, anillo, puntaje, share, jugar otra vez) | `src/components/organisms/ResultReveal.jsx`; el autoplay del tema está en `GameContainer.jsx` |
+| Color del fondo del reveal según la carátula (qué tono elige, cuánto se oscurece) | `src/theme/coverTint.js` (`MAX_LUMINANCE`, `MIN_SATURATION`, `MIN_SHARE`) + `useCoverTint.js`; transición en `index.css` (`@property --color-bg`) |
 | Copy y validación del formulario de mail | `src/components/organisms/EmailCapture.jsx` |
 | Cuántas rondas hacen falta para que la reveal ofrezca el mail | `src/player/emailPrompt.js` (`EMAIL_AFTER_ROUNDS`, `shouldAskEmail`) |
 | Conteo de rondas terminadas y de cuándo se lo cuenta una sola vez | `src/containers/GameContainer.jsx` (`heardle:roundsFinished`, `heardle:lastFinishedRound`) |
@@ -352,7 +353,7 @@ Dos detalles que no conviene deshacer:
 - Con `prefers-reduced-motion`: el isotipo no late, no hay sacudón, el anillo no respira y el grano queda quieto.
 
 **Jerarquía de acciones del reveal:** primero "Jugar otra vez" (acid gold, más ancho), después
-Spotify (en el verde de Spotify, `--color-spotify`, la única excepción a la paleta y solo en ese
+Spotify (en el verde de Spotify, `--color-spotify`, excepción a la paleta solo en ese
 botón: lo pidió el usuario), y compartir como link chico abajo. Es pedido del usuario: lo que tiene que
 invitar es volver a jugar y escuchar el tema. `hoverOnlyWhenSupported` está prendido en
 `tailwind.config.js` para que en celular el hover no quede pegado después de un toque.
@@ -363,6 +364,20 @@ queda en acid gold. Tocar el disco lo pausa o lo vuelve a arrancar. El giro usa
 `animation-play-state: paused` para que el disco se quede en su ángulo al parar en vez de volver a
 cero. El autoplay depende de que el navegador cuente la página como activada (el guess fue un
 click); si igual lo rechaza, el disco queda quieto esperando un toque.
+
+**El fondo del reveal toma el color de la carátula** (pedido del usuario, 2026-09-29, con una
+captura de Apple Music como referencia; la otra excepción a la paleta). `useCoverTint` (en
+`src/theme/`) carga la carátula en un `Image` aparte con `crossOrigin` (i.scdn.co manda
+`Access-Control-Allow-Origin: *` y la CSP ya permite ese host en `img-src`), la lee en un canvas de
+32×32 y pisa `--color-bg` en `<html>` y el `theme-color`; al desmontar la reveal vuelven al
+default. La lógica es pura y testeada en `coverTint.js`: `dominantColor` elige el tono con más
+peso saturado (ignora negros, blancos y grises; una carátula en blanco y negro devuelve `null` y el
+fondo no cambia) y `backgroundFor` lo oscurece hasta luminancia ≤ `MAX_LUMINANCE` (0,05), así el
+texto blanco queda cerca de 9:1. Es un color plano, no un gradiente como en la referencia, y el
+grano sigue encima. `--color-bg` está registrado con `@property` en `index.css` para que la
+transición funcione. El `<img>` visible no lleva `crossOrigin` a propósito: si el CDN algún día saca
+el header CORS, se pierde el tinte, no la carátula. Como el agujero del disco usa `bg-bg`, también
+toma el tinte, que es lo correcto: es un agujero.
 
 ## Layout: una sola pantalla (regla dura)
 
@@ -538,7 +553,7 @@ una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **156/156** en 21 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
+1. `npm run test` — tiene que dar **165/165** en 22 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
 2. `npm run build` — tiene que compilar.
    Lint: el `eslint.config.js` de la raíz **ignora `heardle-gaceta/`**, así que un `eslint` común
    no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts`.

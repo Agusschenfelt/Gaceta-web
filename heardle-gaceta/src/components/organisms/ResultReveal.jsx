@@ -9,6 +9,7 @@ import { formatSeconds } from "../../game/format.js";
 import { buildShareText } from "../../game/share.js";
 import { CLIP_FILE_SECONDS, RING_TICKS, unlockedTicks } from "../../audio/waveform.js";
 import { shouldAskEmail } from "../../player/emailPrompt.js";
+import { useCoverTint } from "../../theme/useCoverTint.js";
 
 
 /** Entrance delay for the n-th row, so the view assembles instead of appearing. */
@@ -40,6 +41,8 @@ export function ResultReveal({
   onSubmitEmail,
   onDismissEmail,
 }) {
+  // The page takes the cover's colour while the answer is on screen.
+  useCoverTint(track.coverUrl);
   const won = game.status === STATUS.WON;
   const heard = game.stages[game.stageIndex];
   const isPlaying = audio?.isPlaying ?? false;
