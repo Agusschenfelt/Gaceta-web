@@ -6,12 +6,6 @@
 export const EMAIL_AFTER_ROUNDS = 2;
 
 /**
- * Whether the reveal should show the email form right now. `prompt` is
- * `heardle:emailPrompt` as GameContainer already tracks it: once the player
- * said yes (`done`) or no (`dismissed`) this stays false forever, regardless
- * of how many more rounds they play.
- */
-/**
  * The finished-rounds count after one more round. Takes the larger of the
  * stored and in-memory counts: when localStorage fails (private mode, quota)
  * the stored value stays at 0, and trusting it alone would pin the counter at
@@ -22,6 +16,12 @@ export function nextRoundsFinished(stored, inMemory) {
   return Math.max(safe(stored), safe(inMemory)) + 1;
 }
 
+/**
+ * Whether the reveal should show the email form right now. `prompt` is
+ * `heardle:emailPrompt` as GameContainer already tracks it: once the player
+ * said yes (`done`) or no (`dismissed`) this stays false forever, regardless
+ * of how many more rounds they play.
+ */
 export function shouldAskEmail({ roundsFinished, prompt }) {
   return prompt === "pending" && roundsFinished >= EMAIL_AFTER_ROUNDS;
 }
