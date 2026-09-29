@@ -10,6 +10,7 @@ import { withRetry, withTimeout } from "../shared/retry.js";
 import { resolveDealtFilter } from "../rounds/dealtFilter.js";
 import { toRoundError } from "../rounds/roundErrors.js";
 import { answerTrack } from "../rounds/answerTrack.js";
+import { nextRoundsFinished } from "../player/emailPrompt.js";
 import { GameBoard } from "../components/organisms/GameBoard.jsx";
 import { ResultReveal } from "../components/organisms/ResultReveal.jsx";
 import { GameSettings } from "../components/molecules/GameSettings.jsx";
@@ -95,6 +96,7 @@ export function GameContainer() {
 
   const [services, setServices] = useState(null);
   const dealing = useRef(false);
+  const countedRound = useRef(null);
   // Wide screens have room on both sides of the board; use it instead of
   // leaving the game floating in empty margins.
   const isWide = useMediaQuery("(min-width: 1024px)");
@@ -164,11 +166,14 @@ export function GameContainer() {
 
   // A finished round is already recorded by whoever judged it. Count it once
   // for the email prompt threshold: `game.id` guards a re-render or a
-  // StrictMode double effect from counting the same round twice.
+  // StrictMode double effect from counting the same round twice. The ref
+  // keeps that guard working when localStorage cannot write.
   useEffect(() => {
     if (!game || !isOver(game)) return;
+    if (countedRound.current === game.id) return;
     if (readStored(LAST_FINISHED_ROUND_KEY, null) === game.id) return;
-    const next = readStored(ROUNDS_FINISHED_KEY, 0) + 1;
+    countedRound.current = game.id;
+    const next = nextRoundsFinished(readStored(ROUNDS_FINISHED_KEY, 0), roundsFinished);
     writeStored(ROUNDS_FINISHED_KEY, next);
     writeStored(LAST_FINISHED_ROUND_KEY, game.id);
     setRoundsFinished(next);

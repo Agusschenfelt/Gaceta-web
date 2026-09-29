@@ -109,6 +109,11 @@ clips.
   email; rounds-finished counter on storage failure; `publish-assets.mjs:121` publishes empty
   peaks when missing; `useAudioPlayer` reload with a stale key; stale comments in
   `supabase/schema.sql` (mirror map, alias shape). Not blocking.
+- 2026-09-28 review follow-ups (user go): email validated after trim in `EmailCapture.jsx`;
+  finished-rounds counter uses `nextRoundsFinished(stored, inMemory)` (new, tested in
+  `emailPrompt.test.js`) plus an in-memory ref guard, so a failing localStorage no longer pins it
+  at 1; `publish-assets.mjs` no longer writes an empty peaks file when `data/peaks.json` is
+  missing (warns instead). 145/145 tests, lint and build ok.
 - Unverified: reveal fit at 360×640 with the email form (no browser available).
 
 ## Next step

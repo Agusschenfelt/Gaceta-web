@@ -11,7 +11,7 @@ export function EmailCapture({ onSubmit, onDismiss }) {
 
   async function submit(e) {
     e.preventDefault();
-    if (!EMAIL_RE.test(email)) return;
+    if (!EMAIL_RE.test(email.trim())) return;
     setState("saving");
     try {
       await onSubmit(email.trim());
@@ -49,7 +49,7 @@ export function EmailCapture({ onSubmit, onDismiss }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <Button type="submit" variant="primary" disabled={!EMAIL_RE.test(email) || state === "saving"}>
+        <Button type="submit" variant="primary" disabled={!EMAIL_RE.test(email.trim()) || state === "saving"}>
           Sumarme
         </Button>
       </div>
