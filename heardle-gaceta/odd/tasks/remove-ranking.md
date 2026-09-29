@@ -40,7 +40,7 @@ capture to the reveal, where players actually are.
 - [x] T1 Remove the ranking from the client (view, alias, ranked copy, ranking.js, board reads) + tests.
 - [x] T2 Email capture in the reveal after 2 finished rounds; fits 360×640.
 - [x] T3 CLAUDE.md: remove ranking sections/rows, document the email flow.
-- [x] T4 `schema.sql` done (drop functions, stop computing `ranked`); DB apply pending (parent/user, against the live Supabase project).
+- [x] T4 `schema.sql` done (drop functions, stop computing `ranked`); applied to the live DB 2026-09-29.
 
 ## Acceptance
 
@@ -150,10 +150,14 @@ clips.
     instructions — it did not touch the live Supabase project. Applying the new schema to
     production is the next step, whenever whoever holds access to that project runs it.
 
+- 2026-09-29 delivery: reveal measured at 360×640 in headless Chrome over CDP (email form ends at
+  620px, no page scroll; the reveal headline reports a 4px internal overflow from the italic, not
+  visibly clipped). Deployed to production (`vercel deploy --prod`, aliased to
+  heardle-gaceta.vercel.app, 200). Then applied `supabase/schema.sql` to the live project with
+  `psql`: the four ranking functions are gone, `subscribe_email` stays. `supabase/tests/smoke.mjs`
+  against production: all ok; its two anonymous users deleted.
+
 ## Next step
 
-Apply the updated `supabase/schema.sql` to the live `heardle-gaceta` Supabase project (SQL editor
-or `psql`, see "Supabase" in CLAUDE.md). This agent did not touch the live project or deploy —
-only the file, plus its local tests. Once applied, `get_leaderboard`, `my_stats`, `set_alias` and
-the first-play backfill will no longer exist on the live DB; `players.alias`, `rounds.ranked` and
-`public.blocked_words` stay as retired data.
+Done. Open, outside this feature: CAPTCHA for anonymous sign-ins (needs a Turnstile/hCaptcha
+account from the user), and deciding later whether to drop the retired ranking data.

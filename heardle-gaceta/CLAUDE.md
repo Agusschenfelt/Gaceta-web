@@ -160,8 +160,8 @@ primera-jugada (`private.backfill_ranked_first_play`) están **borrados** (`drop
 exists ...`, así que correr el schema de nuevo también los saca de un proyecto viejo), y
 `start_round` ya no calcula `ranked`. `players.alias` (+ su constraint e índice), `rounds.ranked` y
 `public.blocked_words` quedan en la tabla como datos de ranking retirados a propósito: borrar una
-columna o una tabla es irreversible y se decide después. Falta aplicar este `schema.sql` a la base
-viva de Supabase (lo hace quien tenga acceso al proyecto).
+columna o una tabla es irreversible y se decide después. Aplicado en producción el 2026-09-29,
+después de deployar el cliente sin ranking (smoke en verde).
 
 **No hay niveles de dificultad, y es a propósito.** Había tres (`DIFFICULTIES`) y se sacaron el
 2026-09-18. Una sola escalera `STAGES = [0.5, 1, 3, 8]` para todos, porque:
