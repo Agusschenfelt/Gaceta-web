@@ -10,7 +10,7 @@ import { getPlayerId } from "../player/playerIdentity.js";
  *           { id, audioKey, stages, stageIndex, attempts, status, score, answerId, answer }
  *           `attempt` is attempts.length as the client saw it (makes retries safe);
  *           `answer` = { id, title, artistSlugs } once the round is over.
- *   board:  { getTop(limit), getPlayerStats(), setAlias(alias), subscribeEmail(email) }
+ *   board:  { subscribeEmail(email) }
  *
  * With both VITE_SUPABASE_* set, everything goes through Postgres as an
  * anonymous Supabase user (loaded lazily so the base bundle never ships the
@@ -31,18 +31,8 @@ export function createLocalServices({ tracks }) {
   const store = createLocalAdapter();
   const playerId = getPlayerId();
   return {
-    rounds: createLocalRounds({
-      tracks,
-      recordRound: (round) => store.submitGame({ playerId, ...round }),
-      hasPlayed: (trackId) => store.hasPlayed(playerId, trackId),
-    }),
+    rounds: createLocalRounds({ tracks }),
     board: {
-      getTop: (limit) => store.getTop(limit),
-      getPlayerStats: () => store.getPlayerStats(playerId),
-      async setAlias(alias) {
-        await store.setAlias(playerId, alias);
-        return alias;
-      },
       subscribeEmail: (email) => store.subscribeEmail(email, playerId),
     },
   };

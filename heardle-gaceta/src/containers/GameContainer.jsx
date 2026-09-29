@@ -4,17 +4,14 @@ import { filterPool } from "../catalog/pickTrack.js";
 import { currentClipSeconds, isOver } from "../game/engine.js";
 import { useAudioPlayer } from "../audio/useAudioPlayer.js";
 import { CLIP_FILE_SECONDS } from "../audio/waveform.js";
-import { getAlias, setAlias as persistAlias } from "../player/playerIdentity.js";
 import { getGameServices } from "../services/gameServices.js";
 import { audioUrl, PEAKS_URL } from "../services/assetUrls.js";
 import { withRetry, withTimeout } from "../shared/retry.js";
 import { resolveDealtFilter } from "../rounds/dealtFilter.js";
 import { toRoundError } from "../rounds/roundErrors.js";
 import { answerTrack } from "../rounds/answerTrack.js";
-import { isRankedSelection } from "../leaderboard/ranking.js";
 import { GameBoard } from "../components/organisms/GameBoard.jsx";
 import { ResultReveal } from "../components/organisms/ResultReveal.jsx";
-import { Leaderboard } from "../components/organisms/Leaderboard.jsx";
 import { GameSettings } from "../components/molecules/GameSettings.jsx";
 import { GuessHistory } from "../components/molecules/GuessHistory.jsx";
 import { Spinner } from "../components/atoms/Spinner.jsx";
@@ -61,8 +58,7 @@ const callJudge = (run) =>
 /**
  * The artists a round is dealt from. "All" means all the artists this browser
  * loaded: a track whose catalog file failed could not be searched, so it must
- * not be dealt either. The ranking hint uses the same list, so what it says
- * matches what the server decides.
+ * not be dealt either.
  */
 function dealSlugs(filter, artists) {
   return filter.length ? filter : artists.map((a) => a.slug);
@@ -85,13 +81,7 @@ export function GameContainer() {
   const [game, setGame] = useState(null);
   const [roundError, setRoundError] = useState(null);
   const [busy, setBusy] = useState(false);
-  const [alias, setAliasState] = useState(() => getAlias());
-  // `me` is this player's own numbers, so the ranking can say how far they are
-  // from appearing on it.
-  const [board, setBoard] = useState({ rows: [], me: null, loading: false, error: null });
   const [emailPrompt, setEmailPrompt] = useState(() => readStored(EMAIL_FLAG_KEY, "pending"));
-  // The ranking is a view of its own, reached from the result, never stacked under it.
-  const [showRanking, setShowRanking] = useState(false);
   // Drives the opening title: it clears on the first play of each round.
   const [hasPlayed, setHasPlayed] = useState(false);
 
@@ -139,7 +129,6 @@ export function GameContainer() {
     dealing.current = true;
     const filter = artistFilter;
     const dealFrom = dealSlugs(filter, catalog.artists);
-    setShowRanking(false);
     setRoundError(null);
     try {
       // Only a dropped connection is worth retrying; a refusal is final.
@@ -164,30 +153,6 @@ export function GameContainer() {
   const audioKey = game?.audioKey ?? null;
   const roundPeaks = audioKey ? (peaks[audioKey] ?? null) : null;
   const audio = useAudioPlayer(audioKey ? audioUrl(audioKey) : null, roundPeaks);
-
-  const refreshBoard = useCallback(async () => {
-    if (!services) return;
-    setBoard((b) => ({ ...b, loading: true, error: null }));
-    try {
-      const [rows, me] = await callJudge(() =>
-        Promise.all([services.board.getTop(20), services.board.getPlayerStats()])
-      );
-      setBoard({ rows, me, loading: false, error: null });
-      // The server knows the alias better than this browser does.
-      if (me?.alias) {
-        setAliasState(me.alias);
-        persistAlias(me.alias);
-      }
-    } catch (e) {
-      setBoard({ rows: [], me: null, loading: false, error: e });
-    }
-  }, [services]);
-
-  // A finished round is already recorded by whoever judged it; just refresh.
-  useEffect(() => {
-    if (game && isOver(game)) refreshBoard();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [game?.status]);
 
   // The reveal plays the song. The guess that ended the round was a click, so
   // the browser already counts the page as activated; if it still refuses, the
@@ -250,13 +215,6 @@ export function GameContainer() {
     setRoundError(null);
   }
 
-  async function onSetAlias(next) {
-    // The judge validates and normalises; keep what it stored.
-    const saved = await services.board.setAlias(next.trim());
-    setAliasState(persistAlias(saved));
-    refreshBoard();
-  }
-
   async function onSubmitEmail(email) {
     if (!services) throw new Error("Services not ready");
     await services.board.subscribeEmail(email);
@@ -294,48 +252,17 @@ export function GameContainer() {
 
   // One view at a time. Each one owns the full frame, so nothing ever stacks
   // past the fold.
-  if (showRanking) {
-    return (
-      <Leaderboard
-        rows={board.rows}
-        me={board.me}
-        loading={board.loading}
-        error={board.error}
-        alias={alias}
-        onSetAlias={onSetAlias}
-        onClose={() => setShowRanking(false)}
-        emailPrompt={emailPrompt}
-        onSubmitEmail={onSubmitEmail}
-        onDismissEmail={onDismissEmail}
-      />
-    );
-  }
-
   if (game && over) {
-    // game.ranked only says whether the round counts; it does not say why
-    // not, and it must not: a repeat is only revealed here, never mid-round.
-    // If the selection itself would have qualified, ranked=false can only
-    // mean this track was already played before. An unknown dealt filter
-    // (null) proves nothing, so it falls back to the generic copy.
-    const repeatUnranked =
-      game.ranked === false &&
-      dealtFilter !== null &&
-      isRankedSelection(
-        dealSlugs(dealtFilter, catalog.artists),
-        catalog.artists.map((a) => a.slug)
-      );
     return (
       <ResultReveal
         game={game}
         track={answerTrack(game, tracksById, catalog.artists)}
         onPlayAgain={onPlayAgain}
-        onShowRanking={() => {
-          audio.stop();
-          setShowRanking(true);
-        }}
         peaks={roundPeaks}
         audio={audio}
-        repeatUnranked={repeatUnranked}
+        emailPrompt={emailPrompt}
+        onSubmitEmail={onSubmitEmail}
+        onDismissEmail={onDismissEmail}
       />
     );
   }
@@ -348,10 +275,6 @@ export function GameContainer() {
       poolSize={poolSize}
       variant={isWide ? "panel" : "bar"}
       pendingNextRound={Boolean(game && dealtFilter && !sameSet(dealtFilter, artistFilter))}
-      ranked={isRankedSelection(
-        dealSlugs(artistFilter, catalog.artists),
-        catalog.artists.map((a) => a.slug)
-      )}
     />
   );
 

@@ -3,6 +3,7 @@ import { ActionButton } from "../atoms/ActionButton.jsx";
 import { Icon } from "../atoms/Icon.jsx";
 import { StageProgress } from "../molecules/StageProgress.jsx";
 import { WaveRing } from "../molecules/WaveRing.jsx";
+import { EmailCapture } from "./EmailCapture.jsx";
 import { STATUS } from "../../game/engine.js";
 import { formatSeconds } from "../../game/format.js";
 import { buildShareText } from "../../game/share.js";
@@ -28,14 +29,13 @@ export function ResultReveal({
   /* The answer, looked up in the catalog from the round's `answerId`. */
   track,
   onPlayAgain,
-  onShowRanking,
   peaks = null,
   audio,
-  /* game.ranked is false and the selection alone would have qualified: the
-     real reason is that this track was already played before. Derived by
-     the caller (see GameContainer), not carried by the round itself, so a
-     repeat is only ever known once the round is over. */
-  repeatUnranked = false,
+  /* `heardle:emailPrompt`, as GameContainer already tracks it: shows the
+     email form below the share link while it is still "pending". */
+  emailPrompt = "pending",
+  onSubmitEmail,
+  onDismissEmail,
 }) {
   const won = game.status === STATUS.WON;
   const heard = game.stages[game.stageIndex];
@@ -99,10 +99,6 @@ export function ResultReveal({
             {won
               ? `Con ${formatSeconds(heard)} s · intento ${game.stageIndex + 1} de ${game.stages.length}`
               : "Era este tema"}
-            {game.ranked === false &&
-              (repeatUnranked
-                ? " · ya jugaste este tema, no suma al ranking"
-                : " · no suma al ranking")}
           </span>
         </div>
         {won ? (
@@ -148,23 +144,13 @@ export function ResultReveal({
         <span className="truncate text-sm text-muted">{track.artists.join(", ")}</span>
       </div>
 
-      <div className="rise flex shrink-0 items-center gap-3" style={stagger(3)}>
-        <div className="flex-1" aria-label="Patrón de intentos">
-          <StageProgress
-            stages={game.stages}
-            attempts={game.attempts}
-            stageIndex={game.stageIndex}
-            isPlaying={false}
-          />
-        </div>
-        <button
-          type="button"
-          onClick={onShowRanking}
-          className="label flex shrink-0 items-center gap-1.5 transition-colors hover:text-fg"
-        >
-          <Icon name="trophy" size={13} />
-          Ranking
-        </button>
+      <div className="rise shrink-0" style={stagger(3)} aria-label="Patrón de intentos">
+        <StageProgress
+          stages={game.stages}
+          attempts={game.attempts}
+          stageIndex={game.stageIndex}
+          isPlaying={false}
+        />
       </div>
 
       {/* Play again first, then the song on Spotify: the two things worth
@@ -207,6 +193,12 @@ export function ResultReveal({
           </span>
         </button>
       </div>
+
+      {emailPrompt === "pending" && (
+        <div className="rise shrink-0" style={stagger(5)}>
+          <EmailCapture onSubmit={onSubmitEmail} onDismiss={onDismissEmail} />
+        </div>
+      )}
     </section>
   );
 }

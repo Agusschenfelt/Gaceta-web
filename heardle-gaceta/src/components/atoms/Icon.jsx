@@ -11,13 +11,6 @@ const PATHS = {
   close: <path d="M6 6l12 12M18 6L6 18" />,
   skip: <path d="M5 12h14" />,
   chevronDown: <path d="M6 9.5 12 15.5 18 9.5" />,
-  trophy: (
-    <>
-      <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z" />
-      <path d="M7 6H4.5v1.5A3.5 3.5 0 0 0 8 11M17 6h2.5v1.5A3.5 3.5 0 0 1 16 11" />
-      <path d="M12 14v3M9 20h6M10 17h4" />
-    </>
-  ),
   settings: <path d="M4 7h16M4 12h16M4 17h16" />,
   replay: (
     <>
