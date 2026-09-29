@@ -230,11 +230,16 @@ async function processFile(name) {
     throw err;
   }
 
-  // A failed encode may leave a half-written target: put the original back.
+  // encode() itself is atomic (temp file, renamed only on success), so a
+  // failed encode never touches target. Only restore the raw copy here when
+  // this run is the one that just moved the original away (!hasRaw): if a
+  // raw copy already existed, target still holds whatever good clip a
+  // previous run produced, and copying the uncompressed raw over it would
+  // clobber that good, already-trimmed file with a worse one.
   try {
     await encode(raw, target, startAt);
   } catch (err) {
-    await fs.copyFile(raw, target);
+    if (!hasRaw) await fs.copyFile(raw, target);
     throw err;
   }
 
