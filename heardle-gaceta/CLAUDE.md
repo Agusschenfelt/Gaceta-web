@@ -245,23 +245,34 @@ Es idempotente: no vuelve a bajar mp3 que ya existen y cachea los tracks de Spot
 - Los endpoints batch (`/tracks?ids=`, `/albums?ids=`) devuelven 403. Por eso va de a uno.
 - Hay cuota diaria. Cuando se agota devuelve 429 con `retry-after` de ~24 h. El script detecta eso, corta limpio y se reanuda con `--only <los que faltan>`.
 
-**Estado al 2026-09-18: los 8 artistas están completos.**
+**Estado al 2026-09-29: los 8 artistas están completos.**
 
 | Artista | Tracks en su JSON |
 |---|---|
 | Ramma | 116 |
 | Valuto | 41 |
 | ARA | 62 |
-| Tadu Vázquez | 104 |
+| Tadu Vázquez | 128 |
 | Fosse | 30 |
 | Barta | 22 |
 | Dazen | 9 |
 | Lonzo | 114 |
 
-Eso suma 498, pero el juego tiene **431 temas**: la diferencia son colaboraciones que aparecen en
+Eso suma 522, pero el juego tiene **454 temas**: la diferencia son colaboraciones que aparecen en
 el JSON de los dos artistas y `loadCatalog` las deduplica por ISRC, dejando una sola con
 `artistSlugs: [...]`. Los dos números son correctos, miden cosas distintas — el índice cuenta por
 artista, el pool cuenta grabaciones.
+
+**Alias de un artista.** Un artista de `data/artists.json` puede tener `aliases`: otros artistas de
+Spotify que son la misma persona con otro nombre. Sus temas van al JSON y al chip del artista
+principal (con `artists` tal como los acredita Spotify). Tadu Vázquez tiene dos, pedidos por el
+usuario el 2026-09-29: **TADU** (`6kBt4i0RTsYjC5uILQ8Kr2`) y **sanantonio**
+(`4MJdm7Y6VYYgTfDvywixiy`), sus proyectos solistas. Sumaron 24 temas al JSON de Tadu y 23 al juego
+("LUCES EN LA NOCHE" ya estaba por Ramma). Si Deezer no encuentra un tema por ISRC, lo busca con
+el nombre acreditado (el alias), no con el del artista principal.
+
+Las cifras medidas "sobre los 431 temas" más abajo (audio, silencio inicial, peaks) son de antes
+de sumar esos 23; no se volvieron a medir.
 
 **Sin preview en Deezer: 12, todas de Tadu Vázquez** (ver `data/missing.json`): Bloque, Quererse,
 Diluvio, Me Conocen, Contigo, Sangre, Watch Out, MVP, Ambición, Sombras, Whisky a las Rocas,

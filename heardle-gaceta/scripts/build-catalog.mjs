@@ -2,8 +2,11 @@
 /**
  * Catalog builder for the Heardle game.
  *
- * Pipeline per artist (seeded in data/artists.json with a Spotify artist id):
- *   1. Spotify: list albums, singles and appearances; keep tracks where the artist is credited.
+ * Pipeline per artist (seeded in data/artists.json with a Spotify artist id,
+ * plus optional `aliases`: other Spotify artists that are the same person under
+ * another name, e.g. a solo side project; their tracks count as this artist's):
+ *   1. Spotify: list albums, singles and appearances of the artist and each
+ *      alias; keep tracks where any of them is credited.
  *   2. Spotify: fetch ISRC + canonical track URL for each track (batched).
  *   3. Deezer: resolve the track by ISRC (fallback: title + artist search) to get
  *      the 30s preview MP3. Preview URLs are signed and expire, so the file is
@@ -187,16 +190,23 @@ async function download(url, dest) {
 // ---------- main ----------
 async function buildArtist(artist, sp) {
   console.log(`\n▶ ${artist.name}`);
-  const albums = await sp.albums(artist.spotifyArtistId);
-  console.log(`  ${albums.length} releases on Spotify`);
+  const ids = [artist.spotifyArtistId, ...(artist.aliases ?? []).map((a) => a.spotifyArtistId)];
 
-  // Collect tracks where the artist appears (albums may include features).
+  // Collect tracks where the artist or an alias appears (albums may include
+  // features). An album shared by two of them is only read once.
   const seen = new Map(); // spotify track id -> { album }
-  for (const album of albums) {
-    const tracks = await sp.albumTracks(album.id);
-    for (const t of tracks) {
-      const involved = t.artists.some((a) => a.id === artist.spotifyArtistId);
-      if (involved && !seen.has(t.id)) seen.set(t.id, { album });
+  const readAlbums = new Set();
+  for (const id of ids) {
+    const albums = await sp.albums(id);
+    console.log(`  ${albums.length} releases on Spotify (${id})`);
+    for (const album of albums) {
+      if (readAlbums.has(album.id)) continue;
+      readAlbums.add(album.id);
+      const tracks = await sp.albumTracks(album.id);
+      for (const t of tracks) {
+        const involved = t.artists.some((a) => ids.includes(a.id));
+        if (involved && !seen.has(t.id)) seen.set(t.id, { album });
+      }
     }
   }
 
@@ -244,7 +254,10 @@ async function buildArtist(artist, sp) {
     let dz = await deezer.byIsrc(isrc);
     if (!dz) {
       await sleep(120);
-      dz = await deezer.search(t.name, artist.name);
+      // Search under the name the track is credited to: an alias's track is
+      // listed on Deezer as that alias, not as the artist.
+      const credited = t.artists.find((a) => ids.includes(a.id))?.name ?? artist.name;
+      dz = await deezer.search(t.name, credited);
     }
     await sleep(120); // stay under Deezer's 50 req / 5 s
 
