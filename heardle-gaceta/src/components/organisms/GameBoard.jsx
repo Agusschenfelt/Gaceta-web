@@ -7,6 +7,7 @@ import { GuessHistory } from "../molecules/GuessHistory.jsx";
 import { Button } from "../atoms/Button.jsx";
 import { currentClipSeconds, isOver } from "../../game/engine.js";
 import { levelFromBar } from "../../audio/waveform.js";
+import { shortcutFor } from "../../shared/shortcuts.js";
 
 /** A miss knocks the circle sideways once. Decays so it reads as a hit, not a wobble. */
 const MISS_SHAKE = [
@@ -54,6 +55,7 @@ export function GameBoard({
   const seconds = currentClipSeconds(game);
   const span = game.stages[game.stages.length - 1];
   const circleRef = useRef(null);
+  const searchRef = useRef(null);
   const wide = Boolean(left || right);
   // Grid placement, only when wide; narrow keeps the single flex column.
   const at = (classes) => (wide ? classes : "");
@@ -64,6 +66,23 @@ export function GameBoard({
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
     circleRef.current.animate(MISS_SHAKE, { duration: 380, easing: "ease-out" });
   }, [missCount]);
+
+  // Tab jumps to the guess box, Space plays the clip. The latest onPlay is
+  // read through a ref so the listener is attached once per round.
+  const onPlayRef = useRef(onPlay);
+  onPlayRef.current = onPlay;
+  useEffect(() => {
+    if (over) return;
+    function onKeyDown(e) {
+      const action = shortcutFor(e);
+      if (!action) return;
+      e.preventDefault();
+      if (action === "search") searchRef.current?.focus();
+      else onPlayRef.current();
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [over]);
 
   return (
     <section
@@ -150,7 +169,7 @@ export function GameBoard({
             {error}
           </p>
         )}
-        <GuessSearch key={game.id} tracks={tracks} disabled={over} onSelect={onGuess} />
+        <GuessSearch key={game.id} ref={searchRef} tracks={tracks} disabled={over} onSelect={onGuess} />
       </div>
 
       {!wide && <GuessHistory attempts={game.attempts} tracksById={tracksById} />}

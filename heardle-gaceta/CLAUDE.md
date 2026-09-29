@@ -81,6 +81,7 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Escalera de intentos en la columna derecha (layout ancho) | `src/components/molecules/GuessHistory.jsx` (`variant="ladder"`) |
 | Envolventes de onda por tema | `scripts/build-peaks.mjs` → `data/peaks.json` (publicado por clave de audio) |
 | Autocomplete (teclado, ARIA, dropdown) | `src/components/molecules/GuessSearch.jsx` |
+| Atajos de teclado (Tab abre el buscador, Espacio reproduce) | `src/shared/shortcuts.js` (`shortcutFor`) + el listener en `GameBoard.jsx` |
 | Barra de segmentos arriba | `src/components/molecules/StageProgress.jsx` + `atoms/Segment.jsx` |
 | Historial de intentos (cruz roja, "Salteado") | `src/components/molecules/GuessHistory.jsx` |
 | Chips de artistas, línea de ajustes colapsable | `src/components/molecules/GameSettings.jsx` |
@@ -523,7 +524,7 @@ una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **175/175** en 17 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
+1. `npm run test` — tiene que dar **181/181** en 18 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
 2. `npm run build` — tiene que compilar.
    Lint: el `eslint.config.js` de la raíz **ignora `heardle-gaceta/`**, así que un `eslint` común
    no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts`.

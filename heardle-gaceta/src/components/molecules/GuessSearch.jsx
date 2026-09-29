@@ -1,14 +1,16 @@
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { search } from "../../catalog/search.js";
 import { trackLabel } from "../../catalog/loadCatalog.js";
 import { TextInput } from "../atoms/TextInput.jsx";
 
-export function GuessSearch({ tracks, disabled, onSelect }) {
+export function GuessSearch({ ref, tracks, disabled, onSelect }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
   const listId = useId();
   const inputRef = useRef(null);
+
+  useImperativeHandle(ref, () => ({ focus: () => inputRef.current?.focus() }), []);
 
   const results = useMemo(() => search(query, tracks), [query, tracks]);
 
