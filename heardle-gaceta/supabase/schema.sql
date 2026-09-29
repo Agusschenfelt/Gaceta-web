@@ -20,13 +20,14 @@
 --   * An unfinished round is resumed, never rerolled: dropping a hard round to
 --     protect your average is not possible.
 --
--- Mirrors of the client rules, change both together:
+-- Mirror of the client rules, change both together:
 --   stages [0.5, 1, 3, 8] and score = 4 - stage  ↔ STAGES / scoreFor in src/game/engine.js
---   5 games minimum, ranked by average           ↔ MIN_GAMES / rankPlayers in src/leaderboard/ranking.js
---   alias 2–16 chars, explicit letter set          ↔ ALIAS_SHAPE in src/player/playerIdentity.js
---   ranked = all artists or at least 3            ↔ isRankedSelection in src/leaderboard/ranking.js
---   ranked = ... AND the player's first round with  ↔ isRankedRound in src/leaderboard/ranking.js,
---     that track (a loss reveals the answer)          mirrored in src/rounds/localRounds.js
+--
+-- Ranking retired 2026-09-29 (odd/tasks/remove-ranking.md): the client no longer
+-- has a leaderboard, alias form or "ranked" concept. The functions that served
+-- them (get_leaderboard, my_stats, set_alias, the first-play backfill) are
+-- dropped below. `players.alias`, `rounds.ranked` and `public.blocked_words`
+-- are kept as retired data, not dropped — that is irreversible and undecided.
 --
 -- Known limit: someone who plays every song can fingerprint the audio files by
 -- their bytes. Not stoppable in code; accepted.
@@ -37,7 +38,7 @@ create schema if not exists private;
 
 create table if not exists public.players (
   id uuid primary key references auth.users (id) on delete cascade,
-  alias text,
+  alias text, -- retired ranking data (see header); kept, no longer settable (set_alias dropped)
   created_at timestamptz not null default now(),
   constraint alias_shape check (
     alias is null or (alias ~ '^[A-Za-z0-9À-ÖØ-öø-ÿĀ-ž._ -]{2,16}$' and alias = btrim(alias))
@@ -75,9 +76,9 @@ create table if not exists public.rounds (
   finished_at timestamptz
 );
 
--- Whether the round counts for the board: dealt from every artist, or from at
--- least 3 of them. A narrow pool (one artist with 9 songs) makes guessing far
--- easier, so its rounds are played and scored but kept out of the average.
+-- Retired ranking data (see header): used to say whether the round counted for
+-- the board. No longer computed by start_round (stays at the column default);
+-- kept, not dropped, because dropping a column is irreversible.
 alter table public.rounds add column if not exists ranked boolean not null default true;
 
 -- One open round per player: the rule that makes rerolling impossible.
@@ -93,9 +94,8 @@ create table if not exists public.emails (
   constraint email_shape check (char_length(email) <= 254 and email ~* '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$')
 );
 
--- Words an alias may not contain as a whole word. A starter list: extend with
--- `insert into public.blocked_words values ('...')`. Whole words, not
--- substrings, so "computadora" is not caught by what it happens to contain.
+-- Retired ranking data (see header): was checked, whole word, by set_alias
+-- (dropped) before saving an alias. Kept, not dropped, for the same reason.
 create table if not exists public.blocked_words (word text primary key);
 insert into public.blocked_words (word) values
   ('puto'), ('puta'), ('trolo'), ('pija'), ('verga'), ('concha'), ('mierda'),
@@ -173,7 +173,6 @@ as $$
     'attempts', r.attempts,
     'status', r.status,
     'score', r.score,
-    'ranked', r.ranked,
     'answerId', case when r.status <> 'playing' then r.track_id end,
     'answer', case when r.status <> 'playing'
       then jsonb_build_object('id', r.track_id, 'title', t.title, 'artistSlugs', t.artist_slugs) end
@@ -223,38 +222,18 @@ begin
 end;
 $$;
 
--- ------------------------------------------------------ ranking backfill
+-- ------------------------------------------------------ ranking (retired)
 
--- One-time fix for rows written before the first-play rule above existed: a
--- round is not ranked if the same player already had an earlier round (any
--- status) for that track. Idempotent — once a row flips to false it stays
--- false, so `where r.ranked` finds nothing left to change on a later run.
-create or replace function private.backfill_ranked_first_play()
-returns void
-language sql
-security definer
-set search_path = ''
-as $$
-  update public.rounds r
-  set ranked = false
-  where r.ranked
-    and exists (
-      select 1 from public.rounds x
-      where x.player_id = r.player_id
-        and x.track_id = r.track_id
-        and (x.created_at, x.id) < (r.created_at, r.id)
-    );
-$$;
-
-select private.backfill_ranked_first_play();
+-- Ranking removed 2026-09-29 (odd/tasks/remove-ranking.md): this one-time
+-- first-play backfill for `rounds.ranked` is no longer needed. Dropped so a
+-- re-run of this schema also removes it from a live project.
+drop function if exists private.backfill_ranked_first_play();
 
 -- -------------------------------------------------------------- the game
 
 -- Deals a round, or hands back the one still open. The artist filter only
 -- applies to a new round. Avoids the player's last 20 songs when it can.
--- At most 60 new rounds per player per hour. The round is ranked when dealt
--- from every artist (empty filter) or from at least 3 artists that exist,
--- and only if the player has never had a round for that track before.
+-- At most 60 new rounds per player per hour.
 create or replace function public.start_round(p_artists text[] default '{}')
 returns jsonb
 language plpgsql
@@ -266,7 +245,6 @@ declare
   r public.rounds;
   picked text;
   artists text[] := coalesce(p_artists, '{}');
-  is_ranked boolean;
 begin
   select * into r from public.rounds where player_id = uid and status = 'playing';
   if found then
@@ -305,23 +283,9 @@ begin
     raise exception 'empty_pool' using errcode = 'P0002';
   end if;
 
-  -- Ranked needs the selection to qualify AND this to be the player's first
-  -- round ever dealt with `picked` (any status: a loss already revealed the
-  -- answer, so a repeat is not a fresh guess). Checked before the insert
-  -- below, so `picked`'s own row is not yet in the table.
-  is_ranked := (
-    cardinality(artists) = 0 or (
-      select count(distinct a)
-      from unnest(artists) a
-      where exists (select 1 from public.tracks t where a = any(t.artist_slugs))
-    ) >= 3
-  ) and not exists (
-    select 1 from public.rounds x where x.player_id = uid and x.track_id = picked
-  );
-
   begin
-    insert into public.rounds (player_id, track_id, ranked)
-    values (uid, picked, is_ranked)
+    insert into public.rounds (player_id, track_id)
+    values (uid, picked)
     returning * into r;
   exception when unique_violation then
     -- A concurrent call opened one first: hand that one back.
@@ -389,82 +353,15 @@ begin
 end;
 $$;
 
--- ------------------------------------------------------------ the board
+-- ------------------------------------------------------ the board (retired)
 
--- Players with an alias and at least 5 finished ranked rounds, by average points.
-create or replace function public.get_leaderboard(p_limit int default 20)
-returns table (alias text, games_played int, total_score int, avg_score float8)
-language sql
-stable
-security definer
-set search_path = ''
-as $$
-  select p.alias, count(*)::int, sum(r.score)::int, avg(r.score)::float8
-  from public.rounds r
-  join public.players p on p.id = r.player_id
-  where p.alias is not null and r.status <> 'playing' and r.ranked
-  group by p.id, p.alias
-  having count(*) >= 5
-  order by avg(r.score) desc, count(*) desc, p.alias
-  limit least(greatest(coalesce(p_limit, 20), 1), 50);
-$$;
-
--- The caller's own numbers (ranked rounds, the ones the board counts) and alias.
-create or replace function public.my_stats()
-returns jsonb
-language sql
-stable
-security definer
-set search_path = ''
-as $$
-  select jsonb_build_object(
-    'alias', (select p.alias from public.players p where p.id = auth.uid()),
-    'gamesPlayed', count(r.id),
-    'totalScore', coalesce(sum(r.score), 0),
-    'avgScore', coalesce(avg(r.score), 0)::float8
-  )
-  from public.rounds r
-  where r.player_id = auth.uid() and r.status <> 'playing' and r.ranked;
-$$;
-
-create or replace function public.set_alias(p_alias text)
-returns text
-language plpgsql
-security definer
-set search_path = ''
-as $$
-declare
-  uid uuid := private.require_player();
-  clean text := regexp_replace(btrim(coalesce(p_alias, '')), '\s+', ' ', 'g');
-begin
-  if clean !~ '^[A-Za-z0-9À-ÖØ-öø-ÿĀ-ž._ -]{2,16}$' then
-    raise exception 'invalid_alias' using errcode = '22023';
-  end if;
-  if exists (
-    select 1
-    -- Folded to plain ASCII by hand: lower() is locale-dependent and, under
-    -- the C locale, leaves Á or Ñ untouched, which would split "PÚTO" into
-    -- harmless pieces. Anything else non-ASCII is a separator.
-    from regexp_split_to_table(
-      translate(
-        lower(clean),
-        'ÀÁÂÃÄÅàáâãäåÈÉÊËèéêëÌÍÎÏìíîïÒÓÔÕÖòóôõöÙÚÛÜùúûüÑñÇç',
-        'aaaaaaaaaaaaeeeeeeeeiiiiiiiioooooooooouuuuuuuunncc'
-      ),
-      '[^a-z0-9]+'
-    ) token
-    join public.blocked_words b on b.word = token
-  ) then
-    raise exception 'blocked_alias' using errcode = '22023';
-  end if;
-  begin
-    update public.players set alias = clean where id = uid;
-  exception when unique_violation then
-    raise exception 'alias_taken' using errcode = '23505';
-  end;
-  return clean;
-end;
-$$;
+-- Ranking removed 2026-09-29 (odd/tasks/remove-ranking.md): the client has no
+-- leaderboard, alias form or "my stats" view any more. Dropped below so a
+-- re-run of this schema also removes them from a live project; the data they
+-- read/wrote (players.alias, rounds.ranked, public.blocked_words) is kept.
+drop function if exists public.get_leaderboard(int);
+drop function if exists public.my_stats();
+drop function if exists public.set_alias(text);
 
 -- One address per player; a repeat of either is quietly ignored.
 create or replace function public.subscribe_email(p_email text)
@@ -491,13 +388,11 @@ revoke execute on all functions in schema private from public, anon, authenticat
 
 revoke execute on function
   public.start_round(text[]), public.guess_round(uuid, text, int), public.skip_round(uuid, int),
-  public.get_leaderboard(int), public.my_stats(), public.set_alias(text),
   public.subscribe_email(text)
   from public, anon, authenticated;
 
 -- Anonymous sign-ins get the `authenticated` role: that is every player.
 grant execute on function
   public.start_round(text[]), public.guess_round(uuid, text, int), public.skip_round(uuid, int),
-  public.my_stats(), public.set_alias(text), public.subscribe_email(text)
+  public.subscribe_email(text)
   to authenticated;
-grant execute on function public.get_leaderboard(int) to anon, authenticated;
