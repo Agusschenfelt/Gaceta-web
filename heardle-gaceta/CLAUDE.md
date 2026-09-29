@@ -79,7 +79,7 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Anillo de onda (compartido por juego y reveal): geometría, barrido al desbloquear, respiración constante | `src/components/molecules/WaveRing.jsx` (`TICK_BASE`, `TICK_REACH`, `SWEEP_STEP_MS`, `BREATH_MS`, `BREATH_WAVES`) + `tick-breathe` en `index.css` |
 | Animaciones (entrada de palabras, contador que rueda, disco, stagger) | `src/index.css` (`word-rise`, `roll-in`, `rise`, `disc-in`, `disc-spin`, `--ease-out-expo`) |
 | Cómo se calculan los ticks del anillo y cuántos están desbloqueados | `src/audio/waveform.js` (`ringTicks`, `unlockedTicks`, `RING_TICKS`, `CLIP_FILE_SECONDS`) + `waveform.test.js` |
-| Sacudón al errar, grano animado del fondo | `GameBoard.jsx` (`MISS_SHAKE`) · `src/index.css` (`grain`, `body::before`) |
+| Sacudón al errar, grano animado del fondo | `GameBoard.jsx` (`MISS_SHAKE`) · `src/index.css` (`grain`, `body::before`; se apaga con `data-tinted` en la reveal) |
 | Escalera de intentos en la columna derecha (layout ancho) | `src/components/molecules/GuessHistory.jsx` (`variant="ladder"`) |
 | Envolventes de onda por tema | `scripts/build-peaks.mjs` → `data/peaks.json` (publicado por clave de audio) |
 | Autocomplete (teclado, ARIA, dropdown) | `src/components/molecules/GuessSearch.jsx` |
@@ -373,8 +373,10 @@ captura de Apple Music como referencia; la otra excepción a la paleta). `useCov
 default. La lógica es pura y testeada en `coverTint.js`: `dominantColor` elige el tono con más
 peso saturado (ignora negros, blancos y grises; una carátula en blanco y negro devuelve `null` y el
 fondo no cambia) y `backgroundFor` lo oscurece hasta luminancia ≤ `MAX_LUMINANCE` (0,05), así el
-texto blanco queda cerca de 9:1. Es un color plano, no un gradiente como en la referencia, y el
-grano sigue encima. `--color-bg` está registrado con `@property` en `index.css` para que la
+texto blanco queda cerca de 9:1. Es un color plano, no un gradiente como en la referencia, y
+**sin grano**: sobre el color se leía como un filtro sucio (lo pidió el usuario), así que
+`useCoverTint` pone `data-tinted` en `<html>` y `index.css` apaga `body::before` con un fundido.
+En la pantalla de juego el grano sigue. `--color-bg` está registrado con `@property` en `index.css` para que la
 transición funcione. El `<img>` visible no lleva `crossOrigin` a propósito: si el CDN algún día saca
 el header CORS, se pierde el tinte, no la carátula. Como el agujero del disco usa `bg-bg`, también
 toma el tinte, que es lo correcto: es un agujero.

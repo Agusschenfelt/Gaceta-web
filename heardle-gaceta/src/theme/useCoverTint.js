@@ -6,8 +6,9 @@ const SAMPLE = 32;
 
 /**
  * While mounted, tints the page with the cover's dominant colour by overriding
- * `--color-bg` on <html> (index.css transitions it). Unmounting, or a cover
- * that cannot be read, leaves the default token in place.
+ * `--color-bg` on <html> (index.css transitions it) and hides the grain with
+ * `data-tinted`. Unmounting, or a cover that cannot be read, leaves the default
+ * background and its grain in place.
  *
  * The cover loads in its own `crossOrigin` image so the canvas can read it;
  * the visible <img> stays a plain one, so a CDN that ever drops its CORS header
@@ -36,6 +37,8 @@ export function useCoverTint(url) {
         if (!color) return;
         const bg = backgroundFor(color);
         root.style.setProperty("--color-bg", bg);
+        // The grain reads as a dirty filter over a coloured background.
+        root.dataset.tinted = "";
         meta?.setAttribute("content", bg);
       } catch {
         /* tainted canvas or no 2D context: keep the default background */
@@ -47,6 +50,7 @@ export function useCoverTint(url) {
       cancelled = true;
       img.onload = null;
       root.style.removeProperty("--color-bg");
+      delete root.dataset.tinted;
       if (meta && defaultThemeColor) meta.setAttribute("content", defaultThemeColor);
     };
   }, [url]);
