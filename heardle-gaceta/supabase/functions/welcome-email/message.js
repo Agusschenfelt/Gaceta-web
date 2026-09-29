@@ -1,7 +1,7 @@
 // Pure builder for the welcome email. No Deno or Node APIs, so vitest can import it
 // and the Edge Function can reuse it through a relative import.
 
-const FROM = "GACETA <hola@esgaceta.com>";
+const FROM = "GACETA <bienvenida@esgaceta.com>";
 const REPLY_TO = "contacto@gacetaplay.com";
 const SITE_URL = "https://esgaceta.com";
 const GAME_URL = "https://heardle-gaceta.vercel.app";

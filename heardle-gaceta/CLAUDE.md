@@ -530,7 +530,7 @@ del usuario: son los primeros mails de GACETA y no quería sumar fricción. Cada
 `net.http_post` (pg_net, asíncrono: nunca frena el insert) → Edge Function `welcome-email` →
 Resend. Un mail repetido no dispara nada (`on conflict do nothing`), y cualquier error del trigger
 se traga con un `warning`: la suscripción nunca falla por la bienvenida. Sale de
-`GACETA <hola@esgaceta.com>` con reply-to `contacto@gacetaplay.com`; darse de baja es responder.
+`GACETA <bienvenida@esgaceta.com>` con reply-to `contacto@gacetaplay.com`; darse de baja es responder.
 
 - **DNS:** `esgaceta.com` está en Vercel; los registros de Resend (DKIM `resend._domainkey`, SPF y
   MX de `send.esgaceta.com`) los cargó el usuario ahí. No hay casilla de correo propia: por eso el

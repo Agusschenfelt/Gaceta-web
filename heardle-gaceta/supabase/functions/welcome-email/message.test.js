@@ -5,7 +5,7 @@ describe("welcomeMessage", () => {
   const msg = welcomeMessage("fan@example.com");
 
   it("sets sender, reply-to, recipient and subject", () => {
-    expect(msg.from).toBe("GACETA <hola@esgaceta.com>");
+    expect(msg.from).toBe("GACETA <bienvenida@esgaceta.com>");
     expect(msg.reply_to).toBe("contacto@gacetaplay.com");
     expect(msg.to).toEqual(["fan@example.com"]);
     expect(msg.subject).toBe("Gracias por sumarte a GACETA");

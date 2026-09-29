@@ -9,7 +9,7 @@ The reveal only stores the address. The user wants people who sign up to get som
 ## Scope
 - Database trigger on insert into `public.emails` that asks an Edge Function to send the welcome. Only real inserts fire it (a repeat is `on conflict do nothing`, so no second mail).
 - Supabase Edge Function `welcome-email` that sends through Resend.
-- Sender `GACETA <hola@esgaceta.com>` (domain verified in Resend; DNS in Vercel, loaded by the user). Reply-to `contacto@gacetaplay.com`.
+- Sender `GACETA <bienvenida@esgaceta.com>` (domain verified in Resend; DNS in Vercel, loaded by the user). Reply-to `contacto@gacetaplay.com`.
 - No client change.
 
 ## Constraints
