@@ -8,6 +8,7 @@ import { STATUS } from "../../game/engine.js";
 import { formatSeconds } from "../../game/format.js";
 import { buildShareText } from "../../game/share.js";
 import { CLIP_FILE_SECONDS, RING_TICKS, unlockedTicks } from "../../audio/waveform.js";
+import { shouldAskEmail } from "../../player/emailPrompt.js";
 
 
 /** Entrance delay for the n-th row, so the view assembles instead of appearing. */
@@ -31,8 +32,10 @@ export function ResultReveal({
   onPlayAgain,
   peaks = null,
   audio,
-  /* `heardle:emailPrompt`, as GameContainer already tracks it: shows the
-     email form below the share link while it is still "pending". */
+  /* Rounds finished so far this browser (see GameContainer) and the state of
+     `heardle:emailPrompt`; together they decide whether to offer the email
+     form below the share link (see player/emailPrompt.js). */
+  roundsFinished = 0,
   emailPrompt = "pending",
   onSubmitEmail,
   onDismissEmail,
@@ -194,7 +197,7 @@ export function ResultReveal({
         </button>
       </div>
 
-      {emailPrompt === "pending" && (
+      {shouldAskEmail({ roundsFinished, prompt: emailPrompt }) && (
         <div className="rise shrink-0" style={stagger(5)}>
           <EmailCapture onSubmit={onSubmitEmail} onDismiss={onDismissEmail} />
         </div>

@@ -29,7 +29,7 @@ export function EmailCapture({ onSubmit, onDismiss }) {
     <form onSubmit={submit} className="fade-up flex flex-col gap-2" aria-label="Novedades por mail">
       <div className="flex items-center justify-between gap-2">
         <label htmlFor="email" className="text-sm text-muted">
-          Dejá tu mail para novedades de GACETA
+          Dejá tu mail y te avisamos cuando salga música nueva
         </label>
         <button
           type="button"

@@ -22,6 +22,11 @@ const FILTER_KEY = "heardle:artistFilter";
 const EMAIL_FLAG_KEY = "heardle:emailPrompt";
 // { roundId, filter } of the last round this browser dealt; see dealtFilter.js.
 const DEALT_KEY = "heardle:dealtFilter";
+// How many rounds this browser has finished, and which round id the count last
+// advanced for (guards a re-render or a StrictMode double effect from
+// counting the same round twice). Read by the reveal's email prompt.
+const ROUNDS_FINISHED_KEY = "heardle:roundsFinished";
+const LAST_FINISHED_ROUND_KEY = "heardle:lastFinishedRound";
 
 function readStored(key, fallback) {
   try {
@@ -82,6 +87,9 @@ export function GameContainer() {
   const [roundError, setRoundError] = useState(null);
   const [busy, setBusy] = useState(false);
   const [emailPrompt, setEmailPrompt] = useState(() => readStored(EMAIL_FLAG_KEY, "pending"));
+  // How many rounds this browser has finished; the reveal offers the email
+  // form once this passes EMAIL_AFTER_ROUNDS (see player/emailPrompt.js).
+  const [roundsFinished, setRoundsFinished] = useState(() => readStored(ROUNDS_FINISHED_KEY, 0));
   // Drives the opening title: it clears on the first play of each round.
   const [hasPlayed, setHasPlayed] = useState(false);
 
@@ -153,6 +161,19 @@ export function GameContainer() {
   const audioKey = game?.audioKey ?? null;
   const roundPeaks = audioKey ? (peaks[audioKey] ?? null) : null;
   const audio = useAudioPlayer(audioKey ? audioUrl(audioKey) : null, roundPeaks);
+
+  // A finished round is already recorded by whoever judged it. Count it once
+  // for the email prompt threshold: `game.id` guards a re-render or a
+  // StrictMode double effect from counting the same round twice.
+  useEffect(() => {
+    if (!game || !isOver(game)) return;
+    if (readStored(LAST_FINISHED_ROUND_KEY, null) === game.id) return;
+    const next = readStored(ROUNDS_FINISHED_KEY, 0) + 1;
+    writeStored(ROUNDS_FINISHED_KEY, next);
+    writeStored(LAST_FINISHED_ROUND_KEY, game.id);
+    setRoundsFinished(next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [game?.status]);
 
   // The reveal plays the song. The guess that ended the round was a click, so
   // the browser already counts the page as activated; if it still refuses, the
@@ -260,6 +281,7 @@ export function GameContainer() {
         onPlayAgain={onPlayAgain}
         peaks={roundPeaks}
         audio={audio}
+        roundsFinished={roundsFinished}
         emailPrompt={emailPrompt}
         onSubmitEmail={onSubmitEmail}
         onDismissEmail={onDismissEmail}
