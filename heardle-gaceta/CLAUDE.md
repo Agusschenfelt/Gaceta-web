@@ -36,6 +36,7 @@ Variables en `.env` (no está en git, ver `.env.example`):
 |---|---|
 | `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` | Solo `npm run catalog`. Nunca llegan al browser. |
 | `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` | Rondas y mails. Vacías = modo local (solo desarrollo). |
+| `VITE_TURNSTILE_SITE_KEY` | Cloudflare Turnstile (pública). Protege el login anónimo de bots. Vacía = sin captcha, anda igual en dev/local. Ver "Captcha del login anónimo". |
 | `AUDIO_KEY_SECRET` | `npm run assets`: nombres opacos de los mp3. **Obligatoria en producción y con Supabase**; sin ella el build falla. Nunca llega al browser. Cambiarla renombra todos los audios (ver "Rotar el secreto"). |
 | `SUPABASE_SERVICE_ROLE_KEY` | Solo `npm run upload-audio`. Jamás con prefijo `VITE_`. |
 | `SUPABASE_DB_PASSWORD` | Correr SQL contra el proyecto con `psql` (ver sección Supabase). |
@@ -63,6 +64,7 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Cómo se elige el tema (modo local) | `src/catalog/pickTrack.js` (`RECENT_LIMIT`, clave `heardle:recent`) vía `src/rounds/localRounds.js` |
 | Reglas del servidor: rondas, mails, límites (el alias, `ranked` y las palabras bloqueadas quedan como datos retirados, ver "El ranking se sacó del cliente y del servidor") | `supabase/schema.sql` + `supabase/tests/secure_rounds.test.sql` |
 | Qué servicio se usa (Supabase o local), login anónimo | `src/services/gameServices.js`, `supabaseServices.js` |
+| Captcha del login anónimo (Turnstile) | `src/services/captcha.js` (`getCaptchaToken`) + el `!signedIn` de `supabaseServices.js` + `frame-src`/`script-src` en `vercel.json` |
 | Rondas: puerto y las dos implementaciones | `src/rounds/localRounds.js`, `supabaseRounds.js`; textos de error en `roundErrors.js` |
 | Qué ve el browser del catálogo y los audios | `scripts/publish-assets.mjs` + `scripts/lib/publish.mjs` |
 | Subida de audios y envolventes a Storage | `scripts/upload-audio.mjs` (decisión de cuándo subir `peaks.json` en `scripts/lib/uploadAudio.mjs`, ver "Rotar el secreto"); el bucket lo crea `supabase/schema.sql` |
@@ -481,9 +483,10 @@ la base, la anon key y `AUDIO_KEY_SECRET` están en `.env` (git-ignored). El CLI
 
 Puesta en marcha de un proyecto nuevo:
 
-1. Authentication → habilitar **Anonymous sign-ins**. Antes de lanzar, activar también el
-   **CAPTCHA** (Turnstile o hCaptcha) para esos logins: sin eso, un bot puede crear jugadores sin
-   límite. Supabase ya limita los logins anónimos por IP.
+1. Authentication → habilitar **Anonymous sign-ins**. El captcha (Turnstile) ya está implementado
+   del lado del cliente (ver "Captcha del login anónimo" más abajo); falta prenderlo del lado de
+   Supabase con **CAPTCHA protection** en el dashboard. Sin eso, un bot puede crear jugadores sin
+   límite; Supabase ya limita los logins anónimos por IP mientras tanto.
 2. SQL editor → correr `supabase/schema.sql`. Se puede volver a correr: todo es `if not exists` /
    `create or replace`.
 3. Con `AUDIO_KEY_SECRET` en `.env`, `npm run assets` → `npm run upload-audio` (necesita
@@ -491,6 +494,28 @@ Puesta en marcha de un proyecto nuevo:
    archivo es la respuesta de todas las rondas: no se commitea ni se comparte.** Hay que volver a
    cargarlo si cambia el catálogo o el secreto.
 4. Cargar `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` y `AUDIO_KEY_SECRET` en `.env` y en Vercel.
+
+**Captcha del login anónimo (Cloudflare Turnstile).** `src/services/captcha.js` carga
+`api.js?render=explicit` con un `<script>` creado en runtime (nada de dependencia npm), renderiza
+el widget invisible en un contenedor de tamaño cero pegado a `document.body` (esta app no scrollea
+nunca: no puede ocupar alto) y resuelve un token de un solo uso por `callback`; `error-callback`,
+`timeout-callback` o que el script no cargue rechazan, y hay un timeout total de 15 s. El widget y
+su contenedor se sacan después de usarlos, haya salido bien o mal. `getCaptchaToken(siteKey)`
+devuelve `undefined` sin `VITE_TURNSTILE_SITE_KEY` (dev/local sigue andando sin captcha).
+
+`supabaseServices.js` solo pide un token en la rama `!signedIn` (ver "Flujo de datos", paso 2): una
+sesión guardada o su refresh nunca pasan por el captcha. Un fallo del captcha se relanza como el
+mismo `RoundError("not_authenticated", …)` de siempre, así que el botón "Reintentar" de la pantalla
+de error también lo cubre. Como `createSupabaseServices` se llama de cero en cada reintento del
+login (ver "Flujo de datos", paso 5: el login inicial se reintenta sin timeout), cada intento pide
+un token nuevo — necesario, porque un token de Turnstile es de un solo uso.
+
+**Orden de despliegue del captcha:** primero el cliente (este cambio, con `VITE_TURNSTILE_SITE_KEY`
+cargada en `.env` y en Vercel production/preview), después, y solo después, activar **CAPTCHA
+protection** en Authentication → Settings del dashboard de Supabase con la **secret key** de
+Turnstile. Esa secret key nunca va al repo ni a `.env`: se carga directo en el dashboard. Mientras
+Supabase no lo pida, el token viaja pero se ignora — el cliente ya funciona en los dos estados.
+`supabase/tests/smoke.mjs` documenta en su cabecera cómo correrlo con el captcha ya exigido.
 
 Modelo de seguridad (detallado arriba de `schema.sql`): ninguna tabla es legible ni escribible
 desde el cliente (RLS sin políticas + `revoke`); todo pasa por funciones `security definer` que
@@ -513,7 +538,7 @@ una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **151/151** en 19 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
+1. `npm run test` — tiene que dar **154/154** en 20 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
 2. `npm run build` — tiene que compilar.
    Lint: el `eslint.config.js` de la raíz **ignora `heardle-gaceta/`**, así que un `eslint` común
    no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts`.
@@ -581,7 +606,9 @@ conecta un tema con su audio. Sus rutas van ancladas con `/`: un `audio` suelto 
 `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `AUDIO_KEY_SECRET`.
 
 **Lo que sigue abierto, porque depende de vos:** dominio propio (con eso hay que pasar `og:image`
-a URL absoluta), el CAPTCHA del login anónimo y completar los temas sin preview.
+a URL absoluta), completar los temas sin preview, y activar **CAPTCHA protection** en el dashboard
+de Supabase con la secret key de Turnstile (el cliente ya manda el token; ver "Captcha del login
+anónimo" en la sección Supabase) una vez que este cliente esté deployado.
 
 Encontrado y arreglado de paso: entre que cargaba el catálogo y arrancaba la ronda se veía un
 instante **"No hay temas para esa selección"** aunque había 209. Ese mensaje ahora solo aparece
