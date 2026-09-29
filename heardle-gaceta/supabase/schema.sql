@@ -45,16 +45,17 @@ create table if not exists public.players (
   )
 );
 
--- Alias letters are spelled out (ASCII plus the Latin-1 and Latin Extended-A
--- letters: á, é, ñ, ü…) instead of [[:alnum:]], whose meaning depends on the
--- database locale. Same set as ALIAS_SHAPE in src/player/playerIdentity.js.
--- Re-created so a project made with the older, locale-dependent check updates.
+-- Retired ranking data (see header): nothing sets an alias any more, but the
+-- check still guards the rows already stored. Letters are spelled out (ASCII
+-- plus Latin-1 and Latin Extended-A: á, é, ñ, ü…) instead of [[:alnum:]],
+-- whose meaning depends on the database locale. Re-created so a project made
+-- with the older, locale-dependent check updates.
 alter table public.players drop constraint if exists alias_shape;
 alter table public.players add constraint alias_shape check (
   alias is null or (alias ~ '^[A-Za-z0-9À-ÖØ-öø-ÿĀ-ž._ -]{2,16}$' and alias = btrim(alias))
 );
 
--- Case-insensitive: "Agus" and "agus" are the same name on a board.
+-- Retired ranking data: kept so stored aliases stay unique, case-insensitively.
 create unique index if not exists players_alias_lower_idx on public.players (lower(alias));
 
 create table if not exists public.tracks (

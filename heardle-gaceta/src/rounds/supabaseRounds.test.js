@@ -43,7 +43,7 @@ describe("toRoundError", () => {
   });
 
   it("passes a RoundError through untouched", () => {
-    const e = new RoundError("alias_taken");
+    const e = new RoundError("rate_limited");
     expect(toRoundError(e)).toBe(e);
   });
 });
