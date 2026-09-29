@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isDeliverableAddress, welcomeMessage } from "./message.js";
+import { idempotencyKey, isDeliverableAddress, welcomeMessage } from "./message.js";
 
 describe("welcomeMessage", () => {
   const msg = welcomeMessage("fan@example.com");
@@ -34,5 +34,20 @@ describe("isDeliverableAddress", () => {
       expect(isDeliverableAddress(bad)).toBe(false);
     }
     expect(isDeliverableAddress(`${"a".repeat(250)}@b.co`)).toBe(false);
+  });
+});
+
+describe("idempotencyKey", () => {
+  it("is stable per address and differs between addresses", async () => {
+    expect(await idempotencyKey("fan@example.com")).toBe(await idempotencyKey("fan@example.com"));
+    expect(await idempotencyKey("fan@example.com")).not.toBe(await idempotencyKey("otro@example.com"));
+  });
+
+  it("stays short and ASCII for long and non-ASCII addresses", async () => {
+    for (const email of [`${"a".repeat(240)}@example.com`, "músico@ñandú.com.ar"]) {
+      const key = await idempotencyKey(email);
+      expect(key).toMatch(/^welcome-[0-9a-f]{64}$/);
+      expect(key.length).toBeLessThanOrEqual(256);
+    }
   });
 });

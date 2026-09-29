@@ -1,7 +1,7 @@
 // Supabase Edge Function: sends the welcome email through Resend.
 // Deployed with --no-verify-jwt; the only caller is the trigger in supabase/schema.sql,
 // which proves itself with the shared `x-welcome-secret` header.
-import { isDeliverableAddress, welcomeMessage } from "./message.js";
+import { idempotencyKey, isDeliverableAddress, welcomeMessage } from "./message.js";
 
 function json(status: number, body: Record<string, unknown>): Response {
   return new Response(JSON.stringify(body), {
@@ -56,7 +56,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "Idempotency-Key": `welcome-${email}`,
+        "Idempotency-Key": await idempotencyKey(email),
       },
       body: JSON.stringify(welcomeMessage(email)),
     });

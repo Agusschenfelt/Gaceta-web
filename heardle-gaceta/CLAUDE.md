@@ -540,7 +540,8 @@ se traga con un `warning`: la suscripción nunca falla por la bienvenida. Sale d
   eso va al repo ni a `.env`.
 - **La función** se deploya con `supabase functions deploy welcome-email --no-verify-jwt --use-api`
   y rechaza todo lo que no traiga el header `x-welcome-secret` correcto (401). Manda con
-  `Idempotency-Key: welcome-<mail>`, así un reintento no duplica el mail.
+  `Idempotency-Key: welcome-<sha256 del mail>`, así un reintento no duplica el mail (hash y no el
+  mail crudo: Resend corta la clave en 256 caracteres y `fetch` rechaza headers no Latin-1).
 - **Sin pg_net o sin los dos secrets de Vault el trigger no hace nada**, a propósito: así
   `schema.sql` sigue corriendo en el Postgres descartable de `supabase/tests/run.sh`. En un
   proyecto nuevo: `create extension if not exists pg_net;` y
@@ -592,7 +593,7 @@ una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **170/170** en 23 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
+1. `npm run test` — tiene que dar **172/172** en 23 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js`, `scripts/**/*.test.mjs` y `supabase/functions/**/*.test.js`, así que el tooling de build y el mail de bienvenida se testean donde viven.
 2. `npm run build` — tiene que compilar.
    Lint: el `eslint.config.js` de la raíz **ignora `heardle-gaceta/`**, así que un `eslint` común
    no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts`.

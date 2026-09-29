@@ -1,5 +1,5 @@
-// Pure builder for the welcome email. No Deno or Node APIs, so vitest can import it
-// and the Edge Function can reuse it through a relative import.
+// Pure builder for the welcome email. Only web-standard APIs (Web Crypto), so vitest
+// can import it and the Edge Function can reuse it through a relative import.
 
 const FROM = "GACETA <bienvenida@esgaceta.com>";
 const REPLY_TO = "contacto@gacetaplay.com";
@@ -12,6 +12,18 @@ const EMAIL_SHAPE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/i;
 
 export function isDeliverableAddress(email) {
   return typeof email === "string" && email.length <= 254 && EMAIL_SHAPE.test(email);
+}
+
+/**
+ * Resend's Idempotency-Key for this address: a retried call must not send twice.
+ * Hashed, not the raw address: Resend caps the key at 256 characters and fetch
+ * refuses non-Latin-1 header values, so a long or non-ASCII address would fail
+ * the send. SHA-256 hex is always 64 ASCII characters.
+ */
+export async function idempotencyKey(email) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(email));
+  const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  return `welcome-${hex}`;
 }
 
 const TEXT = [
