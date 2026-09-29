@@ -40,7 +40,7 @@ capture to the reveal, where players actually are.
 - [x] T1 Remove the ranking from the client (view, alias, ranked copy, ranking.js, board reads) + tests.
 - [x] T2 Email capture in the reveal after 2 finished rounds; fits 360×640.
 - [x] T3 CLAUDE.md: remove ranking sections/rows, document the email flow.
-- [ ] T4 (needs user go, after deploy) Drop ranking SQL (`get_leaderboard`, `set_alias`, alias/blocked words, `ranked`) from schema + live DB.
+- [x] T4 `schema.sql` done (drop functions, stop computing `ranked`); DB apply pending (parent/user, against the live Supabase project).
 
 ## Acceptance
 
@@ -116,7 +116,44 @@ clips.
   missing (warns instead). 145/145 tests, lint and build ok.
 - Unverified: reveal fit at 360×640 with the email form (no browser available).
 
+- 2026-09-29 (T4, commit `cbda4ee`): dropped `public.get_leaderboard`, `public.my_stats`,
+  `public.set_alias` and `private.backfill_ranked_first_play` from `supabase/schema.sql` (`drop
+  function if exists ...`, idempotent on a live project) and stopped computing `ranked` in
+  `start_round`/`private.round_view`. Kept `players.alias` (+ constraint/index), `rounds.ranked`
+  and `public.blocked_words` as retired data, each with a comment saying so — dropping a column or
+  a table is irreversible and stays a separate decision. Updated the header SQL↔JS mirror map
+  (only the STAGES/score line still applies) and the privileges section. Rewrote
+  `supabase/tests/secure_rounds.test.sql` accordingly (dropped the board/alias/backfill test
+  blocks, kept mail, added a check that the five retired functions all resolve to nothing via
+  `to_regprocedure`) and `supabase/tests/smoke.mjs` (checks `get_leaderboard`/`set_alias`/`my_stats`
+  now error, and that the round view carries no `ranked`). `supabase/tests/run.sh` passed against a
+  disposable local Postgres, including the schema applied twice and the generated seed (431
+  tracks) loading cleanly.
+  - Also, unrelated to T4 but flagged by review (commit `226b713`): fixed stale comments/test name
+    — `engine.js`'s STAGES comment no longer cites the ranking, `README.md` no longer describes the
+    removed alias/ranking modules or counts "ranking" among the tests, and
+    `supabaseRounds.test.js`'s first `toRoundError` test was renamed (it claimed to cover "anything
+    unknown" when the very next test proves an unrecognised-but-non-network error does NOT fall
+    back to `network`).
+  - Also (commit `d21ab4e`): two audio-script robustness fixes flagged by review, unrelated to the
+    ranking removal — `compress-audio.mjs`'s failure-path restore no longer overwrites an
+    already-good, already-trimmed clip with the uncompressed raw when a re-encode fails and a raw
+    copy already existed from an earlier run; `upload-audio.mjs` no longer republishes `peaks.json`
+    (single fixed name, keyed by audio key) while old audio keys from a secret rotation are still
+    published and un-pruned, which would have dropped the envelope entries in-flight rounds on the
+    old keys still need. New `scripts/lib/uploadAudio.mjs` (+ tests) holds that decision as pure,
+    tested functions.
+  - Verification after T4 and the two fixes: `npm run test` 151/151 (19 files, up from 145/18: the
+    6 new `uploadAudio.test.mjs` tests), `npm run build` clean, `npx eslint --no-ignore
+    heardle-gaceta/src heardle-gaceta/scripts` (from repo root) clean, `supabase/tests/run.sh` ok.
+  - **DB apply pending**: this pass only changed `supabase/schema.sql` and its local tests, per
+    instructions — it did not touch the live Supabase project. Applying the new schema to
+    production is the next step, whenever whoever holds access to that project runs it.
+
 ## Next step
 
-T4, whenever the user wants to drop the ranking SQL — needs their explicit go-ahead, and should
-wait until this client is deployed (see "Orden de despliegue" in CLAUDE.md).
+Apply the updated `supabase/schema.sql` to the live `heardle-gaceta` Supabase project (SQL editor
+or `psql`, see "Supabase" in CLAUDE.md). This agent did not touch the live project or deploy —
+only the file, plus its local tests. Once applied, `get_leaderboard`, `my_stats`, `set_alias` and
+the first-play backfill will no longer exist on the live DB; `players.alias`, `rounds.ranked` and
+`public.blocked_words` stay as retired data.

@@ -61,11 +61,11 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Texto y emojis del share | `src/game/share.js` |
 | Cómo se elige el tema (Supabase) | `start_round` en `supabase/schema.sql` (evita los últimos 20 del jugador) |
 | Cómo se elige el tema (modo local) | `src/catalog/pickTrack.js` (`RECENT_LIMIT`, clave `heardle:recent`) vía `src/rounds/localRounds.js` |
-| Reglas del servidor: rondas, mails, límites (el ranking y el alias siguen en el schema, ver nota en "Contratos de datos") | `supabase/schema.sql` + `supabase/tests/secure_rounds.test.sql` |
+| Reglas del servidor: rondas, mails, límites (el alias, `ranked` y las palabras bloqueadas quedan como datos retirados, ver "El ranking se sacó del cliente y del servidor") | `supabase/schema.sql` + `supabase/tests/secure_rounds.test.sql` |
 | Qué servicio se usa (Supabase o local), login anónimo | `src/services/gameServices.js`, `supabaseServices.js` |
 | Rondas: puerto y las dos implementaciones | `src/rounds/localRounds.js`, `supabaseRounds.js`; textos de error en `roundErrors.js` |
 | Qué ve el browser del catálogo y los audios | `scripts/publish-assets.mjs` + `scripts/lib/publish.mjs` |
-| Subida de audios y envolventes a Storage | `scripts/upload-audio.mjs`; el bucket lo crea `supabase/schema.sql` |
+| Subida de audios y envolventes a Storage | `scripts/upload-audio.mjs` (decisión de cuándo subir `peaks.json` en `scripts/lib/uploadAudio.mjs`, ver "Rotar el secreto"); el bucket lo crea `supabase/schema.sql` |
 | De dónde carga el browser audios y envolventes | `src/services/assetUrls.js` |
 | Headers de seguridad (CSP y demás) | `vercel.json` |
 | Ranking del buscador, cuántos resultados, normalización de acentos | `src/catalog/search.js` |
@@ -149,16 +149,19 @@ una **columna generada** y hay checks que rechazan una ronda imposible; mandar `
 insert da error. El adapter local lo deriva igual con `scoreFor`. Si cambiás `STAGES` o la
 fórmula, cambiala también en `supabase/schema.sql` (el 4 está escrito ahí).
 
-**El ranking se sacó del cliente** (2026-09-28, `odd/tasks/remove-ranking.md`, T1–T3). El mail solo
-se pedía adentro del ranking, detrás de un alias que casi nadie completaba, y las reglas para que
-una ronda sumara (mínimo de partidas, 3+ artistas, primera vez por tema) eran, en palabras del
-usuario, "poco claras". Se sacó `Leaderboard.jsx`, `src/leaderboard/ranking.js`, el alias
-(`playerIdentity.js`) y los reads `getTop`/`getPlayerStats`/`setAlias` de los puertos; el mail pasó
-a pedirse directamente en la reveal (ver el punto 6 arriba y "Captura de mail" en la tabla de
-arriba). **El servidor sigue teniendo todo el SQL del ranking** (`get_leaderboard`, `set_alias`,
-las palabras bloqueadas, la columna `ranked`) — el cliente ya no lo llama ni lo lee, pero no se
-tocó `supabase/schema.sql` ni la base viva. Sacar ese SQL es T4 en el mismo documento, pendiente de
-que el usuario lo autorice después de este deploy.
+**El ranking se sacó del cliente y del servidor** (2026-09-28/29, `odd/tasks/remove-ranking.md`,
+T1–T4). El mail solo se pedía adentro del ranking, detrás de un alias que casi nadie completaba, y
+las reglas para que una ronda sumara (mínimo de partidas, 3+ artistas, primera vez por tema) eran,
+en palabras del usuario, "poco claras". Se sacó `Leaderboard.jsx`, `src/leaderboard/ranking.js`, el
+alias (`playerIdentity.js`) y los reads `getTop`/`getPlayerStats`/`setAlias` de los puertos; el mail
+pasó a pedirse directamente en la reveal (ver el punto 6 arriba y "Captura de mail" en la tabla de
+arriba). En `supabase/schema.sql`, `get_leaderboard`, `my_stats`, `set_alias` y el backfill de
+primera-jugada (`private.backfill_ranked_first_play`) están **borrados** (`drop function if
+exists ...`, así que correr el schema de nuevo también los saca de un proyecto viejo), y
+`start_round` ya no calcula `ranked`. `players.alias` (+ su constraint e índice), `rounds.ranked` y
+`public.blocked_words` quedan en la tabla como datos de ranking retirados a propósito: borrar una
+columna o una tabla es irreversible y se decide después. Falta aplicar este `schema.sql` a la base
+viva de Supabase (lo hace quien tenga acceso al proyecto).
 
 **No hay niveles de dificultad, y es a propósito.** Había tres (`DIFFICULTIES`) y se sacaron el
 2026-09-18. Una sola escalera `STAGES = [0.5, 1, 3, 8]` para todos, porque:
@@ -190,7 +193,12 @@ Vercel no hay fuentes: solo se publica el catálogo.
 **Rotar el secreto** (invalida una tabla clave → respuesta armada entre jugadores; una tabla por
 hash de los bytes sobrevive, es el límite aceptado): nuevo `AUDIO_KEY_SECRET` → `npm run assets` →
 `npm run upload-audio` → cargar `tracks.sql` → `npm run upload-audio -- --prune`. Las rondas
-abiertas siguen andando: la vista toma la clave nueva de `tracks`.
+abiertas siguen andando: la vista toma la clave nueva de `tracks`. `peaks.json` tiene un solo
+nombre fijo en Storage y está reindexado por clave de audio; `upload-audio` no lo vuelve a subir
+mientras queden claves viejas publicadas sin podar (la primera corrida de una rotación), para no
+pisarlo con datos de las claves nuevas mientras las rondas abiertas todavía resuelven las viejas.
+Se sube recién en la corrida con `--prune`, una vez que `tracks.sql` ya cambió las claves en la
+base. Mientras tanto el anillo de esas rondas queda plano (`loadPeaks` nunca rechaza), no roto.
 
 **Track en `data/catalog/<slug>.json`** (lo genera el script, no editar a mano salvo para corregir un dato puntual). La versión publicada es igual pero **sin `audio_file` ni `deezer_id`**, y con `audio_key` solo en modo local:
 
@@ -214,7 +222,7 @@ abiertas siguen andando: la vista toma la clave nueva de `tracks`.
 
 **Track en memoria** (lo que ven los componentes, sale de `loadCatalog`): `{ id, title, artists, artistSlugs, audioFile, coverUrl, spotifyUrl, release, releaseDate }`. Ojo con el camelCase: el JSON usa snake_case, la app camelCase, la conversión está en `loadCatalog.js`.
 
-**Puertos** (`src/services/gameServices.js`): `rounds` = `start(artistSlugs)`, `guess(roundId, trackId, attempt)`, `skip(roundId, attempt)`, todos devuelven la vista de la ronda (`{ id, audioKey, stages, stageIndex, attempts, status, score, ranked, answerId, answer }`). `attempt` es `attempts.length` como lo vio el cliente: obligatorio (sin él, `invalid_attempt`), y es lo que hace seguro reintentar. `ranked` la sigue mandando el servidor (columna del schema, ver la nota de "El ranking se sacó del cliente" más arriba); el cliente ya no la lee, y el modo local ni la calcula. `board` = `subscribeEmail(email)`, el único método que le queda. Nadie manda puntaje ni `playerId`: en Supabase el jugador es `auth.uid()`.
+**Puertos** (`src/services/gameServices.js`): `rounds` = `start(artistSlugs)`, `guess(roundId, trackId, attempt)`, `skip(roundId, attempt)`, todos devuelven la vista de la ronda (`{ id, audioKey, stages, stageIndex, attempts, status, score, answerId, answer }`). `attempt` es `attempts.length` como lo vio el cliente: obligatorio (sin él, `invalid_attempt`), y es lo que hace seguro reintentar. La vista ya no manda `ranked`: `start_round` dejó de calcularlo (ver "El ranking se sacó del cliente y del servidor" más arriba). `board` = `subscribeEmail(email)`, el único método que le queda. Nadie manda puntaje ni `playerId`: en Supabase el jugador es `auth.uid()`.
 
 **localStorage** (todas las claves con prefijo `heardle:`): `auth` (sesión anónima de Supabase), `artistFilter`, `emailPrompt` (`pending | done | dismissed`), `roundsFinished` (cuántas rondas terminó este browser) y `lastFinishedRound` (el id de la última que ya se contó, para no contarla dos veces en un re-render o el doble efecto de StrictMode); en modo local además `playerId`, `recent`, `local:round` (la ronda abierta), `local:emails`. Quien jugó antes del 2026-09-18 puede tener todavía un `heardle:difficulty` huérfano, y quien jugó antes del 2026-09-28 uno `heardle:alias`; ninguno de los dos se lee más y no molestan.
 
@@ -505,7 +513,7 @@ una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **145/145** en 18 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
+1. `npm run test` — tiene que dar **151/151** en 19 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
 2. `npm run build` — tiene que compilar.
    Lint: el `eslint.config.js` de la raíz **ignora `heardle-gaceta/`**, así que un `eslint` común
    no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts`.
