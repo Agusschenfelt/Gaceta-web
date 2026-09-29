@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { createSupabaseRounds } from "../rounds/supabaseRounds.js";
 import { createSupabaseAdapter } from "../leaderboard/supabaseAdapter.js";
-import { RoundError } from "../rounds/roundErrors.js";
+import { RoundError, toRoundError } from "../rounds/roundErrors.js";
 import { isDeadSession } from "./session.js";
 import { getCaptchaToken } from "./captcha.js";
 
@@ -22,6 +22,16 @@ import { getCaptchaToken } from "./captcha.js";
  * single-use. Supabase ignores `captchaToken` until "CAPTCHA protection" is
  * enabled in its dashboard; until then this is a no-op there.
  */
+/**
+ * A failed sign-in keeps its connection classification: a dropped request is
+ * "network", which GameContainer's login retry retries on its own. Anything
+ * else (captcha refused, sign-ins disabled) is "not_authenticated".
+ */
+export function signInFailure(error) {
+  const mapped = toRoundError(error);
+  return mapped.code === "network" ? mapped : new RoundError("not_authenticated", error);
+}
+
 export async function createSupabaseServices({ url, anonKey, turnstileSiteKey }) {
   const client = createClient(url, anonKey, {
     auth: { persistSession: true, autoRefreshToken: true, storageKey: "heardle:auth" },
@@ -46,7 +56,7 @@ export async function createSupabaseServices({ url, anonKey, turnstileSiteKey })
     const { error } = await client.auth.signInAnonymously(
       captchaToken ? { options: { captchaToken } } : undefined
     );
-    if (error) throw new RoundError("not_authenticated", error);
+    if (error) throw signInFailure(error);
   }
 
   return {
