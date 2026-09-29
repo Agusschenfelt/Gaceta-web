@@ -13,7 +13,7 @@ Vive dentro del repo de la web de GACETA (`Gaceta-web/heardle-gaceta/`) pero es 
 ```bash
 npm install --legacy-peer-deps   # siempre con --legacy-peer-deps
 npm run dev                      # Vite en http://localhost:5173
-npm run test                     # vitest, entorno node: src/**/*.test.js y scripts/**/*.test.mjs
+npm run test                     # vitest, entorno node: src/**/*.test.js, scripts/**/*.test.mjs y supabase/functions/**/*.test.js
 npm run build                    # build a dist/
 npm run catalog                  # arma el catálogo (ver sección Catálogo)
 npm run catalog -- --only ramma,valuto   # solo esos artistas
@@ -91,6 +91,7 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Reveal final (disco girando, anillo, puntaje, share, jugar otra vez) | `src/components/organisms/ResultReveal.jsx`; el autoplay del tema está en `GameContainer.jsx` |
 | Color del fondo del reveal según la carátula (qué tono elige, cuánto se oscurece) | `src/theme/coverTint.js` (`MAX_LUMINANCE`, `MIN_SATURATION`, `MIN_SHARE`) + `useCoverTint.js`; transición en `index.css` (`@property --color-bg`) |
 | Copy y validación del formulario de mail | `src/components/organisms/EmailCapture.jsx` |
+| Mail de bienvenida (texto, remitente, reply-to) | `supabase/functions/welcome-email/message.js` + `message.test.js`; envío en `index.ts`; trigger `private.request_welcome_email` en `supabase/schema.sql` |
 | Cuántas rondas hacen falta para que la reveal ofrezca el mail | `src/player/emailPrompt.js` (`EMAIL_AFTER_ROUNDS`, `shouldAskEmail`) |
 | Conteo de rondas terminadas y de cuándo se lo cuenta una sola vez | `src/containers/GameContainer.jsx` (`heardle:roundsFinished`, `heardle:lastFinishedRound`) |
 | Id anónimo del jugador (modo local) | `src/player/playerIdentity.js` |
@@ -523,6 +524,31 @@ Puesta en marcha de un proyecto nuevo:
    cargarlo si cambia el catálogo o el secreto.
 4. Cargar `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` y `AUDIO_KEY_SECRET` en `.env` y en Vercel.
 
+**Mail de bienvenida** (2026-09-29, `odd/tasks/welcome-email.md`). Sin doble opt-in, a pedido
+del usuario: son los primeros mails de GACETA y no quería sumar fricción. Cada mail **nuevo** en
+`public.emails` dispara el trigger `emails_welcome` → `private.request_welcome_email()` →
+`net.http_post` (pg_net, asíncrono: nunca frena el insert) → Edge Function `welcome-email` →
+Resend. Un mail repetido no dispara nada (`on conflict do nothing`), y cualquier error del trigger
+se traga con un `warning`: la suscripción nunca falla por la bienvenida. Sale de
+`GACETA <hola@esgaceta.com>` con reply-to `contacto@gacetaplay.com`; darse de baja es responder.
+
+- **DNS:** `esgaceta.com` está en Vercel; los registros de Resend (DKIM `resend._domainkey`, SPF y
+  MX de `send.esgaceta.com`) los cargó el usuario ahí. No hay casilla de correo propia: por eso el
+  reply-to va a otro dominio.
+- **Secrets:** `RESEND_API_KEY` y `WELCOME_HOOK_SECRET` en los secrets de Edge Functions; la URL de
+  la función y el mismo hook secret en Vault (`welcome_email_url`, `welcome_email_secret`). Nada de
+  eso va al repo ni a `.env`.
+- **La función** se deploya con `supabase functions deploy welcome-email --no-verify-jwt --use-api`
+  y rechaza todo lo que no traiga el header `x-welcome-secret` correcto (401). Manda con
+  `Idempotency-Key: welcome-<mail>`, así un reintento no duplica el mail.
+- **Sin pg_net o sin los dos secrets de Vault el trigger no hace nada**, a propósito: así
+  `schema.sql` sigue corriendo en el Postgres descartable de `supabase/tests/run.sh`. En un
+  proyecto nuevo: `create extension if not exists pg_net;` y
+  `select vault.create_secret('<url>/functions/v1/welcome-email', 'welcome_email_url');` +
+  `select vault.create_secret('<hook secret>', 'welcome_email_secret');`.
+- **Probar sin molestar a nadie:** mandar a `delivered@resend.dev` (dirección de test de Resend).
+  Las respuestas del trigger quedan en `net._http_response`.
+
 **Captcha del login anónimo (Cloudflare Turnstile).** `src/services/captcha.js` carga
 `api.js?render=explicit` con un `<script>` creado en runtime (nada de dependencia npm), renderiza
 el widget invisible en un contenedor de tamaño cero pegado a `document.body` (esta app no scrollea
@@ -566,7 +592,7 @@ una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **165/165** en 22 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
+1. `npm run test` — tiene que dar **170/170** en 23 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
 2. `npm run build` — tiene que compilar.
    Lint: el `eslint.config.js` de la raíz **ignora `heardle-gaceta/`**, así que un `eslint` común
    no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts`.

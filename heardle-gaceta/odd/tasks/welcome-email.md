@@ -21,10 +21,10 @@ The reveal only stores the address. The user wants people who sign up to get som
 - No new npm dependencies.
 
 ## Tasks
-- [ ] T1 Edge Function `supabase/functions/welcome-email/` + pure message builder with vitest tests.
-- [ ] T2 Trigger in `supabase/schema.sql` (Vault + pg_net, no-op when missing) + SQL test in `secure_rounds.test.sql`.
-- [ ] T3 Rollout: pg_net, Vault secrets, function secrets, schema applied, function deployed; test send to `delivered@resend.dev`.
-- [ ] T4 Docs in CLAUDE.md.
+- [x] T1 Edge Function `supabase/functions/welcome-email/` + pure message builder with vitest tests.
+- [x] T2 Trigger in `supabase/schema.sql` (Vault + pg_net, no-op when missing) + SQL test in `secure_rounds.test.sql`.
+- [x] T3 Rollout: pg_net, Vault secrets, function secrets, schema applied, function deployed; test send to `delivered@resend.dev`.
+- [x] T4 Docs in CLAUDE.md.
 
 ## Acceptance criteria
 - A new subscription produces exactly one welcome email; a repeated address produces none.
@@ -36,3 +36,8 @@ The reveal only stores the address. The user wants people who sign up to get som
 
 ## Progress
 - 2026-09-29: document created; 0 addresses stored in production, so no backfill needed.
+- T1+T2 (commit 9e0bdc4): function, pure message builder (+5 vitest), trigger + SQL test. Checks: npm run test 170/170, build ok, eslint clean (index.ts not linted, no Deno), run.sh ok.
+- T3 rollout: WELCOME_HOOK_SECRET set, function deployed (--no-verify-jwt --use-api), direct call 401 without secret / 200 with it to delivered@resend.dev; pg_net enabled, Vault secrets created, schema applied; end-to-end insert of delivered+e2e@resend.dev → net._http_response 200, row deleted (emails back to 0).
+- T4: CLAUDE.md documented.
+- Review: pending the native review decision for this commit.
+- Next: nothing pending; optional: watch the first real welcomes in the Resend dashboard.
