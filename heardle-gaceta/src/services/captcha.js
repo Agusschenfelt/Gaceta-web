@@ -83,22 +83,28 @@ function createHiddenContainer() {
 export async function getCaptchaToken(siteKey, { timeoutMs = DEFAULT_TIMEOUT_MS } = {}) {
   if (!isCaptchaConfigured(siteKey)) return undefined;
 
-  const turnstile = await loadTurnstileScript();
-  const container = createHiddenContainer();
-  let widgetId;
+  // One deadline covers loading the script too: a script request that never
+  // settles would otherwise hang the sign-in forever.
   let timer;
+  const deadline = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`Turnstile no respondió en ${timeoutMs} ms.`)), timeoutMs);
+  });
+  let turnstile;
+  let container;
+  let widgetId;
 
   try {
-    return await new Promise((resolve, reject) => {
-      timer = setTimeout(
-        () => reject(new Error(`Turnstile no respondió en ${timeoutMs} ms.`)),
-        timeoutMs
-      );
-      widgetId = turnstile.render(container, buildRenderOptions(siteKey, { resolve, reject }));
-    });
+    turnstile = await Promise.race([loadTurnstileScript(), deadline]);
+    container = createHiddenContainer();
+    return await Promise.race([
+      new Promise((resolve, reject) => {
+        widgetId = turnstile.render(container, buildRenderOptions(siteKey, { resolve, reject }));
+      }),
+      deadline,
+    ]);
   } finally {
     clearTimeout(timer);
     if (widgetId !== undefined) turnstile.remove(widgetId);
-    container.remove();
+    container?.remove();
   }
 }
