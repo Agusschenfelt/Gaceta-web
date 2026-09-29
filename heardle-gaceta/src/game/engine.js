@@ -7,8 +7,7 @@
  * Seconds unlocked at each attempt. One ladder for everyone, on purpose:
  * difficulty levels would make two players' "3/4" mean different things, and a
  * result you cannot compare is the one thing this genre cannot afford — the
- * shared score is what gets shared at all. It also keeps the ranking honest,
- * since every row is then the same game.
+ * shared score is what gets shared at all.
  */
 export const STAGES = Object.freeze([0.5, 1, 3, 8]);
 
