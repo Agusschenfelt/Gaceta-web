@@ -102,6 +102,15 @@ browser available in this pass to check it visually; the flex-column/`shrink-0` 
 the pattern already used for the game view, but only a real viewport check confirms nothing
 clips.
 
+- 2026-09-28 review: slice `3c17aef..448900a` assessed medium, user granted, native review
+  (1 lens, reliability) **approved** and acknowledged. Advisory: round counter untested; a storage
+  failure could leave the counter stuck. Whole-branch review (from `d7395a7`, 4 lenses, high,
+  user granted) also **approved**. Advisory warnings: `EmailCapture` validates the untrimmed
+  email; rounds-finished counter on storage failure; `publish-assets.mjs:121` publishes empty
+  peaks when missing; `useAudioPlayer` reload with a stale key; stale comments in
+  `supabase/schema.sql` (mirror map, alias shape). Not blocking.
+- Unverified: reveal fit at 360×640 with the email form (no browser available).
+
 ## Next step
 
 T4, whenever the user wants to drop the ranking SQL — needs their explicit go-ahead, and should
