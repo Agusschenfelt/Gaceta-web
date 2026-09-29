@@ -5,6 +5,13 @@
 //   set -a; . ./.env; set +a; node supabase/tests/smoke.mjs
 // It leaves two anonymous users behind; remove them afterwards in the SQL editor:
 //   delete from auth.users where is_anonymous and id in (<the two ids it prints>);
+//
+// Once "CAPTCHA protection" is enabled for anonymous sign-ins in the Supabase
+// dashboard (see CLAUDE.md, "Supabase"), the first sign-in below needs a real
+// Turnstile token: solve one in a browser and pass it as CAPTCHA_TOKEN. It is
+// single-use, so it only covers that first sign-in; the second player's
+// sign-in still needs captcha protection temporarily turned off to run this
+// whole script. Unset/empty CAPTCHA_TOKEN is fine while captcha is off.
 import { createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
 import { readFileSync } from "node:fs";
@@ -28,7 +35,10 @@ for (const t of ["tracks", "rounds", "players", "emails"]) {
   check(!!error, `the ranking functions are gone, get_leaderboard included (${error?.code ?? "no error"})`); }
 
 const a = createClient(url, key, opts);
-const { data: s1, error: e1 } = await a.auth.signInAnonymously();
+const captchaToken = process.env.CAPTCHA_TOKEN;
+const { data: s1, error: e1 } = await a.auth.signInAnonymously(
+  captchaToken ? { options: { captchaToken } } : undefined
+);
 check(!e1 && s1.user?.is_anonymous, "anonymous sign-in works");
 const { data: r1, error: re1 } = await a.rpc("start_round", { p_artists: ["ramma"] });
 check(!re1 && r1?.audioKey && r1.answerId === null, `round dealt, answer hidden (${re1?.message ?? "ok"})`);

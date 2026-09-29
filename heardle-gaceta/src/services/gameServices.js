@@ -20,9 +20,10 @@ import { getPlayerId } from "../player/playerIdentity.js";
 export async function getGameServices({ tracks }) {
   const url = import.meta.env.VITE_SUPABASE_URL;
   const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+  const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY;
   if (url && anonKey) {
     const { createSupabaseServices } = await import("./supabaseServices.js");
-    return createSupabaseServices({ url, anonKey });
+    return createSupabaseServices({ url, anonKey, turnstileSiteKey });
   }
   return createLocalServices({ tracks });
 }
