@@ -11,7 +11,7 @@ export function EmailCapture({ onSubmit, onDismiss }) {
 
   async function submit(e) {
     e.preventDefault();
-    if (!EMAIL_RE.test(email)) return;
+    if (!EMAIL_RE.test(email.trim())) return;
     setState("saving");
     try {
       await onSubmit(email.trim());
@@ -29,7 +29,7 @@ export function EmailCapture({ onSubmit, onDismiss }) {
     <form onSubmit={submit} className="fade-up flex flex-col gap-2" aria-label="Novedades por mail">
       <div className="flex items-center justify-between gap-2">
         <label htmlFor="email" className="text-sm text-muted">
-          Dejá tu mail para novedades de GACETA
+          Dejá tu mail y te avisamos cuando salga música nueva
         </label>
         <button
           type="button"
@@ -49,7 +49,7 @@ export function EmailCapture({ onSubmit, onDismiss }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <Button type="submit" variant="primary" disabled={!EMAIL_RE.test(email) || state === "saving"}>
+        <Button type="submit" variant="primary" disabled={!EMAIL_RE.test(email.trim()) || state === "saving"}>
           Sumarme
         </Button>
       </div>

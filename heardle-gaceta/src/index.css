@@ -4,8 +4,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Registered so it can transition: the reveal tints it with the cover's
+   colour (src/theme/useCoverTint.js) and it fades there and back. */
+@property --color-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #0a0a0a;
+}
+
 html {
   background-color: var(--color-bg);
+  transition: --color-bg 900ms var(--ease-out-expo, ease-out);
 }
 
 body {
@@ -215,6 +224,13 @@ body::before {
   pointer-events: none;
   background-image: var(--noise);
   animation: grain 0.8s steps(5) infinite;
+  transition: opacity 900ms var(--ease-out-expo, ease-out);
+}
+
+/* No grain over the cover's colour (src/theme/useCoverTint.js): on a tinted
+   background it reads as a dirty filter, not as texture. */
+html[data-tinted] body::before {
+  opacity: 0;
 }
 
 #root {

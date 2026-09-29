@@ -21,6 +21,7 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
+import { staleAudioNames, shouldUploadPeaks } from "./lib/uploadAudio.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const PUBLISHED = path.join(ROOT, ".published");
@@ -61,13 +62,25 @@ async function main() {
     throw new Error("AUDIO_KEY_SECRET is required: run npm run assets with it first");
   }
 
-  const files = (await readdir(path.join(PUBLISHED, "audio")))
+  const audioFiles = (await readdir(path.join(PUBLISHED, "audio")))
     .filter((f) => f.endsWith(".mp3"))
     .map((f) => ({ name: f, file: path.join(PUBLISHED, "audio", f), type: "audio/mpeg", cache: "86400" }));
-  files.push({ name: "peaks.json", file: path.join(PUBLISHED, "peaks.json"), type: "application/json", cache: "300" });
+  const peaksFile = { name: "peaks.json", file: path.join(PUBLISHED, "peaks.json"), type: "application/json", cache: "300" };
 
   const storage = createClient(url, serviceKey, { auth: { persistSession: false } }).storage.from(BUCKET);
   const remote = await listRemote(storage);
+
+  // See scripts/lib/uploadAudio.mjs and "Rotar el secreto" in CLAUDE.md for why.
+  const audioNames = new Set(audioFiles.map((f) => f.name));
+  const staleAudio = staleAudioNames([...remote.keys()], audioNames, peaksFile.name);
+  const uploadPeaks = shouldUploadPeaks({ prune: PRUNE, staleAudioCount: staleAudio.length });
+  const files = uploadPeaks ? [...audioFiles, peaksFile] : audioFiles;
+  if (!uploadPeaks) {
+    console.log(
+      `upload-audio: ${staleAudio.length} stale audio key(s) still published — ` +
+        "skipping peaks.json until the new seed is live (rerun with --prune once it is)"
+    );
+  }
 
   let uploaded = 0;
   for (const f of files) {
@@ -83,7 +96,9 @@ async function main() {
     if (error) throw new Error(`${f.name}: ${error.message}`);
   }
 
-  const expected = new Set(files.map((f) => f.name));
+  // peaks.json's name never changes, so it stays out of the prune set even
+  // on a run that chose to skip re-uploading it (see uploadPeaks above).
+  const expected = new Set([...audioNames, peaksFile.name]);
   const stale = [...remote.keys()].filter((name) => !expected.has(name));
   if (PRUNE && stale.length && !DRY) {
     for (let i = 0; i < stale.length; i += 100) {

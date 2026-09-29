@@ -7,7 +7,7 @@ Guess-the-song game built on the GACETA catalog. Single screen, mobile-first, Vi
 ```bash
 npm install --legacy-peer-deps
 npm run dev          # http://localhost:5173 (runs npm run assets first)
-npm run test         # vitest: engine, rounds, ranking, build tooling
+npm run test         # vitest: engine, rounds, catalog, build tooling
 npm run build        # production build in dist/ (runs npm run assets first)
 supabase/tests/run.sh   # the SQL schema against a throwaway local Postgres
 ```
@@ -17,7 +17,7 @@ supabase/tests/run.sh   # the SQL schema against a throwaway local Postgres
 | Variable | Used by |
 |---|---|
 | `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` | `npm run catalog` only |
-| `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` | The game (rounds, ranking, mail). Empty = local mode, development only |
+| `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` | The game (rounds, mail). Empty = local mode, development only |
 | `AUDIO_KEY_SECRET` | `npm run assets`: opaque audio file names. Required with Supabase and in production |
 | `SUPABASE_SERVICE_ROLE_KEY` | `npm run upload-audio` only. Never prefix with `VITE_` |
 | `SUPABASE_DB_PASSWORD` | Running SQL against the project with `psql` |
@@ -59,8 +59,8 @@ src/catalog/      catalog loading, search, random pick (local mode)
 src/audio/        useAudioPlayer hook, waveform maths
 src/rounds/       rounds port: Supabase RPCs or local stand-in
 src/services/     picks the mode, anonymous sign-in, asset URLs
-src/player/       alias rules, local player id
-src/leaderboard/  ranking rules + Supabase / local board adapters
+src/player/       local player id
+src/leaderboard/  email-subscription adapters (Supabase / local)
 supabase/         schema, SQL tests, smoke test
 scripts/          catalog, compression, peaks, publish and upload tooling
 src/components/   atoms → molecules → organisms (presentational)

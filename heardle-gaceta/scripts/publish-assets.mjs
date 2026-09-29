@@ -118,8 +118,14 @@ async function main() {
     removed += 1;
   }
 
-  const peaks = await readJson(SRC_PEAKS).catch(() => ({}));
-  await writeFile(outPeaks, JSON.stringify(rekeyPeaks(peaks, keyFor)));
+  // Missing peaks must not publish an empty file: upload-audio would push it
+  // over the good one in Storage and flatten every ring. Leave it untouched.
+  const peaks = await readJson(SRC_PEAKS).catch(() => null);
+  if (peaks) {
+    await writeFile(outPeaks, JSON.stringify(rekeyPeaks(peaks, keyFor)));
+  } else {
+    console.warn(`assets: ${path.relative(ROOT, SRC_PEAKS)} not found, peaks not published (npm run peaks)`);
+  }
 
   await mkdir(path.dirname(OUT_SEED), { recursive: true });
   await writeFile(OUT_SEED, seedSql([...playable.values()]));

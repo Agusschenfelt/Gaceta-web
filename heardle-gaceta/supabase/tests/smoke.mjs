@@ -1,9 +1,17 @@
 // End-to-end smoke test against the real Supabase project: access lockdown, anonymous
-// sign-in, dealing, resume, isolation between players, answer/audio consistency, alias.
+// sign-in, dealing, resume, isolation between players, answer/audio consistency, and
+// that the retired ranking functions (get_leaderboard, set_alias, my_stats) are gone.
 // Usage (from heardle-gaceta/, .env with VITE_SUPABASE_* and AUDIO_KEY_SECRET, after npm run assets):
 //   set -a; . ./.env; set +a; node supabase/tests/smoke.mjs
 // It leaves two anonymous users behind; remove them afterwards in the SQL editor:
 //   delete from auth.users where is_anonymous and id in (<the two ids it prints>);
+//
+// Once "CAPTCHA protection" is enabled for anonymous sign-ins in the Supabase
+// dashboard (see CLAUDE.md, "Supabase"), the first sign-in below needs a real
+// Turnstile token: solve one in a browser and pass it as CAPTCHA_TOKEN. It is
+// single-use, so it only covers that first sign-in; the second player's
+// sign-in still needs captcha protection temporarily turned off to run this
+// whole script. Unset/empty CAPTCHA_TOKEN is fine while captcha is off.
 import { createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
 import { readFileSync } from "node:fs";
@@ -22,11 +30,15 @@ for (const t of ["tracks", "rounds", "players", "emails"]) {
 }
 { const { error } = await anon.from("rounds").insert({ player_id: "00000000-0000-0000-0000-000000000000", track_id: "x" });
   check(!!error, `anon cannot insert rounds (${error?.code})`); }
-{ const { error } = await anon.rpc("get_leaderboard", { p_limit: 5 }); check(!error, "anon can read the board"); }
 { const { error } = await anon.rpc("start_round", { p_artists: [] }); check(!!error, `no session, no round (${error?.code})`); }
+{ const { error } = await anon.rpc("get_leaderboard", { p_limit: 5 });
+  check(!!error, `the ranking functions are gone, get_leaderboard included (${error?.code ?? "no error"})`); }
 
 const a = createClient(url, key, opts);
-const { data: s1, error: e1 } = await a.auth.signInAnonymously();
+const captchaToken = process.env.CAPTCHA_TOKEN;
+const { data: s1, error: e1 } = await a.auth.signInAnonymously(
+  captchaToken ? { options: { captchaToken } } : undefined
+);
 check(!e1 && s1.user?.is_anonymous, "anonymous sign-in works");
 const { data: r1, error: re1 } = await a.rpc("start_round", { p_artists: ["ramma"] });
 check(!re1 && r1?.audioKey && r1.answerId === null, `round dealt, answer hidden (${re1?.message ?? "ok"})`);
@@ -55,15 +67,13 @@ check(catalog.tracks.some((t) => t.id === view.answerId), "the answer came from 
 check(!JSON.stringify(catalog).includes(r1.audioKey), "the public catalog does not contain the audio key");
 check(view?.answer?.title && view.answer.artistSlugs?.includes("ramma"), "the finished round carries the answer's title and artists");
 
-{ const { error } = await a.rpc("set_alias", { p_alias: "el puto" }); check(error?.message?.includes("blocked_alias"), "blocked alias refused"); }
-// Unique per run: aliases are unique, and an earlier run may not be cleaned up yet.
-const alias = `smoke ${Math.random().toString(36).slice(2, 8)}`;
-{ const { data, error } = await a.rpc("set_alias", { p_alias: alias }); check(!error && data === alias, "valid alias saved"); }
-// The round above was dealt from one artist: played and scored, but not ranked.
-check(r1.ranked === false, "a one-artist round is not ranked");
-{ const { data } = await a.rpc("my_stats"); check(data?.gamesPlayed === 0 && data.alias === alias, "my_stats counts only ranked rounds"); }
-{ const { data: r2 } = await a.rpc("start_round", { p_artists: ["ramma", "ara", "valuto"] });
-  check(r2?.ranked === true, "a three-artist round is ranked"); }
+// Ranking removed 2026-09-29 (odd/tasks/remove-ranking.md): set_alias and
+// my_stats are dropped, the round view no longer carries "ranked".
+{ const { error } = await a.rpc("set_alias", { p_alias: "smoke" });
+  check(!!error, `set_alias is gone (${error?.code ?? "no error"})`); }
+{ const { error } = await a.rpc("my_stats");
+  check(!!error, `my_stats is gone (${error?.code ?? "no error"})`); }
+check(!("ranked" in view), "the round view no longer carries \"ranked\"");
 
 console.log(`ids ${s1.user.id} ${(await b.auth.getUser()).data.user.id}`);
 process.exit(failures ? 1 : 0);

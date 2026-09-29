@@ -1,8 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
 import { createSupabaseRounds } from "../rounds/supabaseRounds.js";
 import { createSupabaseAdapter } from "../leaderboard/supabaseAdapter.js";
-import { RoundError } from "../rounds/roundErrors.js";
+import { RoundError, toRoundError } from "../rounds/roundErrors.js";
 import { isDeadSession } from "./session.js";
+import { getCaptchaToken } from "./captcha.js";
 
 /**
  * One Supabase client, signed in anonymously. The session is kept in
@@ -13,8 +14,25 @@ import { isDeadSession } from "./session.js";
  * is checked against the server once on start; a dead one is dropped and a
  * fresh anonymous sign-in takes its place. A network error is not a dead
  * session: that keeps the identity and lets the game report the connection.
+ *
+ * Only a brand-new anonymous sign-in fetches a Turnstile token: an existing
+ * or refreshed session never runs the captcha. `createSupabaseServices` runs
+ * again from scratch on every retry (see GameContainer's login effect), so a
+ * fresh token is fetched each time — required, since a Turnstile token is
+ * single-use. Supabase ignores `captchaToken` until "CAPTCHA protection" is
+ * enabled in its dashboard; until then this is a no-op there.
  */
-export async function createSupabaseServices({ url, anonKey }) {
+/**
+ * A failed sign-in keeps its connection classification: a dropped request is
+ * "network", which GameContainer's login retry retries on its own. Anything
+ * else (captcha refused, sign-ins disabled) is "not_authenticated".
+ */
+export function signInFailure(error) {
+  const mapped = toRoundError(error);
+  return mapped.code === "network" ? mapped : new RoundError("not_authenticated", error);
+}
+
+export async function createSupabaseServices({ url, anonKey, turnstileSiteKey }) {
   const client = createClient(url, anonKey, {
     auth: { persistSession: true, autoRefreshToken: true, storageKey: "heardle:auth" },
   });
@@ -29,8 +47,16 @@ export async function createSupabaseServices({ url, anonKey }) {
     }
   }
   if (!signedIn) {
-    const { error } = await client.auth.signInAnonymously();
-    if (error) throw new RoundError("not_authenticated", error);
+    let captchaToken;
+    try {
+      captchaToken = await getCaptchaToken(turnstileSiteKey);
+    } catch (error) {
+      throw new RoundError("not_authenticated", error);
+    }
+    const { error } = await client.auth.signInAnonymously(
+      captchaToken ? { options: { captchaToken } } : undefined
+    );
+    if (error) throw signInFailure(error);
   }
 
   return {

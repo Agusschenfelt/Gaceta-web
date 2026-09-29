@@ -2,7 +2,11 @@
   { "slug": "ramma",  "name": "Ramma",        "spotifyArtistId": "7b0pdDyPV9f9hyDXAhk4Sg" },
   { "slug": "valuto", "name": "Valuto",       "spotifyArtistId": "0AQym39jmsVTiggRZdyiSW" },
   { "slug": "ara",    "name": "ARA",          "spotifyArtistId": "5wkxQh0fD5bsqxKm6Ajv7o" },
-  { "slug": "tadu",   "name": "Tadu Vázquez", "spotifyArtistId": "71scL1K5Nu1Z7FgBkg3Gjk" },
+  { "slug": "tadu",   "name": "Tadu Vázquez", "spotifyArtistId": "71scL1K5Nu1Z7FgBkg3Gjk",
+    "aliases": [
+      { "name": "TADU",       "spotifyArtistId": "6kBt4i0RTsYjC5uILQ8Kr2" },
+      { "name": "sanantonio", "spotifyArtistId": "4MJdm7Y6VYYgTfDvywixiy" }
+    ] },
   { "slug": "fosse",  "name": "Fosse",        "spotifyArtistId": "2PCb69QCbQJvBJF9tuWcNo" },
   { "slug": "barta",  "name": "Barta",        "spotifyArtistId": "5NWl6RH247jjDkkNpvhmHF" },
   { "slug": "dazen",  "name": "Dazen",        "spotifyArtistId": "5B9qhzPoZe3ybufInUGiDG" },

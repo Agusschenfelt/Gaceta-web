@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { createLocalRounds } from "./localRounds.js";
 import { installLocalStorage } from "../test-utils/localStorage.js";
 
@@ -9,18 +9,16 @@ const tracks = [
   { id: "NOAUDIO", audioKey: null, artistSlugs: ["ara"] },
 ];
 
-let recordRound;
 beforeEach(() => {
   installLocalStorage();
-  recordRound = vi.fn(async () => {});
 });
 
-const make = () => createLocalRounds({ tracks, recordRound });
+const make = () => createLocalRounds({ tracks });
 
 describe("localRounds", () => {
   it("refuses to run without audio keys (published with a secret)", () => {
     expect(() =>
-      createLocalRounds({ tracks: [{ id: "A", audioKey: null, artistSlugs: [] }], recordRound })
+      createLocalRounds({ tracks: [{ id: "A", audioKey: null, artistSlugs: [] }] })
     ).toThrow(expect.objectContaining({ code: "local_unavailable" }));
   });
 
@@ -38,7 +36,7 @@ describe("localRounds", () => {
     expect(again.stageIndex).toBe(1);
   });
 
-  it("advances on a miss and reveals and records on a win", async () => {
+  it("advances on a miss and reveals on a win", async () => {
     const rounds = make();
     const r = await rounds.start(["ara"]);
     const missed = await rounds.guess(r.id, "A", 0);
@@ -46,7 +44,6 @@ describe("localRounds", () => {
     const won = await rounds.guess(r.id, "C", 1);
     expect(won).toMatchObject({ status: "won", score: 3, answerId: "C" });
     expect(won.answer).toEqual({ id: "C", title: "Tres", artistSlugs: ["ara"] });
-    expect(recordRound).toHaveBeenCalledWith({ trackId: "C", won: true, stageWon: 1, attempts: 2, ranked: false });
   });
 
   it("records a loss after four misses and then deals a new round", async () => {
@@ -55,7 +52,6 @@ describe("localRounds", () => {
     let last;
     for (let i = 0; i < 4; i++) last = await rounds.skip(r.id, i);
     expect(last).toMatchObject({ status: "lost", score: 0, answerId: "C" });
-    expect(recordRound).toHaveBeenCalledWith({ trackId: "C", won: false, stageWon: null, attempts: 4, ranked: false });
     expect((await rounds.start(["ara"])).id).not.toBe(r.id);
   });
 
@@ -64,7 +60,6 @@ describe("localRounds", () => {
     const r = await rounds.start(["ara"]);
     await rounds.guess(r.id, "C", 0);
     expect((await rounds.guess(r.id, "A", 1)).status).toBe("won");
-    expect(recordRound).toHaveBeenCalledTimes(1);
     await expect(rounds.skip("someone-else", 0)).rejects.toMatchObject({ code: "round_not_found" });
   });
 
@@ -87,60 +82,6 @@ describe("localRounds", () => {
     const rounds = make();
     const r = await rounds.start(["ara"]);
     await expect(rounds.skip(r.id)).rejects.toMatchObject({ code: "invalid_attempt" });
-  });
-
-  it("marks a round ranked only for every artist or three or more", async () => {
-    const one = make();
-    const r1 = await one.start(["ara"]);
-    expect(r1.ranked).toBe(false);
-    for (let i = 0; i < 4; i++) await one.skip(r1.id, i);
-    expect(recordRound).toHaveBeenLastCalledWith(expect.objectContaining({ ranked: false }));
-    expect((await one.start([])).ranked).toBe(true);
-  });
-
-  it("keeps a repeated track unranked even though the selection alone would qualify", async () => {
-    const hasPlayed = vi.fn(async () => true);
-    const rounds = createLocalRounds({ tracks, recordRound, hasPlayed });
-    const r = await rounds.start([]);
-    expect(r.ranked).toBe(false);
-    expect(hasPlayed).toHaveBeenCalledTimes(1);
-    for (let i = 0; i < 4; i++) await rounds.skip(r.id, i);
-    expect(recordRound).toHaveBeenLastCalledWith(expect.objectContaining({ ranked: false }));
-  });
-
-  it("does not ask about history when the selection alone already disqualifies the round", async () => {
-    const hasPlayed = vi.fn(async () => false);
-    const rounds = createLocalRounds({ tracks, recordRound, hasPlayed });
-    const r = await rounds.start(["ara"]);
-    expect(r.ranked).toBe(false);
-    expect(hasPlayed).not.toHaveBeenCalled();
-  });
-
-  it("ranks a qualifying selection's first play of a track", async () => {
-    const hasPlayed = vi.fn(async () => false);
-    const rounds = createLocalRounds({ tracks, recordRound, hasPlayed });
-    const r = await rounds.start([]);
-    expect(r.ranked).toBe(true);
-    expect(hasPlayed).toHaveBeenCalledTimes(1);
-  });
-
-  it("defaults to a first play when no history check is wired in", async () => {
-    const rounds = createLocalRounds({ tracks, recordRound });
-    expect((await rounds.start([])).ranked).toBe(true);
-  });
-
-  it("keeps the round open when recording it fails, so a retry records it", async () => {
-    let fail = true;
-    const flaky = vi.fn(async () => {
-      if (fail) throw new Error("storage full");
-    });
-    const rounds = createLocalRounds({ tracks, recordRound: flaky });
-    const r = await rounds.start(["ara"]);
-    await expect(rounds.guess(r.id, "C", 0)).rejects.toThrow("storage full");
-    fail = false;
-    const retried = await rounds.guess(r.id, "C", 0);
-    expect(retried.status).toBe("won");
-    expect(flaky).toHaveBeenCalledTimes(2);
   });
 
   it("hides the answer details while playing", async () => {

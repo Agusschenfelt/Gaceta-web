@@ -3,6 +3,111 @@
   "slug": "tadu",
   "tracks": [
     {
+      "id": "UY01G2400176",
+      "title": "mi moneda",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "sanantonio"
+      ],
+      "audio_file": "/audio/UY01G2400176.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b8ed55af50f250b0b94b550b",
+      "spotify_url": "https://open.spotify.com/track/5Jz1MPS36C4CPAYr1PITWf",
+      "release": "ser así",
+      "release_date": "2026-09-03",
+      "duration_ms": 201126,
+      "deezer_id": 4256992731
+    },
+    {
+      "id": "UY01G2400175",
+      "title": "tus hojas",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "sanantonio"
+      ],
+      "audio_file": "/audio/UY01G2400175.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b8ed55af50f250b0b94b550b",
+      "spotify_url": "https://open.spotify.com/track/26lv0uihwDvoyRMPiERN8b",
+      "release": "ser así",
+      "release_date": "2026-09-03",
+      "duration_ms": 196200,
+      "deezer_id": 4256992721
+    },
+    {
+      "id": "UY01G2400174",
+      "title": "hablarle al viento",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "sanantonio"
+      ],
+      "audio_file": "/audio/UY01G2400174.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b8ed55af50f250b0b94b550b",
+      "spotify_url": "https://open.spotify.com/track/06b4w5I81A7JHXjJ0d4FZo",
+      "release": "ser así",
+      "release_date": "2026-09-03",
+      "duration_ms": 190689,
+      "deezer_id": 4256992711
+    },
+    {
+      "id": "UY01G2400173",
+      "title": "sé que nos espera el sol",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "sanantonio"
+      ],
+      "audio_file": "/audio/UY01G2400173.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b8ed55af50f250b0b94b550b",
+      "spotify_url": "https://open.spotify.com/track/2eamAG8JrKJQ1I4cdeznyp",
+      "release": "ser así",
+      "release_date": "2026-09-03",
+      "duration_ms": 238974,
+      "deezer_id": 4256992701
+    },
+    {
+      "id": "UY01G2400172",
+      "title": "tierra y cielo",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "sanantonio"
+      ],
+      "audio_file": "/audio/UY01G2400172.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b8ed55af50f250b0b94b550b",
+      "spotify_url": "https://open.spotify.com/track/6R5sNi2wxX5DpP8IuaBVak",
+      "release": "ser así",
+      "release_date": "2026-09-03",
+      "duration_ms": 199000,
+      "deezer_id": 4256992691
+    },
+    {
+      "id": "UY01G2400171",
+      "title": "lo importante",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "sanantonio"
+      ],
+      "audio_file": "/audio/UY01G2400171.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b8ed55af50f250b0b94b550b",
+      "spotify_url": "https://open.spotify.com/track/1sAxsxlecOsMZAtatAubTL",
+      "release": "ser así",
+      "release_date": "2026-09-03",
+      "duration_ms": 220421,
+      "deezer_id": 4256992681
+    },
+    {
+      "id": "UY01G2400170",
+      "title": "ser así",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "sanantonio"
+      ],
+      "audio_file": "/audio/UY01G2400170.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273b8ed55af50f250b0b94b550b",
+      "spotify_url": "https://open.spotify.com/track/7N3NQzwCS9HDfMe0aqUm73",
+      "release": "ser así",
+      "release_date": "2026-09-03",
+      "duration_ms": 180591,
+      "deezer_id": 4256992671
+    },
+    {
       "id": "UYB282673660",
       "title": "escuchándote",
       "artist": "Tadu Vázquez",
@@ -34,6 +139,53 @@
       "release_date": "2026-01-15",
       "duration_ms": 108972,
       "deezer_id": "cached"
+    },
+    {
+      "id": "UY01G2400084",
+      "title": "LUCES EN LA NOCHE",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU",
+        "Ramma",
+        "Zeballos"
+      ],
+      "audio_file": "/audio/UY01G2400084.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273570e3331093e9575f3c49edd",
+      "spotify_url": "https://open.spotify.com/track/01vsmr8A8gmP9maSOTV50O",
+      "release": "LUCES EN LA NOCHE",
+      "release_date": "2025-10-17",
+      "duration_ms": 228923,
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UY01G2400016",
+      "title": "NO QUIERO PERDER LAS HORAS",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU"
+      ],
+      "audio_file": "/audio/UY01G2400016.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27323f757e76335a6c403da848a",
+      "spotify_url": "https://open.spotify.com/track/0yYRzehCbKd6lMQWDvVEEO",
+      "release": "NO QUIERO PERDER LAS HORAS",
+      "release_date": "2025-04-14",
+      "duration_ms": 153962,
+      "deezer_id": 3279151511
+    },
+    {
+      "id": "UY01G2400010",
+      "title": "PINTASTE MIS MAÑANAS",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU"
+      ],
+      "audio_file": "/audio/UY01G2400010.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273be167aa4886c2f766ad69f79",
+      "spotify_url": "https://open.spotify.com/track/6L1kKaJkBMwNvoJvb0URK8",
+      "release": "PINTASTE MIS MAÑANAS",
+      "release_date": "2025-02-17",
+      "duration_ms": 171063,
+      "deezer_id": 3214379411
     },
     {
       "id": "UY01G2400012",
@@ -70,6 +222,144 @@
       "deezer_id": "cached"
     },
     {
+      "id": "UYT142400059",
+      "title": "A LA MUSICA",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU"
+      ],
+      "audio_file": "/audio/UYT142400059.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273bf1ecddf79130f2bdfd26c91",
+      "spotify_url": "https://open.spotify.com/track/7D91AD4PClHqtBgGDKzBI4",
+      "release": "DISFRUTANDO EL NO SABER",
+      "release_date": "2024-12-16",
+      "duration_ms": 91937,
+      "deezer_id": 3100962831
+    },
+    {
+      "id": "UYT142400058",
+      "title": "QUE SERÁ DE VOS??",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU"
+      ],
+      "audio_file": "/audio/UYT142400058.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273bf1ecddf79130f2bdfd26c91",
+      "spotify_url": "https://open.spotify.com/track/3YiekeTNSp7c5KPnFdgmar",
+      "release": "DISFRUTANDO EL NO SABER",
+      "release_date": "2024-12-16",
+      "duration_ms": 149543,
+      "deezer_id": 3100962821
+    },
+    {
+      "id": "UYT142400056",
+      "title": "BUSCANDO LAS PALABRAS",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU",
+        "Knak"
+      ],
+      "audio_file": "/audio/UYT142400056.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273bf1ecddf79130f2bdfd26c91",
+      "spotify_url": "https://open.spotify.com/track/6n8ZfN4xCmxV4K34rmLUP7",
+      "release": "DISFRUTANDO EL NO SABER",
+      "release_date": "2024-12-16",
+      "duration_ms": 152961,
+      "deezer_id": 3100962801
+    },
+    {
+      "id": "UYT142400017",
+      "title": "UN MOMENTO Y NADA MÁS",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU"
+      ],
+      "audio_file": "/audio/UYT142400017.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273bf1ecddf79130f2bdfd26c91",
+      "spotify_url": "https://open.spotify.com/track/3l5zHwxj9vqCdRcLA3V9Dv",
+      "release": "DISFRUTANDO EL NO SABER",
+      "release_date": "2024-12-16",
+      "duration_ms": 118043,
+      "deezer_id": 2744757861
+    },
+    {
+      "id": "UYT142400055",
+      "title": "SUEÑOS",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU",
+        "Santi Muk"
+      ],
+      "audio_file": "/audio/UYT142400055.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273bf1ecddf79130f2bdfd26c91",
+      "spotify_url": "https://open.spotify.com/track/0GWBcZUgJbDoe4ABQHNrxE",
+      "release": "DISFRUTANDO EL NO SABER",
+      "release_date": "2024-12-16",
+      "duration_ms": 212336,
+      "deezer_id": 3100962781
+    },
+    {
+      "id": "UYT142400054",
+      "title": "TODO LO QUE TENGO",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU"
+      ],
+      "audio_file": "/audio/UYT142400054.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273bf1ecddf79130f2bdfd26c91",
+      "spotify_url": "https://open.spotify.com/track/58BXPYgYUpoFiOyAFp27OB",
+      "release": "DISFRUTANDO EL NO SABER",
+      "release_date": "2024-12-16",
+      "duration_ms": 170139,
+      "deezer_id": 3100962771
+    },
+    {
+      "id": "UYT142400053",
+      "title": "CUANTO CORAZÓN",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU",
+        "Franco Rizzaro"
+      ],
+      "audio_file": "/audio/UYT142400053.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273bf1ecddf79130f2bdfd26c91",
+      "spotify_url": "https://open.spotify.com/track/2TEKthcLaQkx483bplfJyd",
+      "release": "DISFRUTANDO EL NO SABER",
+      "release_date": "2024-12-16",
+      "duration_ms": 193850,
+      "deezer_id": 3100962751
+    },
+    {
+      "id": "UYT142400024",
+      "title": "SIGO CAMBIANDO",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU"
+      ],
+      "audio_file": "/audio/UYT142400024.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273bf1ecddf79130f2bdfd26c91",
+      "spotify_url": "https://open.spotify.com/track/6LWAb0hhDKkJPbvtwNZar0",
+      "release": "DISFRUTANDO EL NO SABER",
+      "release_date": "2024-12-16",
+      "duration_ms": 195211,
+      "deezer_id": 2803477362
+    },
+    {
+      "id": "UYT142400052",
+      "title": "ME PIERDO",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU"
+      ],
+      "audio_file": "/audio/UYT142400052.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273bf1ecddf79130f2bdfd26c91",
+      "spotify_url": "https://open.spotify.com/track/3sH0VrYLG4NzzL6sBV4qe2",
+      "release": "DISFRUTANDO EL NO SABER",
+      "release_date": "2024-12-16",
+      "duration_ms": 182528,
+      "deezer_id": 3100962711
+    },
+    {
       "id": "ARUM72400119",
       "title": "Desde Hace Tanto",
       "artist": "Tadu Vázquez",
@@ -85,7 +375,7 @@
       "release": "Desde Hace Tanto",
       "release_date": "2024-11-29",
       "duration_ms": 180640,
-      "deezer_id": 3105247661
+      "deezer_id": "cached"
     },
     {
       "id": "USANG2459988",
@@ -104,7 +394,7 @@
       "release": "DAILY (Remix)",
       "release_date": "2024-10-08",
       "duration_ms": 252250,
-      "deezer_id": 3326317411
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142400043",
@@ -169,7 +459,7 @@
       "release": "aunque lo busque en mil",
       "release_date": "2024-07-13",
       "duration_ms": 123783,
-      "deezer_id": 3374708481
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142400032",
@@ -202,7 +492,7 @@
       "release": "Kápsula Live Session",
       "release_date": "2024-06-14",
       "duration_ms": 122790,
-      "deezer_id": 3369702461
+      "deezer_id": "cached"
     },
     {
       "id": "US3DF2488692",
@@ -218,7 +508,7 @@
       "release": "Kápsula Live Session",
       "release_date": "2024-06-14",
       "duration_ms": 143119,
-      "deezer_id": 3369702451
+      "deezer_id": "cached"
     },
     {
       "id": "US3DF2488691",
@@ -234,7 +524,7 @@
       "release": "Kápsula Live Session",
       "release_date": "2024-06-14",
       "duration_ms": 112444,
-      "deezer_id": 3369702441
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142400026",
@@ -250,7 +540,7 @@
       "release": "Enfocarme en Mí",
       "release_date": "2024-06-12",
       "duration_ms": 158400,
-      "deezer_id": 2823122662
+      "deezer_id": "cached"
     },
     {
       "id": "US3DF2462264",
@@ -266,7 +556,7 @@
       "release": "Kápsula",
       "release_date": "2024-05-23",
       "duration_ms": 123000,
-      "deezer_id": 3326325881
+      "deezer_id": "cached"
     },
     {
       "id": "US3DF2462261",
@@ -282,7 +572,7 @@
       "release": "Kápsula",
       "release_date": "2024-05-23",
       "duration_ms": 123750,
-      "deezer_id": 3326325871
+      "deezer_id": "cached"
     },
     {
       "id": "US3DF2462259",
@@ -299,7 +589,7 @@
       "release": "Kápsula",
       "release_date": "2024-05-23",
       "duration_ms": 152000,
-      "deezer_id": 3326325861
+      "deezer_id": "cached"
     },
     {
       "id": "US3DF2462257",
@@ -315,7 +605,7 @@
       "release": "Kápsula",
       "release_date": "2024-05-23",
       "duration_ms": 144014,
-      "deezer_id": 3326325841
+      "deezer_id": "cached"
     },
     {
       "id": "US3DF2462256",
@@ -333,7 +623,7 @@
       "release": "Kápsula",
       "release_date": "2024-05-23",
       "duration_ms": 130000,
-      "deezer_id": 3326325831
+      "deezer_id": "cached"
     },
     {
       "id": "US3DF2462255",
@@ -349,7 +639,7 @@
       "release": "Kápsula",
       "release_date": "2024-05-23",
       "duration_ms": 112638,
-      "deezer_id": 3326325821
+      "deezer_id": "cached"
     },
     {
       "id": "US3DF2462254",
@@ -365,7 +655,7 @@
       "release": "Kápsula",
       "release_date": "2024-05-23",
       "duration_ms": 157000,
-      "deezer_id": 3326325811
+      "deezer_id": "cached"
     },
     {
       "id": "US3DF2421237",
@@ -381,7 +671,7 @@
       "release": "Kápsula",
       "release_date": "2024-05-23",
       "duration_ms": 137000,
-      "deezer_id": 3326325801
+      "deezer_id": "cached"
     },
     {
       "id": "US3DF2462252",
@@ -399,7 +689,7 @@
       "release": "Kápsula",
       "release_date": "2024-05-23",
       "duration_ms": 152530,
-      "deezer_id": 3326325781
+      "deezer_id": "cached"
     },
     {
       "id": "US3DF2444768",
@@ -415,7 +705,7 @@
       "release": "Kápsula",
       "release_date": "2024-05-23",
       "duration_ms": 144514,
-      "deezer_id": 3326325771
+      "deezer_id": "cached"
     },
     {
       "id": "US3DF2462250",
@@ -431,7 +721,7 @@
       "release": "Kápsula",
       "release_date": "2024-05-23",
       "duration_ms": 92000,
-      "deezer_id": 3326325761
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142400013",
@@ -531,7 +821,7 @@
       "release": "Bullshit 2",
       "release_date": "2024-01-19",
       "duration_ms": 322826,
-      "deezer_id": 3617414692
+      "deezer_id": "cached"
     },
     {
       "id": "ES71G2338084",
@@ -547,7 +837,7 @@
       "release": "Pura Química",
       "release_date": "2023-12-14",
       "duration_ms": 137366,
-      "deezer_id": 3263146021
+      "deezer_id": "cached"
     },
     {
       "id": "ESA092319637",
@@ -563,7 +853,7 @@
       "release": "TODO ANTES de iRME",
       "release_date": "2023-12-08",
       "duration_ms": 166158,
-      "deezer_id": 2396981265
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142300043",
@@ -597,7 +887,7 @@
       "release": "Ubi al privado",
       "release_date": "2023-11-16",
       "duration_ms": 169319,
-      "deezer_id": 3369601331
+      "deezer_id": "cached"
     },
     {
       "id": "QMANG2211581",
@@ -615,7 +905,7 @@
       "release": "Ubi al privado",
       "release_date": "2023-11-16",
       "duration_ms": 162500,
-      "deezer_id": 3369601321
+      "deezer_id": "cached"
     },
     {
       "id": "QMANG2211580",
@@ -633,7 +923,7 @@
       "release": "Ubi al privado",
       "release_date": "2023-11-16",
       "duration_ms": 160237,
-      "deezer_id": 3369601311
+      "deezer_id": "cached"
     },
     {
       "id": "QMANG2212112",
@@ -650,7 +940,82 @@
       "release": "un abrazo y se me pasa",
       "release_date": "2023-10-17",
       "duration_ms": 154475,
-      "deezer_id": 3369601131
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142300038",
+      "title": "SIN PENSAR",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU"
+      ],
+      "audio_file": "/audio/UYT142300038.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27347905466f6ff2c8f697071a6",
+      "spotify_url": "https://open.spotify.com/track/1HrzRngazK4sGgarSP4kch",
+      "release": "SOLO A LA SUERTE",
+      "release_date": "2023-10-12",
+      "duration_ms": 195485,
+      "deezer_id": 2458956255
+    },
+    {
+      "id": "UYT142300037",
+      "title": "INVISIBLE",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU"
+      ],
+      "audio_file": "/audio/UYT142300037.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27347905466f6ff2c8f697071a6",
+      "spotify_url": "https://open.spotify.com/track/33LGynMp6gAYqvT43Bbc9n",
+      "release": "SOLO A LA SUERTE",
+      "release_date": "2023-10-12",
+      "duration_ms": 166158,
+      "deezer_id": 2458956245
+    },
+    {
+      "id": "UYT142300036",
+      "title": "EN PARTES",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU"
+      ],
+      "audio_file": "/audio/UYT142300036.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27347905466f6ff2c8f697071a6",
+      "spotify_url": "https://open.spotify.com/track/4inYGml5Fpzpk3CBWaw7DH",
+      "release": "SOLO A LA SUERTE",
+      "release_date": "2023-10-12",
+      "duration_ms": 148971,
+      "deezer_id": 2458956235
+    },
+    {
+      "id": "UYT142300033",
+      "title": "SOLO A LA SUERTE",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU"
+      ],
+      "audio_file": "/audio/UYT142300033.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27347905466f6ff2c8f697071a6",
+      "spotify_url": "https://open.spotify.com/track/5Q8LxxBmo7ZCAjbyTruCdI",
+      "release": "SOLO A LA SUERTE",
+      "release_date": "2023-10-12",
+      "duration_ms": 155121,
+      "deezer_id": 2458956225
+    },
+    {
+      "id": "UYT142300029",
+      "title": "FUE UN ERROR",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "TADU"
+      ],
+      "audio_file": "/audio/UYT142300029.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b27347905466f6ff2c8f697071a6",
+      "spotify_url": "https://open.spotify.com/track/5jblm8p6vIQuOTgci0Sg0P",
+      "release": "SOLO A LA SUERTE",
+      "release_date": "2023-10-12",
+      "duration_ms": 158706,
+      "deezer_id": 2439132785
     },
     {
       "id": "QMANG2202051",
@@ -670,7 +1035,7 @@
       "release": "Rosalía",
       "release_date": "2023-10-05",
       "duration_ms": 170437,
-      "deezer_id": 3369601151
+      "deezer_id": "cached"
     },
     {
       "id": "UYAS12300016",
@@ -687,7 +1052,7 @@
       "release": "Gloriax",
       "release_date": "2023-09-08",
       "duration_ms": 206000,
-      "deezer_id": 3615616102
+      "deezer_id": "cached"
     },
     {
       "id": "QZNJZ2307368",
@@ -704,7 +1069,7 @@
       "release": "Costeros Sessions",
       "release_date": "2023-09-02",
       "duration_ms": 194747,
-      "deezer_id": 2404366465
+      "deezer_id": "cached"
     },
     {
       "id": "QM3DF2283204",
@@ -722,7 +1087,7 @@
       "release": "Jumping",
       "release_date": "2023-08-29",
       "duration_ms": 132000,
-      "deezer_id": 3369601361
+      "deezer_id": "cached"
     },
     {
       "id": "UYAS12300015",
@@ -740,7 +1105,7 @@
       "release": "Ragazza",
       "release_date": "2023-08-11",
       "duration_ms": 177000,
-      "deezer_id": 3617414892
+      "deezer_id": "cached"
     },
     {
       "id": "SE6XW2365470",
@@ -757,7 +1122,7 @@
       "release": "Mi Raza",
       "release_date": "2023-08-04",
       "duration_ms": 195291,
-      "deezer_id": 2378255605
+      "deezer_id": "cached"
     },
     {
       "id": "QZNJW2392964",
@@ -773,7 +1138,7 @@
       "release": "SOL SALE",
       "release_date": "2023-07-01",
       "duration_ms": 166117,
-      "deezer_id": 2331400035
+      "deezer_id": "cached"
     },
     {
       "id": "QZNJW2392963",
@@ -789,7 +1154,7 @@
       "release": "SOL SALE",
       "release_date": "2023-07-01",
       "duration_ms": 187105,
-      "deezer_id": 2331400025
+      "deezer_id": "cached"
     },
     {
       "id": "SE6TI2333816",
@@ -805,7 +1170,7 @@
       "release": "MI MUNDO",
       "release_date": "2023-06-23",
       "duration_ms": 174306,
-      "deezer_id": 2329181535
+      "deezer_id": "cached"
     },
     {
       "id": "USANG2298558",
@@ -821,7 +1186,7 @@
       "release": "ORGÁNIKO",
       "release_date": "2023-05-26",
       "duration_ms": 146250,
-      "deezer_id": 3336905961
+      "deezer_id": "cached"
     },
     {
       "id": "USANG2298565",
@@ -838,7 +1203,7 @@
       "release": "ORGÁNIKO",
       "release_date": "2023-05-26",
       "duration_ms": 169750,
-      "deezer_id": 3336905951
+      "deezer_id": "cached"
     },
     {
       "id": "USANG2298564",
@@ -855,7 +1220,7 @@
       "release": "ORGÁNIKO",
       "release_date": "2023-05-26",
       "duration_ms": 161750,
-      "deezer_id": 3336905941
+      "deezer_id": "cached"
     },
     {
       "id": "USANG2298563",
@@ -873,7 +1238,7 @@
       "release": "ORGÁNIKO",
       "release_date": "2023-05-26",
       "duration_ms": 142750,
-      "deezer_id": 3336905931
+      "deezer_id": "cached"
     },
     {
       "id": "USANG2298562",
@@ -890,7 +1255,7 @@
       "release": "ORGÁNIKO",
       "release_date": "2023-05-26",
       "duration_ms": 153750,
-      "deezer_id": 3336905921
+      "deezer_id": "cached"
     },
     {
       "id": "USANG2298561",
@@ -907,7 +1272,7 @@
       "release": "ORGÁNIKO",
       "release_date": "2023-05-26",
       "duration_ms": 140250,
-      "deezer_id": 3336905911
+      "deezer_id": "cached"
     },
     {
       "id": "USANG2298560",
@@ -925,7 +1290,7 @@
       "release": "ORGÁNIKO",
       "release_date": "2023-05-26",
       "duration_ms": 158750,
-      "deezer_id": 3336905901
+      "deezer_id": "cached"
     },
     {
       "id": "USANG2298559",
@@ -943,7 +1308,7 @@
       "release": "ORGÁNIKO",
       "release_date": "2023-05-26",
       "duration_ms": 150750,
-      "deezer_id": 3336905891
+      "deezer_id": "cached"
     },
     {
       "id": "QZNJV2314192",
@@ -960,7 +1325,7 @@
       "release": "Hice Lo Que Quise",
       "release_date": "2023-05-25",
       "duration_ms": 147692,
-      "deezer_id": 2274483587
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142300016",
@@ -995,7 +1360,7 @@
       "release": "Poka Luz (Remix)",
       "release_date": "2023-05-11",
       "duration_ms": 225720,
-      "deezer_id": 2280790727
+      "deezer_id": "cached"
     },
     {
       "id": "SE6I32326452",
@@ -1011,7 +1376,7 @@
       "release": "MALA",
       "release_date": "2023-04-21",
       "duration_ms": 172571,
-      "deezer_id": 2238544027
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142300012",
@@ -1045,7 +1410,7 @@
       "release": "Mala Mía",
       "release_date": "2023-03-03",
       "duration_ms": 177418,
-      "deezer_id": 3590398551
+      "deezer_id": "cached"
     },
     {
       "id": "QZGLM2313924",
@@ -1062,7 +1427,7 @@
       "release": "Poka Luz",
       "release_date": "2023-03-02",
       "duration_ms": 106800,
-      "deezer_id": 2168924927
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142300004",
@@ -1093,7 +1458,7 @@
       "release": "VIBRAS",
       "release_date": "2023-02-04",
       "duration_ms": 176987,
-      "deezer_id": 2110125317
+      "deezer_id": "cached"
     },
     {
       "id": "QM3DF2206051",
@@ -1109,7 +1474,7 @@
       "release": "un ratito +",
       "release_date": "2023-01-20",
       "duration_ms": 126546,
-      "deezer_id": 3369601111
+      "deezer_id": "cached"
     },
     {
       "id": "QZW9N2252987",
@@ -1125,7 +1490,7 @@
       "release": "Insomnio",
       "release_date": "2022-12-29",
       "duration_ms": 140307,
-      "deezer_id": 2085621307
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142200047",
@@ -1141,7 +1506,7 @@
       "release": "Formas, Vol. I",
       "release_date": "2022-12-28",
       "duration_ms": 142565,
-      "deezer_id": 2055921727
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142200046",
@@ -1157,7 +1522,7 @@
       "release": "Formas, Vol. I",
       "release_date": "2022-12-28",
       "duration_ms": 152941,
-      "deezer_id": 2055921717
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142200045",
@@ -1173,7 +1538,7 @@
       "release": "Formas, Vol. I",
       "release_date": "2022-12-28",
       "duration_ms": 173644,
-      "deezer_id": 2055921707
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142200044",
@@ -1205,7 +1570,7 @@
       "release": "Formas, Vol. I",
       "release_date": "2022-12-28",
       "duration_ms": 127844,
-      "deezer_id": 2055921687
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142200013",
@@ -1221,7 +1586,7 @@
       "release": "Formas, Vol. I",
       "release_date": "2022-12-28",
       "duration_ms": 160173,
-      "deezer_id": 1753743627
+      "deezer_id": "cached"
     },
     {
       "id": "QZW9K2287240",
@@ -1237,7 +1602,7 @@
       "release": "Impala",
       "release_date": "2022-11-04",
       "duration_ms": 149571,
-      "deezer_id": 1974285137
+      "deezer_id": "cached"
     },
     {
       "id": "QZTAT2226090",
@@ -1254,7 +1619,7 @@
       "release": "Wacha",
       "release_date": "2022-10-22",
       "duration_ms": 143586,
-      "deezer_id": 2202092127
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142200018",
@@ -1270,7 +1635,7 @@
       "release": "Cómo Te Va?",
       "release_date": "2022-08-26",
       "duration_ms": 196923,
-      "deezer_id": 1848209727
+      "deezer_id": "cached"
     },
     {
       "id": "AR8TN2200200",
@@ -1286,7 +1651,7 @@
       "release": "Contemporánea",
       "release_date": "2022-07-22",
       "duration_ms": 168000,
-      "deezer_id": 3234113551
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142200016",
@@ -1335,7 +1700,7 @@
       "release": "Otro Plan",
       "release_date": "2022-06-16",
       "duration_ms": 138000,
-      "deezer_id": 1790725017
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142200007",
@@ -1384,22 +1749,6 @@
       "release": "Condenado",
       "release_date": "2022-04-29",
       "duration_ms": 136754,
-      "deezer_id": 1738769967
-    },
-    {
-      "id": "UYT142200001",
-      "title": "Foto de Perfil",
-      "artist": "Tadu Vázquez",
-      "artists": [
-        "Ramma",
-        "Tadu Vázquez"
-      ],
-      "audio_file": "/audio/UYT142200001.mp3",
-      "cover_url": "https://i.scdn.co/image/ab67616d0000b273c49cd486f0d4b8ab0504d766",
-      "spotify_url": "https://open.spotify.com/track/38rcIxPvpMbQenGbyYU6cN",
-      "release": "Foto de Perfil",
-      "release_date": "2022-04-22",
-      "duration_ms": 111663,
       "deezer_id": "cached"
     },
     {
@@ -1417,7 +1766,23 @@
       "release": "Como Si Na",
       "release_date": "2022-04-22",
       "duration_ms": 167346,
-      "deezer_id": 1719746667
+      "deezer_id": "cached"
+    },
+    {
+      "id": "UYT142200001",
+      "title": "Foto de Perfil",
+      "artist": "Tadu Vázquez",
+      "artists": [
+        "Ramma",
+        "Tadu Vázquez"
+      ],
+      "audio_file": "/audio/UYT142200001.mp3",
+      "cover_url": "https://i.scdn.co/image/ab67616d0000b273c49cd486f0d4b8ab0504d766",
+      "spotify_url": "https://open.spotify.com/track/38rcIxPvpMbQenGbyYU6cN",
+      "release": "Foto de Perfil",
+      "release_date": "2022-04-22",
+      "duration_ms": 111663,
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142100019",
@@ -1450,7 +1815,7 @@
       "release": "Tuvimos Suerte",
       "release_date": "2022-03-31",
       "duration_ms": 150893,
-      "deezer_id": 3833367991
+      "deezer_id": "cached"
     },
     {
       "id": "USCGH2238668",
@@ -1466,7 +1831,7 @@
       "release": "Bangers",
       "release_date": "2022-01-20",
       "duration_ms": 166339,
-      "deezer_id": 3833368391
+      "deezer_id": "cached"
     },
     {
       "id": "QZTPX2138253",
@@ -1484,7 +1849,7 @@
       "release": "Jóvenes Campeones",
       "release_date": "2021-12-24",
       "duration_ms": 213434,
-      "deezer_id": 1578819582
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142100017",
@@ -1516,7 +1881,7 @@
       "release": "Fo' Real",
       "release_date": "2021-12-15",
       "duration_ms": 148649,
-      "deezer_id": 1717399407
+      "deezer_id": "cached"
     },
     {
       "id": "UYM122105087",
@@ -1533,7 +1898,7 @@
       "release": "La Foto",
       "release_date": "2021-12-10",
       "duration_ms": 223080,
-      "deezer_id": 1578926362
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142100011",
@@ -1549,7 +1914,7 @@
       "release": "Suave Danza",
       "release_date": "2021-12-06",
       "duration_ms": 166081,
-      "deezer_id": 1717399957
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142100009",
@@ -1565,7 +1930,7 @@
       "release": "Alma Bohemia",
       "release_date": "2021-11-22",
       "duration_ms": 191500,
-      "deezer_id": 1717398837
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142100008",
@@ -1581,7 +1946,7 @@
       "release": "Simuladores",
       "release_date": "2021-11-17",
       "duration_ms": 190394,
-      "deezer_id": 1694686567
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142100006",
@@ -1597,7 +1962,7 @@
       "release": "Plan B",
       "release_date": "2021-11-08",
       "duration_ms": 187874,
-      "deezer_id": 1717399097
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142100005",
@@ -1613,7 +1978,7 @@
       "release": "Paradise",
       "release_date": "2021-11-03",
       "duration_ms": 192091,
-      "deezer_id": 1717399987
+      "deezer_id": "cached"
     },
     {
       "id": "UYM122104512",
@@ -1629,7 +1994,7 @@
       "release": "La Luna",
       "release_date": "2021-10-22",
       "duration_ms": 173706,
-      "deezer_id": 1529234322
+      "deezer_id": "cached"
     },
     {
       "id": "QZMER2148690",
@@ -1645,7 +2010,7 @@
       "release": "Amor & Odio",
       "release_date": "2021-10-07",
       "duration_ms": 201235,
-      "deezer_id": 1932851267
+      "deezer_id": "cached"
     },
     {
       "id": "QZMER2148689",
@@ -1662,7 +2027,7 @@
       "release": "Amor & Odio",
       "release_date": "2021-10-07",
       "duration_ms": 243956,
-      "deezer_id": 1932851257
+      "deezer_id": "cached"
     },
     {
       "id": "QZMER2148688",
@@ -1678,7 +2043,7 @@
       "release": "Amor & Odio",
       "release_date": "2021-10-07",
       "duration_ms": 258730,
-      "deezer_id": 1932851247
+      "deezer_id": "cached"
     },
     {
       "id": "UYT142100003",
@@ -1727,7 +2092,7 @@
       "release": "Only Love",
       "release_date": "2021-06-13",
       "duration_ms": 192408,
-      "deezer_id": 1946288037
+      "deezer_id": "cached"
     }
   ]
 }

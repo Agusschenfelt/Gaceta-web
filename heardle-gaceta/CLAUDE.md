@@ -4,7 +4,7 @@ Guía para trabajar en este subproyecto. Leela entera antes de tocar código: es
 
 ## Qué es
 
-Juego tipo Heardle/Songly con el catálogo del sello GACETA. Una sola pantalla: escuchás un fragmento corto, adivinás el tema con un buscador, cada fallo o skip alarga el fragmento. Al terminar se revela el tema, se comparte el resultado y hay un ranking simple que sirve para captar mails. Brief original en `brief-heardle-gaceta.md`.
+Juego tipo Heardle/Songly con el catálogo del sello GACETA. Una sola pantalla: escuchás un fragmento corto, adivinás el tema con un buscador, cada fallo o skip alarga el fragmento. Al terminar se revela el tema, se comparte el resultado y, a partir de la segunda ronda jugada, la reveal ofrece dejar el mail para novedades. Brief original en `brief-heardle-gaceta.md`.
 
 Vive dentro del repo de la web de GACETA (`Gaceta-web/heardle-gaceta/`) pero es un proyecto Vite independiente con su propio `package.json`. No comparte código con la web, solo la identidad visual.
 
@@ -13,7 +13,7 @@ Vive dentro del repo de la web de GACETA (`Gaceta-web/heardle-gaceta/`) pero es 
 ```bash
 npm install --legacy-peer-deps   # siempre con --legacy-peer-deps
 npm run dev                      # Vite en http://localhost:5173
-npm run test                     # vitest, entorno node: src/**/*.test.js y scripts/**/*.test.mjs
+npm run test                     # vitest, entorno node: src/**/*.test.js, scripts/**/*.test.mjs y supabase/functions/**/*.test.js
 npm run build                    # build a dist/
 npm run catalog                  # arma el catálogo (ver sección Catálogo)
 npm run catalog -- --only ramma,valuto   # solo esos artistas
@@ -35,7 +35,8 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Variable | Quién la usa |
 |---|---|
 | `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` | Solo `npm run catalog`. Nunca llegan al browser. |
-| `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` | Rondas, ranking y mails. Vacías = modo local (solo desarrollo). |
+| `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` | Rondas y mails. Vacías = modo local (solo desarrollo). |
+| `VITE_TURNSTILE_SITE_KEY` | Cloudflare Turnstile (pública). Protege el login anónimo de bots. Vacía = sin captcha, anda igual en dev/local. Ver "Captcha del login anónimo". |
 | `AUDIO_KEY_SECRET` | `npm run assets`: nombres opacos de los mp3. **Obligatoria en producción y con Supabase**; sin ella el build falla. Nunca llega al browser. Cambiarla renombra todos los audios (ver "Rotar el secreto"). |
 | `SUPABASE_SERVICE_ROLE_KEY` | Solo `npm run upload-audio`. Jamás con prefijo `VITE_`. |
 | `SUPABASE_DB_PASSWORD` | Correr SQL contra el proyecto con `psql` (ver sección Supabase). |
@@ -61,11 +62,12 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Texto y emojis del share | `src/game/share.js` |
 | Cómo se elige el tema (Supabase) | `start_round` en `supabase/schema.sql` (evita los últimos 20 del jugador) |
 | Cómo se elige el tema (modo local) | `src/catalog/pickTrack.js` (`RECENT_LIMIT`, clave `heardle:recent`) vía `src/rounds/localRounds.js` |
-| Reglas del servidor: rondas, ranking, alias, mails, límites | `supabase/schema.sql` + `supabase/tests/secure_rounds.test.sql` |
+| Reglas del servidor: rondas, mails, límites (el alias, `ranked` y las palabras bloqueadas quedan como datos retirados, ver "El ranking se sacó del cliente y del servidor") | `supabase/schema.sql` + `supabase/tests/secure_rounds.test.sql` |
 | Qué servicio se usa (Supabase o local), login anónimo | `src/services/gameServices.js`, `supabaseServices.js` |
+| Captcha del login anónimo (Turnstile) | `src/services/captcha.js` (`getCaptchaToken`) + el `!signedIn` de `supabaseServices.js` + `frame-src`/`script-src` en `vercel.json` |
 | Rondas: puerto y las dos implementaciones | `src/rounds/localRounds.js`, `supabaseRounds.js`; textos de error en `roundErrors.js` |
 | Qué ve el browser del catálogo y los audios | `scripts/publish-assets.mjs` + `scripts/lib/publish.mjs` |
-| Subida de audios y envolventes a Storage | `scripts/upload-audio.mjs`; el bucket lo crea `supabase/schema.sql` |
+| Subida de audios y envolventes a Storage | `scripts/upload-audio.mjs` (decisión de cuándo subir `peaks.json` en `scripts/lib/uploadAudio.mjs`, ver "Rotar el secreto"); el bucket lo crea `supabase/schema.sql` |
 | De dónde carga el browser audios y envolventes | `src/services/assetUrls.js` |
 | Headers de seguridad (CSP y demás) | `vercel.json` |
 | Ranking del buscador, cuántos resultados, normalización de acentos | `src/catalog/search.js` |
@@ -77,19 +79,23 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Anillo de onda (compartido por juego y reveal): geometría, barrido al desbloquear, respiración constante | `src/components/molecules/WaveRing.jsx` (`TICK_BASE`, `TICK_REACH`, `SWEEP_STEP_MS`, `BREATH_MS`, `BREATH_WAVES`) + `tick-breathe` en `index.css` |
 | Animaciones (entrada de palabras, contador que rueda, disco, stagger) | `src/index.css` (`word-rise`, `roll-in`, `rise`, `disc-in`, `disc-spin`, `--ease-out-expo`) |
 | Cómo se calculan los ticks del anillo y cuántos están desbloqueados | `src/audio/waveform.js` (`ringTicks`, `unlockedTicks`, `RING_TICKS`, `CLIP_FILE_SECONDS`) + `waveform.test.js` |
-| Sacudón al errar, grano animado del fondo | `GameBoard.jsx` (`MISS_SHAKE`) · `src/index.css` (`grain`, `body::before`) |
+| Sacudón al errar, grano animado del fondo | `GameBoard.jsx` (`MISS_SHAKE`) · `src/index.css` (`grain`, `body::before`; se apaga con `data-tinted` en la reveal) |
 | Escalera de intentos en la columna derecha (layout ancho) | `src/components/molecules/GuessHistory.jsx` (`variant="ladder"`) |
 | Envolventes de onda por tema | `scripts/build-peaks.mjs` → `data/peaks.json` (publicado por clave de audio) |
 | Autocomplete (teclado, ARIA, dropdown) | `src/components/molecules/GuessSearch.jsx` |
+| Atajos de teclado (Tab abre el buscador, Espacio reproduce) | `src/shared/shortcuts.js` (`shortcutFor`) + el listener en `GameBoard.jsx` |
 | Barra de segmentos arriba | `src/components/molecules/StageProgress.jsx` + `atoms/Segment.jsx` |
 | Historial de intentos (cruz roja, "Salteado") | `src/components/molecules/GuessHistory.jsx` |
 | Chips de artistas, línea de ajustes colapsable | `src/components/molecules/GameSettings.jsx` |
 | Botones grandes del reveal (relleno que barre, ícono que se mueve) | `src/components/atoms/ActionButton.jsx` |
 | Reveal final (disco girando, anillo, puntaje, share, jugar otra vez) | `src/components/organisms/ResultReveal.jsx`; el autoplay del tema está en `GameContainer.jsx` |
-| Ranking, formulario de alias, cuántas filas entran (`TOP_ROWS`) | `src/components/organisms/Leaderboard.jsx` |
-| Captura de mail | `src/components/organisms/EmailCapture.jsx` |
-| Validación de alias, id anónimo | `src/player/playerIdentity.js` (`ALIAS_MIN`, `ALIAS_MAX`) |
-| Ranking (Supabase o local) | `src/leaderboard/supabaseAdapter.js`, `localAdapter.js`; la interfaz común está en `src/services/gameServices.js` |
+| Color del fondo del reveal según la carátula (qué tono elige, cuánto se oscurece) | `src/theme/coverTint.js` (`MAX_LUMINANCE`, `MIN_SATURATION`, `MIN_SHARE`) + `useCoverTint.js`; transición en `index.css` (`@property --color-bg`) |
+| Copy y validación del formulario de mail | `src/components/organisms/EmailCapture.jsx` |
+| Mail de bienvenida (texto, remitente, reply-to) | `supabase/functions/welcome-email/message.js` + `message.test.js`; envío en `index.ts`; trigger `private.request_welcome_email` en `supabase/schema.sql` |
+| Cuántas rondas hacen falta para que la reveal ofrezca el mail | `src/player/emailPrompt.js` (`EMAIL_AFTER_ROUNDS`, `shouldAskEmail`) |
+| Conteo de rondas terminadas y de cuándo se lo cuenta una sola vez | `src/containers/GameContainer.jsx` (`heardle:roundsFinished`, `heardle:lastFinishedRound`) |
+| Id anónimo del jugador (modo local) | `src/player/playerIdentity.js` |
+| Suscripción de mail (Supabase o local) | `src/leaderboard/supabaseAdapter.js`, `localAdapter.js`; la interfaz común está en `src/services/gameServices.js` |
 | Esquema de base de datos | `supabase/schema.sql` |
 | Colores, fuentes, radio, noise | `src/theme/tokens.css` |
 | Estilos base, focus ring, reduced motion, clase `.label` | `src/index.css` |
@@ -97,13 +103,11 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Marco de una pantalla, header, wordmark, safe areas | `src/App.jsx` |
 | Isotipo dentro del círculo (tamaño, máscara) | `src/components/molecules/PlayCircle.jsx` (`ISOTYPE_MASK`) |
 | Favicon, tarjeta de compartir, meta tags | `index.html` + `public/og.png`, `public/favicon.png` |
-| Íconos (check, cruz, cerrar, chevron, trofeo) | `src/components/atoms/Icon.jsx` |
-| Qué vista se muestra (juego / resultado / ranking) | `src/containers/GameContainer.jsx` (estado `showRanking`) |
+| Íconos (check, cruz, cerrar, chevron) | `src/components/atoms/Icon.jsx` |
+| Qué vista se muestra (juego / resultado) | `src/containers/GameContainer.jsx` |
 | Lista de artistas y sus IDs de Spotify | `data/artists.json` |
 | Cómo se arma el catálogo | `scripts/build-catalog.mjs` |
 | Reintentos ante cortes de conexión (cuántos, backoff, qué se reintenta) y timeout por pedido | `src/shared/retry.js` (`withRetry`, `shouldRetry`, `withTimeout`) + `callJudge` y `REQUEST_TIMEOUT_MS` en `GameContainer.jsx` |
-| Qué rondas suman al ranking (todos o 3+ artistas, primera vez por tema) | `src/leaderboard/ranking.js` (`MIN_ARTISTS_RANKED`, `isRankedSelection`, `isRankedRound`) + `start_round` en `supabase/schema.sql` |
-| Explicación del ranking en la UI ("Cómo funciona") | `src/components/organisms/Leaderboard.jsx` (`RULES`) |
 | Sesión anónima vencida o usuario borrado | `src/services/supabaseServices.js` + `src/services/session.js` |
 | Stub de localStorage para los tests | `src/test-utils/localStorage.js` |
 
@@ -129,14 +133,16 @@ sabe qué tema está sonando hasta que termina la ronda.
    `attempt` es cuántos intentos vio el cliente: si el servidor ya lo registró (se perdió la
    respuesta), el reintento no cuenta doble. Los cortes de conexión se reintentan solos, y un
    pedido que no contesta en 10 s cuenta como corte (`callJudge`: timeout + reintento, también
-   para arrancar la ronda y el ranking). El login inicial se reintenta pero **sin timeout**: un login
+   para arrancar la ronda). El login inicial se reintenta pero **sin timeout**: un login
    lento que sigue corriendo mientras otro reintenta crearía dos jugadores anónimos peleando por la
    misma sesión guardada. Si igual falla la carga, la pantalla de error tiene un botón "Reintentar". Si el mp3
    no carga, se avisa y tocar el círculo lo reintenta. Una acción por vez (`busy`); la
    ronda solo cambia con la respuesta del árbitro. Un error se muestra arriba del buscador.
-6. Al terminar, la ronda ya quedó registrada por quien la arbitró; el contenedor solo refresca el
-   ranking. `ResultReveal` **reemplaza** al `GameBoard` y busca el tema en el catálogo por
-   `answerId`. Desde ahí se llega al `Leaderboard`, que es otra vista.
+6. Al terminar, la ronda ya quedó registrada por quien la arbitró. `ResultReveal` **reemplaza** al
+   `GameBoard` y busca el tema en el catálogo por `answerId`. El contenedor cuenta la ronda contra
+   `heardle:roundsFinished` (una sola vez por ronda, ver "Captura de mail" abajo); a partir de la
+   segunda ronda contada, y mientras `heardle:emailPrompt` siga en `pending`, la reveal ofrece dejar
+   el mail (`src/player/emailPrompt.js`).
 
 Score: si ganás, `stages.length - índice del stage ganador` (acertar de una = 4 puntos, en el
 último intento = 1). Perder = 0. La definición única es `scoreFor(won, stageWon)` en el motor.
@@ -147,35 +153,19 @@ una **columna generada** y hay checks que rechazan una ronda imposible; mandar `
 insert da error. El adapter local lo deriva igual con `scoreFor`. Si cambiás `STAGES` o la
 fórmula, cambiala también en `supabase/schema.sql` (el 4 está escrito ahí).
 
-**Solo suman al ranking las rondas con todos los artistas o con 3 o más** (desde 2026-09-23,
-`odd/tasks/third-review-fixes.md`). Con un solo artista (Dazen tiene 9 temas) adivinar es mucho
-más fácil e inflaba el promedio. Las otras rondas se juegan y se puntúan igual, pero no entran al
-promedio ni a "te faltan N partidas"; el panel de artistas y el reveal lo avisan. Tres porque los
-principales del sello son tres (Ramma, ARA, Valuto) y la gente escucha a los tres. Lo decide el
-servidor (`rounds.ranked` en `start_round`; solo cuentan slugs que existen); el modo local lo imita.
-
-**El ranking es por promedio, con mínimo de 5 partidas** (`rankPlayers`, `MIN_GAMES` en
-`src/leaderboard/ranking.js`; la función SQL `get_leaderboard` repite la misma regla con `having`).
-Por total ganaba el que más jugaba, no el que mejor adivinaba. Empate de promedio: primero el que
-tiene más partidas. Solo aparecen jugadores con alias. Debajo del mínimo, la vista del ranking
-dice cuántas partidas faltan (`getPlayerStats`).
-
-**Cada tema suma al ranking solo la primera vez que lo jugás** (desde 2026-09-23,
-`odd/tasks/ranking-first-play.md`). Perder revela el tema: la próxima vez que te toca lo acertás
-de una, y eso inflaba el promedio sin haber adivinado nada — era el ítem abierto de más abajo.
-`start_round` en `supabase/schema.sql` exige, además de la regla de selección, que el jugador no
-tenga ya una ronda (cualquier estado) con ese `track_id`; hay un backfill idempotente
-(`private.backfill_ranked_first_play`) para las filas que quedaron marcadas antes de esta regla.
-El modo local lo imita: `hasPlayed` en `localAdapter.js` mira `heardle:local:games`, y
-`isRankedRound` en `ranking.js` combina las dos condiciones. El reveal recién dice que un tema no
-suma por ser repetido **al terminar la ronda**, nunca antes: avisarlo mientras jugás delataría que
-ya la escuchaste. El ranking tiene un panel "Cómo funciona" (`Leaderboard.jsx`) que explica las
-reglas sin scrollear, con un toggle que reemplaza la tabla.
-
-Lo que sigue abierto: el login anónimo no tiene CAPTCHA todavía (ver "Puesta en marcha" en
-Supabase), así que alguien podría crear muchas cuentas para seguir sumando primeras veces. La
-regla de arriba cierra el abuso dentro de una misma cuenta; entre cuentas, el freno pendiente es
-ese CAPTCHA.
+**El ranking se sacó del cliente y del servidor** (2026-09-28/29, `odd/tasks/remove-ranking.md`,
+T1–T4). El mail solo se pedía adentro del ranking, detrás de un alias que casi nadie completaba, y
+las reglas para que una ronda sumara (mínimo de partidas, 3+ artistas, primera vez por tema) eran,
+en palabras del usuario, "poco claras". Se sacó `Leaderboard.jsx`, `src/leaderboard/ranking.js`, el
+alias (`playerIdentity.js`) y los reads `getTop`/`getPlayerStats`/`setAlias` de los puertos; el mail
+pasó a pedirse directamente en la reveal (ver el punto 6 arriba y "Captura de mail" en la tabla de
+arriba). En `supabase/schema.sql`, `get_leaderboard`, `my_stats`, `set_alias` y el backfill de
+primera-jugada (`private.backfill_ranked_first_play`) están **borrados** (`drop function if
+exists ...`, así que correr el schema de nuevo también los saca de un proyecto viejo), y
+`start_round` ya no calcula `ranked`. `players.alias` (+ su constraint e índice), `rounds.ranked` y
+`public.blocked_words` quedan en la tabla como datos de ranking retirados a propósito: borrar una
+columna o una tabla es irreversible y se decide después. Aplicado en producción el 2026-09-29,
+después de deployar el cliente sin ranking (smoke en verde).
 
 **No hay niveles de dificultad, y es a propósito.** Había tres (`DIFFICULTIES`) y se sacaron el
 2026-09-18. Una sola escalera `STAGES = [0.5, 1, 3, 8]` para todos, porque:
@@ -207,7 +197,12 @@ Vercel no hay fuentes: solo se publica el catálogo.
 **Rotar el secreto** (invalida una tabla clave → respuesta armada entre jugadores; una tabla por
 hash de los bytes sobrevive, es el límite aceptado): nuevo `AUDIO_KEY_SECRET` → `npm run assets` →
 `npm run upload-audio` → cargar `tracks.sql` → `npm run upload-audio -- --prune`. Las rondas
-abiertas siguen andando: la vista toma la clave nueva de `tracks`.
+abiertas siguen andando: la vista toma la clave nueva de `tracks`. `peaks.json` tiene un solo
+nombre fijo en Storage y está reindexado por clave de audio; `upload-audio` no lo vuelve a subir
+mientras queden claves viejas publicadas sin podar (la primera corrida de una rotación), para no
+pisarlo con datos de las claves nuevas mientras las rondas abiertas todavía resuelven las viejas.
+Se sube recién en la corrida con `--prune`, una vez que `tracks.sql` ya cambió las claves en la
+base. Mientras tanto el anillo de esas rondas queda plano (`loadPeaks` nunca rechaza), no roto.
 
 **Track en `data/catalog/<slug>.json`** (lo genera el script, no editar a mano salvo para corregir un dato puntual). La versión publicada es igual pero **sin `audio_file` ni `deezer_id`**, y con `audio_key` solo en modo local:
 
@@ -231,9 +226,9 @@ abiertas siguen andando: la vista toma la clave nueva de `tracks`.
 
 **Track en memoria** (lo que ven los componentes, sale de `loadCatalog`): `{ id, title, artists, artistSlugs, audioFile, coverUrl, spotifyUrl, release, releaseDate }`. Ojo con el camelCase: el JSON usa snake_case, la app camelCase, la conversión está en `loadCatalog.js`.
 
-**Puertos** (`src/services/gameServices.js`): `rounds` = `start(artistSlugs)`, `guess(roundId, trackId, attempt)`, `skip(roundId, attempt)`, todos devuelven la vista de la ronda (`{ id, audioKey, stages, stageIndex, attempts, status, score, ranked, answerId, answer }`). `attempt` es `attempts.length` como lo vio el cliente: obligatorio (sin él, `invalid_attempt`), y es lo que hace seguro reintentar. `board` = `getTop(limit)` → `[{ alias, gamesPlayed, totalScore, avgScore }]` ya filtrado y ordenado, `getPlayerStats()` → `{ alias?, gamesPlayed, totalScore, avgScore }`, `setAlias(alias)` → el alias tal como quedó guardado, `subscribeEmail(email)`. Nadie manda puntaje ni `playerId`: en Supabase el jugador es `auth.uid()`.
+**Puertos** (`src/services/gameServices.js`): `rounds` = `start(artistSlugs)`, `guess(roundId, trackId, attempt)`, `skip(roundId, attempt)`, todos devuelven la vista de la ronda (`{ id, audioKey, stages, stageIndex, attempts, status, score, answerId, answer }`). `attempt` es `attempts.length` como lo vio el cliente: obligatorio (sin él, `invalid_attempt`), y es lo que hace seguro reintentar. La vista ya no manda `ranked`: `start_round` dejó de calcularlo (ver "El ranking se sacó del cliente y del servidor" más arriba). `board` = `subscribeEmail(email)`, el único método que le queda. Nadie manda puntaje ni `playerId`: en Supabase el jugador es `auth.uid()`.
 
-**localStorage** (todas las claves con prefijo `heardle:`): `auth` (sesión anónima de Supabase), `alias` (copia del servidor), `artistFilter`, `emailPrompt` (`pending | done | dismissed`); en modo local además `playerId`, `recent`, `local:round` (la ronda abierta), `local:games`, `local:aliases`, `local:emails`. Quien jugó antes del 2026-09-18 puede tener todavía un `heardle:difficulty` huérfano; no se lee más y no molesta.
+**localStorage** (todas las claves con prefijo `heardle:`): `auth` (sesión anónima de Supabase), `artistFilter`, `emailPrompt` (`pending | done | dismissed`), `roundsFinished` (cuántas rondas terminó este browser) y `lastFinishedRound` (el id de la última que ya se contó, para no contarla dos veces en un re-render o el doble efecto de StrictMode); en modo local además `playerId`, `recent`, `local:round` (la ronda abierta), `local:emails`. Quien jugó antes del 2026-09-18 puede tener todavía un `heardle:difficulty` huérfano, y quien jugó antes del 2026-09-28 uno `heardle:alias`; ninguno de los dos se lee más y no molestan.
 
 ## Catálogo
 
@@ -251,23 +246,34 @@ Es idempotente: no vuelve a bajar mp3 que ya existen y cachea los tracks de Spot
 - Los endpoints batch (`/tracks?ids=`, `/albums?ids=`) devuelven 403. Por eso va de a uno.
 - Hay cuota diaria. Cuando se agota devuelve 429 con `retry-after` de ~24 h. El script detecta eso, corta limpio y se reanuda con `--only <los que faltan>`.
 
-**Estado al 2026-09-18: los 8 artistas están completos.**
+**Estado al 2026-09-29: los 8 artistas están completos.**
 
 | Artista | Tracks en su JSON |
 |---|---|
 | Ramma | 116 |
 | Valuto | 41 |
 | ARA | 62 |
-| Tadu Vázquez | 104 |
+| Tadu Vázquez | 128 |
 | Fosse | 30 |
 | Barta | 22 |
 | Dazen | 9 |
 | Lonzo | 114 |
 
-Eso suma 498, pero el juego tiene **431 temas**: la diferencia son colaboraciones que aparecen en
+Eso suma 522, pero el juego tiene **454 temas**: la diferencia son colaboraciones que aparecen en
 el JSON de los dos artistas y `loadCatalog` las deduplica por ISRC, dejando una sola con
 `artistSlugs: [...]`. Los dos números son correctos, miden cosas distintas — el índice cuenta por
 artista, el pool cuenta grabaciones.
+
+**Alias de un artista.** Un artista de `data/artists.json` puede tener `aliases`: otros artistas de
+Spotify que son la misma persona con otro nombre. Sus temas van al JSON y al chip del artista
+principal (con `artists` tal como los acredita Spotify). Tadu Vázquez tiene dos, pedidos por el
+usuario el 2026-09-29: **TADU** (`6kBt4i0RTsYjC5uILQ8Kr2`) y **sanantonio**
+(`4MJdm7Y6VYYgTfDvywixiy`), sus proyectos solistas. Sumaron 24 temas al JSON de Tadu y 23 al juego
+("LUCES EN LA NOCHE" ya estaba por Ramma). Si Deezer no encuentra un tema por ISRC, lo busca con
+el nombre acreditado (el alias), no con el del artista principal.
+
+Las cifras medidas "sobre los 431 temas" más abajo (audio, silencio inicial, peaks) son de antes
+de sumar esos 23; no se volvieron a medir.
 
 **Sin preview en Deezer: 12, todas de Tadu Vázquez** (ver `data/missing.json`): Bloque, Quererse,
 Diluvio, Me Conocen, Contigo, Sangre, Watch Out, MVP, Ambición, Sombras, Whisky a las Rocas,
@@ -359,7 +365,7 @@ Dos detalles que no conviene deshacer:
 - Con `prefers-reduced-motion`: el isotipo no late, no hay sacudón, el anillo no respira y el grano queda quieto.
 
 **Jerarquía de acciones del reveal:** primero "Jugar otra vez" (acid gold, más ancho), después
-Spotify (en el verde de Spotify, `--color-spotify`, la única excepción a la paleta y solo en ese
+Spotify (en el verde de Spotify, `--color-spotify`, excepción a la paleta solo en ese
 botón: lo pidió el usuario), y compartir como link chico abajo. Es pedido del usuario: lo que tiene que
 invitar es volver a jugar y escuchar el tema. `hoverOnlyWhenSupported` está prendido en
 `tailwind.config.js` para que en celular el hover no quede pegado después de un toque.
@@ -368,8 +374,24 @@ invitar es volver a jugar y escuchar el tema. `hoverOnlyWhenSupported` está pre
 gira como un vinilo dentro del mismo anillo, ahora con los 16 s; lo que necesitaste para acertar
 queda en acid gold. Tocar el disco lo pausa o lo vuelve a arrancar. El giro usa
 `animation-play-state: paused` para que el disco se quede en su ángulo al parar en vez de volver a
-cero. Ir al ranking corta el audio. El autoplay depende de que el navegador cuente la página como
-activada (el guess fue un click); si igual lo rechaza, el disco queda quieto esperando un toque.
+cero. El autoplay depende de que el navegador cuente la página como activada (el guess fue un
+click); si igual lo rechaza, el disco queda quieto esperando un toque.
+
+**El fondo del reveal toma el color de la carátula** (pedido del usuario, 2026-09-29, con una
+captura de Apple Music como referencia; la otra excepción a la paleta). `useCoverTint` (en
+`src/theme/`) carga la carátula en un `Image` aparte con `crossOrigin` (i.scdn.co manda
+`Access-Control-Allow-Origin: *` y la CSP ya permite ese host en `img-src`), la lee en un canvas de
+32×32 y pisa `--color-bg` en `<html>` y el `theme-color`; al desmontar la reveal vuelven al
+default. La lógica es pura y testeada en `coverTint.js`: `dominantColor` elige el tono con más
+peso saturado (ignora negros, blancos y grises; una carátula en blanco y negro devuelve `null` y el
+fondo no cambia) y `backgroundFor` lo oscurece hasta luminancia ≤ `MAX_LUMINANCE` (0,05), así el
+texto blanco queda cerca de 9:1. Es un color plano, no un gradiente como en la referencia, y
+**sin grano**: sobre el color se leía como un filtro sucio (lo pidió el usuario), así que
+`useCoverTint` pone `data-tinted` en `<html>` y `index.css` apaga `body::before` con un fundido.
+En la pantalla de juego el grano sigue. `--color-bg` está registrado con `@property` en `index.css` para que la
+transición funcione. El `<img>` visible no lleva `crossOrigin` a propósito: si el CDN algún día saca
+el header CORS, se pierde el tinte, no la carátula. Como el agujero del disco usa `bg-bg`, también
+toma el tinte, que es lo correcto: es un agujero.
 
 ## Layout: una sola pantalla (regla dura)
 
@@ -378,8 +400,8 @@ activada (el guess fue un click); si igual lo rechaza, el disco queda quieto esp
 - `App.jsx` es un marco de alto fijo: `h-svh` + `overflow-hidden`, con `env(safe-area-inset-*)`
   para el notch. Ese `overflow-hidden` es el contrato: si algo no entra, se recorta en silencio,
   así que **cualquier fila que agregues le saca alto al círculo**.
-- Hay **tres vistas mutuamente excluyentes**, cada una dueña del marco completo:
-  juego, resultado y ranking. Nunca se apilan. Las rutea `GameContainer` con `showRanking` + `isOver`.
+- Hay **dos vistas mutuamente excluyentes**, cada una dueña del marco completo: juego y resultado.
+  Nunca se apilan. Las rutea `GameContainer` con `isOver`.
 - **Dos layouts según el ancho**, decididos con `useMediaQuery("(min-width: 1024px)")` en
   `GameContainer`, no con CSS:
   - Angosto: ajustes como línea colapsable arriba, historial debajo del buscador.
@@ -390,15 +412,14 @@ activada (el guess fue un click); si igual lo rechaza, el disco queda quieto esp
     usa las mismas tres columnas, así el logo arranca donde la columna de artistas y
     `esgaceta.com` termina donde la escalera. En ancho no hay barra de segmentos arriba: la
     escalera ya es el progreso. Si cambiás el ancho de una columna, cambialo en los dos lados. El marco pasa a
-    `lg:max-w-5xl`; resultado y ranking se quedan en `max-w-md` centrado para no estirarse.
+    `lg:max-w-5xl`; el resultado se queda en `max-w-md` centrado para no estirarse.
 
   Se decide en JS y no con `lg:hidden` **a propósito**: dos copias del historial en el DOM serían
   dos elementos con el mismo `aria-label`, y eso es peor que un re-render.
 - El elemento elástico de cada vista es el que absorbe el sobrante: el círculo de play en el juego,
   la carátula en el resultado. Van con `aspect-square h-full max-h-96 w-auto max-w-full` dentro de un
-  contenedor `flex-1 basis-0 min-h-0`. Todo lo demás es `shrink-0`.
-- El ranking está capado en `TOP_ROWS = 10` en vez de scrollear. Si el jugador queda afuera del top,
-  su fila se muestra aparte abajo.
+  contenedor `flex-1 basis-0 min-h-0`. Todo lo demás es `shrink-0`, incluido el formulario de mail
+  cuando la reveal lo muestra: si no entra, medí con la consola de abajo antes de agregarle algo más.
 - La única excepción es el dropdown del autocomplete, que scrollea internamente (es un combobox) y
   abre **hacia arriba**, porque el input queda contra el borde inferior.
 
@@ -491,9 +512,10 @@ la base, la anon key y `AUDIO_KEY_SECRET` están en `.env` (git-ignored). El CLI
 
 Puesta en marcha de un proyecto nuevo:
 
-1. Authentication → habilitar **Anonymous sign-ins**. Antes de lanzar, activar también el
-   **CAPTCHA** (Turnstile o hCaptcha) para esos logins: sin eso, un bot puede crear jugadores sin
-   límite. Supabase ya limita los logins anónimos por IP.
+1. Authentication → habilitar **Anonymous sign-ins**. El captcha (Turnstile) ya está implementado
+   del lado del cliente (ver "Captcha del login anónimo" más abajo); falta prenderlo del lado de
+   Supabase con **CAPTCHA protection** en el dashboard. Sin eso, un bot puede crear jugadores sin
+   límite; Supabase ya limita los logins anónimos por IP mientras tanto.
 2. SQL editor → correr `supabase/schema.sql`. Se puede volver a correr: todo es `if not exists` /
    `create or replace`.
 3. Con `AUDIO_KEY_SECRET` en `.env`, `npm run assets` → `npm run upload-audio` (necesita
@@ -501,6 +523,53 @@ Puesta en marcha de un proyecto nuevo:
    archivo es la respuesta de todas las rondas: no se commitea ni se comparte.** Hay que volver a
    cargarlo si cambia el catálogo o el secreto.
 4. Cargar `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` y `AUDIO_KEY_SECRET` en `.env` y en Vercel.
+
+**Mail de bienvenida** (2026-09-29, `odd/tasks/welcome-email.md`). Sin doble opt-in, a pedido
+del usuario: son los primeros mails de GACETA y no quería sumar fricción. Cada mail **nuevo** en
+`public.emails` dispara el trigger `emails_welcome` → `private.request_welcome_email()` →
+`net.http_post` (pg_net, asíncrono: nunca frena el insert) → Edge Function `welcome-email` →
+Resend. Un mail repetido no dispara nada (`on conflict do nothing`), y cualquier error del trigger
+se traga con un `warning`: la suscripción nunca falla por la bienvenida. Sale de
+`GACETA <bienvenida@esgaceta.com>` con reply-to `contacto@gacetaplay.com`; darse de baja es responder.
+
+- **DNS:** `esgaceta.com` está en Vercel; los registros de Resend (DKIM `resend._domainkey`, SPF y
+  MX de `send.esgaceta.com`) los cargó el usuario ahí. No hay casilla de correo propia: por eso el
+  reply-to va a otro dominio.
+- **Secrets:** `RESEND_API_KEY` y `WELCOME_HOOK_SECRET` en los secrets de Edge Functions; la URL de
+  la función y el mismo hook secret en Vault (`welcome_email_url`, `welcome_email_secret`). Nada de
+  eso va al repo ni a `.env`.
+- **La función** se deploya con `supabase functions deploy welcome-email --no-verify-jwt --use-api`
+  y rechaza todo lo que no traiga el header `x-welcome-secret` correcto (401). Manda con
+  `Idempotency-Key: welcome-<mail>`, así un reintento no duplica el mail.
+- **Sin pg_net o sin los dos secrets de Vault el trigger no hace nada**, a propósito: así
+  `schema.sql` sigue corriendo en el Postgres descartable de `supabase/tests/run.sh`. En un
+  proyecto nuevo: `create extension if not exists pg_net;` y
+  `select vault.create_secret('<url>/functions/v1/welcome-email', 'welcome_email_url');` +
+  `select vault.create_secret('<hook secret>', 'welcome_email_secret');`.
+- **Probar sin molestar a nadie:** mandar a `delivered@resend.dev` (dirección de test de Resend).
+  Las respuestas del trigger quedan en `net._http_response`.
+
+**Captcha del login anónimo (Cloudflare Turnstile).** `src/services/captcha.js` carga
+`api.js?render=explicit` con un `<script>` creado en runtime (nada de dependencia npm), renderiza
+el widget invisible en un contenedor de tamaño cero pegado a `document.body` (esta app no scrollea
+nunca: no puede ocupar alto) y resuelve un token de un solo uso por `callback`; `error-callback`,
+`timeout-callback` o que el script no cargue rechazan, y hay un timeout total de 15 s. El widget y
+su contenedor se sacan después de usarlos, haya salido bien o mal. `getCaptchaToken(siteKey)`
+devuelve `undefined` sin `VITE_TURNSTILE_SITE_KEY` (dev/local sigue andando sin captcha).
+
+`supabaseServices.js` solo pide un token en la rama `!signedIn` (ver "Flujo de datos", paso 2): una
+sesión guardada o su refresh nunca pasan por el captcha. Un fallo del captcha se relanza como el
+mismo `RoundError("not_authenticated", …)` de siempre, así que el botón "Reintentar" de la pantalla
+de error también lo cubre. Como `createSupabaseServices` se llama de cero en cada reintento del
+login (ver "Flujo de datos", paso 5: el login inicial se reintenta sin timeout), cada intento pide
+un token nuevo — necesario, porque un token de Turnstile es de un solo uso.
+
+**Orden de despliegue del captcha:** primero el cliente (este cambio, con `VITE_TURNSTILE_SITE_KEY`
+cargada en `.env` y en Vercel production/preview), después, y solo después, activar **CAPTCHA
+protection** en Authentication → Settings del dashboard de Supabase con la **secret key** de
+Turnstile. Esa secret key nunca va al repo ni a `.env`: se carga directo en el dashboard. Mientras
+Supabase no lo pida, el token viaja pero se ignora — el cliente ya funciona en los dos estados.
+`supabase/tests/smoke.mjs` documenta en su cabecera cómo correrlo con el captcha ya exigido.
 
 Modelo de seguridad (detallado arriba de `schema.sql`): ninguna tabla es legible ni escribible
 desde el cliente (RLS sin políticas + `revoke`); todo pasa por funciones `security definer` que
@@ -523,13 +592,13 @@ una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **175/175** en 17 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
+1. `npm run test` — tiene que dar **170/170** en 23 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js` y `scripts/**/*.test.mjs`, así que el tooling de build se testea donde vive.
 2. `npm run build` — tiene que compilar.
    Lint: el `eslint.config.js` de la raíz **ignora `heardle-gaceta/`**, así que un `eslint` común
    no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts`.
    Ojo que `no-unused-vars` deja pasar nombres en mayúsculas (`^[A-Z_]`).
    SQL: `supabase/tests/run.sh`. Contra el proyecto real: `supabase/tests/smoke.mjs`.
-3. Probar a mano en `npm run dev`: cargar, play, un guess incorrecto, un skip, llegar al reveal, share, alias, mail. El ranking en modo local se ve en localStorage.
+3. Probar a mano en `npm run dev`: cargar, play, un guess incorrecto, un skip, llegar al reveal, share. Para ver el mail sin jugar dos rondas: subí `heardle:roundsFinished` a mano en localStorage a 2 o más y recargá el reveal.
 
 Los tests corren en entorno `node`, sin jsdom. Lo que es lógica pura o va contra storage se
 testea igual usando el stub de `src/test-utils/localStorage.js`. Para testear **componentes o
@@ -591,7 +660,9 @@ conecta un tema con su audio. Sus rutas van ancladas con `/`: un `audio` suelto 
 `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `AUDIO_KEY_SECRET`.
 
 **Lo que sigue abierto, porque depende de vos:** dominio propio (con eso hay que pasar `og:image`
-a URL absoluta), el CAPTCHA del login anónimo y completar los temas sin preview.
+a URL absoluta), completar los temas sin preview, y activar **CAPTCHA protection** en el dashboard
+de Supabase con la secret key de Turnstile (el cliente ya manda el token; ver "Captcha del login
+anónimo" en la sección Supabase) una vez que este cliente esté deployado.
 
 Encontrado y arreglado de paso: entre que cargaba el catálogo y arrancaba la ronda se veía un
 instante **"No hay temas para esa selección"** aunque había 209. Ese mensaje ahora solo aparece

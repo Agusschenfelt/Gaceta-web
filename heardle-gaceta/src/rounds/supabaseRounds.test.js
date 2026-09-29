@@ -25,7 +25,7 @@ describe("supabaseRounds", () => {
 });
 
 describe("toRoundError", () => {
-  it("falls back to a connection error for anything unknown", () => {
+  it("falls back to a connection error for a fetch failure", () => {
     const e = toRoundError(new TypeError("Failed to fetch"));
     expect(e).toBeInstanceOf(RoundError);
     expect(e.code).toBe("network");
@@ -43,7 +43,7 @@ describe("toRoundError", () => {
   });
 
   it("passes a RoundError through untouched", () => {
-    const e = new RoundError("alias_taken");
+    const e = new RoundError("rate_limited");
     expect(toRoundError(e)).toBe(e);
   });
 });

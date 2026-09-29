@@ -1,8 +1,4 @@
 const ID_KEY = "heardle:playerId";
-const ALIAS_KEY = "heardle:alias";
-
-export const ALIAS_MIN = 2;
-export const ALIAS_MAX = 16;
 
 function uuid() {
   if (typeof crypto !== "undefined" && crypto.randomUUID) return crypto.randomUUID();
@@ -29,6 +25,7 @@ function write(key, value) {
   }
 }
 
+/** This browser's local-mode player id (Supabase mode uses `auth.uid()` instead). */
 export function getPlayerId() {
   let id = read(ID_KEY);
   if (!id) {
@@ -36,32 +33,4 @@ export function getPlayerId() {
     write(ID_KEY, id);
   }
   return id;
-}
-
-export function getAlias() {
-  return read(ALIAS_KEY) || "";
-}
-
-/**
- * ASCII letters and digits, the Latin-1 and Latin Extended-A letters (á, é,
- * ñ, ü…), spaces, dots, underscores and dashes. Spelled out rather than
- * \p{L} so it is exactly the set `set_alias` enforces in supabase/schema.sql,
- * whatever the database locale. The database also refuses blocked words and
- * taken names, which only it can know.
- */
-export const ALIAS_SHAPE = new RegExp(`^[A-Za-z0-9À-ÖØ-öø-ÿĀ-ž._ -]{${ALIAS_MIN},${ALIAS_MAX}}$`, "u");
-
-export function normalizeAlias(alias) {
-  return (alias ?? "").trim().replace(/\s+/g, " ");
-}
-
-export function isValidAlias(alias) {
-  return ALIAS_SHAPE.test(normalizeAlias(alias));
-}
-
-export function setAlias(alias) {
-  const a = normalizeAlias(alias);
-  if (!isValidAlias(a)) throw new Error("Alias inválido");
-  write(ALIAS_KEY, a);
-  return a;
 }
