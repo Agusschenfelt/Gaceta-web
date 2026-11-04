@@ -2,3 +2,10 @@
 export function formatSeconds(s) {
   return Number.isInteger(s) ? String(s) : s.toFixed(1);
 }
+
+const LEVEL_LABELS = Object.freeze({ normal: "Normal", hard: "Difícil" });
+
+/** The level as the player reads it. A round without a known level has no label. */
+export function levelLabel(level) {
+  return LEVEL_LABELS[level] ?? null;
+}

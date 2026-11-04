@@ -5,9 +5,11 @@ import { getPlayerId } from "../player/playerIdentity.js";
 /**
  * The two ports the game talks to, picked once:
  *
- *   rounds: { mode, start(artistSlugs), guess(roundId, trackId, attempt), skip(roundId, attempt) }
+ *   rounds: { mode, start(artistSlugs, level), guess(roundId, trackId, attempt), skip(roundId, attempt) }
  *           each resolving to a round view
- *           { id, audioKey, stages, stageIndex, attempts, status, score, answerId, answer }
+ *           { id, audioKey, stages, level, stageIndex, attempts, status, score, answerId, answer }
+ *           `level` ("normal" | "hard", default "normal") only applies to a round
+ *           dealt now; an open round is resumed with the level it started on.
  *           `attempt` is attempts.length as the client saw it (makes retries safe);
  *           `answer` = { id, title, artistSlugs } once the round is over.
  *   board:  { subscribeEmail(email) }

@@ -1,4 +1,14 @@
-import { createGame, getStages, guess, skip, isOver, score, STATUS } from "../game/engine.js";
+import {
+  createGame,
+  getStages,
+  guess,
+  skip,
+  isOver,
+  isLevel,
+  score,
+  DEFAULT_LEVEL,
+  STATUS,
+} from "../game/engine.js";
 import { pickTrack } from "../catalog/pickTrack.js";
 import { RoundError } from "./roundErrors.js";
 
@@ -32,6 +42,7 @@ function view(id, game) {
     id,
     audioKey: game.track.audioKey,
     stages: game.stages,
+    level: game.level,
     stageIndex: game.stageIndex,
     attempts: game.attempts,
     status: game.status,
@@ -62,11 +73,15 @@ export function createLocalRounds({ tracks }) {
   const saved = readOpen();
   const savedTrack = saved && byId.get(saved.trackId);
   if (savedTrack?.audioKey) {
+    // A round saved before levels existed was played on the hard ladder, like
+    // the rows the server backfills (see schema.sql).
+    const savedLevel = isLevel(saved.level) ? saved.level : "hard";
     open = {
       id: saved.id,
       game: {
         track: savedTrack,
-        stages: getStages(),
+        level: savedLevel,
+        stages: getStages(savedLevel),
         stageIndex: saved.stageIndex,
         attempts: saved.attempts,
         status: STATUS.PLAYING,
@@ -80,6 +95,7 @@ export function createLocalRounds({ tracks }) {
         ? {
             id: open.id,
             trackId: open.game.track.id,
+            level: open.game.level,
             stageIndex: open.game.stageIndex,
             attempts: open.game.attempts,
           }
@@ -104,11 +120,14 @@ export function createLocalRounds({ tracks }) {
   return {
     mode: "local",
 
-    async start(artistSlugs = []) {
+    async start(artistSlugs = [], level = DEFAULT_LEVEL) {
       if (open && !isOver(open.game)) return view(open.id, open.game);
+      // Same refusal as the server for a level it does not know; none means the default.
+      const chosen = level ?? DEFAULT_LEVEL;
+      if (!isLevel(chosen)) throw new RoundError("invalid_level");
       const track = pickTrack(playable, artistSlugs);
       if (!track) throw new RoundError("empty_pool");
-      open = { id: newId(), game: createGame({ track }) };
+      open = { id: newId(), game: createGame({ track, level: chosen }) };
       persist();
       return view(open.id, open.game);
     },

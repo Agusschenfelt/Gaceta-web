@@ -21,7 +21,8 @@
 --     protect your average is not possible.
 --
 -- Mirror of the client rules, change both together:
---   stages [0.5, 1, 3, 8] and score = 4 - stage  ↔ STAGES / scoreFor in src/game/engine.js
+--   stages per level (normal [1, 2, 4, 8], hard [0.5, 1, 3, 8]) and
+--   score = 4 - stage (4 stages on both)  ↔ LEVELS / scoreFor in src/game/engine.js
 --
 -- Ranking retired 2026-09-29 (odd/tasks/remove-ranking.md): the client no longer
 -- has a leaderboard, alias form or "ranked" concept. The functions that served
@@ -81,6 +82,16 @@ create table if not exists public.rounds (
 -- the board. No longer computed by start_round (stays at the column default);
 -- kept, not dropped, because dropping a column is irreversible.
 alter table public.rounds add column if not exists ranked boolean not null default true;
+
+-- Difficulty level (odd/tasks/difficulty-levels.md): which ladder the round was
+-- dealt on. Rounds that existed before levels were all played on the hard
+-- ladder, so adding the column with 'hard' backfills them (an open round keeps
+-- its stages mid-round); the default is then switched to 'normal' for new rows.
+-- Both statements are safe to re-run. start_round always sets the level itself.
+alter table public.rounds add column if not exists level text not null default 'hard';
+alter table public.rounds alter column level set default 'normal';
+alter table public.rounds drop constraint if exists rounds_level_check;
+alter table public.rounds add constraint rounds_level_check check (level in ('normal', 'hard'));
 
 -- One open round per player: the rule that makes rerolling impossible.
 create unique index if not exists rounds_one_open_per_player
@@ -169,7 +180,8 @@ as $$
   select jsonb_build_object(
     'id', r.id,
     'audioKey', t.audio_key,
-    'stages', '[0.5, 1, 3, 8]'::jsonb,
+    'stages', case r.level when 'hard' then '[0.5, 1, 3, 8]'::jsonb else '[1, 2, 4, 8]'::jsonb end,
+    'level', r.level,
     'stageIndex', r.stage_index,
     'attempts', r.attempts,
     'status', r.status,
@@ -232,10 +244,16 @@ drop function if exists private.backfill_ranked_first_play();
 
 -- -------------------------------------------------------------- the game
 
--- Deals a round, or hands back the one still open. The artist filter only
--- applies to a new round. Avoids the player's last 20 songs when it can.
--- At most 60 new rounds per player per hour.
-create or replace function public.start_round(p_artists text[] default '{}')
+-- Deals a round, or hands back the one still open. The artist filter and the
+-- level only apply to a new round. Avoids the player's last 20 songs when it
+-- can. At most 60 new rounds per player per hour.
+--
+-- `p_level` defaults to 'normal' so a browser still on the bundle that only
+-- sends `p_artists` keeps working. The one-argument signature is dropped first:
+-- left next to the new one, a call with only `p_artists` would match both and
+-- PostgREST would refuse it as ambiguous.
+drop function if exists public.start_round(text[]);
+create or replace function public.start_round(p_artists text[] default '{}', p_level text default 'normal')
 returns jsonb
 language plpgsql
 security definer
@@ -246,10 +264,15 @@ declare
   r public.rounds;
   picked text;
   artists text[] := coalesce(p_artists, '{}');
+  lvl text := coalesce(p_level, 'normal');
 begin
   select * into r from public.rounds where player_id = uid and status = 'playing';
   if found then
     return private.round_view(r);
+  end if;
+
+  if lvl not in ('normal', 'hard') then
+    raise exception 'invalid_level' using errcode = '22023';
   end if;
 
   if cardinality(artists) > 50 or exists (select 1 from unnest(artists) a where char_length(a) > 64) then
@@ -285,8 +308,8 @@ begin
   end if;
 
   begin
-    insert into public.rounds (player_id, track_id)
-    values (uid, picked)
+    insert into public.rounds (player_id, track_id, level)
+    values (uid, picked, lvl)
     returning * into r;
   exception when unique_violation then
     -- A concurrent call opened one first: hand that one back.
@@ -439,12 +462,12 @@ revoke all on schema private from public, anon, authenticated;
 revoke execute on all functions in schema private from public, anon, authenticated;
 
 revoke execute on function
-  public.start_round(text[]), public.guess_round(uuid, text, int), public.skip_round(uuid, int),
+  public.start_round(text[], text), public.guess_round(uuid, text, int), public.skip_round(uuid, int),
   public.subscribe_email(text)
   from public, anon, authenticated;
 
 -- Anonymous sign-ins get the `authenticated` role: that is every player.
 grant execute on function
-  public.start_round(text[]), public.guess_round(uuid, text, int), public.skip_round(uuid, int),
+  public.start_round(text[], text), public.guess_round(uuid, text, int), public.skip_round(uuid, int),
   public.subscribe_email(text)
   to authenticated;

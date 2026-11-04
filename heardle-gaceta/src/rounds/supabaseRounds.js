@@ -1,3 +1,4 @@
+import { DEFAULT_LEVEL } from "../game/engine.js";
 import { toRoundError } from "./roundErrors.js";
 
 /**
@@ -13,7 +14,9 @@ export function createSupabaseRounds(client) {
 
   return {
     mode: "supabase",
-    start: (artistSlugs = []) => call("start_round", { p_artists: artistSlugs }),
+    // The level only applies to a round that is dealt now; an open one keeps its own.
+    start: (artistSlugs = [], level = DEFAULT_LEVEL) =>
+      call("start_round", { p_artists: artistSlugs, p_level: level }),
     // `attempt` = attempts the client has seen; lets the server ignore a retry
     // of an attempt it already recorded.
     guess: (roundId, trackId, attempt) =>

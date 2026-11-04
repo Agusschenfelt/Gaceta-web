@@ -33,7 +33,8 @@ grant execute on all functions in schema t to anon, authenticated;
 insert into auth.users (id) values
   ('00000000-0000-0000-0000-000000000001'),
   ('00000000-0000-0000-0000-000000000002'),
-  ('00000000-0000-0000-0000-000000000003');
+  ('00000000-0000-0000-0000-000000000003'),
+  ('00000000-0000-0000-0000-000000000004');
 
 insert into public.tracks (id, audio_key, artist_slugs, title) values
   ('T1', 'k1', '{a}', 'Uno'), ('T2', 'k2', '{a}', 'Dos'), ('T3', 'k3', '{a,b}', 'Tres'),
@@ -146,6 +147,61 @@ set role authenticated;
 select t.act_as('00000000-0000-0000-0000-000000000003');
 select t.fails('select public.start_round()', 'rate_limited');
 reset role;
+
+-- ------------------------------------------------------------ levels
+
+-- Player 4 plays both levels. `start_round(p_artists => ...)` is the exact shape
+-- of a call from the previous bundle (PostgREST uses named arguments).
+set role authenticated;
+select t.act_as('00000000-0000-0000-0000-000000000004');
+select set_config('t.lv1', public.start_round(p_artists => '{a,b,c}')::text, false);
+select t.check(current_setting('t.lv1')::jsonb->>'level' = 'normal',
+  'an old client that sends no level plays normal');
+select t.check(current_setting('t.lv1')::jsonb->'stages' = '[1, 2, 4, 8]'::jsonb,
+  'normal is the [1, 2, 4, 8] ladder');
+select t.check(public.start_round('{a,b,c}', 'hard')->>'id' = current_setting('t.lv1')::jsonb->>'id'
+  and public.start_round('{a,b,c}', 'hard')->>'level' = 'normal',
+  'an open round keeps its level: asking for another one does not reroll or change it');
+reset role;
+select set_config('t.lvAns1', (select track_id from public.rounds where id = (current_setting('t.lv1')::jsonb->>'id')::uuid), false);
+set role authenticated;
+select t.act_as('00000000-0000-0000-0000-000000000004');
+select t.check((public.guess_round((current_setting('t.lv1')::jsonb->>'id')::uuid, current_setting('t.lvAns1'), 0)->>'score')::int = 4,
+  'normal: winning on the first listen scores 4');
+select t.fails($$select public.start_round('{}', 'easy')$$, 'invalid_level');
+
+-- Hard: dealt on request, with today's ladder, and scored the same way.
+select set_config('t.lv2', public.start_round('{}', 'hard')::text, false);
+select t.check(current_setting('t.lv2')::jsonb->>'level' = 'hard', 'hard can be asked for');
+select t.check(current_setting('t.lv2')::jsonb->'stages' = '[0.5, 1, 3, 8]'::jsonb, 'hard is the [0.5, 1, 3, 8] ladder');
+reset role;
+select set_config('t.lvAns2', (select track_id from public.rounds where id = (current_setting('t.lv2')::jsonb->>'id')::uuid), false);
+set role authenticated;
+select t.act_as('00000000-0000-0000-0000-000000000004');
+select public.skip_round((current_setting('t.lv2')::jsonb->>'id')::uuid, 0);
+select public.skip_round((current_setting('t.lv2')::jsonb->>'id')::uuid, 1);
+select set_config('t.lvWin2', public.guess_round((current_setting('t.lv2')::jsonb->>'id')::uuid, current_setting('t.lvAns2'), 2)::text, false);
+select t.check((current_setting('t.lvWin2')::jsonb->>'score')::int = 2, 'hard: winning on stage 2 scores 2');
+select t.check(current_setting('t.lvWin2')::jsonb->>'level' = 'hard', 'a finished round still reports its level');
+
+-- A null level falls back to normal; a hard loss scores 0 like a normal one.
+select set_config('t.lv3', public.start_round('{}', null)::text, false);
+select t.check(current_setting('t.lv3')::jsonb->>'level' = 'normal', 'a null level is normal');
+select public.skip_round((current_setting('t.lv3')::jsonb->>'id')::uuid, n) from generate_series(0, 2) n;
+select t.check((public.skip_round((current_setting('t.lv3')::jsonb->>'id')::uuid, 3)->>'score')::int = 0,
+  'normal: four misses score 0');
+select set_config('t.lv4', public.start_round('{}', 'hard')::text, false);
+select public.skip_round((current_setting('t.lv4')::jsonb->>'id')::uuid, n) from generate_series(0, 2) n;
+select t.check((public.skip_round((current_setting('t.lv4')::jsonb->>'id')::uuid, 3)->>'score')::int = 0,
+  'hard: four misses score 0');
+reset role;
+
+select t.check(to_regprocedure('public.start_round(text[])') is null
+  and to_regprocedure('public.start_round(text[],text)') is not null,
+  'only the two-argument start_round exists, so a one-argument call is never ambiguous');
+select t.fails($$insert into public.rounds (player_id, track_id, level) values ('00000000-0000-0000-0000-000000000004', 'T1', 'easy')$$, 'rounds_level_check');
+select t.check((select level from public.rounds where player_id = '00000000-0000-0000-0000-000000000003' limit 1) = 'normal',
+  'a row inserted without a level is normal (the default for new rows)');
 
 -- ------------------------------------------------------------ mail
 

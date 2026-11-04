@@ -4,15 +4,39 @@
  */
 
 /**
- * Seconds unlocked at each attempt. One ladder for everyone, on purpose:
- * difficulty levels would make two players' "3/4" mean different things, and a
- * result you cannot compare is the one thing this genre cannot afford — the
- * shared score is what gets shared at all.
+ * Seconds unlocked at each attempt, per difficulty level. Two levels, both with
+ * four stages and the same 8 s last stage, so scoring is the same on both
+ * (`stage_count - stage`) and the ring/clip maths never changes: the last stage
+ * is always the longest the player hears while guessing (see CLIP_FILE_SECONDS
+ * in src/audio/waveform.js). The level is part of a round and of what gets
+ * shared, because a "3/4" on Normal and a "3/4" on Difícil do not mean the same.
+ *
+ * Mirror of `private.round_view` in supabase/schema.sql; change both together.
  */
-export const STAGES = Object.freeze([0.5, 1, 3, 8]);
+export const LEVELS = Object.freeze({
+  normal: Object.freeze([1, 2, 4, 8]),
+  hard: Object.freeze([0.5, 1, 3, 8]),
+});
+
+export const LEVEL_IDS = Object.freeze(Object.keys(LEVELS));
+
+/** What a first visit, and an old client that sends no level, plays. */
+export const DEFAULT_LEVEL = "normal";
+
+/** Stages per round, the same on every level. */
+export const STAGE_COUNT = 4;
 
 /** Winning on the first listen. */
-export const MAX_SCORE = STAGES.length;
+export const MAX_SCORE = STAGE_COUNT;
+
+export function isLevel(value) {
+  return typeof value === "string" && Object.hasOwn(LEVELS, value);
+}
+
+/** A level id from untrusted input (storage, props): the default when unknown. */
+export function normalizeLevel(value) {
+  return isLevel(value) ? value : DEFAULT_LEVEL;
+}
 
 export const STATUS = Object.freeze({
   PLAYING: "playing",
@@ -20,15 +44,18 @@ export const STATUS = Object.freeze({
   LOST: "lost",
 });
 
-export function getStages() {
-  return [...STAGES];
+/** A fresh copy of a level's ladder (default level for an unknown one). */
+export function getStages(level = DEFAULT_LEVEL) {
+  return [...LEVELS[normalizeLevel(level)]];
 }
 
-export function createGame({ track }) {
+export function createGame({ track, level = DEFAULT_LEVEL }) {
   if (!track || !track.id) throw new Error("createGame requires a track with an id");
+  const id = normalizeLevel(level);
   return {
     track,
-    stages: getStages(),
+    level: id,
+    stages: getStages(id),
     stageIndex: 0,
     attempts: [],
     status: STATUS.PLAYING,
@@ -85,7 +112,7 @@ export function stageWon(state) {
  * on `rounds`) instead of trusting whatever the browser sends, so a change here
  * has to be made there too. An impossible outcome scores 0.
  */
-export function scoreFor(won, stageWon, stageCount = STAGES.length) {
+export function scoreFor(won, stageWon, stageCount = STAGE_COUNT) {
   if (!won || !Number.isInteger(stageWon) || stageWon < 0 || stageWon >= stageCount) return 0;
   return stageCount - stageWon;
 }

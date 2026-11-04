@@ -12,10 +12,16 @@ describe("supabaseRounds", () => {
     await rounds.guess("r1", "ISRC", 2);
     await rounds.skip("r1", 3);
     expect(client.rpc.mock.calls).toEqual([
-      ["start_round", { p_artists: ["ramma"] }],
+      ["start_round", { p_artists: ["ramma"], p_level: "normal" }],
       ["guess_round", { p_round: "r1", p_track: "ISRC", p_attempt: 2 }],
       ["skip_round", { p_round: "r1", p_attempt: 3 }],
     ]);
+  });
+
+  it("sends the chosen level when dealing", async () => {
+    const client = fakeClient({ data: { id: "r1" }, error: null });
+    await createSupabaseRounds(client).start([], "hard");
+    expect(client.rpc).toHaveBeenCalledWith("start_round", { p_artists: [], p_level: "hard" });
   });
 
   it("turns a database exception into a coded error", async () => {
@@ -25,6 +31,10 @@ describe("supabaseRounds", () => {
 });
 
 describe("toRoundError", () => {
+  it("reads a refused level", () => {
+    expect(toRoundError({ message: "invalid_level" }).code).toBe("invalid_level");
+  });
+
   it("falls back to a connection error for a fetch failure", () => {
     const e = toRoundError(new TypeError("Failed to fetch"));
     expect(e).toBeInstanceOf(RoundError);
