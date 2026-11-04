@@ -54,5 +54,7 @@ Levels were removed on 2026-09-18 (see CLAUDE.md "No hay niveles de dificultad")
 
 - 2026-11-04 review advisories fixed (this commit): rollback note in schema.sql and CLAUDE.md; SQL test split into column-default (60 direct inserts) and function-default checks; pure `hasPendingNextRound` (src/rounds/pendingNextRound.js) extracted from GameContainer with tests; `LEVEL_LABELS` exported and tested against `LEVEL_IDS`. Checks: npm run test 198/198, build ok, eslint clean, supabase/tests/run.sh ok.
 
+- 2026-11-04 browser check (local mode, Chrome, frame 360x640): game view fits with settings closed and open (only the pre-existing 3 px italic overshoot of `p.headline`); first round is Normal at 1 s; choosing Difícil mid-round shows "desde la próxima ronda" and the next round is hard at 0.5 s; loss reveal shows "Era este tema · Normal" and fits. Parent re-ran npm run test: 198/198.
+
 ## Next step
 T4 (needs the user's explicit OK): apply schema.sql to production first, then deploy the client.
