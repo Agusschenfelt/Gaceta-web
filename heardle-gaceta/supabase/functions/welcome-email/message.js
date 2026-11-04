@@ -4,7 +4,7 @@
 const FROM = "GACETA <bienvenida@esgaceta.com>";
 const REPLY_TO = "contacto@gacetaplay.com";
 const SITE_URL = "https://esgaceta.com";
-const GAME_URL = "https://heardle-gaceta.vercel.app";
+const GAME_URL = "https://heardle.esgaceta.com";
 const SUBJECT = "Gracias por sumarte a GACETA";
 
 // Same shape as `email_shape` in supabase/schema.sql.
@@ -49,7 +49,7 @@ const HTML = `<!doctype html>
 <h1 style="margin:0 0 24px;font-size:28px;line-height:1.1;font-weight:700;letter-spacing:-0.02em;color:#ffffff;">Gracias por sumarte a GACETA</h1>
 <p style="margin:0 0 16px;font-size:16px;line-height:1.5;color:#ffffff;">Gracias por jugar al heardle de GACETA. Vas a ser de los primeros en enterarte cuando salga música nueva del sello.</p>
 <p style="margin:0 0 8px;font-size:16px;line-height:1.5;color:#ffffff;">Conocé más sobre GACETA: <a href="${SITE_URL}" style="color:#dee5a0;">esgaceta.com</a></p>
-<p style="margin:0 0 32px;font-size:16px;line-height:1.5;color:#ffffff;">Jugá otra ronda: <a href="${GAME_URL}" style="color:#dee5a0;">heardle-gaceta.vercel.app</a></p>
+<p style="margin:0 0 32px;font-size:16px;line-height:1.5;color:#ffffff;">Jugá otra ronda: <a href="${GAME_URL}" style="color:#dee5a0;">heardle.esgaceta.com</a></p>
 <p style="margin:0;font-size:13px;line-height:1.5;color:#ffffff;opacity:0.6;">Si no querés recibir más mails, respondé a este mail y te sacamos de la lista.</p>
 </div>
 </div>

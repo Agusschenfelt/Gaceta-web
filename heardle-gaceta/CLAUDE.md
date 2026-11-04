@@ -332,8 +332,8 @@ SemiBold + Instrument Serif italic, bajadas al vuelo y descartadas). Dos cosas q
 tope de la caja. Y el lockup incluye el isotipo, que es más alto que la palabra, así que el borde
 inferior de esa imagen no es la línea de base del texto.
 
-**Pendiente al deployar:** `og:image` está en ruta relativa porque el dominio no está decidido.
-Varios scrapers no resuelven relativas — hay que pasarlo a absoluto.
+`og:image` y `twitter:image` van en URL absoluta (`https://heardle.esgaceta.com/og.png`): varios
+scrapers no resuelven relativas. Si cambia el dominio, cambiarlas en `index.html`.
 
 ## El visualizador (por qué NO usa Web Audio)
 
@@ -683,14 +683,15 @@ Los assets de marca también se cerraron (2026-09-18): salieron de `Gaceta-web/p
 ver la sección **Marca**.
 
 **Deploy (2026-09-23):** proyecto `heardle-gaceta` en el team **GACETA** de Vercel, en producción
-en `https://heardle-gaceta.vercel.app`. Se deploya por CLI desde `heardle-gaceta/`
+en `https://heardle.esgaceta.com` (subdominio agregado al proyecto el 2026-11-04; `esgaceta.com` y su
+DNS están en el mismo team, así que no hubo que cargar registros; `heardle-gaceta.vercel.app` sigue
+andando). El link "Jugá otra ronda" del mail de bienvenida apunta al subdominio. Se deploya por CLI desde `heardle-gaceta/`
 (`vercel deploy --prod --scope gaceta-97ec2001`); `.vercelignore` deja afuera `.env` y todo lo que
 conecta un tema con su audio. Sus rutas van ancladas con `/`: un `audio` suelto también excluía
 `src/audio/` y rompió el primer build. Variables cargadas en production y preview:
 `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `AUDIO_KEY_SECRET`.
 
-**Lo que sigue abierto, porque depende de vos:** dominio propio (con eso hay que pasar `og:image`
-a URL absoluta), completar los temas sin preview, y activar **CAPTCHA protection** en el dashboard
+**Lo que sigue abierto, porque depende de vos:** completar los temas sin preview, y activar **CAPTCHA protection** en el dashboard
 de Supabase con la secret key de Turnstile (el cliente ya manda el token; ver "Captcha del login
 anónimo" en la sección Supabase) una vez que este cliente esté deployado.
 
