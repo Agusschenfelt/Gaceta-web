@@ -29,7 +29,7 @@ Levels were removed on 2026-09-18 (see CLAUDE.md "No hay niveles de dificultad")
 ## Tasks
 - [x] T1 Engine + server + local rounds + tests (engine.test.js, rounds tests, `secure_rounds.test.sql`).
 - [x] T2 UI: selector in GameSettings, persistence, level in reveal and share (+ share tests); fits 360×640.
-- [ ] T3 Docs in CLAUDE.md.
+- [x] T3 Docs in CLAUDE.md.
 - [ ] T4 Rollout (needs user OK): apply schema to prod, deploy client.
 
 ## Acceptance criteria
@@ -48,6 +48,7 @@ Levels were removed on 2026-09-18 (see CLAUDE.md "No hay niveles de dificultad")
 - 2026-11-04: document created; user chose two levels (Normal default + Difficult).
 - 2026-11-04 T1 done, commit f5ccfa9. Engine `LEVELS`/`DEFAULT_LEVEL`/`STAGE_COUNT`/`normalizeLevel`; `rounds.level` column (add column default 'hard' backfills existing/open rounds, then default switched to 'normal'); `start_round(p_artists, p_level default 'normal')` with the one-arg overload dropped (no PostgREST ambiguity); `round_view` returns `stages` per level and `level`; local mode mirrors; share text `GACETA Heardle 3/4 · Normal`. Checks: npm run test 189/189, npm run build ok, eslint clean, supabase/tests/run.sh ok (incl. level default, hard ladder, old one-arg call, scores, legacy migration).
 - 2026-11-04 T2 done. `GameSettings`: level tags (`Normal`/`Difícil`) in both layouts (panel: "Nivel" label, tags, ladder text, then artists; bar: summary line is `Nivel · artistas · N temas`, right label now "Ajustes", opening adds one label+tag row above the artist chips). Persisted in `heardle:level`; a mid-round change shows the existing "desde la próxima ronda" text, driven by `game.level !== level` (the round view carries its level). Reveal eyebrow shows the level (`Normal · 1 s · intento 1 de 4` / `Era este tema · Difícil`); share text done in T1. Waveform/ring: last stage is 8 s on both levels (< 16 s clip), covered by a new waveform test. Checks: npm run test 190/190, build ok, eslint clean. Not verified in a browser (dev server would hit the production Supabase, whose schema is not applied yet); 360x640 reasoned: at rest the bar is still one row (text truncates), the open state adds one row but the play circle is the elastic element; wide panel has room.
+- 2026-11-04 T3 done. CLAUDE.md: levels section replaces "no hay niveles", Dónde tocar, data flow, ports, localStorage, deploy order, test count (190). T1 f5ccfa9, T2 c156ae5.
 
 ## Next step
-T3.
+T4 (needs the user's explicit OK): apply schema.sql to production first, then deploy the client.

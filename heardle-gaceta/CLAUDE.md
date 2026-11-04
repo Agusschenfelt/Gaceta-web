@@ -55,7 +55,8 @@ Variables en `.env` (no está en git, ver `.env.example`):
 
 | Querés cambiar… | Archivo |
 |---|---|
-| Duraciones de los stages y cómo se calcula el score | `src/game/engine.js` (`STAGES`, `MAX_SCORE` arriba de todo) + `engine.test.js`. Si una etapa pasa de 16 s, leer la sección Audio |
+| Duraciones de los stages por nivel y cómo se calcula el score | `src/game/engine.js` (`LEVELS`, `DEFAULT_LEVEL`, `STAGE_COUNT` arriba de todo) + `engine.test.js`, y la misma escalera en `private.round_view` de `supabase/schema.sql`. Si una etapa pasa de 16 s, leer la sección Audio |
+| Nivel: selector, etiquetas "Normal"/"Difícil", cómo aparece en el reveal y el share | `GameSettings.jsx` (selector), `src/game/format.js` (`levelLabel`), `ResultReveal.jsx`, `src/game/share.js`; guardado en `GameContainer.jsx` (`heardle:level`). Reglas del servidor: `start_round` y `rounds.level` en `supabase/schema.sql` |
 | Qué layout se usa según el ancho | `src/containers/GameContainer.jsx` (`isWide`) + `src/hooks/useMediaQuery.js` |
 | Largo del recorte de los mp3, bitrate, dónde quedan los originales | `scripts/compress-audio.mjs` (`CLIP_SECONDS`, `BITRATE`) |
 | Cuánto silencio inicial se recorta y con qué umbral | `scripts/compress-audio.mjs` (`ONSET_THRESHOLD`, `LEAD_IN`, `MAX_TRIM`) + `scripts/lib/onset.mjs` (`SILENCE_FLOOR`) |
@@ -122,10 +123,11 @@ sabe qué tema está sonando hasta que termina la ronda.
 2. `getGameServices()` elige el modo. Con `VITE_SUPABASE_*`: login anónimo de Supabase (la sesión
    queda en `heardle:auth`) y todo por funciones de Postgres. Sin ellas: modo local, que imita las
    mismas reglas en el browser y solo sirve para desarrollo.
-3. `rounds.start(filtro)` devuelve la **vista de la ronda**: `{ id, audioKey, stages, stageIndex,
-   attempts, status, score, answerId }`. `answerId` es `null` mientras se juega. Si hay una ronda
+3. `rounds.start(filtro, nivel)` devuelve la **vista de la ronda**: `{ id, audioKey, stages, level,
+   stageIndex, attempts, status, score, answerId }`. `answerId` es `null` mientras se juega. Si hay una ronda
    abierta, devuelve esa: **nunca se reparte otra** (recargar para cambiar un tema difícil no
-   sirve). Por eso cambiar los artistas a mitad de ronda aplica desde la próxima, y lo dice.
+   sirve). Por eso cambiar los artistas o el nivel a mitad de ronda aplica desde la próxima, y lo dice (para
+   el nivel, comparando `game.level` con el elegido: la vista ya lo trae).
 4. Play: `useAudioPlayer(audioUrl(audioKey))` (Storage con Supabase, `/audio/` en local) reproduce desde 0 hasta
    `currentClipSeconds(game)`. El corte lo hacen un `setTimeout` armado en `onplaying` y el evento
    `timeupdate`; el `requestAnimationFrame` solo dibuja el anillo (ver Gotchas).
@@ -150,8 +152,8 @@ Score: si ganás, `stages.length - índice del stage ganador` (acertar de una = 
 **El puntaje nunca viene del cliente** (desde 2026-09-22, `odd/tasks/fair-ranking.md`). El
 browser manda solo el resultado (`won`, `stageWon`, `attempts`). En Supabase `games.score` es
 una **columna generada** y hay checks que rechazan una ronda imposible; mandar `score` en el
-insert da error. El adapter local lo deriva igual con `scoreFor`. Si cambiás `STAGES` o la
-fórmula, cambiala también en `supabase/schema.sql` (el 4 está escrito ahí).
+insert da error. El adapter local lo deriva igual con `scoreFor`. Si cambiás `LEVELS` o la
+fórmula, cambiala también en `supabase/schema.sql` (el 4 y las escaleras están escritos ahí).
 
 **El ranking se sacó del cliente y del servidor** (2026-09-28/29, `odd/tasks/remove-ranking.md`,
 T1–T4). El mail solo se pedía adentro del ranking, detrás de un alias que casi nadie completaba, y
@@ -167,18 +169,34 @@ exists ...`, así que correr el schema de nuevo también los saca de un proyecto
 columna o una tabla es irreversible y se decide después. Aplicado en producción el 2026-09-29,
 después de deployar el cliente sin ranking (smoke en verde).
 
-**No hay niveles de dificultad, y es a propósito.** Había tres (`DIFFICULTIES`) y se sacaron el
-2026-09-18. Una sola escalera `STAGES = [0.5, 1, 3, 8]` para todos, porque:
+**Hay dos niveles de dificultad** (2026-11-04, `odd/tasks/difficulty-levels.md`). **Normal** (el
+default, `[1, 2, 4, 8]`) y **Difícil** (`[0.5, 1, 3, 8]`, la escalera de antes). Motivo: la gente
+entraba, perdía enseguida y se iba, porque con 0,5 s el primer intento casi siempre es un fallo. El
+juego tiene que hacer que quieran jugar antes de que quieran seguir jugando.
 
-- Con niveles, tu "3/4" y el mío significan cosas distintas, y el texto que se comparte ni siquiera
-  decía el nivel. El resultado comparable es lo único que este género no puede perder: es lo que
-  hace que se comparta.
-- El ranking sumaba puntos de tres juegos distintos en una tabla sola.
-- `score = stages.length - stageIndex` hacía que el nivel con más etapas diera más puntos, o sea
-  que Fácil pagaba más que Difícil. El problema desaparece solo con una escalera única.
-- Con 431 temas y la audiencia de un sello, partirla en tres es peor.
+Los tres niveles de antes (`DIFFICULTIES`, sacados el 2026-09-18) tenían tres problemas; así se
+resuelven ahora:
 
-Si alguien quiere reponerlos, que lea esto primero y resuelva lo del resultado compartido.
+- Tu "3/4" y el mío significaban cosas distintas, y el texto que se comparte ni decía el nivel →
+  el nivel va en el reveal y en el share (`GACETA Heardle 3/4 · Difícil`).
+- `score = stages.length - stageIndex` hacía que el nivel con más etapas diera más puntos → los dos
+  niveles tienen **4 etapas y la última en 8 s**, así el puntaje es 4..1 / 0 en ambos y el anillo y
+  el clip de 16 s no cambian (`engine.test.js` y `waveform.test.js` lo fijan).
+- El ranking sumaba puntos de tres juegos en una tabla → el ranking ya no existe.
+- Dos y no tres: por debajo de `[1, 2, 4, 8]` el fragmento ya empieza a regalar el tema.
+
+El nivel es **del jugador y de la ronda**: se elige en `GameSettings` (panel ancho y línea
+colapsable, `heardle:level`, default Normal), viaja en `start(artistSlugs, level)` y queda en
+`rounds.level`. Una ronda abierta conserva su nivel (como su tema): cambiarlo a mitad aplica desde la
+próxima. En `private.round_view` la escalera sale del nivel de la ronda.
+
+**Migración de `rounds.level`.** Las rondas que ya existían se jugaron en la escalera difícil, así
+que el `add column` las llena con `'hard'` (una ronda abierta no cambia de escalera) y recién después
+el default pasa a `'normal'` para las nuevas; todo es re-ejecutable. `start_round(p_artists, p_level
+default 'normal')` reemplaza a `start_round(text[])`, que se borra: dejar las dos haría ambiguo un
+llamado con solo `p_artists`. Un bundle viejo que manda solo `p_artists` sigue andando y juega Normal.
+`supabase/tests/run.sh` prueba el default, la escalera difícil, el llamado viejo, el puntaje en los
+dos niveles y la migración desde una tabla sin la columna.
 
 ## Contratos de datos
 
@@ -226,9 +244,9 @@ base. Mientras tanto el anillo de esas rondas queda plano (`loadPeaks` nunca rec
 
 **Track en memoria** (lo que ven los componentes, sale de `loadCatalog`): `{ id, title, artists, artistSlugs, audioFile, coverUrl, spotifyUrl, release, releaseDate }`. Ojo con el camelCase: el JSON usa snake_case, la app camelCase, la conversión está en `loadCatalog.js`.
 
-**Puertos** (`src/services/gameServices.js`): `rounds` = `start(artistSlugs)`, `guess(roundId, trackId, attempt)`, `skip(roundId, attempt)`, todos devuelven la vista de la ronda (`{ id, audioKey, stages, stageIndex, attempts, status, score, answerId, answer }`). `attempt` es `attempts.length` como lo vio el cliente: obligatorio (sin él, `invalid_attempt`), y es lo que hace seguro reintentar. La vista ya no manda `ranked`: `start_round` dejó de calcularlo (ver "El ranking se sacó del cliente y del servidor" más arriba). `board` = `subscribeEmail(email)`, el único método que le queda. Nadie manda puntaje ni `playerId`: en Supabase el jugador es `auth.uid()`.
+**Puertos** (`src/services/gameServices.js`): `rounds` = `start(artistSlugs, level)`, `guess(roundId, trackId, attempt)`, `skip(roundId, attempt)`, todos devuelven la vista de la ronda (`{ id, audioKey, stages, level, stageIndex, attempts, status, score, answerId, answer }`). `attempt` es `attempts.length` como lo vio el cliente: obligatorio (sin él, `invalid_attempt`), y es lo que hace seguro reintentar. La vista ya no manda `ranked`: `start_round` dejó de calcularlo (ver "El ranking se sacó del cliente y del servidor" más arriba). `board` = `subscribeEmail(email)`, el único método que le queda. Nadie manda puntaje ni `playerId`: en Supabase el jugador es `auth.uid()`.
 
-**localStorage** (todas las claves con prefijo `heardle:`): `auth` (sesión anónima de Supabase), `artistFilter`, `emailPrompt` (`pending | done | dismissed`), `roundsFinished` (cuántas rondas terminó este browser) y `lastFinishedRound` (el id de la última que ya se contó, para no contarla dos veces en un re-render o el doble efecto de StrictMode); en modo local además `playerId`, `recent`, `local:round` (la ronda abierta), `local:emails`. Quien jugó antes del 2026-09-18 puede tener todavía un `heardle:difficulty` huérfano, y quien jugó antes del 2026-09-28 uno `heardle:alias`; ninguno de los dos se lee más y no molestan.
+**localStorage** (todas las claves con prefijo `heardle:`): `auth` (sesión anónima de Supabase), `artistFilter`, `level` (`normal | hard`; cualquier otro valor se lee como `normal`), `emailPrompt` (`pending | done | dismissed`), `roundsFinished` (cuántas rondas terminó este browser) y `lastFinishedRound` (el id de la última que ya se contó, para no contarla dos veces en un re-render o el doble efecto de StrictMode); en modo local además `playerId`, `recent`, `local:round` (la ronda abierta), `local:emails`. Quien jugó antes del 2026-09-18 puede tener todavía un `heardle:difficulty` huérfano, y quien jugó antes del 2026-09-28 uno `heardle:alias`; ninguno de los dos se lee más y no molestan.
 
 ## Catálogo
 
@@ -444,7 +462,7 @@ así que le gana por especificidad a `leading-*`. Para pisarlo hace falta el mod
 ## Audio
 
 `scripts/compress-audio.mjs` (`npm run compress-audio`). Las previews de Deezer son 30 s stereo
-128 kbps, pero el juego escucha como máximo 8 s mientras adivinás (la última de `STAGES` en
+128 kbps, pero el juego escucha como máximo 8 s mientras adivinás (la última de cada nivel de `LEVELS` en
 `engine.js`) y 16 s en el reveal, así que se recortan a 16 s mono 96 kbps. Medido sobre los 431 temas: **~197 MB → 81 MB (-60%)**, de 480 KB a
 188 KB por tema. Eso es lo que se ahorra el que juega desde el celular en cada reproducción.
 
@@ -457,7 +475,7 @@ así que le gana por especificidad a `leading-*`. Para pisarlo hace falta el mod
   los mp3 se sirven desde Supabase Storage, no desde Vercel. Ojo con el egress del plan de
   Supabase si juega mucha gente: cada ronda baja hasta ~190 KB.
 
-**Si algún día agregás una etapa de más de 16 s** en `STAGES`, los mp3 actuales se cortan
+**Si algún día agregás una etapa de más de 16 s** en `LEVELS`, los mp3 actuales se cortan
 antes de tiempo. Hay que correr `npm run compress-audio -- --force --seconds=<nuevo>`, que
 re-comprime desde `audio-raw/`. Si borraste `audio-raw/`, hay que volver a bajar las previews.
 
@@ -583,6 +601,11 @@ entera, único sin importar mayúsculas). Palabras bloqueadas: `insert into publ
 carga el seed generado. **Lo que no prueba:** el login anónimo real ni PostgREST. Eso se verifica
 recién con un proyecto (o `supabase start`, que necesita Docker).
 
+**Orden de despliegue de los niveles.** Primero el schema, después el cliente. El schema nuevo
+acepta el llamado viejo (`start_round` solo con `p_artists`, juega Normal), pero el cliente nuevo
+manda `p_level` y contra el schema viejo daría "function not found". Aplicar el schema deja las
+rondas abiertas en su escalera (difícil) y las nuevas en Normal.
+
 **Orden de despliegue.** Si un cambio en `schema.sql` cambia la firma de una función (como pasó
 con `guess_round`/`skip_round` al sumar `p_attempt`), la vieja se borra: un browser con el bundle
 anterior recibe "function not found" hasta recargar. Aplicar el schema y deployar el cliente
@@ -593,7 +616,7 @@ una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **172/172** en 23 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js`, `scripts/**/*.test.mjs` y `supabase/functions/**/*.test.js`, así que el tooling de build y el mail de bienvenida se testean donde viven.
+1. `npm run test` — tiene que dar **190/190** en 23 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js`, `scripts/**/*.test.mjs` y `supabase/functions/**/*.test.js`, así que el tooling de build y el mail de bienvenida se testean donde viven.
 2. `npm run build` — tiene que compilar.
    Lint: el `eslint.config.js` de la raíz **ignora `heardle-gaceta/`**, así que un `eslint` común
    no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts`.
