@@ -1,5 +1,16 @@
 import { describe, it, expect } from "vitest";
-import { levelAt, barHeights, BAR_COUNT, ringTicks, unlockedTicks, levelFromBar, MIN_HEIGHT } from "./waveform.js";
+import {
+  levelAt,
+  barHeights,
+  BAR_COUNT,
+  ringTicks,
+  unlockedTicks,
+  levelFromBar,
+  MIN_HEIGHT,
+  CLIP_FILE_SECONDS,
+  RING_TICKS,
+} from "./waveform.js";
+import { LEVELS } from "../game/engine.js";
 
 // Four buckets over a 4s clip: silent, half, loud, silent.
 const peaks = [0, 128, 255, 0];
@@ -115,5 +126,19 @@ describe("levelFromBar", () => {
     expect(levelFromBar(1)).toBe(1);
     expect(levelFromBar(0)).toBe(0);
     expect(levelFromBar(barHeights([255], 0, 1, 1)[0])).toBe(1);
+  });
+});
+
+describe("ring on every level", () => {
+  it("fits each level's last stage inside the clip file, and fills the ring on it", () => {
+    for (const ladder of Object.values(LEVELS)) {
+      const last = ladder.at(-1);
+      expect(last).toBeLessThanOrEqual(CLIP_FILE_SECONDS);
+      // The board spans the ring over the last stage, so it is full there.
+      expect(unlockedTicks(last, last)).toBe(RING_TICKS);
+      // Each stage unlocks strictly more of it than the one before.
+      const lit = ladder.map((seconds) => unlockedTicks(seconds, last));
+      expect(lit.every((n, i) => i === 0 || n > lit[i - 1])).toBe(true);
+    }
   });
 });

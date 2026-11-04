@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { loadCatalog, loadPeaks } from "../catalog/loadCatalog.js";
 import { filterPool } from "../catalog/pickTrack.js";
-import { currentClipSeconds, isOver } from "../game/engine.js";
+import { currentClipSeconds, isOver, normalizeLevel, DEFAULT_LEVEL } from "../game/engine.js";
 import { useAudioPlayer } from "../audio/useAudioPlayer.js";
 import { CLIP_FILE_SECONDS } from "../audio/waveform.js";
 import { getGameServices } from "../services/gameServices.js";
@@ -20,6 +20,7 @@ import { Button } from "../components/atoms/Button.jsx";
 import { useMediaQuery } from "../hooks/useMediaQuery.js";
 
 const FILTER_KEY = "heardle:artistFilter";
+const LEVEL_KEY = "heardle:level";
 const EMAIL_FLAG_KEY = "heardle:emailPrompt";
 // { roundId, filter } of the last round this browser dealt; see dealtFilter.js.
 const DEALT_KEY = "heardle:dealtFilter";
@@ -78,6 +79,9 @@ export function GameContainer() {
   // Bumped by the retry button on the load error view to run loading again.
   const [loadAttempt, setLoadAttempt] = useState(0);
   const [artistFilter, setArtistFilter] = useState(() => readStored(FILTER_KEY, []));
+  // Difficulty for the next round dealt; the round on screen carries its own
+  // (`game.level`), so a change mid-round waits, same as the artists.
+  const [level, setLevel] = useState(() => normalizeLevel(readStored(LEVEL_KEY, DEFAULT_LEVEL)));
   // The filter the current round was dealt with, or null if this browser does
   // not know it (see dealtFilter.js). When the player changes the chips
   // mid-round the new filter waits for the next round: see GameSettings.
@@ -143,7 +147,7 @@ export function GameContainer() {
     try {
       // Only a dropped connection is worth retrying; a refusal is final.
       // Safe to repeat: an open round is resumed, never dealt twice.
-      const round = await callJudge(() => services.rounds.start(dealFrom));
+      const round = await callJudge(() => services.rounds.start(dealFrom, level));
       setHasPlayed(false);
       const dealt = resolveDealtFilter(round, filter, readStored(DEALT_KEY, null));
       if (dealt) writeStored(DEALT_KEY, { roundId: round.id, filter: dealt });
@@ -154,7 +158,7 @@ export function GameContainer() {
     } finally {
       dealing.current = false;
     }
-  }, [services, artistFilter, catalog]);
+  }, [services, artistFilter, level, catalog]);
 
   useEffect(() => {
     if (services && !game && !roundError) startRound();
@@ -236,6 +240,11 @@ export function GameContainer() {
     writeStored(FILTER_KEY, next);
   }
 
+  function onChangeLevel(next) {
+    setLevel(next);
+    writeStored(LEVEL_KEY, next);
+  }
+
   function onPlayAgain() {
     setGame(null);
     setRoundError(null);
@@ -299,9 +308,15 @@ export function GameContainer() {
       artists={catalog.artists}
       selected={artistFilter}
       onChangeArtists={onChangeFilter}
+      level={level}
+      onChangeLevel={onChangeLevel}
       poolSize={poolSize}
       variant={isWide ? "panel" : "bar"}
-      pendingNextRound={Boolean(game && dealtFilter && !sameSet(dealtFilter, artistFilter))}
+      pendingNextRound={Boolean(
+        game &&
+          ((dealtFilter && !sameSet(dealtFilter, artistFilter)) ||
+            (game.level && game.level !== level))
+      )}
     />
   );
 
