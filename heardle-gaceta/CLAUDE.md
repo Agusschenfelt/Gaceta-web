@@ -606,6 +606,12 @@ acepta el llamado viejo (`start_round` solo con `p_artists`, juega Normal), pero
 manda `p_level` y contra el schema viejo daría "function not found". Aplicar el schema deja las
 rondas abiertas en su escalera (difícil) y las nuevas en Normal.
 
+**Rollback de los niveles.** Volver a aplicar el `schema.sql` anterior no alcanza: deja las dos
+sobrecargas de `start_round` y un llamado solo con `p_artists` sería ambiguo en PostgREST. Primero
+`drop function if exists public.start_round(text[], text);` y recién después el schema viejo.
+Además el `round_view` viejo tiene fija la escalera `[0.5, 1, 3, 8]`: las rondas Normal abiertas en
+ese momento cambian de escalera a mitad de partida.
+
 **Orden de despliegue.** Si un cambio en `schema.sql` cambia la firma de una función (como pasó
 con `guess_round`/`skip_round` al sumar `p_attempt`), la vieja se borra: un browser con el bundle
 anterior recibe "function not found" hasta recargar. Aplicar el schema y deployar el cliente
@@ -616,7 +622,7 @@ una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **190/190** en 23 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js`, `scripts/**/*.test.mjs` y `supabase/functions/**/*.test.js`, así que el tooling de build y el mail de bienvenida se testean donde viven.
+1. `npm run test` — tiene que dar **198/198** en 24 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js`, `scripts/**/*.test.mjs` y `supabase/functions/**/*.test.js`, así que el tooling de build y el mail de bienvenida se testean donde viven.
 2. `npm run build` — tiene que compilar.
    Lint: el `eslint.config.js` de la raíz **ignora `heardle-gaceta/`**, así que un `eslint` común
    no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts`.

@@ -200,8 +200,14 @@ select t.check(to_regprocedure('public.start_round(text[])') is null
   and to_regprocedure('public.start_round(text[],text)') is not null,
   'only the two-argument start_round exists, so a one-argument call is never ambiguous');
 select t.fails($$insert into public.rounds (player_id, track_id, level) values ('00000000-0000-0000-0000-000000000004', 'T1', 'easy')$$, 'rounds_level_check');
-select t.check((select level from public.rounds where player_id = '00000000-0000-0000-0000-000000000003' limit 1) = 'normal',
-  'a row inserted without a level is normal (the default for new rows)');
+-- Column default: the 60 rows seeded above were inserted directly, without a level.
+select t.check((select count(*) from public.rounds
+  where player_id = '00000000-0000-0000-0000-000000000003' and status = 'lost' and level = 'normal') = 60,
+  'column default: a row inserted without a level is normal');
+-- Function default: start_round called with only p_artists (t.lv1) stored a normal round.
+select t.check((select level from public.rounds
+  where player_id = '00000000-0000-0000-0000-000000000004' and id = (current_setting('t.lv1')::jsonb->>'id')::uuid) = 'normal',
+  'function default: start_round without p_level deals a normal round');
 
 -- ------------------------------------------------------------ mail
 

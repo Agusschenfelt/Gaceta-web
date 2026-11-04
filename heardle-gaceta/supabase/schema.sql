@@ -252,6 +252,13 @@ drop function if exists private.backfill_ranked_first_play();
 -- sends `p_artists` keeps working. The one-argument signature is dropped first:
 -- left next to the new one, a call with only `p_artists` would match both and
 -- PostgREST would refuse it as ambiguous.
+--
+-- ROLLBACK: re-applying an older schema.sql does NOT remove the two-argument
+-- function, and the old file would recreate the one-argument one next to it
+-- (ambiguous again). Before re-applying, run:
+--   drop function if exists public.start_round(text[], text);
+-- Also note the old round_view hardcodes the [0.5, 1, 3, 8] ladder: Normal
+-- rounds still open at that moment would switch to it mid-round.
 drop function if exists public.start_round(text[]);
 create or replace function public.start_round(p_artists text[] default '{}', p_level text default 'normal')
 returns jsonb

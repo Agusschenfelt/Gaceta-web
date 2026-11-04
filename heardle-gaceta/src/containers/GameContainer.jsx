@@ -8,6 +8,7 @@ import { getGameServices } from "../services/gameServices.js";
 import { audioUrl, PEAKS_URL } from "../services/assetUrls.js";
 import { withRetry, withTimeout } from "../shared/retry.js";
 import { resolveDealtFilter } from "../rounds/dealtFilter.js";
+import { hasPendingNextRound } from "../rounds/pendingNextRound.js";
 import { toRoundError } from "../rounds/roundErrors.js";
 import { answerTrack } from "../rounds/answerTrack.js";
 import { nextRoundsFinished } from "../player/emailPrompt.js";
@@ -47,7 +48,6 @@ function writeStored(key, value) {
   }
 }
 
-const sameSet = (a, b) => a.length === b.length && a.every((x) => b.includes(x));
 
 const isConnectionError = (e) => toRoundError(e).code === "network";
 
@@ -312,11 +312,7 @@ export function GameContainer() {
       onChangeLevel={onChangeLevel}
       poolSize={poolSize}
       variant={isWide ? "panel" : "bar"}
-      pendingNextRound={Boolean(
-        game &&
-          ((dealtFilter && !sameSet(dealtFilter, artistFilter)) ||
-            (game.level && game.level !== level))
-      )}
+      pendingNextRound={hasPendingNextRound({ round: game, dealtFilter, artistFilter, level })}
     />
   );
 
