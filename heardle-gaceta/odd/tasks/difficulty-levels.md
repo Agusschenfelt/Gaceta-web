@@ -56,5 +56,8 @@ Levels were removed on 2026-09-18 (see CLAUDE.md "No hay niveles de dificultad")
 
 - 2026-11-04 browser check (local mode, Chrome, frame 360x640): game view fits with settings closed and open (only the pre-existing 3 px italic overshoot of `p.headline`); first round is Normal at 1 s; choosing Difícil mid-round shows "desde la próxima ronda" and the next round is hard at 0.5 s; loss reveal shows "Era este tema · Normal" and fits. Parent re-ran npm run test: 198/198.
 
+- 2026-11-04 T4 blocked: the production Supabase project is paused (INACTIVE, project domain does not resolve; the live game cannot deal rounds). Restore via Management API returned 403: the free plan allows 2 active projects per owner and both others (ramirovalentin, plataforma-kioscos-db) are in use. Nothing was applied to production. Options left to the user: Supabase Pro, another Supabase account, or migrating off Supabase (Neon would mean rewriting auth, API, storage and the welcome email). User postponed the decision.
+
 ## Next step
+Blocked on the Supabase decision. Once the project is active: apply schema.sql (single transaction), then `vercel deploy --prod --scope gaceta-97ec2001` from heardle-gaceta/, then smoke. Previously:
 T4 (needs the user's explicit OK): apply schema.sql to production first, then deploy the client.
