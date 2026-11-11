@@ -108,6 +108,7 @@ Regla: nada secreto con prefijo `VITE_`; lo que lleva `VITE_` termina en el bund
 | Colores, fuentes, radio, noise | `src/theme/tokens.css` |
 | Estilos base, focus ring, reduced motion, clase `.label` | `src/index.css` |
 | Título, meta tags, fuentes de Google | `index.html` |
+| Vercel Web Analytics | `index.html` (`/_vercel/insights/script.js`, sin dependencia npm; habilitado en el proyecto el 2026-11-11). Sin stub inline `window.va`: la CSP no permite scripts inline. Sin rutas: es una sola pantalla |
 | Marco de una pantalla, header, wordmark, safe areas | `src/App.jsx` |
 | Isotipo dentro del círculo (tamaño, máscara) | `src/components/molecules/PlayCircle.jsx` (`ISOTYPE_MASK`) |
 | Favicon, tarjeta de compartir, meta tags | `index.html` + `public/og.png`, `public/favicon.png` |
