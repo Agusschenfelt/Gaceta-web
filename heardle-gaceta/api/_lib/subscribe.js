@@ -18,6 +18,10 @@ export const SOURCE = "heardle";
 const SITEVERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 const RESEND_URL = "https://api.resend.com/emails";
 
+// Neither call may hold the function open: Turnstile gates the signup, Resend is a courtesy.
+export const TURNSTILE_TIMEOUT_MS = 5000;
+export const RESEND_TIMEOUT_MS = 5000;
+
 export class SubscribeError extends Error {
   constructor(code) {
     super(code);
@@ -40,23 +44,27 @@ export function readSubscribeConfig(env = process.env) {
   return { databaseUrl: env.DATABASE_URL, turnstileSecret, resendKey: env.RESEND_API_KEY ?? "" };
 }
 
-async function verifyCaptcha({ secret, token, ip, fetch }) {
+async function verifyCaptcha({ secret, token, ip, fetch, timeoutMs }) {
   if (!secret) return; // development without a secret
   if (typeof token !== "string" || token === "") throw new SubscribeError("captcha_failed");
   const form = new URLSearchParams({ secret, response: token });
   if (ip) form.set("remoteip", ip);
   let data;
   try {
-    const response = await fetch(SITEVERIFY_URL, { method: "POST", body: form });
+    const response = await fetch(SITEVERIFY_URL, {
+      method: "POST",
+      body: form,
+      signal: AbortSignal.timeout(timeoutMs),
+    });
     data = await response.json();
   } catch {
-    // Cannot verify: refuse rather than let bots through.
+    // Cannot verify (unreachable or too slow): refuse rather than let bots through.
     throw new SubscribeError("captcha_failed");
   }
   if (data?.success !== true) throw new SubscribeError("captcha_failed");
 }
 
-async function sendWelcome({ email, resendKey, fetch }) {
+async function sendWelcome({ email, resendKey, fetch, timeoutMs }) {
   if (!resendKey) {
     console.warn("subscribe: RESEND_API_KEY is not set, welcome email skipped");
     return;
@@ -70,6 +78,7 @@ async function sendWelcome({ email, resendKey, fetch }) {
         "Idempotency-Key": await idempotencyKey(email),
       },
       body: JSON.stringify(welcomeMessage(email)),
+      signal: AbortSignal.timeout(timeoutMs),
     });
     if (!response.ok) console.warn("subscribe: Resend rejected the welcome email", response.status);
   } catch (error) {
@@ -79,14 +88,18 @@ async function sendWelcome({ email, resendKey, fetch }) {
 
 /**
  * @param {{ email?: unknown, captchaToken?: unknown }} body
- * @param {{ ip?: string, sql: Function, fetch: Function, config: object }} deps
+ * @param {{ ip?: string, sql: Function, fetch: Function, config: object,
+ *   turnstileTimeoutMs?: number, resendTimeoutMs?: number }} deps
  * @returns {Promise<{ inserted: boolean }>}
  */
-export async function run(body, { ip, sql, fetch, config }) {
+export async function run(
+  body,
+  { ip, sql, fetch, config, turnstileTimeoutMs = TURNSTILE_TIMEOUT_MS, resendTimeoutMs = RESEND_TIMEOUT_MS }
+) {
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
   if (!isDeliverableAddress(email)) throw new SubscribeError("invalid_email");
 
-  await verifyCaptcha({ secret: config.turnstileSecret, token: body.captchaToken, ip, fetch });
+  await verifyCaptcha({ secret: config.turnstileSecret, token: body.captchaToken, ip, fetch, timeoutMs: turnstileTimeoutMs });
 
   const rows = await sql`
     insert into public.subscribers (email, source)
@@ -94,7 +107,7 @@ export async function run(body, { ip, sql, fetch, config }) {
     on conflict (email, source) do nothing
     returning id`;
   const inserted = rows.length > 0;
-  if (inserted) await sendWelcome({ email, resendKey: config.resendKey, fetch });
+  if (inserted) await sendWelcome({ email, resendKey: config.resendKey, fetch, timeoutMs: resendTimeoutMs });
   return { inserted };
 }
 
@@ -115,6 +128,8 @@ export function subscribeEndpoint(overrides = {}) {
           config,
           sql: overrides.sql ?? neon(config.databaseUrl),
           fetch: overrides.fetch ?? globalThis.fetch,
+          turnstileTimeoutMs: overrides.turnstileTimeoutMs,
+          resendTimeoutMs: overrides.resendTimeoutMs,
         });
         return Response.json({ ok: true }, { headers: NO_STORE });
       } catch (error) {

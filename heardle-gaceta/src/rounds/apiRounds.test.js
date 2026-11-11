@@ -131,6 +131,40 @@ describe("apiRounds", () => {
   });
 });
 
+describe("apiRounds stale token", () => {
+  it("clears the stored round when guess or skip gets round_not_found, so start deals a new one", async () => {
+    for (const act of [(r) => r.guess("r1", "X", 0), (r) => r.skip("r1", 0)]) {
+      const { fetch, rounds } = setup(
+        reply({ round: playing(), token: "t1" }),
+        reply({ error: "round_not_found" }, 404),
+        reply({ round: playing("r2"), token: "t9" })
+      );
+      await rounds.start();
+      await expect(act(rounds)).rejects.toMatchObject({ code: "round_not_found" });
+      expect(storage.getItem("heardle:api:round")).toBeNull();
+      await rounds.start();
+      expect(sentBody(fetch, 2).token).toBeUndefined();
+    }
+  });
+
+  it("clears the stored round when start cannot resume it", async () => {
+    storage.setItem("heardle:api:round", JSON.stringify({ id: "r1", token: "dead" }));
+    const { rounds } = setup(reply({ error: "round_not_found" }, 404));
+    await expect(rounds.start()).rejects.toMatchObject({ code: "round_not_found" });
+    expect(storage.getItem("heardle:api:round")).toBeNull();
+  });
+
+  it("keeps the stored round on other refusals", async () => {
+    const { rounds } = setup(
+      reply({ round: playing(), token: "t1" }),
+      reply({ error: "unknown_track" }, 400)
+    );
+    await rounds.start();
+    await expect(rounds.guess("r1", "X", 0)).rejects.toMatchObject({ code: "unknown_track" });
+    expect(JSON.parse(storage.getItem("heardle:api:round"))).toEqual({ id: "r1", token: "t1" });
+  });
+});
+
 describe("apiRounds errors", () => {
   it("maps the server's codes", async () => {
     for (const code of ["empty_pool", "invalid_level", "invalid_filter", "unknown_track", "round_not_found"]) {

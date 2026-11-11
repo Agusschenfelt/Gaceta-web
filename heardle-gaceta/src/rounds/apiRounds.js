@@ -50,7 +50,13 @@ export function createApiRounds({
       // worth retrying, unlike a refusal.
       throw new RoundError("network", cause);
     }
-    if (!response.ok || data?.error) throw fromApiError(data?.error);
+    if (!response.ok || data?.error) {
+      const error = fromApiError(data?.error);
+      // The server no longer recognises the stored token: drop it so the next
+      // start deals a fresh round instead of resending a dead one.
+      if (error.code === "round_not_found") writeOpen(null);
+      throw error;
+    }
     if (!data?.round || typeof data.token !== "string") throw new RoundError("unexpected");
     return data;
   }

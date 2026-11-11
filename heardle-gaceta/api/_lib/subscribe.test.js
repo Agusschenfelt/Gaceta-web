@@ -18,13 +18,29 @@ function fakeSql(rows = [{ id: "u1" }]) {
   return sql;
 }
 
-function setup({ sql = fakeSql(), env = OK_ENV, captcha = json({ success: true }), resend = json({ id: "m" }) } = {}) {
-  const fetch = vi.fn(async (url) => {
+/** Never answers; rejects like a real fetch when its AbortSignal fires. */
+const hang = Symbol("hang");
+
+function setup({
+  sql = fakeSql(),
+  env = OK_ENV,
+  captcha = json({ success: true }),
+  resend = json({ id: "m" }),
+  timeouts = {},
+} = {}) {
+  const fetch = vi.fn((url, init) => {
     const result = url.includes("siteverify") ? captcha : resend;
-    if (result instanceof Error) throw result;
-    return result;
+    if (result === hang) {
+      return new Promise((_, reject) =>
+        init.signal.addEventListener("abort", () => reject(init.signal.reason))
+      );
+    }
+    return (async () => {
+      if (result instanceof Error) throw result;
+      return result;
+    })();
   });
-  const endpoint = subscribeEndpoint({ sql, fetch, readConfig: () => readSubscribeConfig(env) });
+  const endpoint = subscribeEndpoint({ sql, fetch, ...timeouts, readConfig: () => readSubscribeConfig(env) });
   const post = (body, headers = {}) =>
     endpoint.fetch(
       new Request("http://x/api/subscribe", {
@@ -158,6 +174,26 @@ describe("POST /api/subscribe", () => {
     const text = await res.text();
     expect(text).toBe(JSON.stringify({ error: "unexpected" }));
     expect(JSON.stringify(err.mock.calls)).not.toContain("a@b.co");
+  });
+
+  it("answers 403 captcha_failed when Turnstile is too slow, without storing", async () => {
+    const { post, sql, fetch } = setup({ captcha: hang, timeouts: { turnstileTimeoutMs: 10 } });
+    const res = await post({ email: "a@b.co", captchaToken: "t" });
+    expect(res.status).toBe(403);
+    expect(await res.json()).toEqual({ error: "captcha_failed" });
+    expect(sql).not.toHaveBeenCalled();
+    expect(fetch.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal);
+  });
+
+  it("still succeeds, with a warning, when Resend is too slow", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { post, sql, resendCalls } = setup({ resend: hang, timeouts: { resendTimeoutMs: 10 } });
+    const res = await post({ email: "secret@example.com", captchaToken: "t" });
+    expect(res.status).toBe(200);
+    expect(sql).toHaveBeenCalledTimes(1);
+    expect(resendCalls()).toHaveLength(1);
+    expect(warn).toHaveBeenCalled();
+    expect(JSON.stringify(warn.mock.calls)).not.toContain("secret@example.com");
   });
 
   it("rejects a malformed body", async () => {

@@ -22,9 +22,9 @@ export const ROUND_ERRORS = Object.freeze({
 
 export class RoundError extends Error {
   constructor(code, cause) {
-    super(ROUND_ERRORS[code] ?? ROUND_ERRORS.unexpected);
+    super(Object.hasOwn(ROUND_ERRORS, code) ? ROUND_ERRORS[code] : ROUND_ERRORS.unexpected);
     this.name = "RoundError";
-    this.code = code in ROUND_ERRORS ? code : "unexpected";
+    this.code = Object.hasOwn(ROUND_ERRORS, code) ? code : "unexpected";
     if (cause) this.cause = cause;
   }
 }
@@ -56,5 +56,8 @@ function isConnectionFailure(error, text) {
  * to `unexpected`.
  */
 export function fromApiError(code) {
-  return new RoundError(typeof code === "string" ? code : "unexpected");
+  // `network` is reserved for real fetch failures: a server must not be able
+  // to make the client retry by sending it.
+  const known = typeof code === "string" && code !== "network" && Object.hasOwn(ROUND_ERRORS, code);
+  return new RoundError(known ? code : "unexpected");
 }

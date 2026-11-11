@@ -79,10 +79,18 @@ Out: unifying Valuto `fans` into `subscribers` (later; `fans` needs name/birth d
   - R3-001: stale token stays in `heardle:api:round` after `round_not_found`. Checked: `start` deals a new round when the token does not open (arbiter.js:93, http.js:71), so no permanent stuck state; still clear the stored token on `round_not_found` in guess/skip and test it.
   - R3-002 (valid): no timeout on the Turnstile and Resend fetches in subscribe.js; add AbortSignal timeouts and a test.
   - R3-003: make `fromApiError` map unknown codes to `unexpected` itself.
-- [ ] T3b Review advisories R3-001..003 (after T4; files outside T4's scope).
+- [x] T3b Review advisories R3-001..003. Done: `round_not_found` clears `heardle:api:round` (start/guess/skip); 5 s `AbortSignal.timeout` on Turnstile (→ 403 `captcha_failed`) and Resend (→ warn, still 200); `fromApiError` maps unknown codes (and a server-sent `network`) to `unexpected`, `RoundError` uses `Object.hasOwn`. Checks: npm run test 311/311 (parent re-ran), eslint clean, vite build ok.
 
 - 2026-11-11 T4 done (slice t4). `scripts/upload-audio.mjs` on Vercel Blob (`audio/<key>.mp3` long cache, `audio/peaks.json` 300 s; skip = same pathname + size, `--force`/`--dry`/`--prune`, peaks hold-back kept), `resolveAssetUrls` with `VITE_AUDIO_BASE_URL` in API mode (warns and falls back to `/audio` if missing), `assertSafeConfig` also for `VITE_ROUNDS_API`, CSP adds `*.public.blob.vercel-storage.com` to media/connect. Checks: npm run test 303/303 (parent re-ran), eslint clean, `npx vite build` ok, blob lib absent from dist, upload script refuses without token. Not run against a real store (T6).
 - [x] T4 (checked above).
 
+- 2026-11-11 T4 commit 3dbc65a. Native review review-95e5f18df4dd9111 (high: process_boundary via package-lock; 4 lenses; user granted): APPROVED and acknowledged (burned). Boundary advances to 3dbc65a. Advisories → T4b:
+  - R2-001/R3-001/R4-002 (valid): 1-year mp3 cache contradicts in-place overwrite on re-encode/--force → go back to 1 day (86400) and fix the comment.
+  - R3-002/R4-001 (valid): API mode without `VITE_AUDIO_BASE_URL` builds fine and 404s every audio → fail the build in `assertSafeConfig` when deployed.
+  - R2-002: `--prune` deletes any non-peaks object under `audio/`, header says only mp3 → restrict to `.mp3` or fix the comment.
+  - R2-003: drop redundant `const stale = staleAudio` alias.
+  - R3-003: orchestration test with a mocked blob client (pagination, skip, peaks hold-back, prune pathnames).
+- [ ] T4b Review advisories of T4.
+
 ## Next step
-T3b review advisories.
+T3b (in progress), then T4b, then T5.
