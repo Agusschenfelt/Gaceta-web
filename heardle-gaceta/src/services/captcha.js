@@ -18,17 +18,46 @@ export function isCaptchaConfigured(siteKey) {
   return Boolean(siteKey);
 }
 
+// How many failed challenges Turnstile may retry on its own before we give up.
+// Mobile Safari often fails the first attempt with a transient 300*/600* code
+// that a retry clears; Cloudflare recommends automatic retry for mobile visitors.
+export const MAX_CHALLENGE_RETRIES = 2;
+// Between retries. The default (8 s) would not fit two retries in DEFAULT_TIMEOUT_MS.
+const RETRY_INTERVAL_MS = 2000;
+
+/**
+ * Whether a Turnstile client error code is worth retrying, per Cloudflare's
+ * error-code table: generic challenge failures (300*, 600*), challenge and
+ * interaction timeouts, and an iframe that failed to load. Configuration
+ * errors (bad sitekey, hostname not allowed, clock) never fix themselves.
+ */
+export function isRetryableCode(code) {
+  const value = String(code ?? "");
+  return /^(300|600)\d{3}$/.test(value) || ["110600", "110620", "200500"].includes(value);
+}
+
 /**
  * Turnstile render() options wired to settle one token exchange. Kept apart
  * from the script/DOM side so the wiring itself is testable in node.
+ *
+ * The widget mode (Invisible) is set on the widget in the Cloudflare
+ * dashboard; `size` only takes normal | flexible | compact, so it is not sent.
  */
 export function buildRenderOptions(siteKey, { resolve, reject }) {
+  let failures = 0;
   return {
     sitekey: siteKey,
-    size: "invisible",
-    retry: "never",
+    retry: "auto",
+    "retry-interval": RETRY_INTERVAL_MS,
     callback: (token) => resolve(token),
-    "error-callback": () => reject(new Error("Turnstile no pudo verificar la sesión.")),
+    // Returning false lets Turnstile retry (and log the code to the console);
+    // returning true means we handled it and it stops.
+    "error-callback": (code) => {
+      failures += 1;
+      if (isRetryableCode(code) && failures <= MAX_CHALLENGE_RETRIES) return false;
+      reject(new Error(`Turnstile no pudo verificar la sesión (${code ?? "sin código"}).`));
+      return true;
+    },
     "timeout-callback": () => reject(new Error("Turnstile tardó demasiado en responder.")),
   };
 }
@@ -63,8 +92,9 @@ function loadTurnstileScript() {
 /**
  * Zero-size, off-layout container for the invisible widget. The app never
  * scrolls (see CLAUDE.md, "Layout: una sola pantalla"): this must not take
- * any height. Cloudflare renders its own visible challenge, if one is ever
- * needed, as a fixed overlay independent of this container.
+ * any height. That only works because the widget is in Invisible mode in the
+ * Cloudflare dashboard: a Managed widget could ask for a checkbox, and it
+ * would be drawn inside this zero-size box where nobody can see or tap it.
  */
 function createHiddenContainer() {
   const container = document.createElement("div");
