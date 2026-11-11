@@ -65,6 +65,13 @@ describe("runUpload", () => {
     expect(logs.join("\n")).toMatch(/skipping peaks\.json/);
   });
 
+  it("a stray non-mp3 object never holds peaks.json back", async () => {
+    const { run, puts, dels } = setup({ remote: [blob("notes.txt", 1)] });
+    await run();
+    expect(puts.map(([p]) => p)).toContain("audio/peaks.json");
+    expect(dels).toEqual([]);
+  });
+
   it("prune uploads peaks.json and deletes only stale audio/*.mp3", async () => {
     const { run, puts, dels } = setup({
       remote: [blob("a.mp3", 10), blob("b.mp3", 20), blob("old.mp3", 1), blob("peaks.json", 5), blob("readme.txt", 1)],

@@ -73,8 +73,7 @@ export function createLocalRounds({ tracks }) {
   const saved = readOpen();
   const savedTrack = saved && byId.get(saved.trackId);
   if (savedTrack?.audioKey) {
-    // A round saved before levels existed was played on the hard ladder, like
-    // the rounds the server used to backfill.
+    // A round saved before levels existed was played on the hard ladder.
     const savedLevel = isLevel(saved.level) ? saved.level : "hard";
     open = {
       id: saved.id,

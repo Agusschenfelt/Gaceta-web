@@ -12,9 +12,10 @@
 export { audioKey } from "./audioKey.mjs";
 
 /**
- * Refuses a configuration that would ship the answer: a production build, or
- * or any build talking to the rounds API, needs the secret. Local-only
- * development may run without it.
+ * Refuses a configuration that would ship the answer or a broken game: a
+ * production build, or any build talking to the rounds API, needs the secret;
+ * a deployed API-mode build also needs VITE_AUDIO_BASE_URL (checked even when
+ * the secret is set). Local-only development may run without either.
  */
 export function assertSafeConfig({ secret, env }) {
   // A deployed build in API mode with no audio base would ship URLs that 404.

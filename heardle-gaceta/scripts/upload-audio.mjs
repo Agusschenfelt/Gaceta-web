@@ -19,6 +19,7 @@
  *
  * Usage: npm run upload-audio [-- --prune] [--dry] [--force]
  */
+import { realpathSync } from "node:fs";
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -91,7 +92,9 @@ export async function runUpload({ client, fsx, publishedDir, prune, dry, force, 
 
   // See scripts/lib/uploadAudio.mjs and "Rotar el secreto" in CLAUDE.md for why.
   const audioNames = new Set(audioFiles.map((f) => f.name));
-  const stale = staleAudioNames([...remote.keys()], audioNames, PEAKS);
+  // Only stale .mp3 names count: they are what prune can delete, so a stray
+  // non-mp3 object under audio/ never holds peaks.json back for good.
+  const stale = staleAudioNames([...remote.keys()], audioNames, PEAKS).filter((n) => n.endsWith(".mp3"));
   const uploadPeaks = shouldUploadPeaks({ prune, staleAudioCount: stale.length });
   const files = uploadPeaks ? [...audioFiles, peaksFile] : audioFiles;
   if (!uploadPeaks) {
@@ -116,18 +119,17 @@ export async function runUpload({ client, fsx, publishedDir, prune, dry, force, 
     });
   }
 
-  // staleAudioNames never includes peaks.json, and only .mp3 names are deleted,
-  // so prune cannot touch peaks.json or any other object.
-  const removable = stale.filter((n) => n.endsWith(".mp3"));
-  if (prune && removable.length && !dry) {
-    for (let i = 0; i < removable.length; i += 100) {
-      await client.del(removable.slice(i, i + 100).map(blobPathname));
+  // `stale` never includes peaks.json and holds only .mp3 names, so prune
+  // cannot touch peaks.json or any other object.
+  if (prune && stale.length && !dry) {
+    for (let i = 0; i < stale.length; i += 100) {
+      await client.del(stale.slice(i, i + 100).map(blobPathname));
     }
   }
 
   log(
     `upload-audio: ${files.length} files, ${uploaded} ${dry ? "would upload" : "uploaded"}, ` +
-      `${removable.length} stale${prune ? (dry ? " would be removed" : " removed") : " (kept; --prune removes them)"}`
+      `${stale.length} stale${prune ? (dry ? " would be removed" : " removed") : " (kept; --prune removes them)"}`
   );
 }
 
@@ -155,7 +157,18 @@ async function main() {
   });
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+// The ESM loader realpaths the main module; realpath argv[1] too so a symlinked
+// path still runs main() instead of exiting 0 silently.
+function isEntryPoint() {
+  if (!process.argv[1]) return false;
+  try {
+    return realpathSync(path.resolve(process.argv[1])) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (isEntryPoint()) {
   main().catch((err) => {
     console.error(`upload-audio: ${err.message}`);
     process.exit(1);
