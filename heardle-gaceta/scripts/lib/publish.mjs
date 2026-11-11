@@ -7,19 +7,9 @@
  * and it may download the audio of the round it is playing, but it must never
  * be able to connect one to the other. That link is the answer.
  */
-import { createHmac } from "node:crypto";
 
-/**
- * Opaque file name for a track's audio. HMAC rather than a plain hash: a plain
- * hash of a public ISRC can be recomputed by anyone, a keyed one cannot.
- *
- * Without a secret the key is the ISRC itself. That is only acceptable for
- * local development, which `assertSafeConfig` enforces.
- */
-export function audioKey(isrc, secret) {
-  if (!secret) return isrc;
-  return createHmac("sha256", secret).update(isrc).digest("base64url").slice(0, 22);
-}
+// Defined in audioKey.mjs so api/ shares it; re-exported for existing callers.
+export { audioKey } from "./audioKey.mjs";
 
 /**
  * Refuses a configuration that would ship the answer: a production build, or
