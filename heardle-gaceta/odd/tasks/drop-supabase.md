@@ -36,8 +36,8 @@ Out: unifying Valuto `fans` into `subscribers` (later; `fans` needs name/birth d
 - No production changes (Blob store, Neon link, env vars, firewall, deploy) without the user's explicit OK.
 
 ## Tasks
-- [ ] T1 Round arbiter: `api/_lib/roundToken.js` + `api/_lib/arbiter.js` (pure, uses engine) + `api/rounds/{start,guess,skip}.js`; tests port the cases of `supabase/tests/secure_rounds.test.sql`. Route: delegated (writer trigger).
-- [ ] T2 Client: `src/rounds/apiRounds.js`, `gameServices.js` mode switch, token persistence, error mapping; tests. Route: delegated.
+- [x] T1 Round arbiter: `api/_lib/roundToken.js` + `api/_lib/arbiter.js` (pure, uses engine) + `api/rounds/{start,guess,skip}.js`; tests port the cases of `supabase/tests/secure_rounds.test.sql`. Route: delegated (writer trigger).
+- [x] T2 Client: `src/rounds/apiRounds.js`, `gameServices.js` mode switch, token persistence, error mapping; tests. Route: delegated.
 - [ ] T3 Emails: `subscribers` migration for shared Neon, `api/subscribe.js` (Turnstile verify + Resend welcome, port `message.js`), `board.subscribeEmail` adapter; tests. Route: delegated.
 - [ ] T4 Audio on Blob: upload script, `assetUrls.js`, CSP in `vercel.json`, `assertSafeConfig` without Supabase. Route: delegated.
 - [ ] T5 Remove Supabase: deps, `supabase/`, Supabase tests, captcha-on-login, docs (CLAUDE.md). Route: delegated.
@@ -60,6 +60,14 @@ Out: unifying Valuto `fans` into `subscribers` (later; `fans` needs name/birth d
 - 2026-11-11: document created after mapping Valuto (Neon via Marketplace, `fans` table, Resend) and the Heardle Supabase surface. User approved the stateless-rounds + shared-Neon direction.
 
 - 2026-11-11: user accepted the token-replay limit. T1 started (delegated writer).
+- 2026-11-11: delivery strategy `feature-branch-chain` (user). Feature branch `feat/heardle-drop-supabase`; slice branches `feat/heardle-drop-supabase-t<N>` with PRs into it.
+- 2026-11-11 T1 done, commit ccdc896 (slice t1). `api/_lib/{roundToken,arbiter,trackPool,config,http}.js`, `api/rounds/{start,guess,skip}.js` (`export default { fetch }`), shared `scripts/lib/audioKey.mjs`. Pool: static JSON imports of `data/catalog/*` (`ARTIST_FILES` list guarded by a test). Extra API codes `invalid_request`/`payload_too_large`/`method_not_allowed` → map to `unexpected` in T2. Checks: npm run test 252/252 (parent re-ran), eslint clean, `vite build` ok. `npm run build` hangs in prebuild: environmental, 26 mp3 in `audio/` are iCloud "dataless" (Desktop synced to iCloud), reads block on download; also 63 `* 2.mp3` iCloud duplicates. RDD: medium, slice_budget_reached → consent asked (lineage review-32365d11278c4f6a).
+
+- 2026-11-11 T1 native review review-32365d11278c4f6a (medium, 1 lens reliability, user granted): APPROVED and acknowledged (authority burned). Advisory R3-001 (re-export in publish.mjs has no local binding): checked, not a defect — the only in-file use is the property `t.audioKey` (publish.mjs:68). Reviewed boundary advances to ccdc896.
+- [x] T1 (checked above).
+
+- 2026-11-11 T2 done (slice t2). `src/rounds/apiRounds.js` (token in `heardle:api:round`, recent ids sent as `exclude`), `src/catalog/recentTracks.js` shared with pickTrack, `fromApiError` in roundErrors, `VITE_ROUNDS_API=true` mode in gameServices (board rejects `local_unavailable` until T3). GameContainer unchanged. Checks: npm run test 266/266 (parent re-ran), eslint clean, `npx vite build` ok. Open for T3: `local_unavailable` copy still mentions Supabase.
+- [x] T2 (checked above).
 
 ## Next step
-T1 in progress.
+T3 emails (shared Neon + /api/subscribe).

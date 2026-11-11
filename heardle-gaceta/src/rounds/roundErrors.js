@@ -47,3 +47,13 @@ function isConnectionFailure(error, text) {
   if (error?.name === "AuthRetryableFetchError" || error?.status === 0) return true;
   return /failed to fetch|network|load failed|timeout|timed out/i.test(text);
 }
+
+/**
+ * Maps the `{ error }` code of the round API (api/_lib/http.js). Codes the
+ * browser has no copy for (`invalid_request`, `payload_too_large`,
+ * `method_not_allowed`: a client bug, not something the player can fix) fall
+ * to `unexpected`.
+ */
+export function fromApiError(code) {
+  return new RoundError(typeof code === "string" ? code : "unexpected");
+}
