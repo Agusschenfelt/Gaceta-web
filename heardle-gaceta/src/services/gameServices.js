@@ -1,6 +1,6 @@
+import { createApiAdapter } from "../leaderboard/apiAdapter.js";
 import { createLocalAdapter } from "../leaderboard/localAdapter.js";
 import { createApiRounds } from "../rounds/apiRounds.js";
-import { RoundError } from "../rounds/roundErrors.js";
 import { createLocalRounds } from "../rounds/localRounds.js";
 import { getPlayerId } from "../player/playerIdentity.js";
 
@@ -17,8 +17,7 @@ import { getPlayerId } from "../player/playerIdentity.js";
  *   board:  { subscribeEmail(email) }
  *
  * With VITE_ROUNDS_API=true the rounds go through the Vercel Functions in
- * api/ (takes precedence over Supabase). Emails are not wired there yet:
- * subscribeEmail rejects until /api/subscribe exists.
+ * api/ (takes precedence over Supabase), and emails go through /api/subscribe.
  *
  * With both VITE_SUPABASE_* set, everything goes through Postgres as an
  * anonymous Supabase user (loaded lazily so the base bundle never ships the
@@ -48,13 +47,11 @@ export function createLocalServices({ tracks }) {
   };
 }
 
-export function createApiServices(deps) {
+/** `deps` ({ fetch, storage, captcha, siteKey }) are injected for tests. */
+export function createApiServices(deps = {}) {
+  const adapter = createApiAdapter(deps);
   return {
     rounds: createApiRounds(deps),
-    board: {
-      subscribeEmail: async () => {
-        throw new RoundError("local_unavailable");
-      },
-    },
+    board: { subscribeEmail: (email) => adapter.subscribeEmail(email) },
   };
 }

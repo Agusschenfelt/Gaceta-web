@@ -38,7 +38,7 @@ Out: unifying Valuto `fans` into `subscribers` (later; `fans` needs name/birth d
 ## Tasks
 - [x] T1 Round arbiter: `api/_lib/roundToken.js` + `api/_lib/arbiter.js` (pure, uses engine) + `api/rounds/{start,guess,skip}.js`; tests port the cases of `supabase/tests/secure_rounds.test.sql`. Route: delegated (writer trigger).
 - [x] T2 Client: `src/rounds/apiRounds.js`, `gameServices.js` mode switch, token persistence, error mapping; tests. Route: delegated.
-- [ ] T3 Emails: `subscribers` migration for shared Neon, `api/subscribe.js` (Turnstile verify + Resend welcome, port `message.js`), `board.subscribeEmail` adapter; tests. Route: delegated.
+- [x] T3 Emails: `subscribers` migration for shared Neon, `api/subscribe.js` (Turnstile verify + Resend welcome, port `message.js`), `board.subscribeEmail` adapter; tests. Route: delegated.
 - [ ] T4 Audio on Blob: upload script, `assetUrls.js`, CSP in `vercel.json`, `assertSafeConfig` without Supabase. Route: delegated.
 - [ ] T5 Remove Supabase: deps, `supabase/`, Supabase tests, captcha-on-login, docs (CLAUDE.md). Route: delegated.
 - [ ] T6 Rollout (needs user OK): Blob store, connect Neon to the project, env vars, firewall rule, upload audio, deploy, smoke.
@@ -69,5 +69,11 @@ Out: unifying Valuto `fans` into `subscribers` (later; `fans` needs name/birth d
 - 2026-11-11 T2 done (slice t2). `src/rounds/apiRounds.js` (token in `heardle:api:round`, recent ids sent as `exclude`), `src/catalog/recentTracks.js` shared with pickTrack, `fromApiError` in roundErrors, `VITE_ROUNDS_API=true` mode in gameServices (board rejects `local_unavailable` until T3). GameContainer unchanged. Checks: npm run test 266/266 (parent re-ran), eslint clean, `npx vite build` ok. Open for T3: `local_unavailable` copy still mentions Supabase.
 - [x] T2 (checked above).
 
+- 2026-11-11 T2 commit 15ed651. RDD assess (base ccdc896): medium, under_budget (373 lines) → pending in slice.
+
+- 2026-11-11: user approved server-only deps `@neondatabase/serverless` and `@vercel/blob` (dev).
+- 2026-11-11 T3 done (slice t3). `db/subscribers.sql` (idempotent, unique (email, source)), `api/_lib/subscribe.js` + `api/subscribe.js` (Turnstile verify → insert on conflict do nothing → Resend welcome only on new row; Resend failure never fails the subscription), `api/_lib/welcomeMessage.js` (copy of the Supabase one; original removed in T5), `src/leaderboard/apiAdapter.js` wired into `createApiServices`, `captcha_failed` code + copy, `local_unavailable` copy without Supabase. Checks: npm run test 291/291 (parent re-ran), eslint clean, `npx vite build` ok, neon driver absent from dist. Open: npm warned esbuild install script pending approval (`npm approve-scripts`); T6 must set `DATABASE_URL`, `TURNSTILE_SECRET_KEY`, `RESEND_API_KEY`, `VITE_TURNSTILE_SITE_KEY` and apply `db/subscribers.sql`.
+- [x] T3 (checked above).
+
 ## Next step
-T3 emails (shared Neon + /api/subscribe).
+T4 audio on Blob.

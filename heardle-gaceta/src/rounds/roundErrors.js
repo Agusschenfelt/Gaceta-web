@@ -14,7 +14,8 @@ export const ROUND_ERRORS = Object.freeze({
   invalid_level: "Ese nivel no es válido.",
   invalid_attempt: "No pudimos registrar el intento. Recargá la página.",
   invalid_email: "Revisá el mail.",
-  local_unavailable: "Falta configurar el juego (Supabase o AUDIO_KEY_SECRET).",
+  captcha_failed: "No pudimos verificar que no sos un robot. Probá de nuevo.",
+  local_unavailable: "Falta configurar el juego (el servidor de rondas o AUDIO_KEY_SECRET).",
   network: "No pudimos conectar. Probá de nuevo.",
   unexpected: "Algo salió mal. Probá de nuevo en un rato.",
 });

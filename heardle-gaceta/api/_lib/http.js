@@ -25,17 +25,20 @@ const STATUS_OF = {
   round_not_found: 404,
   method_not_allowed: 405,
   payload_too_large: 413,
+  captcha_failed: 403,
+  invalid_email: 400,
   unexpected: 500,
 };
 
 const HEADERS = { "Cache-Control": "no-store" };
+export const NO_STORE = HEADERS;
 
-function fail(code) {
+export function fail(code) {
   return Response.json({ error: code }, { status: STATUS_OF[code] ?? 500, headers: HEADERS });
 }
 
 /** The JSON object in the request body, or an ArbiterError-style failure. */
-async function readBody(request) {
+export async function readBody(request) {
   const declared = Number(request.headers.get("content-length"));
   if (Number.isFinite(declared) && declared > MAX_BODY_BYTES) throw new ArbiterError("payload_too_large");
   const text = await request.text();
