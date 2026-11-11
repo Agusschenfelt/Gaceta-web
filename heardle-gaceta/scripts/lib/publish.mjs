@@ -17,6 +17,11 @@ export { audioKey } from "./audioKey.mjs";
  * run without it.
  */
 export function assertSafeConfig({ secret, env }) {
+  // A deployed build in API mode with no audio base would ship URLs that 404.
+  const deployed = Boolean(env.VERCEL_ENV) && env.VERCEL_ENV !== "development";
+  if (deployed && env.VITE_ROUNDS_API === "true" && !String(env.VITE_AUDIO_BASE_URL ?? "").trim()) {
+    throw new Error("VITE_AUDIO_BASE_URL is required for a deployed build with the rounds API enabled");
+  }
   if (secret) return;
   if (env.VERCEL_ENV === "production") {
     throw new Error("AUDIO_KEY_SECRET is required for a production build");

@@ -49,11 +49,11 @@ async function loadEnv() {
 }
 
 /** Every blob under audio/, name (relative to the prefix) → size in bytes. */
-async function listRemote(token) {
+export async function listRemote(client) {
   const out = new Map();
   let cursor;
   do {
-    const page = await list({ prefix: BLOB_PREFIX, limit: 1000, cursor, token });
+    const page = await client.list({ prefix: BLOB_PREFIX, limit: 1000, cursor });
     for (const b of page.blobs) {
       const [name] = namesFromPathnames([b.pathname]);
       if (name) out.set(name, b.size);
@@ -61,6 +61,74 @@ async function listRemote(token) {
     cursor = page.hasMore ? page.cursor : undefined;
   } while (cursor);
   return out;
+}
+
+/**
+ * The sync itself, with its I/O injected so it can be tested:
+ * client = { list, put, del } (token already bound), fsx = { readdir, readFile, stat }.
+ */
+export async function runUpload({ client, fsx, publishedDir, prune, dry, force, log = console.log }) {
+  const audioFiles = (await fsx.readdir(path.join(publishedDir, "audio")))
+    .filter((f) => f.endsWith(".mp3"))
+    .map((f) => ({
+      name: f,
+      file: path.join(publishedDir, "audio", f),
+      type: "audio/mpeg",
+      // Objects are overwritten in place on a re-encode or --force, so keep the
+      // cache short: a long one would serve stale bytes under an unchanged name.
+      maxAge: 86400,
+      always: false,
+    }));
+  const peaksFile = {
+    name: PEAKS,
+    file: path.join(publishedDir, PEAKS),
+    type: "application/json",
+    maxAge: 300,
+    always: true,
+  };
+
+  const remote = await listRemote(client);
+
+  // See scripts/lib/uploadAudio.mjs and "Rotar el secreto" in CLAUDE.md for why.
+  const audioNames = new Set(audioFiles.map((f) => f.name));
+  const stale = staleAudioNames([...remote.keys()], audioNames, PEAKS);
+  const uploadPeaks = shouldUploadPeaks({ prune, staleAudioCount: stale.length });
+  const files = uploadPeaks ? [...audioFiles, peaksFile] : audioFiles;
+  if (!uploadPeaks) {
+    log(
+      `upload-audio: ${stale.length} stale audio key(s) still published — ` +
+        `skipping ${PEAKS} until the new keys are live (rerun with --prune once they are)`
+    );
+  }
+
+  let uploaded = 0;
+  for (const f of files) {
+    const { size } = await fsx.stat(f.file);
+    if (!f.always && !needsUpload({ localSize: size, remoteSize: remote.get(f.name), force })) continue;
+    uploaded += 1;
+    if (dry) continue;
+    await client.put(blobPathname(f.name), await fsx.readFile(f.file), {
+      access: "public",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      contentType: f.type,
+      cacheControlMaxAge: f.maxAge,
+    });
+  }
+
+  // staleAudioNames never includes peaks.json, and only .mp3 names are deleted,
+  // so prune cannot touch peaks.json or any other object.
+  const removable = stale.filter((n) => n.endsWith(".mp3"));
+  if (prune && removable.length && !dry) {
+    for (let i = 0; i < removable.length; i += 100) {
+      await client.del(removable.slice(i, i + 100).map(blobPathname));
+    }
+  }
+
+  log(
+    `upload-audio: ${files.length} files, ${uploaded} ${dry ? "would upload" : "uploaded"}, ` +
+      `${removable.length} stale${prune ? (dry ? " would be removed" : " removed") : " (kept; --prune removes them)"}`
+  );
 }
 
 async function main() {
@@ -72,71 +140,24 @@ async function main() {
     // put the answers in a public store.
     throw new Error("AUDIO_KEY_SECRET is required: run npm run assets with it first");
   }
-
-  const audioFiles = (await readdir(path.join(PUBLISHED, "audio")))
-    .filter((f) => f.endsWith(".mp3"))
-    .map((f) => ({
-      name: f,
-      file: path.join(PUBLISHED, "audio", f),
-      type: "audio/mpeg",
-      // The key changes whenever the secret rotates, so a name never changes content.
-      maxAge: 31536000,
-      always: false,
-    }));
-  const peaksFile = {
-    name: PEAKS,
-    file: path.join(PUBLISHED, PEAKS),
-    type: "application/json",
-    maxAge: 300,
-    always: true,
+  const client = {
+    list: (o) => list({ ...o, token }),
+    put: (p, body, o) => put(p, body, { ...o, token }),
+    del: (p) => del(p, { token }),
   };
-
-  const remote = await listRemote(token);
-
-  // See scripts/lib/uploadAudio.mjs and "Rotar el secreto" in CLAUDE.md for why.
-  const audioNames = new Set(audioFiles.map((f) => f.name));
-  const staleAudio = staleAudioNames([...remote.keys()], audioNames, PEAKS);
-  const uploadPeaks = shouldUploadPeaks({ prune: PRUNE, staleAudioCount: staleAudio.length });
-  const files = uploadPeaks ? [...audioFiles, peaksFile] : audioFiles;
-  if (!uploadPeaks) {
-    console.log(
-      `upload-audio: ${staleAudio.length} stale audio key(s) still published — ` +
-        `skipping ${PEAKS} until the new keys are live (rerun with --prune once they are)`
-    );
-  }
-
-  let uploaded = 0;
-  for (const f of files) {
-    const { size } = await stat(f.file);
-    if (!f.always && !needsUpload({ localSize: size, remoteSize: remote.get(f.name), force: FORCE })) continue;
-    uploaded += 1;
-    if (DRY) continue;
-    await put(blobPathname(f.name), await readFile(f.file), {
-      access: "public",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      contentType: f.type,
-      cacheControlMaxAge: f.maxAge,
-      token,
-    });
-  }
-
-  // peaks.json's pathname never changes, so it stays out of the prune set even
-  // on a run that chose to skip re-uploading it (see uploadPeaks above).
-  const stale = staleAudio;
-  if (PRUNE && stale.length && !DRY) {
-    for (let i = 0; i < stale.length; i += 100) {
-      await del(stale.slice(i, i + 100).map(blobPathname), { token });
-    }
-  }
-
-  console.log(
-    `upload-audio: ${files.length} files, ${uploaded} ${DRY ? "would upload" : "uploaded"}, ` +
-      `${stale.length} stale${PRUNE ? (DRY ? " would be removed" : " removed") : " (kept; --prune removes them)"}`
-  );
+  await runUpload({
+    client,
+    fsx: { readdir, readFile, stat },
+    publishedDir: PUBLISHED,
+    prune: PRUNE,
+    dry: DRY,
+    force: FORCE,
+  });
 }
 
-main().catch((err) => {
-  console.error(`upload-audio: ${err.message}`);
-  process.exit(1);
-});
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((err) => {
+    console.error(`upload-audio: ${err.message}`);
+    process.exit(1);
+  });
+}

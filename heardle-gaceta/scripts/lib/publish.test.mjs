@@ -46,6 +46,22 @@ describe("assertSafeConfig", () => {
     expect(() => assertSafeConfig({ secret: "", env: { VITE_ROUNDS_API: "false" } })).not.toThrow();
   });
 
+  it("refuses a deployed API build without the audio base URL", () => {
+    const base = { VITE_ROUNDS_API: "true", VERCEL_ENV: "preview" };
+    expect(() => assertSafeConfig({ secret: "s", env: base })).toThrow(/VITE_AUDIO_BASE_URL/);
+    expect(() => assertSafeConfig({ secret: "s", env: { ...base, VITE_AUDIO_BASE_URL: "  " } })).toThrow(
+      /VITE_AUDIO_BASE_URL/
+    );
+    expect(() => assertSafeConfig({ secret: "s", env: { ...base, VITE_AUDIO_BASE_URL: "https://b" } })).not.toThrow();
+  });
+
+  it("lets local and development builds run without the audio base URL", () => {
+    expect(() => assertSafeConfig({ secret: "s", env: { VITE_ROUNDS_API: "true" } })).not.toThrow();
+    expect(() =>
+      assertSafeConfig({ secret: "s", env: { VITE_ROUNDS_API: "true", VERCEL_ENV: "development" } })
+    ).not.toThrow();
+  });
+
   it("accepts any environment once there is a secret", () => {
     expect(() =>
       assertSafeConfig({ secret: "s", env: { VERCEL_ENV: "production", VITE_SUPABASE_URL: "x" } })

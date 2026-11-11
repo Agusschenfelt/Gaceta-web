@@ -90,7 +90,8 @@ Out: unifying Valuto `fans` into `subscribers` (later; `fans` needs name/birth d
   - R2-002: `--prune` deletes any non-peaks object under `audio/`, header says only mp3 → restrict to `.mp3` or fix the comment.
   - R2-003: drop redundant `const stale = staleAudio` alias.
   - R3-003: orchestration test with a mocked blob client (pagination, skip, peaks hold-back, prune pathnames).
-- [ ] T4b Review advisories of T4.
+- [x] T4b Review advisories of T4. Done: mp3 cache back to 86400; `assertSafeConfig` fails deployed API-mode builds without `VITE_AUDIO_BASE_URL`; prune deletes only stale `.mp3` (batches of 100); alias removed; `runUpload`/`listRemote` injectable + `scripts/upload-audio.test.mjs`. Checks: npm run test 320/320 (parent re-ran), eslint clean, vite build ok, `--dry` without token refuses.
+- 2026-11-11 T3b commit f5988d5 (assess: medium, under_budget 168).
 
 ## Next step
-T3b (in progress), then T4b, then T5.
+T5 remove Supabase + docs.
