@@ -13,7 +13,8 @@ Vive dentro del repo de la web de GACETA (`Gaceta-web/heardle-gaceta/`) pero es 
 ```bash
 npm install --legacy-peer-deps   # siempre con --legacy-peer-deps
 npm run dev                      # Vite en http://localhost:5173
-npm run test                     # vitest, entorno node: src/**/*.test.js, scripts/**/*.test.mjs y supabase/functions/**/*.test.js
+npm run test                     # vitest, entorno node: src/**/*.test.js, scripts/**/*.test.mjs y api/**/*.test.js
+vercel dev                       # opcional: sirve api/ junto con Vite (ver "Servidor"); npm run dev solo = modo local, sin servidor
 npm run build                    # build a dist/
 npm run catalog                  # arma el catálogo (ver sección Catálogo)
 npm run catalog -- --only ramma,valuto   # solo esos artistas
@@ -22,8 +23,7 @@ npm run compress-audio                   # recorta los mp3 nuevos a 16 s mono 96
 npm run compress-audio -- --dry          # sin escribir nada
 npm run peaks                            # envolventes de onda para el visualizador
 npm run assets                           # publica catálogo (y audios en local/.published) desde las fuentes; corre solo antes de dev y build
-npm run upload-audio                     # sube .published/ al bucket "audio" de Supabase Storage (-- --prune borra lo viejo)
-supabase/tests/run.sh                    # prueba el schema contra un Postgres descartable
+npm run upload-audio                     # sube .published/ a Vercel Blob (-- --prune borra lo viejo; -- --dry no sube nada)
 ```
 
 > **Después de cada `npm run catalog` hay que correr `npm run compress-audio` y después
@@ -35,15 +35,21 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Variable | Quién la usa |
 |---|---|
 | `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` | Solo `npm run catalog`. Nunca llegan al browser. |
-| `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` | Rondas y mails. Vacías = modo local (solo desarrollo). |
-| `VITE_TURNSTILE_SITE_KEY` | Cloudflare Turnstile (pública). Protege el login anónimo de bots. Vacía = sin captcha, anda igual en dev/local. Ver "Captcha del login anónimo". |
-| `AUDIO_KEY_SECRET` | `npm run assets`: nombres opacos de los mp3. **Obligatoria en producción y con Supabase**; sin ella el build falla. Nunca llega al browser. Cambiarla renombra todos los audios (ver "Rotar el secreto"). |
-| `SUPABASE_SERVICE_ROLE_KEY` | Solo `npm run upload-audio`. Jamás con prefijo `VITE_`. |
-| `SUPABASE_DB_PASSWORD` | Correr SQL contra el proyecto con `psql` (ver sección Supabase). |
+| `VITE_ROUNDS_API` | Pública (build). `true` = el browser juega por `api/` (producción). Vacía = modo local, solo desarrollo. |
+| `VITE_AUDIO_BASE_URL` | Pública (build). Base del store de Blob: `https://<store-id>.public.blob.vercel-storage.com/audio`. Obligatoria en un build deployado con la API prendida. |
+| `VITE_TURNSTILE_SITE_KEY` | Pública (build). Site key de Cloudflare Turnstile; protege la suscripción de mails. Vacía = sin captcha, anda igual en dev/local. Ver "Captcha". |
+| `AUDIO_KEY_SECRET` | `npm run assets` **y** las Functions de `api/`: nombres opacos de los mp3 (`HMAC(secret, ISRC)`). **Obligatoria en producción y con la API prendida**; sin ella el build o la función fallan. Nunca llega al browser. Cambiarla renombra todos los audios (ver "Rotar el secreto"). |
+| `ROUND_TOKEN_SECRET` | Solo `api/`. Clave del token AES-256-GCM de la ronda. Cualquier string largo y al azar. |
+| `DATABASE_URL` | Solo `api/subscribe`. La Neon compartida de GACETA (tabla `public.subscribers`). |
+| `TURNSTILE_SECRET_KEY` | Solo `api/subscribe`. Secret key de Turnstile; obligatoria una vez deployado. |
+| `RESEND_API_KEY` | Solo `api/subscribe`. Mail de bienvenida; si falta, la suscripción anda sin mail. |
+| `BLOB_READ_WRITE_TOKEN` | Solo `npm run upload-audio`. |
+
+Regla: nada secreto con prefijo `VITE_`; lo que lleva `VITE_` termina en el bundle del browser.
 
 ## Stack y reglas duras
 
-- React 19 + Vite 6 + Tailwind 3 + Vitest. Supabase JS solo se carga por `import()` dinámico si hay env.
+- React 19 + Vite 6 + Tailwind 3 + Vitest. El browser no trae ningún SDK de backend: habla con `api/` por `fetch`. Las únicas dependencias de servidor son `@neondatabase/serverless` (solo `api/subscribe`) y `@vercel/blob` (dev, solo el script de subida).
 - **No agregar dependencias.** Nada de GSAP, router, framer-motion ni librerías de UI. El juego tiene que ser liviano.
 - **Código, identificadores y comentarios en inglés.** Copy de UI en español neutro con voseo suave ("Adiviná el tema", "Escuchá", "Compartí"). Sin lunfardo.
 - **Colores y fuentes solo por tokens.** Nunca un hex en un componente. Todo sale de `src/theme/tokens.css` y de las clases Tailwind mapeadas en `tailwind.config.js` (`bg`, `fg`, `muted`, `accent`, `danger`, `surface`, `border`, `font-sans`, `font-display`).
@@ -55,20 +61,22 @@ Variables en `.env` (no está en git, ver `.env.example`):
 
 | Querés cambiar… | Archivo |
 |---|---|
-| Duraciones de los stages por nivel y cómo se calcula el score | `src/game/engine.js` (`LEVELS`, `DEFAULT_LEVEL`, `STAGE_COUNT` arriba de todo) + `engine.test.js`, y la misma escalera en `private.round_view` de `supabase/schema.sql`. Si una etapa pasa de 16 s, leer la sección Audio |
-| Nivel: selector, etiquetas "Normal"/"Difícil", cómo aparece en el reveal y el share | `GameSettings.jsx` (selector), `src/game/format.js` (`levelLabel`), `ResultReveal.jsx`, `src/game/share.js`; guardado en `GameContainer.jsx` (`heardle:level`). Reglas del servidor: `start_round` y `rounds.level` en `supabase/schema.sql` |
+| Duraciones de los stages por nivel y cómo se calcula el score | `src/game/engine.js` (`LEVELS`, `DEFAULT_LEVEL`, `STAGE_COUNT` arriba de todo) + `engine.test.js`. El árbitro (`api/_lib/arbiter.js`) usa el motor directamente: no hay una segunda copia que tocar. Si una etapa pasa de 16 s, leer la sección Audio |
+| Nivel: selector, etiquetas "Normal"/"Difícil", cómo aparece en el reveal y el share | `GameSettings.jsx` (selector), `src/game/format.js` (`levelLabel`), `ResultReveal.jsx`, `src/game/share.js`; guardado en `GameContainer.jsx` (`heardle:level`). Reglas del servidor: `start` en `api/_lib/arbiter.js` (el nivel viaja en el token) |
 | Qué layout se usa según el ancho | `src/containers/GameContainer.jsx` (`isWide`) + `src/hooks/useMediaQuery.js` |
 | Largo del recorte de los mp3, bitrate, dónde quedan los originales | `scripts/compress-audio.mjs` (`CLIP_SECONDS`, `BITRATE`) |
 | Cuánto silencio inicial se recorta y con qué umbral | `scripts/compress-audio.mjs` (`ONSET_THRESHOLD`, `LEAD_IN`, `MAX_TRIM`) + `scripts/lib/onset.mjs` (`SILENCE_FLOOR`) |
 | Texto y emojis del share | `src/game/share.js` |
-| Cómo se elige el tema (Supabase) | `start_round` en `supabase/schema.sql` (evita los últimos 20 del jugador) |
-| Cómo se elige el tema (modo local) | `src/catalog/pickTrack.js` (`RECENT_LIMIT`, clave `heardle:recent`) vía `src/rounds/localRounds.js` |
-| Reglas del servidor: rondas, mails, límites (el alias, `ranked` y las palabras bloqueadas quedan como datos retirados, ver "El ranking se sacó del cliente y del servidor") | `supabase/schema.sql` + `supabase/tests/secure_rounds.test.sql` |
-| Qué servicio se usa (Supabase o local), login anónimo | `src/services/gameServices.js`, `supabaseServices.js` |
-| Captcha del login anónimo (Turnstile) | `src/services/captcha.js` (`getCaptchaToken`) + el `!signedIn` de `supabaseServices.js` + `frame-src`/`script-src` en `vercel.json` |
-| Rondas: puerto y las dos implementaciones | `src/rounds/localRounds.js`, `supabaseRounds.js`; textos de error en `roundErrors.js` |
+| Cómo se elige el tema (API) | `api/_lib/arbiter.js` (`MAX_EXCLUDED`, evita los últimos 20 que manda el cliente) + `api/_lib/trackPool.js` (pool y claves de audio) |
+| Cómo se elige el tema (modo local) | `src/catalog/pickTrack.js` (`RECENT_LIMIT`, clave `heardle:recent`) vía `src/rounds/localRounds.js`; la lista de recientes está en `src/catalog/recentTracks.js` |
+| Reglas del servidor: rondas, transiciones, errores | `api/_lib/arbiter.js` (+ `arbiter.test.js`), `api/_lib/http.js` (códigos y status), `api/rounds/{start,guess,skip}.js` |
+| Token de la ronda (formato, vencimiento, clave) y configuración del servidor | `api/_lib/roundToken.js` (`TOKEN_TTL_MS`), `api/_lib/config.js` |
+| Mails: validación, Turnstile, inserción, bienvenida | `api/_lib/subscribe.js` + `api/subscribe.js`; texto, remitente y reply-to en `api/_lib/welcomeMessage.js` |
+| Qué servicio se usa (API o local) | `src/services/gameServices.js` (`VITE_ROUNDS_API`) |
+| Captcha (Turnstile) de la suscripción | `src/services/captcha.js` (`getCaptchaToken`) + `src/leaderboard/apiAdapter.js` + `frame-src`/`script-src` en `vercel.json` |
+| Rondas: puerto y las dos implementaciones | `src/rounds/localRounds.js`, `apiRounds.js` (token en `heardle:api:round`); textos de error en `roundErrors.js` (`fromApiError`) |
 | Qué ve el browser del catálogo y los audios | `scripts/publish-assets.mjs` + `scripts/lib/publish.mjs` |
-| Subida de audios y envolventes a Storage | `scripts/upload-audio.mjs` (decisión de cuándo subir `peaks.json` en `scripts/lib/uploadAudio.mjs`, ver "Rotar el secreto"); el bucket lo crea `supabase/schema.sql` |
+| Subida de audios y envolventes a Blob | `scripts/upload-audio.mjs` (decisión de cuándo subir `peaks.json` y qué podar en `scripts/lib/uploadAudio.mjs`, ver "Rotar el secreto") |
 | De dónde carga el browser audios y envolventes | `src/services/assetUrls.js` |
 | Headers de seguridad (CSP y demás) | `vercel.json` |
 | Ranking del buscador, cuántos resultados, normalización de acentos | `src/catalog/search.js` |
@@ -92,12 +100,11 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Reveal final (disco girando, anillo, puntaje, share, jugar otra vez) | `src/components/organisms/ResultReveal.jsx`; el autoplay del tema está en `GameContainer.jsx` |
 | Color del fondo del reveal según la carátula (qué tono elige, cuánto se oscurece) | `src/theme/coverTint.js` (`MAX_LUMINANCE`, `MIN_SATURATION`, `MIN_SHARE`) + `useCoverTint.js`; transición en `index.css` (`@property --color-bg`) |
 | Copy y validación del formulario de mail | `src/components/organisms/EmailCapture.jsx` |
-| Mail de bienvenida (texto, remitente, reply-to) | `supabase/functions/welcome-email/message.js` + `message.test.js`; envío en `index.ts`; trigger `private.request_welcome_email` en `supabase/schema.sql` |
 | Cuántas rondas hacen falta para que la reveal ofrezca el mail | `src/player/emailPrompt.js` (`EMAIL_AFTER_ROUNDS`, `shouldAskEmail`) |
 | Conteo de rondas terminadas y de cuándo se lo cuenta una sola vez | `src/containers/GameContainer.jsx` (`heardle:roundsFinished`, `heardle:lastFinishedRound`) |
 | Id anónimo del jugador (modo local) | `src/player/playerIdentity.js` |
-| Suscripción de mail (Supabase o local) | `src/leaderboard/supabaseAdapter.js`, `localAdapter.js`; la interfaz común está en `src/services/gameServices.js` |
-| Esquema de base de datos | `supabase/schema.sql` |
+| Suscripción de mail (API o local) | `src/leaderboard/apiAdapter.js`, `localAdapter.js`; la interfaz común está en `src/services/gameServices.js` |
+| Tabla de suscriptores (Neon compartida) | `db/subscribers.sql` |
 | Colores, fuentes, radio, noise | `src/theme/tokens.css` |
 | Estilos base, focus ring, reduced motion, clase `.label` | `src/index.css` |
 | Título, meta tags, fuentes de Google | `index.html` |
@@ -109,7 +116,6 @@ Variables en `.env` (no está en git, ver `.env.example`):
 | Lista de artistas y sus IDs de Spotify | `data/artists.json` |
 | Cómo se arma el catálogo | `scripts/build-catalog.mjs` |
 | Reintentos ante cortes de conexión (cuántos, backoff, qué se reintenta) y timeout por pedido | `src/shared/retry.js` (`withRetry`, `shouldRetry`, `withTimeout`) + `callJudge` y `REQUEST_TIMEOUT_MS` en `GameContainer.jsx` |
-| Sesión anónima vencida o usuario borrado | `src/services/supabaseServices.js` + `src/services/session.js` |
 | Stub de localStorage para los tests | `src/test-utils/localStorage.js` |
 
 ## Flujo de datos (leer una vez)
@@ -120,24 +126,23 @@ sabe qué tema está sonando hasta que termina la ronda.
 1. `GameContainer` monta, llama a `loadCatalog()` (lee `public/catalog/`, generado por
    `npm run assets`), mezcla y deduplica por ISRC. Ese catálogo sirve para el buscador y el reveal:
    **no tiene ningún dato que conecte un tema con su audio**.
-2. `getGameServices()` elige el modo. Con `VITE_SUPABASE_*`: login anónimo de Supabase (la sesión
-   queda en `heardle:auth`) y todo por funciones de Postgres. Sin ellas: modo local, que imita las
-   mismas reglas en el browser y solo sirve para desarrollo.
+2. `getGameServices()` elige el modo. Con `VITE_ROUNDS_API=true`: rondas por las Functions de
+   `api/` (sin login: el estado de la ronda es un token cifrado que guarda el browser en
+   `heardle:api:round`) y mails por `/api/subscribe`. Sin eso: modo local, que imita las mismas
+   reglas en el browser y solo sirve para desarrollo.
 3. `rounds.start(filtro, nivel)` devuelve la **vista de la ronda**: `{ id, audioKey, stages, level,
    stageIndex, attempts, status, score, answerId }`. `answerId` es `null` mientras se juega. Si hay una ronda
    abierta, devuelve esa: **nunca se reparte otra** (recargar para cambiar un tema difícil no
    sirve). Por eso cambiar los artistas o el nivel a mitad de ronda aplica desde la próxima, y lo dice (para
    el nivel, comparando `game.level` con el elegido: la vista ya lo trae).
-4. Play: `useAudioPlayer(audioUrl(audioKey))` (Storage con Supabase, `/audio/` en local) reproduce desde 0 hasta
+4. Play: `useAudioPlayer(audioUrl(audioKey))` (Blob con la API, `/audio/` en local) reproduce desde 0 hasta
    `currentClipSeconds(game)`. El corte lo hacen un `setTimeout` armado en `onplaying` y el evento
    `timeupdate`; el `requestAnimationFrame` solo dibuja el anillo (ver Gotchas).
 5. Guess → `rounds.guess(id, trackId, attempt)`; skip → `rounds.skip(id, attempt)`, donde
    `attempt` es cuántos intentos vio el cliente: si el servidor ya lo registró (se perdió la
    respuesta), el reintento no cuenta doble. Los cortes de conexión se reintentan solos, y un
    pedido que no contesta en 10 s cuenta como corte (`callJudge`: timeout + reintento, también
-   para arrancar la ronda). El login inicial se reintenta pero **sin timeout**: un login
-   lento que sigue corriendo mientras otro reintenta crearía dos jugadores anónimos peleando por la
-   misma sesión guardada. Si igual falla la carga, la pantalla de error tiene un botón "Reintentar". Si el mp3
+   para arrancar la ronda). Si igual falla la carga, la pantalla de error tiene un botón "Reintentar". Si el mp3
    no carga, se avisa y tocar el círculo lo reintenta. Una acción por vez (`busy`); la
    ronda solo cambia con la respuesta del árbitro. Un error se muestra arriba del buscador.
 6. Al terminar, la ronda ya quedó registrada por quien la arbitró. `ResultReveal` **reemplaza** al
@@ -150,10 +155,11 @@ Score: si ganás, `stages.length - índice del stage ganador` (acertar de una = 
 último intento = 1). Perder = 0. La definición única es `scoreFor(won, stageWon)` en el motor.
 
 **El puntaje nunca viene del cliente** (desde 2026-09-22, `odd/tasks/fair-ranking.md`). El
-browser manda solo el resultado (`won`, `stageWon`, `attempts`). En Supabase `games.score` es
-una **columna generada** y hay checks que rechazan una ronda imposible; mandar `score` en el
-insert da error. El adapter local lo deriva igual con `scoreFor`. Si cambiás `LEVELS` o la
-fórmula, cambiala también en `supabase/schema.sql` (el 4 y las escaleras están escritos ahí).
+browser manda solo el intento (`guess`/`skip` con el token); el árbitro avanza la ronda con el
+motor y calcula el puntaje con `scoreFor` (`api/_lib/arbiter.js`), así que un cliente no puede
+declarar un resultado imposible. El modo local lo deriva igual con `scoreFor`. Si cambiás `LEVELS` o
+la fórmula, el motor es la única fuente: el servidor lo importa (antes había una copia en SQL,
+ya no).
 
 **El ranking se sacó del cliente y del servidor** (2026-09-28/29, `odd/tasks/remove-ranking.md`,
 T1–T4). El mail solo se pedía adentro del ranking, detrás de un alias que casi nadie completaba, y
@@ -161,13 +167,10 @@ las reglas para que una ronda sumara (mínimo de partidas, 3+ artistas, primera 
 en palabras del usuario, "poco claras". Se sacó `Leaderboard.jsx`, `src/leaderboard/ranking.js`, el
 alias (`playerIdentity.js`) y los reads `getTop`/`getPlayerStats`/`setAlias` de los puertos; el mail
 pasó a pedirse directamente en la reveal (ver el punto 6 arriba y "Captura de mail" en la tabla de
-arriba). En `supabase/schema.sql`, `get_leaderboard`, `my_stats`, `set_alias` y el backfill de
-primera-jugada (`private.backfill_ranked_first_play`) están **borrados** (`drop function if
-exists ...`, así que correr el schema de nuevo también los saca de un proyecto viejo), y
-`start_round` ya no calcula `ranked`. `players.alias` (+ su constraint e índice), `rounds.ranked` y
-`public.blocked_words` quedan en la tabla como datos de ranking retirados a propósito: borrar una
-columna o una tabla es irreversible y se decide después. Aplicado en producción el 2026-09-29,
-después de deployar el cliente sin ranking (smoke en verde).
+arriba). En el backend de entonces (Supabase) también se borraron `get_leaderboard`, `my_stats` y
+`set_alias`; ese backend ya no existe (ver "Servidor"), y los datos de ranking que habían quedado
+ahí (alias, `rounds.ranked`, `blocked_words`) se fueron con él: el nuevo servidor no guarda
+rondas ni jugadores.
 
 **Hay dos niveles de dificultad** (2026-11-04, `odd/tasks/difficulty-levels.md`). **Normal** (el
 default, `[1, 2, 4, 8]`) y **Difícil** (`[0.5, 1, 3, 8]`, la escalera de antes). Motivo: la gente
@@ -188,15 +191,13 @@ resuelven ahora:
 El nivel es **del jugador y de la ronda**: se elige en `GameSettings` (panel ancho y línea
 colapsable, `heardle:level`, default Normal), viaja en `start(artistSlugs, level)` y queda en
 `rounds.level`. Una ronda abierta conserva su nivel (como su tema): cambiarlo a mitad aplica desde la
-próxima. En `private.round_view` la escalera sale del nivel de la ronda.
+próxima. En el servidor la escalera sale del nivel que viaja dentro del token de la ronda
+(`getStages(state.level)` del motor).
 
-**Migración de `rounds.level`.** Las rondas que ya existían se jugaron en la escalera difícil, así
-que el `add column` las llena con `'hard'` (una ronda abierta no cambia de escalera) y recién después
-el default pasa a `'normal'` para las nuevas; todo es re-ejecutable. `start_round(p_artists, p_level
-default 'normal')` reemplaza a `start_round(text[])`, que se borra: dejar las dos haría ambiguo un
-llamado con solo `p_artists`. Un bundle viejo que manda solo `p_artists` sigue andando y juega Normal.
-`supabase/tests/run.sh` prueba el default, la escalera difícil, el llamado viejo, el puntaje en los
-dos niveles y la migración desde una tabla sin la columna.
+**Sin migración.** Con las rondas sin estado no hay filas que migrar: una ronda abierta en el
+browser vive en su token, y los tokens viejos (de antes de este servidor) simplemente no abren.
+En modo local, una ronda guardada sin `level` se retoma en la escalera difícil (la que se jugaba
+antes de los niveles).
 
 ## Contratos de datos
 
@@ -208,19 +209,20 @@ primer push (2026-09-23, `odd/tasks/review-followups.md`). Se regeneran con `npm
 `compress-audio` + `peaks`; conviene tener un backup propio.
 
 Lo generado por `npm run assets` (todo en `.gitignore`): `public/catalog/` siempre; con secreto,
-`.published/audio/<key>.mp3` + `.published/peaks.json` para subir a Storage; sin secreto (modo
-local), `public/audio/` y `public/catalog/peaks.json`; y `supabase/.generated/tracks.sql`. En
-Vercel no hay fuentes: solo se publica el catálogo.
+`.published/audio/<key>.mp3` + `.published/peaks.json` para subir a Blob; sin secreto (modo
+local), `public/audio/` y `public/catalog/peaks.json`. Ya no se genera ningún archivo con el
+mapeo ISRC → clave: el servidor la deriva en runtime. En Vercel no hay fuentes: solo se publica el catálogo.
 
 **Rotar el secreto** (invalida una tabla clave → respuesta armada entre jugadores; una tabla por
 hash de los bytes sobrevive, es el límite aceptado): nuevo `AUDIO_KEY_SECRET` → `npm run assets` →
-`npm run upload-audio` → cargar `tracks.sql` → `npm run upload-audio -- --prune`. Las rondas
-abiertas siguen andando: la vista toma la clave nueva de `tracks`. `peaks.json` tiene un solo
-nombre fijo en Storage y está reindexado por clave de audio; `upload-audio` no lo vuelve a subir
-mientras queden claves viejas publicadas sin podar (la primera corrida de una rotación), para no
-pisarlo con datos de las claves nuevas mientras las rondas abiertas todavía resuelven las viejas.
-Se sube recién en la corrida con `--prune`, una vez que `tracks.sql` ya cambió las claves en la
-base. Mientras tanto el anillo de esas rondas queda plano (`loadPeaks` nunca rechaza), no roto.
+`npm run upload-audio` (sube los mp3 con nombres nuevos, deja los viejos) → **cambiar el secreto en
+Vercel y deployar** → `npm run upload-audio -- --prune`. Las rondas abiertas siguen andando: el
+token guarda el ISRC, no la clave, así que el servidor deriva la clave nueva en la próxima
+respuesta. `peaks.json` tiene un solo nombre fijo en Blob y está reindexado por clave de audio;
+`upload-audio` no lo vuelve a subir mientras queden claves viejas publicadas sin podar (la primera
+corrida de una rotación), para no pisarlo con datos de las claves nuevas mientras el servidor
+todavía reparte las viejas. Se sube recién en la corrida con `--prune`, ya con el deploy hecho.
+Mientras tanto el anillo queda plano (`loadPeaks` nunca rechaza), no roto.
 
 **Track en `data/catalog/<slug>.json`** (lo genera el script, no editar a mano salvo para corregir un dato puntual). La versión publicada es igual pero **sin `audio_file` ni `deezer_id`**, y con `audio_key` solo en modo local:
 
@@ -244,9 +246,9 @@ base. Mientras tanto el anillo de esas rondas queda plano (`loadPeaks` nunca rec
 
 **Track en memoria** (lo que ven los componentes, sale de `loadCatalog`): `{ id, title, artists, artistSlugs, audioFile, coverUrl, spotifyUrl, release, releaseDate }`. Ojo con el camelCase: el JSON usa snake_case, la app camelCase, la conversión está en `loadCatalog.js`.
 
-**Puertos** (`src/services/gameServices.js`): `rounds` = `start(artistSlugs, level)`, `guess(roundId, trackId, attempt)`, `skip(roundId, attempt)`, todos devuelven la vista de la ronda (`{ id, audioKey, stages, level, stageIndex, attempts, status, score, answerId, answer }`). `attempt` es `attempts.length` como lo vio el cliente: obligatorio (sin él, `invalid_attempt`), y es lo que hace seguro reintentar. La vista ya no manda `ranked`: `start_round` dejó de calcularlo (ver "El ranking se sacó del cliente y del servidor" más arriba). `board` = `subscribeEmail(email)`, el único método que le queda. Nadie manda puntaje ni `playerId`: en Supabase el jugador es `auth.uid()`.
+**Puertos** (`src/services/gameServices.js`): `rounds` = `start(artistSlugs, level)`, `guess(roundId, trackId, attempt)`, `skip(roundId, attempt)`, todos devuelven la vista de la ronda (`{ id, audioKey, stages, level, stageIndex, attempts, status, score, answerId, answer }`). `attempt` es `attempts.length` como lo vio el cliente: obligatorio (sin él, `invalid_attempt`), y es lo que hace seguro reintentar. En modo API la vista trae además el token sellado, que el adaptador guarda en `heardle:api:round` y reenvía; `start` también manda los ids recientes como `exclude` (ver "Servidor"). `board` = `subscribeEmail(email)`, el único método que le queda. Nadie manda puntaje ni `playerId`: no hay jugadores en el servidor.
 
-**localStorage** (todas las claves con prefijo `heardle:`): `auth` (sesión anónima de Supabase), `artistFilter`, `level` (`normal | hard`; cualquier otro valor se lee como `normal`), `emailPrompt` (`pending | done | dismissed`), `roundsFinished` (cuántas rondas terminó este browser) y `lastFinishedRound` (el id de la última que ya se contó, para no contarla dos veces en un re-render o el doble efecto de StrictMode); en modo local además `playerId`, `recent`, `local:round` (la ronda abierta), `local:emails`. Quien jugó antes del 2026-09-18 puede tener todavía un `heardle:difficulty` huérfano, y quien jugó antes del 2026-09-28 uno `heardle:alias`; ninguno de los dos se lee más y no molestan.
+**localStorage** (todas las claves con prefijo `heardle:`): `api:round` (el token de la ronda abierta en modo API), `artistFilter`, `level` (`normal | hard`; cualquier otro valor se lee como `normal`), `emailPrompt` (`pending | done | dismissed`), `roundsFinished` (cuántas rondas terminó este browser) y `lastFinishedRound` (el id de la última que ya se contó, para no contarla dos veces en un re-render o el doble efecto de StrictMode); `recent` (los últimos 20 temas, en los dos modos); en modo local además `playerId`, `local:round` (la ronda abierta), `local:emails`. Quien jugó antes del 2026-09-18 puede tener todavía un `heardle:difficulty` huérfano, y quien jugó antes del 2026-09-28 uno `heardle:alias`; ninguno de los dos se lee más y no molestan.
 
 ## Catálogo
 
@@ -295,7 +297,7 @@ de sumar esos 23; no se volvieron a medir.
 
 **Sin preview en Deezer: 12, todas de Tadu Vázquez** (ver `data/missing.json`): Bloque, Quererse,
 Diluvio, Me Conocen, Contigo, Sangre, Watch Out, MVP, Ambición, Sombras, Whisky a las Rocas,
-Tan Bien. Para sumarlas hay que conseguir el audio a mano y dejarlo en `audio/<ISRC>.mp3` y correr `npm run assets` (y recargar el seed en Supabase).
+Tan Bien. Para sumarlas hay que conseguir el audio a mano y dejarlo en `audio/<ISRC>.mp3` y correr `npm run assets` y `npm run upload-audio`.
 
 El script deja los mp3 en 30 s stereo tal como vienen de Deezer. Correr `npm run compress-audio` y
 después `npm run peaks` (ver sección Audio).
@@ -472,8 +474,8 @@ así que le gana por especificidad a `leading-*`. Para pisarlo hace falta el mod
   después de `npm run catalog` solo toca los temas nuevos.
 - Flags: `--dry`, `--force`, `--seconds=20`, `--bitrate=128k`.
 - **`audio/` (las fuentes, por ISRC) NO va a git** (ver "Fuentes vs. lo publicado"). En producción
-  los mp3 se sirven desde Supabase Storage, no desde Vercel. Ojo con el egress del plan de
-  Supabase si juega mucha gente: cada ronda baja hasta ~190 KB.
+  los mp3 se sirven desde Vercel Blob, no desde el deploy. Ojo con la transferencia del plan si
+  juega mucha gente: cada ronda baja hasta ~190 KB.
 
 **Si algún día agregás una etapa de más de 16 s** en `LEVELS`, los mp3 actuales se cortan
 antes de tiempo. Hay que correr `npm run compress-audio -- --force --seconds=<nuevo>`, que
@@ -519,115 +521,104 @@ decisión y está sin hacer.
 **`peaks.json` no sirve para medir esto.** Sus buckets son de 250 ms (16 s / 64 valores) y la
 primera etapa dura 500 ms, así que subestima: encontraba 21 temas donde midiendo PCM a 25 ms hay 26.
 
-## Supabase
+## Servidor (Vercel Functions + Neon + Blob)
 
-**Proyecto en uso:** `heardle-gaceta`, ref `vqdqftckujawjkllrclk`, organización "Gaceta", región
-São Paulo (creado el 2026-09-23 con el CLI). Schema y seed cargados; logins anónimos activados y
-registro por email desactivado (el juego no lo usa) vía `supabase config push`. La contraseña de
-la base, la anon key y `AUDIO_KEY_SECRET` están en `.env` (git-ignored). El CLI quedó linkeado:
-`supabase/.temp/pooler-url` sirve para correr SQL con `psql` y `PGPASSWORD=$SUPABASE_DB_PASSWORD`.
-`supabase/tests/smoke.mjs` prueba el flujo completo contra este proyecto (ver cabecera del archivo).
+Desde 2026-11-11 (`odd/tasks/drop-supabase.md`) no hay Supabase: el proyecto pausado por el límite
+del plan gratis se reemplazó por tres piezas que ya paga la cuenta de GACETA. No hay base de datos
+de rondas.
 
-Puesta en marcha de un proyecto nuevo:
+| Pieza | Para qué | Dónde vive |
+|---|---|---|
+| Vercel Functions (`api/`) | Árbitro de rondas y suscripción de mails | `api/rounds/{start,guess,skip}.js`, `api/subscribe.js`, lógica en `api/_lib/` |
+| Neon (compartida con Valuto) | Solo la tabla `public.subscribers` | `db/subscribers.sql` |
+| Vercel Blob (store público) | mp3 con nombre opaco y `peaks.json` | `scripts/upload-audio.mjs` |
 
-1. Authentication → habilitar **Anonymous sign-ins**. El captcha (Turnstile) ya está implementado
-   del lado del cliente (ver "Captcha del login anónimo" más abajo); falta prenderlo del lado de
-   Supabase con **CAPTCHA protection** en el dashboard. Sin eso, un bot puede crear jugadores sin
-   límite; Supabase ya limita los logins anónimos por IP mientras tanto.
-2. SQL editor → correr `supabase/schema.sql`. Se puede volver a correr: todo es `if not exists` /
-   `create or replace`.
-3. Con `AUDIO_KEY_SECRET` en `.env`, `npm run assets` → `npm run upload-audio` (necesita
-   `SUPABASE_SERVICE_ROLE_KEY`) → pegar `supabase/.generated/tracks.sql` en el SQL editor. **Ese
-   archivo es la respuesta de todas las rondas: no se commitea ni se comparte.** Hay que volver a
-   cargarlo si cambia el catálogo o el secreto.
-4. Cargar `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` y `AUDIO_KEY_SECRET` en `.env` y en Vercel.
+**Rondas sin estado.** `api/_lib/arbiter.js` es puro (pool, azar, reloj e ids inyectados) y usa
+`src/game/engine.js` para escaleras, transiciones y puntaje: hay **una sola fuente de reglas**, la
+misma que usa el modo local. El estado de la ronda `{ id, trackId, level, stageIndex, attempts,
+status, createdAt }` viaja en un token opaco: `api/_lib/roundToken.js` lo sella con AES-256-GCM
+(confidencial y autenticado) usando `ROUND_TOKEN_SECRET`, vence a las 24 h y todo lo que no abre
+(roto, adulterado, de otra clave, vencido) es `round_not_found`. El servidor no guarda nada entre
+llamadas. El pool de temas sale de los JSON de `data/catalog/` importados estáticamente
+(`api/_lib/trackPool.js`, con la lista `ARTIST_FILES` cubierta por un test) y la clave de audio
+se deriva en runtime con `HMAC(AUDIO_KEY_SECRET, ISRC)` (`scripts/lib/audioKey.mjs`, compartido con
+`npm run assets`): **no hay archivo de mapeo ISRC → audio desplegado**, por eso ya no existe
+`tracks.sql`. Sin `AUDIO_KEY_SECRET` en un entorno deployado la config tira `ConfigError` (500).
 
-**Mail de bienvenida** (2026-09-29, `odd/tasks/welcome-email.md`). Sin doble opt-in, a pedido
-del usuario: son los primeros mails de GACETA y no quería sumar fricción. Cada mail **nuevo** en
-`public.emails` dispara el trigger `emails_welcome` → `private.request_welcome_email()` →
-`net.http_post` (pg_net, asíncrono: nunca frena el insert) → Edge Function `welcome-email` →
-Resend. Un mail repetido no dispara nada (`on conflict do nothing`), y cualquier error del trigger
-se traga con un `warning`: la suscripción nunca falla por la bienvenida. Sale de
-`GACETA <bienvenida@esgaceta.com>` con reply-to `contacto@gacetaplay.com`; darse de baja es responder.
+**Límites aceptados** (el usuario los aceptó el 2026-11-11):
 
-- **DNS:** `esgaceta.com` está en Vercel; los registros de Resend (DKIM `resend._domainkey`, SPF y
-  MX de `send.esgaceta.com`) los cargó el usuario ahí. No hay casilla de correo propia: por eso el
-  reply-to va a otro dominio.
-- **Secrets:** `RESEND_API_KEY` y `WELCOME_HOOK_SECRET` en los secrets de Edge Functions; la URL de
-  la función y el mismo hook secret en Vault (`welcome_email_url`, `welcome_email_secret`). Nada de
-  eso va al repo ni a `.env`.
-- **La función** se deploya con `supabase functions deploy welcome-email --no-verify-jwt --use-api`
-  y rechaza todo lo que no traiga el header `x-welcome-secret` correcto (401). Manda con
-  `Idempotency-Key: welcome-<sha256 del mail>`, así un reintento no duplica el mail (hash y no el
-  mail crudo: Resend corta la clave en 256 caracteres y `fetch` rechaza headers no Latin-1).
-- **Sin pg_net o sin los dos secrets de Vault el trigger no hace nada**, a propósito: así
-  `schema.sql` sigue corriendo en el Postgres descartable de `supabase/tests/run.sh`. En un
-  proyecto nuevo: `create extension if not exists pg_net;` y
-  `select vault.create_secret('<url>/functions/v1/welcome-email', 'welcome_email_url');` +
-  `select vault.create_secret('<hook secret>', 'welcome_email_secret');`.
-- **Probar sin molestar a nadie:** mandar a `delivered@resend.dev` (dirección de test de Resend).
-  Las respuestas del trigger quedan en `net._http_response`.
+- **Repetición del token.** Un token sin estado se puede reenviar. Un script podría reusar el token
+  del stage 0 para probar todos los temas y encontrar la respuesta por eliminación. El rate limit
+  del firewall lo hace lento. Si algún día importa: una tabla de "token usado" en la Neon
+  compartida; el contrato con el cliente no cambia.
+- **Incógnito.** Recargar en una ventana privada reparte otro tema (no hay ranking, no hay nada
+  que ganar).
+- **Rate limit por IP, no por jugador.** Es una regla del Vercel Firewall sobre `/api/rounds/*`
+  (reemplaza el tope de 60 rondas por hora del SQL); se configura en el dashboard, no en el código.
+- **Últimos 20 en el browser.** El cliente manda los últimos ids respondidos como `exclude`
+  (`src/catalog/recentTracks.js`); el servidor lo respeta pero no lo guarda.
 
-**Captcha del login anónimo (Cloudflare Turnstile).** `src/services/captcha.js` carga
-`api.js?render=explicit` con un `<script>` creado en runtime (nada de dependencia npm), renderiza
-el widget invisible en un contenedor de tamaño cero pegado a `document.body` (esta app no scrollea
-nunca: no puede ocupar alto) y resuelve un token de un solo uso por `callback`; `error-callback`,
-`timeout-callback` o que el script no cargue rechazan, y hay un timeout total de 15 s. El widget y
-su contenedor se sacan después de usarlos, haya salido bien o mal. `getCaptchaToken(siteKey)`
-devuelve `undefined` sin `VITE_TURNSTILE_SITE_KEY` (dev/local sigue andando sin captcha).
+**Cliente.** `src/rounds/apiRounds.js` guarda el token de la ronda abierta en
+`heardle:api:round` y `start` la retoma mientras `status === "playing"`; si el servidor responde
+`round_not_found` (token vencido o clave rotada) el cliente borra el token y la próxima `start`
+reparte otra. Los errores llegan como `{ error: "<código>" }` y `fromApiError` los mapea a
+`roundErrors.js`; un código sin copy (`invalid_request`, `payload_too_large`, `method_not_allowed`)
+cae a `unexpected`.
 
-`supabaseServices.js` solo pide un token en la rama `!signedIn` (ver "Flujo de datos", paso 2): una
-sesión guardada o su refresh nunca pasan por el captcha. Un fallo del captcha se relanza como el
-mismo `RoundError("not_authenticated", …)` de siempre, así que el botón "Reintentar" de la pantalla
-de error también lo cubre. Como `createSupabaseServices` se llama de cero en cada reintento del
-login (ver "Flujo de datos", paso 5: el login inicial se reintenta sin timeout), cada intento pide
-un token nuevo — necesario, porque un token de Turnstile es de un solo uso.
+**Mails.** `POST /api/subscribe` (`api/_lib/subscribe.js`): verifica el token de Turnstile con
+`TURNSTILE_SECRET_KEY` (timeout 5 s → `captcha_failed`), inserta en `public.subscribers` con
+`on conflict do nothing` (único por `(email, source)`, `source = 'heardle'`) y **solo si la fila
+es nueva** manda la bienvenida por Resend (`api/_lib/welcomeMessage.js`, remitente
+`GACETA <bienvenida@esgaceta.com>`, reply-to `contacto@gacetaplay.com`, `Idempotency-Key` por hash
+del mail, timeout 5 s). Si Resend falla o falta `RESEND_API_KEY`, la suscripción igual anda (solo
+avisa en los logs). Sin doble opt-in, a pedido del usuario; darse de baja es responder el mail.
+Para probar sin molestar a nadie, mandar a `delivered@resend.dev`. El DNS de Resend ya está cargado
+en el team de Vercel.
 
-**Orden de despliegue del captcha:** primero el cliente (este cambio, con `VITE_TURNSTILE_SITE_KEY`
-cargada en `.env` y en Vercel production/preview), después, y solo después, activar **CAPTCHA
-protection** en Authentication → Settings del dashboard de Supabase con la **secret key** de
-Turnstile. Esa secret key nunca va al repo ni a `.env`: se carga directo en el dashboard. Mientras
-Supabase no lo pida, el token viaja pero se ignora — el cliente ya funciona en los dos estados.
-`supabase/tests/smoke.mjs` documenta en su cabecera cómo correrlo con el captcha ya exigido.
+La tabla es de **toda GACETA**, no del Heardle: se aplica a mano con
+`psql "$DATABASE_URL_UNPOOLED" -f db/subscribers.sql` (idempotente, no toca `fans` de Valuto).
 
-Modelo de seguridad (detallado arriba de `schema.sql`): ninguna tabla es legible ni escribible
-desde el cliente (RLS sin políticas + `revoke`); todo pasa por funciones `security definer` que
-solo actúan sobre las filas del que llama; el puntaje es una columna generada; hay tope de 60
-rondas por hora, un mail por jugador, y alias validado (forma, palabras bloqueadas como palabra
-entera, único sin importar mayúsculas). Palabras bloqueadas: `insert into public.blocked_words`.
+**Captcha (Cloudflare Turnstile).** Ahora protege la suscripción, no un login. `src/services/captcha.js`
+carga `api.js?render=explicit` con un `<script>` creado en runtime (nada de dependencia npm),
+renderiza el widget invisible en un contenedor de tamaño cero pegado a `document.body` (esta app no
+scrollea nunca: no puede ocupar alto) y resuelve un token de un solo uso; `error-callback`,
+`timeout-callback` o que el script no cargue rechazan, con un timeout total de 15 s, y el widget se
+saca después de usarlo. `getCaptchaToken(siteKey)` devuelve `undefined` sin
+`VITE_TURNSTILE_SITE_KEY` (dev/local anda sin captcha). Cada intento pide un token nuevo porque son
+de un solo uso. El servidor lo exige una vez deployado (`TURNSTILE_SECRET_KEY`).
 
-`supabase/tests/run.sh` levanta un Postgres descartable, simula lo que Supabase provee
-(`auth.uid()`, roles `anon`/`authenticated` con sus grants por defecto) y prueba todo eso; también
-carga el seed generado. **Lo que no prueba:** el login anónimo real ni PostgREST. Eso se verifica
-recién con un proyecto (o `supabase start`, que necesita Docker).
+**Subida de audio a Blob.** `npm run upload-audio` (necesita `BLOB_READ_WRITE_TOKEN`) sube
+`.published/audio/<key>.mp3` (cache de 1 día: un mp3 re-encodeado se pisa en su lugar) y
+`audio/peaks.json` (cache 300 s). Saltea lo que ya está con el mismo pathname y tamaño; flags
+`--dry`, `--force`, `--prune` (borra solo `.mp3` viejos, de a 100). El navegador lee de
+`VITE_AUDIO_BASE_URL` (`https://<store-id>.public.blob.vercel-storage.com/audio`); un build deployado
+con la API prendida y sin esa variable **falla** (`assertSafeConfig`).
 
-**Orden de despliegue de los niveles.** Primero el schema, después el cliente. El schema nuevo
-acepta el llamado viejo (`start_round` solo con `p_artists`, juega Normal), pero el cliente nuevo
-manda `p_level` y contra el schema viejo daría "function not found". Aplicar el schema deja las
-rondas abiertas en su escalera (difícil) y las nuevas en Normal.
+**Orden de despliegue.** (1) Store de Blob, conectar Neon al proyecto y cargar variables de entorno
+en Vercel; (2) aplicar `db/subscribers.sql`; (3) `npm run assets` + `npm run upload-audio`;
+(4) deploy con `VITE_ROUNDS_API=true`; (5) regla del firewall sobre `/api/rounds/*`; (6) smoke de
+una ronda completa y una suscripción. Todo eso es el T6 de `odd/tasks/drop-supabase.md` y necesita
+el OK explícito del usuario (toca producción). El deploy sigue siendo por CLI desde `heardle-gaceta/`
+(ver "Deploy" en el Backlog).
 
-**Rollback de los niveles.** Volver a aplicar el `schema.sql` anterior no alcanza: deja las dos
-sobrecargas de `start_round` y un llamado solo con `p_artists` sería ambiguo en PostgREST. Primero
-`drop function if exists public.start_round(text[], text);` y recién después el schema viejo.
-Además el `round_view` viejo tiene fija la escalera `[0.5, 1, 3, 8]`: las rondas Normal abiertas en
-ese momento cambian de escalera a mitad de partida.
-
-**Orden de despliegue.** Si un cambio en `schema.sql` cambia la firma de una función (como pasó
-con `guess_round`/`skip_round` al sumar `p_attempt`), la vieja se borra: un browser con el bundle
-anterior recibe "function not found" hasta recargar. Aplicar el schema y deployar el cliente
-juntos, o dejar la firma vieja hasta que el bundle nuevo esté en producción.
+**Desarrollo local.** `npm run dev` (Vite solo) corre en **modo local**: las rondas se reparten y
+juzgan en el browser (`localRounds.js`), sin `api/`. Para probar las Functions de verdad hay que
+levantarlas con `vercel dev` (el CLI detecta Vite y sirve `api/` sin configuración extra, según la
+documentación de Vercel; no lo corrí desde esta máquina), con `VITE_ROUNDS_API=true` y
+`ROUND_TOKEN_SECRET` / `AUDIO_KEY_SECRET` en `.env`. Los tests de `api/` no necesitan nada de eso:
+inyectan `sql`, `fetch` y el reloj.
 
 Límite aceptado: alguien que juegue los 431 temas puede reconocer cada mp3 por sus bytes y armarse
 una tabla. No se puede frenar con código.
 
 ## Cómo verificar un cambio
 
-1. `npm run test` — tiene que dar **198/198** en 24 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js`, `scripts/**/*.test.mjs` y `supabase/functions/**/*.test.js`, así que el tooling de build y el mail de bienvenida se testean donde viven.
-2. `npm run build` — tiene que compilar.
+1. `npm run test` — tiene que dar **301/301** en 33 archivos (o más si agregás tests). El `include` de vitest cubre `src/**/*.test.js`, `scripts/**/*.test.mjs` y `api/**/*.test.js`, así que el tooling de build y el servidor (árbitro, token, suscripción, bienvenida) se testean donde viven, con `sql`, `fetch` y el reloj inyectados.
+2. `npm run build` — tiene que compilar. Si `prebuild` (`npm run assets`) se cuelga: el Desktop se sincroniza con iCloud y los mp3 de `audio/` pueden quedar "dataless" (solo en la nube); leerlos bloquea hasta bajarlos. Bajá la carpeta (Finder → "Descargar ahora") o mantenela fuera de iCloud; mientras tanto `npx vite build` compila sin correr `assets`. También hay duplicados `* 2.mp3` que crea iCloud.
    Lint: el `eslint.config.js` de la raíz **ignora `heardle-gaceta/`**, así que un `eslint` común
-   no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts`.
+   no revisa nada acá. Desde la raíz: `npx eslint --no-ignore heardle-gaceta/src heardle-gaceta/scripts heardle-gaceta/api`.
    Ojo que `no-unused-vars` deja pasar nombres en mayúsculas (`^[A-Z_]`).
-   SQL: `supabase/tests/run.sh`. Contra el proyecto real: `supabase/tests/smoke.mjs`.
+   Servidor: no hay smoke automático; la verificación contra producción es el T6 de `odd/tasks/drop-supabase.md`. Tras compilar, `rg -i supabase dist` tiene que dar vacío.
 3. Probar a mano en `npm run dev`: cargar, play, un guess incorrecto, un skip, llegar al reveal, share. Para ver el mail sin jugar dos rondas: subí `heardle:roundsFinished` a mano en localStorage a 2 o más y recargá el reveal.
 
 Los tests corren en entorno `node`, sin jsdom. Lo que es lógica pura o va contra storage se
@@ -688,12 +679,13 @@ DNS están en el mismo team, así que no hubo que cargar registros; `heardle-gac
 andando). El link "Jugá otra ronda" del mail de bienvenida apunta al subdominio. Se deploya por CLI desde `heardle-gaceta/`
 (`vercel deploy --prod --scope gaceta-97ec2001`); `.vercelignore` deja afuera `.env` y todo lo que
 conecta un tema con su audio. Sus rutas van ancladas con `/`: un `audio` suelto también excluía
-`src/audio/` y rompió el primer build. Variables cargadas en production y preview:
-`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `AUDIO_KEY_SECRET`.
+`src/audio/` y rompió el primer build. Las variables que hay que cargar en
+production y preview están en la tabla de "Comandos"; al 2026-11-11 el proyecto de Vercel todavía
+tiene las de Supabase y le faltan las nuevas (T6).
 
-**Lo que sigue abierto, porque depende de vos:** completar los temas sin preview, y activar **CAPTCHA protection** en el dashboard
-de Supabase con la secret key de Turnstile (el cliente ya manda el token; ver "Captcha del login
-anónimo" en la sección Supabase) una vez que este cliente esté deployado.
+**Lo que sigue abierto, porque depende de vos:** el rollout del servidor nuevo (T6 de
+`odd/tasks/drop-supabase.md`: store de Blob, Neon conectada, variables, regla del firewall, subir
+el audio, deploy y smoke) y completar los 12 temas sin preview.
 
 Encontrado y arreglado de paso: entre que cargaba el catálogo y arrancaba la ronda se veía un
 instante **"No hay temas para esa selección"** aunque había 209. Ese mensaje ahora solo aparece

@@ -5,7 +5,6 @@
  *   VITE_AUDIO_BASE_URL, uploaded with opaque names by `npm run upload-audio`.
  *   The sources are not in the (public) repository, so a Vercel build has no
  *   audio to ship.
- * - Supabase: its public Storage bucket `audio` (removed with Supabase).
  * - Otherwise (local development): `npm run assets` serves them from public/.
  *
  * API mode without VITE_AUDIO_BASE_URL falls back to the local paths, which
@@ -26,9 +25,6 @@ export function resolveAssetUrls(env, warn = () => {}) {
     } else {
       warn("VITE_AUDIO_BASE_URL is not set: falling back to local /audio, which only exists in development");
     }
-  } else if (env.VITE_SUPABASE_URL) {
-    base = `${env.VITE_SUPABASE_URL}/storage/v1/object/public/audio`;
-    peaks = `${base}/peaks.json`;
   }
 
   return { peaksUrl: peaks, audioUrl: (key) => `${base}/${encodeURIComponent(key)}.mp3` };

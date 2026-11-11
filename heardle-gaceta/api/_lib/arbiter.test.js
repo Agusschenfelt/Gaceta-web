@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { ArbiterError, guess, skip, start, viewOf } from "./arbiter.js";
 import { buildPool } from "./trackPool.js";
 
-// The pool of supabase/tests/secure_rounds.test.sql.
+// A small fixed pool.
 const pool = buildPool(
   [{ slug: "a" }, { slug: "b" }, { slug: "c" }],
   {

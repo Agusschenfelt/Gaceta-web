@@ -1,6 +1,6 @@
 /**
- * Errors a round or the board can end in, by the code the database raises
- * (supabase/schema.sql) or the local service mirrors. Only a real fetch
+ * Errors a round or the board can end in, by the code the rounds API sends
+ * (api/_lib/http.js) or the local service mirrors. Only a real fetch
  * failure becomes `network`, the one error worth retrying; anything else
  * unrecognised is `unexpected`.
  */
@@ -29,13 +29,10 @@ export class RoundError extends Error {
   }
 }
 
-/** Reads the code out of whatever a Supabase call failed with. */
+/** Reads the round error code out of whatever a call failed with. */
 export function toRoundError(error) {
   if (error instanceof RoundError) return error;
   const text = `${error?.message ?? ""} ${error?.details ?? ""}`;
-  // A session whose user was deleted still signs requests until it expires;
-  // the database then refuses to register it as a player.
-  if (text.includes("players_id_fkey")) return new RoundError("not_authenticated", error);
   const code = Object.keys(ROUND_ERRORS).find((c) => text.includes(c));
   if (code) return new RoundError(code, error);
   // Only a failed request is a connection problem worth retrying; anything
@@ -45,7 +42,7 @@ export function toRoundError(error) {
 
 function isConnectionFailure(error, text) {
   if (error instanceof TypeError) return true; // fetch() rejects with TypeError
-  if (error?.name === "AuthRetryableFetchError" || error?.status === 0) return true;
+  if (error?.status === 0) return true;
   return /failed to fetch|network|load failed|timeout|timed out/i.test(text);
 }
 

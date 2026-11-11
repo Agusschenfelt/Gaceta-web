@@ -35,7 +35,7 @@ function writeOpen(value) {
   }
 }
 
-/** The same shape `private.round_view` returns in supabase/schema.sql. */
+/** The same shape the rounds API (api/_lib/arbiter.js) returns. */
 function view(id, game) {
   const over = isOver(game);
   return {
@@ -55,7 +55,7 @@ function view(id, game) {
 }
 
 /**
- * Rounds dealt and judged in the browser, for development without Supabase.
+ * Rounds dealt and judged in the browser, for development without the server.
  * It keeps the server's rules so both modes play the same: an open round is
  * resumed after a reload instead of rerolled, and the answer only shows once
  * the round is over.
@@ -74,7 +74,7 @@ export function createLocalRounds({ tracks }) {
   const savedTrack = saved && byId.get(saved.trackId);
   if (savedTrack?.audioKey) {
     // A round saved before levels existed was played on the hard ladder, like
-    // the rows the server backfills (see schema.sql).
+    // the rounds the server used to backfill.
     const savedLevel = isLevel(saved.level) ? saved.level : "hard";
     open = {
       id: saved.id,

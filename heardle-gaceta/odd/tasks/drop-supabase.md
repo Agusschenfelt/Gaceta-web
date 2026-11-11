@@ -40,7 +40,7 @@ Out: unifying Valuto `fans` into `subscribers` (later; `fans` needs name/birth d
 - [x] T2 Client: `src/rounds/apiRounds.js`, `gameServices.js` mode switch, token persistence, error mapping; tests. Route: delegated.
 - [x] T3 Emails: `subscribers` migration for shared Neon, `api/subscribe.js` (Turnstile verify + Resend welcome, port `message.js`), `board.subscribeEmail` adapter; tests. Route: delegated.
 - [x] T4 Audio on Blob: upload script, `assetUrls.js`, CSP in `vercel.json`, `assertSafeConfig` without Supabase. Route: delegated.
-- [ ] T5 Remove Supabase: deps, `supabase/`, Supabase tests, captcha-on-login, docs (CLAUDE.md). Route: delegated.
+- [x] T5 Remove Supabase: deps, `supabase/`, Supabase tests, captcha-on-login, docs (CLAUDE.md). Route: delegated.
 - [ ] T6 Rollout (needs user OK): Blob store, connect Neon to the project, env vars, firewall rule, upload audio, deploy, smoke.
 
 ## Acceptance criteria
@@ -93,5 +93,9 @@ Out: unifying Valuto `fans` into `subscribers` (later; `fans` needs name/birth d
 - [x] T4b Review advisories of T4. Done: mp3 cache back to 86400; `assertSafeConfig` fails deployed API-mode builds without `VITE_AUDIO_BASE_URL`; prune deletes only stale `.mp3` (batches of 100); alias removed; `runUpload`/`listRemote` injectable + `scripts/upload-audio.test.mjs`. Checks: npm run test 320/320 (parent re-ran), eslint clean, vite build ok, `--dry` without token refuses.
 - 2026-11-11 T3b commit f5988d5 (assess: medium, under_budget 168).
 
+- 2026-11-11 T4b commit d2a29d2 (assess: medium, under_budget 382).
+- 2026-11-11 T5 done (slice t5), partial on one file. Removed `@supabase/supabase-js`, `supabase/` (schema, tests, edge function, .generated/.temp — verified gone from disk), Supabase services/rounds/adapter/session, `seedSql`/`tracks.sql`, Supabase CSP hosts and ignore entries. `toRoundError` kept (GameContainer uses it). CLAUDE.md rewritten with a "Servidor" section (token, accepted limits, Neon, welcome, Turnstile, Blob, rotation, deploy order, iCloud gotcha); `vercel dev` documented from Vercel docs, not run. Checks: npm run test 301/301 (parent re-ran; drop = removed Supabase tests), eslint clean, vite build ok, no supabase in dist. **Pending:** `.env.example` still lists `VITE_SUPABASE_*` and lacks `ROUND_TOKEN_SECRET` — agents are denied access to `.env*` files by the user's permission settings; the user must edit it by hand.
+- [x] T5 (except `.env.example`, pending user).
+
 ## Next step
-T5 remove Supabase + docs.
+User edits `.env.example`; then T6 rollout (needs user OK).

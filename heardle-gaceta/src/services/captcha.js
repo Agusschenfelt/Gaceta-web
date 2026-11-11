@@ -1,9 +1,8 @@
 /**
  * Cloudflare Turnstile (invisible widget), loaded with no npm dependency: a
  * `<script>` tag created at runtime, cached so the API only loads once per
- * page. Protects the anonymous sign-in in supabaseServices.js; Supabase
- * ignores the token until "CAPTCHA protection" is turned on in its dashboard,
- * so this has to keep working both before and after that switch.
+ * page. Protects the email subscription (apiAdapter.js; the token is verified
+ * server-side by api/_lib/subscribe.js).
  *
  * With no site key (`VITE_TURNSTILE_SITE_KEY` unset), `getCaptchaToken`
  * resolves `undefined` right away: dev/local keeps working without captcha.

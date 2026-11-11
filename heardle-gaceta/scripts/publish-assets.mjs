@@ -6,14 +6,13 @@
  *   audio/<ISRC>.mp3                        <audio out>/<audio key>.mp3
  *   data/peaks.json  (by ISRC)              <audio out>/peaks.json (by audio key)
  *   data/catalog/*.json  (in git)           public/catalog/*.json (no audio paths)
- *                                           supabase/.generated/tracks.sql (answer key)
  *
  * The audio key is HMAC(AUDIO_KEY_SECRET, ISRC). With the secret, audio and
- * peaks go to `.published/` and `npm run upload-audio` puts them in Supabase
- * Storage; public/ gets the catalog only, so a build never ships audio. Without
+ * peaks go to `.published/` and `npm run upload-audio` puts them in Vercel
+ * Blob; public/ gets the catalog only, so a build never ships audio. Without
  * the secret (local development), the key is the ISRC, the catalog carries it
- * and audio and peaks are served from public/. A production or Supabase build
- * refuses to run without the secret.
+ * and audio and peaks are served from public/. A production build
+ * (or one with the rounds API) refuses to run without the secret.
  *
  * On Vercel there are no sources: only the catalog is built.
  *
@@ -26,7 +25,7 @@ import { copyFile, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promi
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { audioKey, assertSafeConfig, publicTrack, rekeyPeaks, seedSql } from "./lib/publish.mjs";
+import { audioKey, assertSafeConfig, publicTrack, rekeyPeaks } from "./lib/publish.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SRC_AUDIO = path.join(ROOT, "audio");
@@ -35,7 +34,6 @@ const SRC_PEAKS = path.join(ROOT, "data", "peaks.json");
 const OUT_CATALOG = path.join(ROOT, "public", "catalog");
 const PUBLIC_AUDIO = path.join(ROOT, "public", "audio");
 const PUBLISHED = path.join(ROOT, ".published");
-const OUT_SEED = path.join(ROOT, "supabase", ".generated", "tracks.sql");
 
 /** Same `.env` reading as build-catalog: real env vars win over the file. */
 async function loadEnv() {
@@ -88,7 +86,7 @@ async function main() {
   }
 
   if (!sources) {
-    console.log("assets: catalog only (no audio/ sources here; audio is served from Supabase Storage)");
+    console.log("assets: catalog only (no audio/ sources here; audio is served from Vercel Blob)");
     return;
   }
 
@@ -119,16 +117,13 @@ async function main() {
   }
 
   // Missing peaks must not publish an empty file: upload-audio would push it
-  // over the good one in Storage and flatten every ring. Leave it untouched.
+  // over the good one in Blob and flatten every ring. Leave it untouched.
   const peaks = await readJson(SRC_PEAKS).catch(() => null);
   if (peaks) {
     await writeFile(outPeaks, JSON.stringify(rekeyPeaks(peaks, keyFor)));
   } else {
     console.warn(`assets: ${path.relative(ROOT, SRC_PEAKS)} not found, peaks not published (npm run peaks)`);
   }
-
-  await mkdir(path.dirname(OUT_SEED), { recursive: true });
-  await writeFile(OUT_SEED, seedSql([...playable.values()]));
 
   console.log(
     `assets: ${playable.size} playable tracks, ${copied} mp3 copied, ${removed} removed, ` +

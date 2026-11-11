@@ -11,7 +11,7 @@
  * in src/audio/waveform.js). The level is part of a round and of what gets
  * shared, because a "3/4" on Normal and a "3/4" on Difícil do not mean the same.
  *
- * Mirror of `private.round_view` in supabase/schema.sql; change both together.
+ * The server (api/_lib/arbiter.js) imports these same ladders: this is the single source.
  */
 export const LEVELS = Object.freeze({
   normal: Object.freeze([1, 2, 4, 8]),
@@ -108,9 +108,8 @@ export function stageWon(state) {
 /**
  * Points for a finished round from its outcome alone: earlier win = more
  * points, a loss scores 0. This is the one definition of the score. The
- * database derives the same number in `supabase/schema.sql` (generated column
- * on `rounds`) instead of trusting whatever the browser sends, so a change here
- * has to be made there too. An impossible outcome scores 0.
+ * server (api/_lib/arbiter.js) calls this too instead of trusting whatever the
+ * browser sends. An impossible outcome scores 0.
  */
 export function scoreFor(won, stageWon, stageCount = STAGE_COUNT) {
   if (!won || !Number.isInteger(stageWon) || stageWon < 0 || stageWon >= stageCount) return 0;

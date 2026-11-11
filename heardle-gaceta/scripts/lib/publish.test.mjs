@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { audioKey, assertSafeConfig, publicTrack, rekeyPeaks, seedSql } from "./publish.mjs";
+import { audioKey, assertSafeConfig, publicTrack, rekeyPeaks } from "./publish.mjs";
 
 const track = {
   id: "UYT142400046",
@@ -36,9 +36,8 @@ describe("assertSafeConfig", () => {
     expect(() => assertSafeConfig({ secret: "", env: {} })).not.toThrow();
   });
 
-  it("refuses production or Supabase without a secret", () => {
+  it("refuses production without a secret", () => {
     expect(() => assertSafeConfig({ secret: "", env: { VERCEL_ENV: "production" } })).toThrow();
-    expect(() => assertSafeConfig({ secret: "", env: { VITE_SUPABASE_URL: "https://x" } })).toThrow();
   });
 
   it("refuses the rounds API without a secret", () => {
@@ -64,7 +63,7 @@ describe("assertSafeConfig", () => {
 
   it("accepts any environment once there is a secret", () => {
     expect(() =>
-      assertSafeConfig({ secret: "s", env: { VERCEL_ENV: "production", VITE_SUPABASE_URL: "x" } })
+      assertSafeConfig({ secret: "s", env: { VERCEL_ENV: "production", VITE_ROUNDS_API: "true", VITE_AUDIO_BASE_URL: "https://b" } })
     ).not.toThrow();
   });
 });
@@ -88,20 +87,5 @@ describe("rekeyPeaks", () => {
   it("renames by audio key and drops tracks without one", () => {
     const keys = { A: "ka" };
     expect(rekeyPeaks({ A: [1], B: [2] }, (id) => keys[id])).toEqual({ ka: [1] });
-  });
-});
-
-describe("seedSql", () => {
-  it("upserts every track and escapes quotes", () => {
-    const sql = seedSql([
-      { id: "A", audioKey: "ka", artistSlugs: ["ramma", "dazen"], title: "Don't" },
-    ]);
-    expect(sql).toContain("('A', 'ka', array['ramma', 'dazen']::text[], 'Don''t')");
-    expect(sql).toContain("on conflict (id) do update");
-    expect(sql).toMatch(/^-- Generated/);
-  });
-
-  it("writes a harmless comment when there is nothing to seed", () => {
-    expect(seedSql([])).toBe("-- no playable tracks\n");
   });
 });

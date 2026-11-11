@@ -1,6 +1,5 @@
 export const RECENT_KEY = "heardle:recent";
-// Same as start_round in supabase/schema.sql: every mode plays by the
-// server's rules.
+// The server (api/_lib/arbiter.js) uses the same limit.
 export const RECENT_LIMIT = 20;
 
 const storageOf = (storage) => storage ?? globalThis.localStorage;

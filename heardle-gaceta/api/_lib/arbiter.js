@@ -5,9 +5,8 @@
  * testable and the HTTP layer stays thin.
  *
  * The ladders, the transitions and the score come from src/game/engine.js, the
- * same module local mode uses. This file only adds what the database used to
- * do (supabase/schema.sql: start_round, guess_round, skip_round,
- * record_attempt, round_view), so the behaviour is the same.
+ * same module local mode uses. This file only adds the pool, the recent-track
+ * exclusion and the encrypted round token around it.
  *
  * State is the token payload: { id, trackId, level, stageIndex, attempts,
  * status, createdAt }. Each action returns { state, view, changed }; when
