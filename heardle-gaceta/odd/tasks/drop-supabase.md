@@ -103,5 +103,10 @@ Out: unifying Valuto `fans` into `subscribers` (later; `fans` needs name/birth d
 
 - 2026-11-11 Web Analytics enabled on the project (`vercel project web-analytics`) and `/_vercel/insights/script.js` added to `index.html` (no npm dependency, no inline stub because of CSP), commit d6db8b1. Review of 363d1ff..d6db8b1 (f322f3b + d6db8b1): medium, granted, approved and acknowledged (review-1e3f5fa46868c6df); one SUGGESTION: upload-audio entry-point guard untested. Reviewed boundary is now d6db8b1.
 
+- 2026-11-11 Production deploy heardle-gaceta-9pd38brgi on heardle.esgaceta.com. Smoke: round start hides answer, audio 200 from Blob, 4 skips -> lost with answer, analytics script 200, peaks 200, subscribe without captcha -> captcha_failed, no Supabase in bundle. Browser subscription failed 403: Turnstile error 110200 (hostname heardle.esgaceta.com not allowed on the widget); no row inserted. VITE_SUPABASE_* removed from Vercel.
+
 ## Next step
+User adds heardle.esgaceta.com to the Turnstile widget hostnames; then retry the browser subscription with delivered@resend.dev, delete that test row, close T6.
+
+## Previous next step
 User adds TURNSTILE_SECRET_KEY and RESEND_API_KEY to Vercel (production + preview) and edits `.env.example`; then production deploy, subscription smoke, remove Supabase env vars.
