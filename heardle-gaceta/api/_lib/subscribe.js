@@ -57,11 +57,17 @@ async function verifyCaptcha({ secret, token, ip, fetch, timeoutMs }) {
       signal: AbortSignal.timeout(timeoutMs),
     });
     data = await response.json();
-  } catch {
+  } catch (error) {
     // Cannot verify (unreachable or too slow): refuse rather than let bots through.
+    console.warn("subscribe: Turnstile siteverify failed", error?.name ?? "error");
     throw new SubscribeError("captcha_failed");
   }
-  if (data?.success !== true) throw new SubscribeError("captcha_failed");
+  if (data?.success !== true) {
+    // Cloudflare's error codes (e.g. invalid-input-secret) carry no secret and
+    // are the only way to tell a misconfigured key from a bot.
+    console.warn("subscribe: Turnstile rejected the token", JSON.stringify(data?.["error-codes"] ?? []));
+    throw new SubscribeError("captcha_failed");
+  }
 }
 
 async function sendWelcome({ email, resendKey, fetch, timeoutMs }) {
