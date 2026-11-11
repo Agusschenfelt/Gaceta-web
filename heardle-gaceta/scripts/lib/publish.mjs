@@ -13,7 +13,7 @@ export { audioKey } from "./audioKey.mjs";
 
 /**
  * Refuses a configuration that would ship the answer: a production build, or
- * any build talking to Supabase, needs the secret. Local-only development may
+ * any build talking to Supabase or to the rounds API, needs the secret. Local-only development may
  * run without it.
  */
 export function assertSafeConfig({ secret, env }) {
@@ -23,6 +23,9 @@ export function assertSafeConfig({ secret, env }) {
   }
   if (env.VITE_SUPABASE_URL) {
     throw new Error("AUDIO_KEY_SECRET is required when Supabase is configured");
+  }
+  if (env.VITE_ROUNDS_API === "true") {
+    throw new Error("AUDIO_KEY_SECRET is required when the rounds API is enabled");
   }
 }
 

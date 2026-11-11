@@ -41,6 +41,11 @@ describe("assertSafeConfig", () => {
     expect(() => assertSafeConfig({ secret: "", env: { VITE_SUPABASE_URL: "https://x" } })).toThrow();
   });
 
+  it("refuses the rounds API without a secret", () => {
+    expect(() => assertSafeConfig({ secret: "", env: { VITE_ROUNDS_API: "true" } })).toThrow(/rounds API/);
+    expect(() => assertSafeConfig({ secret: "", env: { VITE_ROUNDS_API: "false" } })).not.toThrow();
+  });
+
   it("accepts any environment once there is a secret", () => {
     expect(() =>
       assertSafeConfig({ secret: "s", env: { VERCEL_ENV: "production", VITE_SUPABASE_URL: "x" } })

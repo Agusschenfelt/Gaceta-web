@@ -39,7 +39,7 @@ Out: unifying Valuto `fans` into `subscribers` (later; `fans` needs name/birth d
 - [x] T1 Round arbiter: `api/_lib/roundToken.js` + `api/_lib/arbiter.js` (pure, uses engine) + `api/rounds/{start,guess,skip}.js`; tests port the cases of `supabase/tests/secure_rounds.test.sql`. Route: delegated (writer trigger).
 - [x] T2 Client: `src/rounds/apiRounds.js`, `gameServices.js` mode switch, token persistence, error mapping; tests. Route: delegated.
 - [x] T3 Emails: `subscribers` migration for shared Neon, `api/subscribe.js` (Turnstile verify + Resend welcome, port `message.js`), `board.subscribeEmail` adapter; tests. Route: delegated.
-- [ ] T4 Audio on Blob: upload script, `assetUrls.js`, CSP in `vercel.json`, `assertSafeConfig` without Supabase. Route: delegated.
+- [x] T4 Audio on Blob: upload script, `assetUrls.js`, CSP in `vercel.json`, `assertSafeConfig` without Supabase. Route: delegated.
 - [ ] T5 Remove Supabase: deps, `supabase/`, Supabase tests, captcha-on-login, docs (CLAUDE.md). Route: delegated.
 - [ ] T6 Rollout (needs user OK): Blob store, connect Neon to the project, env vars, firewall rule, upload audio, deploy, smoke.
 
@@ -75,5 +75,14 @@ Out: unifying Valuto `fans` into `subscribers` (later; `fans` needs name/birth d
 - 2026-11-11 T3 done (slice t3). `db/subscribers.sql` (idempotent, unique (email, source)), `api/_lib/subscribe.js` + `api/subscribe.js` (Turnstile verify → insert on conflict do nothing → Resend welcome only on new row; Resend failure never fails the subscription), `api/_lib/welcomeMessage.js` (copy of the Supabase one; original removed in T5), `src/leaderboard/apiAdapter.js` wired into `createApiServices`, `captcha_failed` code + copy, `local_unavailable` copy without Supabase. Checks: npm run test 291/291 (parent re-ran), eslint clean, `npx vite build` ok, neon driver absent from dist. Open: npm warned esbuild install script pending approval (`npm approve-scripts`); T6 must set `DATABASE_URL`, `TURNSTILE_SECRET_KEY`, `RESEND_API_KEY`, `VITE_TURNSTILE_SITE_KEY` and apply `db/subscribers.sql`.
 - [x] T3 (checked above).
 
+- 2026-11-11 T3 commit 308023e. Slice T2+T3 native review review-b5226fce7ca08cdd (medium, 1 lens reliability, user granted): APPROVED and acknowledged (burned). Boundary advances to 308023e. Advisories → follow-up task T3b:
+  - R3-001: stale token stays in `heardle:api:round` after `round_not_found`. Checked: `start` deals a new round when the token does not open (arbiter.js:93, http.js:71), so no permanent stuck state; still clear the stored token on `round_not_found` in guess/skip and test it.
+  - R3-002 (valid): no timeout on the Turnstile and Resend fetches in subscribe.js; add AbortSignal timeouts and a test.
+  - R3-003: make `fromApiError` map unknown codes to `unexpected` itself.
+- [ ] T3b Review advisories R3-001..003 (after T4; files outside T4's scope).
+
+- 2026-11-11 T4 done (slice t4). `scripts/upload-audio.mjs` on Vercel Blob (`audio/<key>.mp3` long cache, `audio/peaks.json` 300 s; skip = same pathname + size, `--force`/`--dry`/`--prune`, peaks hold-back kept), `resolveAssetUrls` with `VITE_AUDIO_BASE_URL` in API mode (warns and falls back to `/audio` if missing), `assertSafeConfig` also for `VITE_ROUNDS_API`, CSP adds `*.public.blob.vercel-storage.com` to media/connect. Checks: npm run test 303/303 (parent re-ran), eslint clean, `npx vite build` ok, blob lib absent from dist, upload script refuses without token. Not run against a real store (T6).
+- [x] T4 (checked above).
+
 ## Next step
-T4 audio on Blob.
+T3b review advisories.
