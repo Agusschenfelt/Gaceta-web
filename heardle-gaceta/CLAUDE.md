@@ -71,7 +71,7 @@ Regla: nada secreto con prefijo `VITE_`; lo que lleva `VITE_` termina en el bund
 | Cómo se elige el tema (modo local) | `src/catalog/pickTrack.js` (`RECENT_LIMIT`, clave `heardle:recent`) vía `src/rounds/localRounds.js`; la lista de recientes está en `src/catalog/recentTracks.js` |
 | Reglas del servidor: rondas, transiciones, errores | `api/_lib/arbiter.js` (+ `arbiter.test.js`), `api/_lib/http.js` (códigos y status), `api/rounds/{start,guess,skip}.js` |
 | Token de la ronda (formato, vencimiento, clave) y configuración del servidor | `api/_lib/roundToken.js` (`TOKEN_TTL_MS`), `api/_lib/config.js` |
-| Mails: validación, Turnstile, inserción, bienvenida | `api/_lib/subscribe.js` + `api/subscribe.js`; texto, remitente y reply-to en `api/_lib/welcomeMessage.js` |
+| Mails: validación, Turnstile, inserción, bienvenida | `api/_lib/subscribe.js` + `api/subscribe.js`; texto, diseño (tablas + estilos inline), remitente y reply-to en `api/_lib/welcomeMessage.js`. Las imágenes del mail son PNG en `public/email/` (exportadas de `public/assets/`; webp no anda en Outlook) y se piden por URL absoluta a `heardle.esgaceta.com/email/`: deployar antes de cambiarlas |
 | Qué servicio se usa (API o local) | `src/services/gameServices.js` (`VITE_ROUNDS_API`) |
 | Captcha (Turnstile) de la suscripción | `src/services/captcha.js` (`getCaptchaToken`) + `src/leaderboard/apiAdapter.js` + `frame-src`/`script-src` en `vercel.json` |
 | Rondas: puerto y las dos implementaciones | `src/rounds/localRounds.js`, `apiRounds.js` (token en `heardle:api:round`); textos de error en `roundErrors.js` (`fromApiError`) |
