@@ -1,6 +1,6 @@
 # Heardle GACETA
 
-Guess-the-song game built on the GACETA catalog. Single screen, mobile-first, Vite + React + Tailwind. In production the server is the referee: rounds are dealt, judged and scored by Postgres functions on Supabase, and the browser never learns which song is playing until the round ends.
+Guess-the-song game built on the GACETA catalog. Single screen, mobile-first, Vite + React + Tailwind. In production the server is the referee: rounds are dealt, judged and scored by stateless Vercel Functions (the round state travels in an encrypted token), and the browser never learns which song is playing until the round ends.
 
 ## Setup
 
@@ -9,7 +9,6 @@ npm install --legacy-peer-deps
 npm run dev          # http://localhost:5173 (runs npm run assets first)
 npm run test         # vitest: engine, rounds, catalog, build tooling
 npm run build        # production build in dist/ (runs npm run assets first)
-supabase/tests/run.sh   # the SQL schema against a throwaway local Postgres
 ```
 
 ## Environment (`.env`, see `.env.example`; never committed)
@@ -17,10 +16,11 @@ supabase/tests/run.sh   # the SQL schema against a throwaway local Postgres
 | Variable | Used by |
 |---|---|
 | `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` | `npm run catalog` only |
-| `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` | The game (rounds, mail). Empty = local mode, development only |
-| `AUDIO_KEY_SECRET` | `npm run assets`: opaque audio file names. Required with Supabase and in production |
-| `SUPABASE_SERVICE_ROLE_KEY` | `npm run upload-audio` only. Never prefix with `VITE_` |
-| `SUPABASE_DB_PASSWORD` | Running SQL against the project with `psql` |
+| `VITE_ROUNDS_API` | `true` = rounds through `api/` (production). Empty = local mode, development only |
+| `VITE_AUDIO_BASE_URL` / `VITE_TURNSTILE_SITE_KEY` | Public: Blob base for the mp3s, Turnstile site key |
+| `AUDIO_KEY_SECRET` | `npm run assets` and `api/`: opaque audio file names. Required in production |
+| `ROUND_TOKEN_SECRET` / `DATABASE_URL` / `TURNSTILE_SECRET_KEY` / `RESEND_API_KEY` | `api/` only (server) |
+| `BLOB_READ_WRITE_TOKEN` | `npm run upload-audio` only. Never prefix with `VITE_` |
 
 ## Sources are local, not in git
 
@@ -35,17 +35,16 @@ npm run peaks            # data/peaks.json
 ## Publishing audio
 
 ```bash
-npm run assets           # with AUDIO_KEY_SECRET: .published/ (opaque names) + supabase/.generated/tracks.sql
-npm run upload-audio     # syncs .published/ to the public Storage bucket "audio"
-# load supabase/.generated/tracks.sql in the SQL editor (it is the answer key: never share it)
-npm run upload-audio -- --prune   # after the seed: remove files under old names
+npm run assets           # with AUDIO_KEY_SECRET: .published/ (opaque names)
+npm run upload-audio     # syncs .published/ to Vercel Blob (BLOB_READ_WRITE_TOKEN)
+npm run upload-audio -- --prune   # after the deploy: remove files under old names
 ```
 
-Rotating `AUDIO_KEY_SECRET` renames every file; follow the same four steps. Vercel builds only the catalog (there are no sources there) and the game streams audio from Storage.
+Rotating `AUDIO_KEY_SECRET` renames every file: `npm run assets`, `upload-audio`, deploy, `upload-audio -- --prune`. Vercel builds only the catalog (there are no sources there) and the game streams audio from Blob.
 
-## Supabase
+## Server
 
-`supabase/schema.sql` is the whole backend and can be re-run. Enable anonymous sign-ins (and a CAPTCHA for them before launch), run the schema, load the seed. Every table is closed to clients; everything goes through security-definer functions that act only on the caller's rows. `supabase/tests/smoke.mjs` checks a live project end to end. Details in `CLAUDE.md`.
+`api/` holds the Vercel Functions (rounds, email subscription). Details in `CLAUDE.md`.
 
 ## Theming
 
@@ -57,11 +56,12 @@ Every color, font and radius is a CSS variable in `src/theme/tokens.css`, mapped
 src/game/         pure engine, share text, formatting (unit tested)
 src/catalog/      catalog loading, search, random pick (local mode)
 src/audio/        useAudioPlayer hook, waveform maths
-src/rounds/       rounds port: Supabase RPCs or local stand-in
-src/services/     picks the mode, anonymous sign-in, asset URLs
+src/rounds/       rounds port: rounds API client or local stand-in
+src/services/     picks the mode (API / local), captcha, asset URLs
 src/player/       local player id
-src/leaderboard/  email-subscription adapters (Supabase / local)
-supabase/         schema, SQL tests, smoke test
+src/leaderboard/  email-subscription adapters (API / local)
+api/              Vercel Functions: round arbiter, token, subscribe
+db/               SQL for the shared Neon (subscribers)
 scripts/          catalog, compression, peaks, publish and upload tooling
 src/components/   atoms → molecules → organisms (presentational)
 src/containers/   GameContainer (state orchestration)

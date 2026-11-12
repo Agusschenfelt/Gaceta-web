@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { idempotencyKey, isDeliverableAddress, welcomeMessage } from "./message.js";
+import { idempotencyKey, isDeliverableAddress, welcomeMessage } from "./welcomeMessage.js";
 
 describe("welcomeMessage", () => {
   const msg = welcomeMessage("fan@example.com");
@@ -20,6 +20,20 @@ describe("welcomeMessage", () => {
 
   it("does not echo the address into the html", () => {
     expect(msg.html).not.toContain("fan@example.com");
+  });
+
+  it("uses the brand assets as absolute PNG urls with alt text", () => {
+    // Mail clients need absolute urls; webp does not render in Outlook.
+    for (const asset of ["gaceta-iso.png", "gaceta-word.png"]) {
+      expect(msg.html).toContain(`https://heardle.esgaceta.com/email/${asset}`);
+    }
+    expect(msg.html).not.toMatch(/\.webp/);
+    for (const img of msg.html.match(/<img\b[^>]*>/g)) expect(img).toMatch(/\salt="/);
+  });
+
+  it("leads with a play-again button to the game", () => {
+    expect(msg.html).toMatch(/<a href="https:\/\/heardle\.esgaceta\.com"[^>]*>[^<]*Jugá otra ronda/);
+    expect(msg.text).toContain("Jugá otra ronda: https://heardle.esgaceta.com");
   });
 });
 

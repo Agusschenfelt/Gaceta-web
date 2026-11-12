@@ -1,5 +1,5 @@
 /**
- * localStorage adapter. Used when Supabase is not configured so the game is
+ * localStorage adapter. Used in local mode (no rounds API) so the game is
  * fully playable. The only thing it still stores is the email opt-in; round
  * history and a leaderboard used to live here too (removed, see
  * odd/tasks/remove-ranking.md).

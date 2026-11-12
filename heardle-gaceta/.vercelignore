@@ -15,6 +15,4 @@
 /public/audio
 /public/catalog
 /.published
-/supabase/.generated
-/supabase/.temp
 /brief-heardle-gaceta.md

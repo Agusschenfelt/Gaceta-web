@@ -1,12 +1,17 @@
 import { useState } from "react";
 import { Tag } from "../atoms/Tag.jsx";
 import { Icon } from "../atoms/Icon.jsx";
+import { LEVEL_IDS, getStages } from "../../game/engine.js";
+import { formatSeconds, levelLabel } from "../../game/format.js";
+
+/** "1 · 2 · 4 · 8 s": what a level gives, so the choice is not blind. */
+const ladderText = (level) => `${getStages(level).map(formatSeconds).join(" · ")} s`;
 
 /**
- * Two shapes for the same control:
+ * Two shapes for the same controls (difficulty level and artist filter):
  *
- * - `bar` (narrow screens): one summary line with a disclosure. The filter is
- *   touched once, so at rest it costs a single row, and opening it borrows
+ * - `bar` (narrow screens): one summary line with a disclosure. The settings
+ *   are touched once, so at rest they cost a single row, and opening it borrows
  *   height from the play circle.
  * - `panel` (wide screens): always open in the side column, where the space is
  *   free and hiding it would only add a click.
@@ -15,10 +20,13 @@ export function GameSettings({
   artists,
   selected,
   onChangeArtists,
+  level,
+  onChangeLevel,
   poolSize,
   variant = "bar",
-  /* The selection changed mid-round. A round is never rerolled (that would let
-     you drop a song you do not know), so the new filter waits for the next one. */
+  /* The level or the selection changed mid-round. A round is never rerolled
+     (that would let you drop a song you do not know) nor moved to another
+     ladder, so the change waits for the next one. */
   pendingNextRound = false,
 }) {
   const [open, setOpen] = useState(false);
@@ -37,6 +45,16 @@ export function GameSettings({
     onChangeArtists(next.length === artists.length ? [] : next);
   }
 
+  const levelChips = (
+    <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Nivel de dificultad">
+      {LEVEL_IDS.map((id) => (
+        <Tag key={id} active={level === id} onClick={() => onChangeLevel(id)}>
+          {levelLabel(id)}
+        </Tag>
+      ))}
+    </div>
+  );
+
   const chips = (
     <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filtrar por artista">
       <Tag active={all} onClick={() => onChangeArtists([])}>
@@ -53,7 +71,10 @@ export function GameSettings({
   if (variant === "panel") {
     return (
       <div className="flex w-full flex-col gap-3">
-        <span className="label">Artistas</span>
+        <span className="label">Nivel</span>
+        {levelChips}
+        <span className="label">{ladderText(level)}</span>
+        <span className="label mt-2">Artistas</span>
         {chips}
         <span className="label">{poolSize} temas en juego</span>
         {pendingNextRound && <span className="label !text-fg">Se aplica en la próxima ronda</span>}
@@ -70,10 +91,10 @@ export function GameSettings({
         className="flex min-h-11 w-full items-center justify-between gap-3 text-left text-muted transition-colors hover:text-fg"
       >
         <span className="label truncate">
-          {summary} · {pendingNextRound ? "desde la próxima ronda" : `${poolSize} temas`}
+          {levelLabel(level)} · {summary} · {pendingNextRound ? "desde la próxima ronda" : `${poolSize} temas`}
         </span>
         <span className="flex shrink-0 items-center gap-1.5">
-          <span className="label">Artistas</span>
+          <span className="label">Ajustes</span>
           <Icon
             name="chevronDown"
             className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}
@@ -81,7 +102,13 @@ export function GameSettings({
         </span>
       </button>
 
-      {open && <div className="fade-up pb-3 pt-1">{chips}</div>}
+      {open && (
+        <div className="fade-up flex flex-col gap-2 pb-3 pt-1">
+          <span className="label">Nivel · {ladderText(level)}</span>
+          {levelChips}
+          {chips}
+        </div>
+      )}
     </div>
   );
 }

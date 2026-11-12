@@ -25,7 +25,7 @@ function write(key, value) {
   }
 }
 
-/** This browser's local-mode player id (Supabase mode uses `auth.uid()` instead). */
+/** This browser's local-mode player id. */
 export function getPlayerId() {
   let id = read(ID_KEY);
   if (!id) {

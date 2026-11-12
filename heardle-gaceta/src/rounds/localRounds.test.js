@@ -25,7 +25,43 @@ describe("localRounds", () => {
   it("deals a playable round from the filter and hides the answer", async () => {
     const r = await make().start(["ara"]);
     expect(r).toMatchObject({ audioKey: "kc", stageIndex: 0, status: "playing", answerId: null });
-    expect(r.stages).toEqual([0.5, 1, 3, 8]);
+    expect(r.stages).toEqual([1, 2, 4, 8]);
+    expect(r.level).toBe("normal");
+  });
+
+  it("deals the hard ladder on request and scores both levels the same way", async () => {
+    const hard = make();
+    const h = await hard.start(["ara"], "hard");
+    expect(h).toMatchObject({ level: "hard", stages: [0.5, 1, 3, 8] });
+    await hard.skip(h.id, 0);
+    expect(await hard.guess(h.id, "C", 1)).toMatchObject({ status: "won", score: 3, level: "hard" });
+    const normal = make();
+    const n = await normal.start(["ara"], "normal");
+    await normal.skip(n.id, 0);
+    expect(await normal.guess(n.id, "C", 1)).toMatchObject({ status: "won", score: 3, level: "normal" });
+  });
+
+  it("keeps an open round's level when another is asked for", async () => {
+    const rounds = make();
+    const first = await rounds.start(["ara"], "hard");
+    const again = await rounds.start(["ara"], "normal");
+    expect(again).toMatchObject({ id: first.id, level: "hard", stages: [0.5, 1, 3, 8] });
+  });
+
+  it("refuses a level it does not know and treats none as the default", async () => {
+    await expect(make().start([], "easy")).rejects.toMatchObject({ code: "invalid_level" });
+    expect((await make().start([], null)).level).toBe("normal");
+  });
+
+  it("resumes a saved round on the level it started with, hard if it predates levels", async () => {
+    const rounds = make();
+    const r = await rounds.start(["ara"], "hard");
+    expect((await make().start(["ara"], "normal")).level).toBe("hard");
+    // Same save, written before levels existed.
+    const saved = JSON.parse(localStorage.getItem("heardle:local:round"));
+    delete saved.level;
+    localStorage.setItem("heardle:local:round", JSON.stringify(saved));
+    expect(await make().start(["ara"], "normal")).toMatchObject({ id: r.id, level: "hard", stages: [0.5, 1, 3, 8] });
   });
 
   it("resumes the open round instead of dealing a new one, even after a reload", async () => {

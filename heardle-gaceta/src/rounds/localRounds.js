@@ -1,4 +1,14 @@
-import { createGame, getStages, guess, skip, isOver, score, STATUS } from "../game/engine.js";
+import {
+  createGame,
+  getStages,
+  guess,
+  skip,
+  isOver,
+  isLevel,
+  score,
+  DEFAULT_LEVEL,
+  STATUS,
+} from "../game/engine.js";
 import { pickTrack } from "../catalog/pickTrack.js";
 import { RoundError } from "./roundErrors.js";
 
@@ -25,13 +35,14 @@ function writeOpen(value) {
   }
 }
 
-/** The same shape `private.round_view` returns in supabase/schema.sql. */
+/** The same shape the rounds API (api/_lib/arbiter.js) returns. */
 function view(id, game) {
   const over = isOver(game);
   return {
     id,
     audioKey: game.track.audioKey,
     stages: game.stages,
+    level: game.level,
     stageIndex: game.stageIndex,
     attempts: game.attempts,
     status: game.status,
@@ -44,7 +55,7 @@ function view(id, game) {
 }
 
 /**
- * Rounds dealt and judged in the browser, for development without Supabase.
+ * Rounds dealt and judged in the browser, for development without the server.
  * It keeps the server's rules so both modes play the same: an open round is
  * resumed after a reload instead of rerolled, and the answer only shows once
  * the round is over.
@@ -62,11 +73,14 @@ export function createLocalRounds({ tracks }) {
   const saved = readOpen();
   const savedTrack = saved && byId.get(saved.trackId);
   if (savedTrack?.audioKey) {
+    // A round saved before levels existed was played on the hard ladder.
+    const savedLevel = isLevel(saved.level) ? saved.level : "hard";
     open = {
       id: saved.id,
       game: {
         track: savedTrack,
-        stages: getStages(),
+        level: savedLevel,
+        stages: getStages(savedLevel),
         stageIndex: saved.stageIndex,
         attempts: saved.attempts,
         status: STATUS.PLAYING,
@@ -80,6 +94,7 @@ export function createLocalRounds({ tracks }) {
         ? {
             id: open.id,
             trackId: open.game.track.id,
+            level: open.game.level,
             stageIndex: open.game.stageIndex,
             attempts: open.game.attempts,
           }
@@ -104,11 +119,14 @@ export function createLocalRounds({ tracks }) {
   return {
     mode: "local",
 
-    async start(artistSlugs = []) {
+    async start(artistSlugs = [], level = DEFAULT_LEVEL) {
       if (open && !isOver(open.game)) return view(open.id, open.game);
+      // Same refusal as the server for a level it does not know; none means the default.
+      const chosen = level ?? DEFAULT_LEVEL;
+      if (!isLevel(chosen)) throw new RoundError("invalid_level");
       const track = pickTrack(playable, artistSlugs);
       if (!track) throw new RoundError("empty_pool");
-      open = { id: newId(), game: createGame({ track }) };
+      open = { id: newId(), game: createGame({ track, level: chosen }) };
       persist();
       return view(open.id, open.game);
     },

@@ -1,4 +1,5 @@
 import { STATUS } from "./engine.js";
+import { levelLabel } from "./format.js";
 
 export const SHARE_TITLE = "GACETA Heardle";
 
@@ -25,7 +26,9 @@ export function buildShareText({ state, url }) {
     state.status === STATUS.WON
       ? `${state.attempts.length}/${state.stages.length}`
       : `X/${state.stages.length}`;
-  const lines = [`${SHARE_TITLE} ${outcome}`, buildPattern(state)];
+  // "3/4" is only comparable inside one level, so the result names it.
+  const level = levelLabel(state.level);
+  const lines = [`${SHARE_TITLE} ${outcome}${level ? ` · ${level}` : ""}`, buildPattern(state)];
   if (url) lines.push(url);
   return lines.join("\n");
 }

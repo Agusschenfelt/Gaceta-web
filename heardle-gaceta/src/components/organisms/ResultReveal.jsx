@@ -5,7 +5,7 @@ import { StageProgress } from "../molecules/StageProgress.jsx";
 import { WaveRing } from "../molecules/WaveRing.jsx";
 import { EmailCapture } from "./EmailCapture.jsx";
 import { STATUS } from "../../game/engine.js";
-import { formatSeconds } from "../../game/format.js";
+import { formatSeconds, levelLabel } from "../../game/format.js";
 import { buildShareText } from "../../game/share.js";
 import { CLIP_FILE_SECONDS, RING_TICKS, unlockedTicks } from "../../audio/waveform.js";
 import { shouldAskEmail } from "../../player/emailPrompt.js";
@@ -45,6 +45,8 @@ export function ResultReveal({
   useCoverTint(track.coverUrl);
   const won = game.status === STATUS.WON;
   const heard = game.stages[game.stageIndex];
+  // Which ladder this was played on; a result only means something with it.
+  const level = levelLabel(game.level);
   const isPlaying = audio?.isPlaying ?? false;
   const lit = isPlaying
     ? audio.progress * RING_TICKS
@@ -103,8 +105,8 @@ export function ResultReveal({
           </h2>
           <span className="label rise" style={stagger(0)}>
             {won
-              ? `Con ${formatSeconds(heard)} s · intento ${game.stageIndex + 1} de ${game.stages.length}`
-              : "Era este tema"}
+              ? `${level ? `${level} · ` : ""}${formatSeconds(heard)} s · intento ${game.stageIndex + 1} de ${game.stages.length}`
+              : `Era este tema${level ? ` · ${level}` : ""}`}
           </span>
         </div>
         {won ? (
